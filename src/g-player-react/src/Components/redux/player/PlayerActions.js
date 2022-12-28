@@ -3,7 +3,7 @@ import { PLAYER_CURRENT_SONG_AND_STATUS_START, PLAYER_CURRENT_SONG_AND_STATUS_SU
         PLAYER_PLAY_A_SONG_SUCCESS, PLAYER_PLAY_PAUSE_START, PLAYER_PLAY_PAUSE_SUCCESS, 
         PLAYER_SET_MEDIA_VOLUME_START, PLAYER_SET_MEDIA_VOLUME_SUCCESS, PLAYER_SET_PB_LENGTH_START, 
         PLAYER_SET_PB_LENGTH_SUCCESS, PLAYER_UPDATE_LYRICS_START, PLAYER_UPDATE_LYRICS_SUCCESS, 
-        SET_PLAYER_ISPLAYING, SET_PLAYER_ISREPEAT, SET_PLAYER_PLAYED_FROM 
+        SET_PLAYER_ISPLAYING, SET_PLAYER_ISREPEAT, SET_PLAYER_ISSHUFFLE, SET_PLAYER_PLAYED_FROM 
     } from "./PlayerActionTypes";
 
 export const setIsPlaying = (isPlaying) => ({
@@ -79,6 +79,11 @@ export const fetchCurrentSontAndStatusSucc = (response) => ({
 export const setIsRepeat = (isRepeat) => ({
     type: SET_PLAYER_ISREPEAT,
     isRepeat
+})
+
+export const setIsShuffle = (isShuffle) => ({
+    type: SET_PLAYER_ISSHUFFLE,
+    isShuffle
 })
 
 export const updateLyrics = (songId, lyrics) => ({

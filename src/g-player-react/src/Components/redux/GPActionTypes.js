@@ -7,3 +7,5 @@ export const ARTISTS = 'ARTISTS';
 export const ARTIST = 'ARTIST';
 export const ALBUM_ARTISTS = 'ALBUM_ARTISTS';
 export const ALBUM_ARTIST = 'ALBUM_ARTIST';
+export const NEXT = 'NEXT';
+export const PREVIOUS = 'PREVIOUS';

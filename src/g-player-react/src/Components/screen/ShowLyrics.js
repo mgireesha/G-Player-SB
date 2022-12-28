@@ -44,10 +44,10 @@ export const ShowLyrics = () => {
         if(lyrics!==null && lyrics!==undefined){
             const lyricsArr = lyrics.split("\n");
             lyricsArr.forEach(line => {
-                time = line.substring(line.indexOf('[')+1,line.lastIndexOf(']'));
+                time = line.substring(line.indexOf('[')+1,6);
                 timeArr = time.split(":");
                 if(!isNaN(timeArr[0])){
-                    time = time.substring(0,time.length-3);
+                    //time = time.substring(0,time.length-3);
                     text = line.substring(line.indexOf(']')+1,line.length);
                     tempLyricObj[time] = text;
                 }
