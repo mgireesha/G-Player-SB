@@ -98,6 +98,16 @@ export const ShowLyrics = () => {
         setLyrics(newLyrics);
         setIsreateLyricsStarted(true);
     }
+
+    const onSetIsreateLyricsStarted = (value)=>{
+        setIsreateLyricsStarted(value);
+        if(!value){
+            setShowCreateLyrics(false);
+            setLyrics(null);
+            setShowEditLyrics(false);
+            setLyricsObj(null);
+        }
+    }
     
     return(
     <>
@@ -145,7 +155,7 @@ export const ShowLyrics = () => {
     </div>}
     {isreateLyricsStarted && 
         <div className="show-lyrics" style={{width:'100%'}}>
-            <CreateLyrics setIsreateLyricsStarted={setIsreateLyricsStarted} newLyrics={lyrics} />
+            <CreateLyrics onSetIsreateLyricsStarted={onSetIsreateLyricsStarted} newLyrics={lyrics} />
         </div>
     }
     </>

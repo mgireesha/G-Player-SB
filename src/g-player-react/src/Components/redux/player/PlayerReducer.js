@@ -9,7 +9,7 @@ export const initialState = {
     songPlaying:null,
     songPlayingImg:null,
     playingSongStat:{},
-    currentVolume: 0.7,
+    currentVolume: 0.3,
     playedFrom:TRACK_LIST,
     phase:INIT
 }
