@@ -5,6 +5,7 @@ import { getMins0 } from "../utli";
 import {  FaPlay } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { PLAYER_UPDATE_LYRICS_SUCCESS } from "../redux/player/PlayerActionTypes";
+import { CreateLyrics } from "./CreateLyrics";
 
 export const ShowLyrics = () => {
     const dispatch = useDispatch();
@@ -17,10 +18,18 @@ export const ShowLyrics = () => {
     const [lyricsObj, setLyricsObj] = useState(null);
     const [lyricsObjKeys, setLyricsObjKeys] = useState(null);
     const [showEditLyrics, setShowEditLyrics] = useState(false);
+    const [showCreateLyrics, setShowCreateLyrics] = useState(false);
+    const [isreateLyricsStarted, setIsreateLyricsStarted] = useState(false);
+    const [lyrics, setLyrics] = useState(null);
+    
     useEffect(()=>{
         setLinePlaying(null);setLyricsObj(null);setNextLine(null);setPreviousLine(null);
-        if(songPlaying!==null)getLyrics(songPlaying.lyrics)
+        if(songPlaying!==null)setLyrics(songPlaying.lyrics);
     },[songPlaying]);
+
+    useEffect(()=>{
+        getLyrics(lyrics)
+    },[lyrics])
     
     useEffect(()=>{
         if(lyricsObj!==null && lyricsObj!==undefined){
@@ -75,11 +84,24 @@ export const ShowLyrics = () => {
     useEffect(()=>{
         if(phase===PLAYER_UPDATE_LYRICS_SUCCESS){
             setShowEditLyrics(false);
+            setIsreateLyricsStarted(false);
+            setShowCreateLyrics(false);
         }
     },[phase]);
+
+    const startCreateLyrics = () => {
+        const newLyrics = document.getElementById('new_lyrics_ta').value;
+        if(newLyrics==="" || newLyrics===null){
+            alert("Please paste lyrics");
+            return false;
+        }
+        setLyrics(newLyrics);
+        setIsreateLyricsStarted(true);
+    }
     
     return(
-    <div className="show-lyrics">
+    <>
+    {!isreateLyricsStarted && <div className="show-lyrics">
         {lyricsObj!==null && !showEditLyrics &&
         <>
             <Link to={`/music/albums/${songPlaying.album}`}><label className="show-lyrics-song-title"><FaPlay /> {songPlaying.title} from&nbsp;{songPlaying.album}</label></Link>
@@ -89,23 +111,44 @@ export const ShowLyrics = () => {
         </>
         }
             <div style={{display:'flex', flexDirection:'column', rowGap:10}}>
-                {lyricsObj===null && !showEditLyrics && <label>Lyrics not found for the song playing.</label>}
-                <textarea cols="70" rows="8" id="new_lyrics_ta" style={{display:showEditLyrics?'block':'none'}}></textarea>
+                {lyricsObj===null && !showEditLyrics && !showCreateLyrics && <label>Lyrics not found for the song playing.</label>}
+                <textarea cols="70" rows="8" id="new_lyrics_ta" style={{display:showEditLyrics || showCreateLyrics?'block':'none'}}></textarea>
             </div>
 
         <div className="show-lyrics-btn-container">
-            {!showEditLyrics && lyricsObj===null && <a onClick={()=>setShowEditLyrics(true)} className="lyrics-btn lyrics-btn-add">Add lyrics</a>}
+            {!showEditLyrics && lyricsObj===null && !showCreateLyrics &&
+                <>
+                    <a onClick={()=>setShowEditLyrics(true)} className="lyrics-btn lyrics-btn-add">Add lyrics</a>
+                    <a onClick={()=>{setShowCreateLyrics(true)}} className="lyrics-btn lyrics-btn-add">Create lyrics</a>
+                </>
+            }
             { showEditLyrics && 
                 <>
                     <a onClick={initUpdateLyrics} className="lyrics-btn lyrics-btn-add">Save</a>
-                    <a onClick={()=>setShowEditLyrics(false)} className="lyrics-btn lyrics-btn-cancel">Cancel</a>
                 </>
             }
+            { showCreateLyrics && 
+                <>
+                    <a onClick={startCreateLyrics} className="lyrics-btn lyrics-btn-add">Start</a>
+                </>
+            }
+            { (showEditLyrics || showCreateLyrics) && 
+                <>
+                    <a onClick={()=>{setShowEditLyrics(false);setShowCreateLyrics(false)}} className="lyrics-btn lyrics-btn-cancel">Cancel</a>
+                </>
+            }
+
             {lyricsObj!==null && !showEditLyrics && 
                 <a onClick={initEditLyrics} className="lyrics-btn lyrics-btn-add">Edit lyrics</a>
             }
         </div>
-    </div>
+    </div>}
+    {isreateLyricsStarted && 
+        <div className="show-lyrics" style={{width:'100%'}}>
+            <CreateLyrics setIsreateLyricsStarted={setIsreateLyricsStarted} newLyrics={lyrics} />
+        </div>
+    }
+    </>
     );
 
 }

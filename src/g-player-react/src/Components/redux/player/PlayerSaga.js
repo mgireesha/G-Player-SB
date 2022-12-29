@@ -1,5 +1,5 @@
 import { call, put, takeLatest } from "redux-saga/effects";
-import { handleAPIError } from "../../utli";
+import { handleAPIError, setCookies } from "../../utli";
 import { getCurrentSongAndStatusAPI, getCurrentSongStatusAPI, playASongAPI, playPauseAPI, setMediaVolumeAPI, 
             setPlaybackLengthAPI, updateLyricsAPI } from "../GPApis";
 import { fetchCurrentSontAndStatusSucc, fettchCurrentSongStatusSucc, playASongSucc, playPauseSucc, 
@@ -35,7 +35,12 @@ export function* onPlayASongAsync(payload){
         const response = yield call(playASongAPI,payload.songId);
         if(response.status===200){
             const data = response.data;
+            //console.log("data.library",data.library);
+            //console.log("btoa(data.library)",btoa(data.library));
             yield put(playASongSucc(data,payload.playedFrom));
+            //setCookies("songPlaying", btoa(JSON.stringify(data.library)));
+            //setCookies("playedFrom", payload.playedFrom);
+            
             //if(data.status==="UNKNOWN")fettchCurrentSongStatus();
         }
     }catch (error){

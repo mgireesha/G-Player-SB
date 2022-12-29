@@ -4,8 +4,9 @@ import { Sidebar } from "./Sidebar";
 import { Screen } from "./screen/Screen";
 import { useDispatch } from "react-redux";
 import { fetchAlbumImgs, fetchAllAlbumsDtls, fethAllSongs } from "./redux/library/LibraryActions";
-import { fetchCurrentSontAndStatus, fettchCurrentSongStatus, setIsRepeat, setIsShuffle } from "./redux/player/PlayerActions";
+import { fetchCurrentSontAndStatus, fettchCurrentSongStatus, playASongSucc, setIsRepeat, setIsShuffle } from "./redux/player/PlayerActions";
 import { getCookieDetails } from "./utli";
+import { TRACK_LIST } from "./redux/GPActionTypes";
 
 export const Home = () => {
     const dispatch = useDispatch();
@@ -13,7 +14,7 @@ export const Home = () => {
         dispatch(fethAllSongs());
         dispatch(fetchAlbumImgs());
         dispatch(fetchAllAlbumsDtls());
-        dispatch(fetchCurrentSontAndStatus());
+        //dispatch(fetchCurrentSontAndStatus());
         getSetCookieDetails();
     },[]);
 
@@ -24,6 +25,12 @@ export const Home = () => {
         }
         if(cookieDetails["isShuffle"]!==undefined){
             dispatch(setIsShuffle(cookieDetails["isShuffle"]));
+        }
+        if(cookieDetails["songPlaying"]!==undefined){
+            const response={library: atob(JSON.parse(cookieDetails["songPlaying"]))};
+            dispatch(playASongSucc(response,cookieDetails["playedFrom"]!==undefined?cookieDetails["playedFrom"]:TRACK_LIST));
+        }else{
+            dispatch(fetchCurrentSontAndStatus());
         }
     }
 
