@@ -8,7 +8,9 @@ import org.jaudiotagger.tag.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gmt.gp.model.GMedia;
@@ -40,9 +42,10 @@ public class MediaController {
     @Autowired
     LibraryService libraryService;
 
-    @RequestMapping("/playSong/{songId}")
-    public GPResponse playSong(@PathVariable String songId){
+    @RequestMapping(method = RequestMethod.PUT, value = "/playSong/{songId}")
+    public GPResponse playSong(@RequestBody String currentVolume,@PathVariable String songId){
         GPResponse resp = new GPResponse();
+        Double volume = Double.parseDouble(currentVolume);
         if(songId.equals("0") || songId == null){
             resp.setError("songId 0 or null");
             return resp;
@@ -58,6 +61,7 @@ public class MediaController {
                 Media media = new Media(new File(song.getSongPath()).toURI().toString());
                 mPlayer.dispose();
                 mPlayer = new MediaPlayer(media);
+                mPlayer.setVolume(volume);
                 mPlayer.play();
                 resp.setStatus("PLAYING");
                 resp.setLibrary(song);
@@ -65,22 +69,23 @@ public class MediaController {
                 resp.setError(ise.getMessage());
                 ise.printStackTrace();
                 if(ise.getMessage().contains("Toolkit not initialized")){
-                    return initAndPlay(song);
+                    return initAndPlay(song, volume);
                 }
             }
         }else{
-            return initAndPlay(song);
+            return initAndPlay(song, volume);
         }
         return resp;
     }
 
    
-    public GPResponse initAndPlay(Library song){
+    public GPResponse initAndPlay(Library song, Double volume){
         GPResponse resp = new GPResponse();
         try {
             Platform.startup(()->{
                 Media media = new Media(new File(song.getSongPath()).toURI().toString());
                 mPlayer = new MediaPlayer(media);
+                mPlayer.setVolume(volume);
                 mPlayer.play();
             });
             resp.setLibrary(song);
