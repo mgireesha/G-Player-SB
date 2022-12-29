@@ -1,23 +1,24 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { FaPauseCircle, FaPlay } from "react-icons/fa";
 import { MdSkipNext, MdSkipPrevious } from "react-icons/md";
 import { TiArrowRepeat } from "react-icons/ti";
 import { TbArrowsShuffle } from "react-icons/tb";
 import { useDispatch, useSelector } from "react-redux";
-import { fettchCurrentSongStatus, playASong, playPause, setIsPlaying, setIsPlayingSucc, setIsRepeat, setPlayBackLength } from "../redux/player/PlayerActions";
-import def_album_art from '../images/def_album_art.png';
-import { debounce, getMins, scrolltoId, scrollToPlaying } from "../utli";
+import { fettchCurrentSongStatus, playASong, playPause, setIsPlaying, setIsRepeat, setIsShuffle, setPlayBackLength } from "../redux/player/PlayerActions";
+import { getMins, scrolltoId, scrollToPlaying, setCookies } from "../utli";
 import { VolumeH } from "./VolumeH";
-import { ALBUM, ARTIST, TRACK_LIST } from "../redux/GPActionTypes";
+import { ALBUM, ARTIST, NEXT, NEXXT, PREVIOUS, TRACK_LIST } from "../redux/GPActionTypes";
 import { Link } from "react-router-dom";
 import { ArtistLink } from "../screen/artist/ArtistLink";
+import def_album_art from '../images/def_album_art.png';
 
 export const Player = () => {
 
     const dispatch = useDispatch();
     const isPlaying = useSelector(state => state.player.isPlaying);
     const isRepeat = useSelector(state => state.player.isRepeat);
+    const isShuffle = useSelector(state => state.player.isShuffle);
     const songPlayingImg = useSelector(state => state.player.songPlayingImg);
     const songPlaying = useSelector(state => state.player.songPlaying);
     const playedFrom = useSelector(state => state.player.playedFrom);
@@ -25,12 +26,11 @@ export const Player = () => {
     const tracks = useSelector(state => state.library.tracks);
     const album = useSelector(state => state.library.album);
     const artistTracks = useSelector(state => state.library.artistTracks);
-    const [isInitiated, setIsinitiated] = useState(false);
+    const currentVolume = useSelector(state => state.player.currentVolume);
     const [statClearIntrvl, setStatClearIntrvl] = useState(0);
     const [currentPlayVal, setCurrentplayVal] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
     const [isPlayingL, setIsPlayingL] = useState(false);
-
 
     useEffect(()=>{
         setIsPlayingL(isPlaying);
@@ -55,9 +55,13 @@ export const Player = () => {
        const currentTime = Math.floor(parseInt(playingSongStat.currentTime)/1000);
        setCurrentTime(currentTime);
        const trackLength = songPlaying.trackLength;
-       if(currentTime===trackLength){
+       if((trackLength - currentTime)<3){
             clearInterval(statClearIntrvl);
-            playNext();
+            if(isRepeat){
+                setTimeout(playNextSong(NEXT),2000);
+            }else{
+                dispatch(setIsPlaying(false))
+            }
        }else{
             const pBarval = Math.floor((currentTime/trackLength)*100);
             setCurrentplayVal(pBarval);
@@ -79,7 +83,7 @@ export const Player = () => {
         dispatch(playPause());
     }
 
-    const playNext = () => {
+    const playNextSong = (action) => {
         if(songPlaying===null)return false;
         let library;
         if(playedFrom===TRACK_LIST){
@@ -91,39 +95,29 @@ export const Player = () => {
         }else{
             library = tracks;
         }
-        const crrntindex = library.findIndex((track)=>track.songId===songPlaying.songId);
-        console.log("crrntindex",crrntindex);
         let nextSong = {};
-        if(library[crrntindex+1]!==undefined){
-            nextSong = library[crrntindex+1];
+        if(isShuffle){
+            const randomIndex = Math.floor(Math.random()*library.length);
+            nextSong = library[randomIndex];
         }else{
-            nextSong = library[0];
-            
-        }scrolltoId("track-"+nextSong.songId);
-        dispatch(playASong(nextSong.songId, playedFrom));
-    }
-
-    const playPrevious = () => {
-        if(songPlaying===null)return false;
-        let previousSong;
-        let library;
-        if(playedFrom===TRACK_LIST){
-            library = tracks;
-        }else if(playedFrom===ALBUM){
-            library = album;
-        }else if(playedFrom===ARTIST){
-            library = artistTracks;
-        }else{
-            library = tracks;
+            const crrntindex = library.findIndex((track)=>track.songId===songPlaying.songId);
+            if(action===NEXT){
+                if(library[crrntindex+1]!==undefined){
+                    nextSong = library[crrntindex+1];
+                }else{
+                    nextSong = library[0];
+                }
+            }else{
+                if(library[crrntindex-1]!==undefined){
+                    nextSong = library[crrntindex-1];
+                }else{
+                    nextSong = library[library.length-1];
+                }
+            }
         }
-        const crrntindex = library.findIndex((track)=>track.songId===songPlaying.songId);
-        if(library[crrntindex-1]!==undefined){
-            previousSong = library[crrntindex-1];
-        }else{
-            previousSong = library[library.length-1];
-            scrolltoId("track-"+previousSong.songId);
-        }
-        dispatch(playASong(previousSong.songId, playedFrom));
+        scrolltoId("track-"+nextSong.songId);
+        dispatch(playASong(nextSong.songId, playedFrom, currentVolume));
+        dispatch(setIsPlaying(true))
     }
 
     const setSlctdPlayBackTime = (event) => {
@@ -135,8 +129,23 @@ export const Player = () => {
 
 
     const setIsRepeatL = () => {
-        if(isRepeat)dispatch(setIsRepeat(false))
-        else dispatch(setIsRepeat(true))
+        if(isRepeat){
+            dispatch(setIsRepeat(false))
+            setCookies("isRepeat", false);
+        }else {
+            dispatch(setIsRepeat(true))
+            setCookies("isRepeat", true);
+        }
+    }
+
+    const setIsShuffleL = () => {
+        if(isShuffle){
+            dispatch(setIsShuffle(false))
+            setCookies("isShuffle", false);
+        }else {
+            dispatch(setIsShuffle(true))
+            setCookies("isShuffle", true);
+        }
     }
 
     return (
@@ -158,13 +167,13 @@ export const Player = () => {
                 <div className="player-controls">
                 <div className="player-controls-buttons">
                     <div className="shuffle">
-                        <div className="shuffle-button">
-                            <TbArrowsShuffle />
+                        <div className={isShuffle?"shuffle-button btn-selected":"shuffle-button"}>
+                            <TbArrowsShuffle onClick={setIsShuffleL} />
                         </div>
                     </div>
                     <div className="previous">
                         <div className="previous-button">
-                            <MdSkipPrevious onClick={playPrevious} />
+                            <MdSkipPrevious onClick={()=>playNextSong(PREVIOUS)} />
                         </div>
                     </div>
                     <div className="play">
@@ -175,7 +184,7 @@ export const Player = () => {
                     </div>
                     <div className="next">
                         <div className="next-button">
-                            <MdSkipNext onClick={playNext} />
+                            <MdSkipNext onClick={()=>playNextSong(NEXT)} />
                         </div>
                     </div>
                     <div className="repeat">
@@ -187,8 +196,6 @@ export const Player = () => {
                 <div className="player-controls-status-bar">
                     <div className="play-progress-bar-div">
                         <span className="play-progress-bar-start-time">{getMins(currentTime)}</span>
-                        {/* <div id="play_progress_pointer" className="play-progress-pointer"></div>
-                        <div className="play-progress-bar"></div> */}
                         <input type="range" min="1" max="100"  className="play-progress-bar" id="play_progress_bar" value={currentPlayVal}  onChange={(event)=>setSlctdPlayBackTime(event)}></input>
                         <span className="play-progress-bar-end-time">{songPlaying!==null ? getMins(songPlaying.trackLength):'0:00'}</span>
                     </div>

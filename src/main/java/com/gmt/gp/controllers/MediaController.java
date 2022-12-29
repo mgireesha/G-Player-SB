@@ -48,7 +48,11 @@ public class MediaController {
             return resp;
         }
         Library song = libraryService.getSongBySongId(Integer.parseInt(songId));
-        song = libraryService.getAlbumImg(song);
+        boolean getLyrics = false;
+        if(song.getLyrics()==null){
+            getLyrics = true;
+        }
+        song = libraryService.getAAttrFromTag(song, true, getLyrics);
         if(mPlayer!=null){
             try {
                 Media media = new Media(new File(song.getSongPath()).toURI().toString());

@@ -62,8 +62,8 @@ export const playPauseAPI = () => {
     return iAxios.get('/media/playPause').then(response => response);
 }
 
-export const playASongAPI = (songId) => {
-    return iAxios.get(`/media/playSong/${songId}`).then(response => response);
+export const playASongAPI = (songId, currentVolume) => {
+    return iAxios.put(`/media/playSong/${songId}`,currentVolume).then(response => response);
 }
 
 export const getCurrentSongStatusAPI = () => {

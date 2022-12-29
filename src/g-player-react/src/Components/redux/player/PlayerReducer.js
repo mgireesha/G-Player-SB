@@ -1,14 +1,15 @@
 import { INIT, LOADING, SUCCESS, TRACK_LIST } from "../GPActionTypes";
 import { FETCH_SONGS_START } from "../library/LibraryActionTypes";
-import { PLAYER_CURRENT_SONG_AND_STATUS_START, PLAYER_CURRENT_SONG_AND_STATUS_SUCCESS, PLAYER_CURRENT_SONG_STATUS_START, PLAYER_CURRENT_SONG_STATUS_SUCCESS, PLAYER_PLAY_A_SONG_START, PLAYER_PLAY_A_SONG_SUCCESS, PLAYER_PLAY_PAUSE_START, PLAYER_PLAY_PAUSE_SUCCESS, PLAYER_SET_MEDIA_VOLUME_START, PLAYER_SET_MEDIA_VOLUME_SUCCESS, PLAYER_SET_PB_LENGTH_START, PLAYER_SET_PB_LENGTH_SUCCESS, PLAYER_UPDATE_LYRICS_SUCCESS, SET_PLAYER_ISPLAYING, SET_PLAYER_ISREPEAT, SET_PLAYER_PLAYED_FROM } from "./PlayerActionTypes";
+import { PLAYER_CURRENT_SONG_AND_STATUS_START, PLAYER_CURRENT_SONG_AND_STATUS_SUCCESS, PLAYER_CURRENT_SONG_STATUS_START, PLAYER_CURRENT_SONG_STATUS_SUCCESS, PLAYER_PLAY_A_SONG_START, PLAYER_PLAY_A_SONG_SUCCESS, PLAYER_PLAY_PAUSE_START, PLAYER_PLAY_PAUSE_SUCCESS, PLAYER_SET_MEDIA_VOLUME_START, PLAYER_SET_MEDIA_VOLUME_SUCCESS, PLAYER_SET_PB_LENGTH_START, PLAYER_SET_PB_LENGTH_SUCCESS, PLAYER_UPDATE_LYRICS_SUCCESS, SET_PLAYER_ISPLAYING, SET_PLAYER_ISREPEAT, SET_PLAYER_ISSHUFFLE, SET_PLAYER_PLAYED_FROM } from "./PlayerActionTypes";
 
 export const initialState = {
     isPlaying:false,
     isRepeat:false,
+    isShuffle:false,
     songPlaying:null,
     songPlayingImg:null,
     playingSongStat:{},
-    currentVolume: 0.7,
+    currentVolume: 0.3,
     playedFrom:TRACK_LIST,
     phase:INIT
 }
@@ -109,6 +110,11 @@ const playerReducer = (state = initialState, action) => {
             return{
                 ...state,
                 isRepeat: action.isRepeat
+            }
+        case SET_PLAYER_ISSHUFFLE:
+            return{
+                ...state,
+                isShuffle: action.isShuffle
             }
         case PLAYER_UPDATE_LYRICS_SUCCESS:{
             return{

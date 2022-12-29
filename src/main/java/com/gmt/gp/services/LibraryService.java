@@ -235,12 +235,17 @@ public class LibraryService {
         return list.stream().filter(o -> o.getAlbumName().equals(name)).findFirst().isPresent();
     }
 
-    public Library getAlbumImg(Library song){
+    public Library getAAttrFromTag(Library song, boolean getAlbumImg, boolean getLyrics){
         AudioFile audioFile;
         try {
             audioFile = AudioFileIO.read(new File(song.getSongPath()));
             Tag tag = audioFile.getTag();
-            song.setAlbumArt(getAlbumImgFromTag(tag));
+            if(getAlbumImg){
+                song.setAlbumArt(getAlbumImgFromTag(tag));
+            }
+            if(getLyrics && !tag.getFirst(FieldKey.LYRICS).equals("") && tag.getFirst(FieldKey.LYRICS)!=null){
+                song.setLyrics(tag.getFirst(FieldKey.LYRICS));
+            }
         }catch (Exception e) {
             e.printStackTrace();
         }
