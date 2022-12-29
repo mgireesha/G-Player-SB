@@ -42,7 +42,7 @@ public class MediaController {
     @Autowired
     LibraryService libraryService;
 
-    @RequestMapping(method = RequestMethod.PUT,value = "/playSong/{songId}")
+    @RequestMapping(method = RequestMethod.PUT, value = "/playSong/{songId}")
     public GPResponse playSong(@RequestBody String currentVolume,@PathVariable String songId){
         GPResponse resp = new GPResponse();
         Double volume = Double.parseDouble(currentVolume);
