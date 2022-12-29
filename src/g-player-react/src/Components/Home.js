@@ -21,10 +21,10 @@ export const Home = () => {
     const getSetCookieDetails = () =>{
         const cookieDetails = getCookieDetails();
         if(cookieDetails["isRepeat"]!==undefined){
-            dispatch(setIsRepeat(cookieDetails["isRepeat"]));
+            dispatch(setIsRepeat(cookieDetails["isRepeat"]==='true'));
         }
         if(cookieDetails["isShuffle"]!==undefined){
-            dispatch(setIsShuffle(cookieDetails["isShuffle"]));
+            dispatch(setIsShuffle(cookieDetails["isShuffle"]==='true'));
         }
         if(cookieDetails["songPlaying"]!==undefined){
             const response={library: atob(JSON.parse(cookieDetails["songPlaying"]))};
