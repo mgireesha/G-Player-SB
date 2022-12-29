@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateLyrics } from "../redux/player/PlayerActions";
 import { getMins0 } from "../utli";
 
-export const CreateLyrics = ({setIsreateLyricsStarted, newLyrics}) => {
+export const CreateLyrics = ({onSetIsreateLyricsStarted, newLyrics}) => {
     const dispatch = useDispatch();
     const songPlaying = useSelector(state => state.player.songPlaying);
     const playingSongStat = useSelector(state => state.player.playingSongStat); 
@@ -36,6 +36,15 @@ export const CreateLyrics = ({setIsreateLyricsStarted, newLyrics}) => {
         //tempLyricsP[currentTime] = lyrics[tempLyricsPKeys.length-1]!==undefined?lyrics[tempLyricsPKeys.length-1]:'';
         if(lyrics[selectedLineIndex]!==undefined)tempLyricsP[currentTime] = lyrics[selectedLineIndex];
         setSelectedLineIndex(selectedLineIndex+1);
+        setLyricsP(tempLyricsP);
+    }
+
+    const setExitingTime = (time) => {
+        if(!time)return false;
+        const tempLyricsP = {...lyricsP}
+        let currentTime = Math.floor(parseInt(playingSongStat.currentTime)/1000);
+        currentTime = getMins0(currentTime);
+        delete Object.assign(tempLyricsP, {[currentTime]: tempLyricsP[time] })[time];
         setLyricsP(tempLyricsP);
     }
 
@@ -85,7 +94,12 @@ export const CreateLyrics = ({setIsreateLyricsStarted, newLyrics}) => {
                 {lyrics!==null && Object.values(lyrics).map((line, index) =>
                     <div style={{display:'flex',justifyContent:'flex-start'}}>
                         <div style={{padding:5}}>
-                            <span className={isLineSelected(index)!==undefined?'text-highlighted-y':''}>{isLineSelected(index)!==undefined?isLineSelected(index):'00:00'}</span>
+                            <span className={isLineSelected(index)!==undefined?'text-highlighted-y':''}
+                                onClick={()=>setExitingTime(isLineSelected(index))}
+                                style={{cursor:'pointer'}}
+                                >
+                                    {isLineSelected(index)!==undefined?isLineSelected(index):'00:00'}
+                            </span>
                             
                         </div>
                         <div style={{padding:5}}>
@@ -96,7 +110,7 @@ export const CreateLyrics = ({setIsreateLyricsStarted, newLyrics}) => {
                 <div className="show-lyrics-btn-container" style={{display: 'flex',flexDirection: 'column',width: '13%', bottom:'48%'}}>
                 <a onClick={initUpdateLyrics} className="lyrics-btn lyrics-btn-add">Save</a>
                 <a class="lyrics-btn lyrics-btn-cancel" onClick={setTime}>click</a>
-                <a onClick={()=>setIsreateLyricsStarted(false)} className="lyrics-btn lyrics-btn-cancel">Cancel</a>
+                <a onClick={()=>onSetIsreateLyricsStarted(false)} className="lyrics-btn lyrics-btn-cancel">Cancel</a>
             </div>
             </div>
             
