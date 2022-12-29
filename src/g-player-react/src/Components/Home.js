@@ -4,7 +4,7 @@ import { Sidebar } from "./Sidebar";
 import { Screen } from "./screen/Screen";
 import { useDispatch } from "react-redux";
 import { fetchAlbumImgs, fetchAllAlbumsDtls, fethAllSongs } from "./redux/library/LibraryActions";
-import { fetchCurrentSontAndStatus, fettchCurrentSongStatus, playASongSucc, setIsRepeat, setIsShuffle } from "./redux/player/PlayerActions";
+import { fetchCurrentSontAndStatus, fettchCurrentSongStatus, playASongSucc, setIsRepeat, setIsShuffle, setMediaVolume } from "./redux/player/PlayerActions";
 import { getCookieDetails } from "./utli";
 import { TRACK_LIST } from "./redux/GPActionTypes";
 
@@ -31,6 +31,9 @@ export const Home = () => {
             dispatch(playASongSucc(response,cookieDetails["playedFrom"]!==undefined?cookieDetails["playedFrom"]:TRACK_LIST));
         }else{
             dispatch(fetchCurrentSontAndStatus());
+        }
+        if(cookieDetails["currentVolume"]!==undefined){
+            dispatch(setMediaVolume(cookieDetails["currentVolume"]));
         }
     }
 

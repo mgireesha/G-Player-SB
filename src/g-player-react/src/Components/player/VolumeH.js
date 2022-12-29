@@ -20,7 +20,7 @@ export const VolumeH = () => {
     useEffect(()=>{
         if(songPlaying!==null){
             setCurrentVolVal(20);
-            dispatch(setMediaVolume(0.6));
+            if(currentVolume===undefined || currentVolume===null)dispatch(setMediaVolume(0.6));
         }
     },[songPlaying]);
 
@@ -53,7 +53,7 @@ export const VolumeH = () => {
         <div className="volume-h-div">
             {!isMute && <HiOutlineSpeakerWave className="volume-h-speaker-img" onClick={()=>muteMedia(true)} />}
             {isMute && <HiOutlineSpeakerXMark className="volume-h-speaker-img" onClick={()=>muteMedia(false)} />}
-            <input type="range" min="0" max="100"  className="volume_progress_bar" id="volume_progress_bar" value={currentVolVal} onChange={(event)=>updateMediaVolume(event)}></input>
+            <input type="range" min="0" max="100"  className="volume_progress_bar" id="volume_progress_bar" value={currentVolume*100} onChange={(event)=>updateMediaVolume(event)}></input>
         </div>
     );
 }

@@ -9,10 +9,11 @@ import { ArtistLink } from "./artist/ArtistLink";
 export const Track = ({track, playedFrom, index}) => {
     const dispatch = useDispatch();
     const songPlaying = useSelector(state => state.player.songPlaying);
+    const currentVolume = useSelector(state => state.player.currentVolume);
     //const isPlaying = useSelector(state => state.player.isPlaying);
     const playSong = async(songId) => {
         dispatch(setIsPlaying(true));
-        dispatch(playASong(songId,playedFrom));
+        dispatch(playASong(songId,playedFrom,currentVolume));
     }
 
     return(

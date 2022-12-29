@@ -20,10 +20,11 @@ export const playPauseSucc = (response) => ({
     response
 })
 
-export const playASong = (songId, playedFrom) => ({
+export const playASong = (songId, playedFrom, currentVolume) => ({
     type: PLAYER_PLAY_A_SONG_START,
     songId,
-    playedFrom
+    playedFrom,
+    currentVolume
 })
 
 export const playASongSucc = (response,playedFrom) => ({

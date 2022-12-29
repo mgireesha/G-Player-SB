@@ -32,12 +32,13 @@ export function* onPlayASong(){
 
 export function* onPlayASongAsync(payload){
     try {
-        const response = yield call(playASongAPI,payload.songId);
+        console.log("payload",payload)
+        const response = yield call(playASongAPI,payload.songId, payload.currentVolume);
         if(response.status===200){
             const data = response.data;
             //console.log("data.library",data.library);
             //console.log("btoa(data.library)",btoa(data.library));
-            yield put(playASongSucc(data,payload.playedFrom));
+            yield put(playASongSucc(data,payload.playedFrom,payload.currentVolume));
             //setCookies("songPlaying", btoa(JSON.stringify(data.library)));
             //setCookies("playedFrom", payload.playedFrom);
             
@@ -73,6 +74,7 @@ export function* onSetMediaVolumeAsync(payload){
         const response = yield call(setMediaVolumeAPI,payload.volume);
         if(response.status === 200){
             yield put(setMediaVolumeSucc(response.data.gMedia));
+            yield put(setCookies("currentVolume",response.data.gMedia.currentVolume));
         }
     } catch (error) {
         console.log(error);

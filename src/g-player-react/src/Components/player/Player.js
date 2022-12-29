@@ -26,6 +26,7 @@ export const Player = () => {
     const tracks = useSelector(state => state.library.tracks);
     const album = useSelector(state => state.library.album);
     const artistTracks = useSelector(state => state.library.artistTracks);
+    const currentVolume = useSelector(state => state.player.currentVolume);
     const [statClearIntrvl, setStatClearIntrvl] = useState(0);
     const [currentPlayVal, setCurrentplayVal] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
@@ -115,7 +116,7 @@ export const Player = () => {
             }
         }
         scrolltoId("track-"+nextSong.songId);
-        dispatch(playASong(nextSong.songId, playedFrom));
+        dispatch(playASong(nextSong.songId, playedFrom, currentVolume));
         dispatch(setIsPlaying(true))
     }
 
