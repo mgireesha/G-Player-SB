@@ -519,7 +519,10 @@ public class LibraryService {
                 wikiResp = restExchange(wikiUri+artist);
                 try {
                     wikiRespJson = new JSONObject(wikiResp);
-                    if(wikiRespJson.getString("extract").contains("may refer to")){
+                    if(wikiRespJson.getString("title").contains("Not found") ||  wikiRespJson.getString("extract").contains("may refer to") 
+                        || !wikiRespJson.getString("extract").contains("singer") || !wikiRespJson.getString("extract").contains("actor")
+                        || !wikiRespJson.getString("extract").contains("composer") || !wikiRespJson.getString("extract").contains("musician")
+                        || !wikiRespJson.getString("extract").contains("director")){
                         wikiResp = restExchange(wikiUri+artist+"_(singer)");
                         wikiRespJson = new JSONObject(wikiResp);
                         if(wikiRespJson.getString("title").contains("Not found")){

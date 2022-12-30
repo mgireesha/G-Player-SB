@@ -18,8 +18,12 @@ export const AlbumThumb = ({album, albumImg}) => {
                 </Link>
             </div>
             <div className="album-thumb-details">
-                <label>{album.album}</label>
-                <p>{album.albumArtist}</p>
+            <label>
+                <Link to={`/music/albums/${album.album}`}>{album.album}</Link>
+            </label>
+                <p>
+                    <Link to={`/music/album_artists/${album.albumArtist}`} >{album.albumArtist}</Link>
+                </p>
             </div>
         </div>
     );
