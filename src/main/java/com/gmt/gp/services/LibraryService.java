@@ -519,10 +519,7 @@ public class LibraryService {
                 wikiResp = restExchange(wikiUri+artist);
                 try {
                     wikiRespJson = new JSONObject(wikiResp);
-                    if(wikiRespJson.getString("title").contains("Not found") ||  wikiRespJson.getString("extract").contains("may refer to") 
-                        || !wikiRespJson.getString("extract").contains("singer") || !wikiRespJson.getString("extract").contains("actor")
-                        || !wikiRespJson.getString("extract").contains("composer") || !wikiRespJson.getString("extract").contains("musician")
-                        || !wikiRespJson.getString("extract").contains("director")){
+                    if(wikiRespJson.getString("title").contains("Not found") ||  wikiRespJson.getString("extract").contains("may refer to")){
                         wikiResp = restExchange(wikiUri+artist+"_(singer)");
                         wikiRespJson = new JSONObject(wikiResp);
                         if(wikiRespJson.getString("title").contains("Not found")){
@@ -530,7 +527,11 @@ public class LibraryService {
                             wikiRespJson = new JSONObject(wikiResp);
                         }
                     }
-                    if(wikiRespJson.getJSONObject("thumbnail")==null)continue;
+                    if(wikiRespJson.getJSONObject("thumbnail")==null || !wikiRespJson.getString("extract").contains("singer") 
+                        || !wikiRespJson.getString("extract").contains("actor") || !wikiRespJson.getString("extract").contains("composer") 
+                        || !wikiRespJson.getString("extract").contains("musician")
+                        || !wikiRespJson.getString("extract").contains("director"))continue;
+                        
                     System.out.println("wikiRespJson: "+wikiRespJson.getJSONObject("thumbnail").getString("source"));
                     FileUtils.copyURLToFile(new URL(wikiRespJson.getJSONObject("thumbnail").getString("source")), localArtistImg);
                     downloadedArtists.add(artist);
