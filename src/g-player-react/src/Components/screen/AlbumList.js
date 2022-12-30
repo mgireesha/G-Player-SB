@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllAlbums, fetchAllAlbumsDtls, setGroupband } from "../redux/library/LibraryActions";
 import { AlbumThumb } from "./AlbumThumb";
+import { Spinner } from "./Spinner";
 
 export const AlbumList = () => {
     // useState(()=>{
@@ -31,10 +32,14 @@ export const AlbumList = () => {
     },[]);
 
     return(
-        <div className="album-list">
+        <>
+            
+            <div className="album-list">
             {albumsDetails!==null && albumDtlsKeys!==null && albumDtlsKeys.length>0 && albumImgs!==null && albumDtlsKeys.map(albumName =>
                 <AlbumThumb album={albumsDetails[albumName]} albumImg={albumImgs[albumName]} key={albumName} />
             )}
-        </div>
+            </div>
+            <Spinner />
+        </>
     );
 }
