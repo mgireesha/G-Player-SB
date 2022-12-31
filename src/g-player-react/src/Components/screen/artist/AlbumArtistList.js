@@ -10,6 +10,7 @@ export const AlbumArtistList = () => {
     let albumArtistsDetails = useSelector(state => state.library.albumArtistsDetails);
     if(albumArtistsDetails!==null && albumArtistsDetails!==undefined && albumArtistsDetails.length>0){
         albumArtistsDetails = albumArtistsDetails.sort((a, b)=>a.artistName > b.artistName?1:-1);
+        albumArtistsDetails = albumArtistsDetails.sort((a, b)=>b.imgAvl?1:-1);
     }
     useEffect(()=>{
         dispatch(fetchAllAlbumArtistsDtls(ALBUM_ARTIST));

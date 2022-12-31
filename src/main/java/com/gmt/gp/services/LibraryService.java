@@ -544,7 +544,32 @@ public class LibraryService {
     }
 
     public List<Library> getSongsByArtist(String artist) {
-        return libraryRepository.getByArtistContains(artist);
+        List<Library> songsByArtist= libraryRepository.getByArtistContains(artist);
+        List<Library> resultSongsByArtist = new ArrayList<Library>();
+        Library song = null;
+        String songArtist = "";
+        String[] songArtistArr = null;
+        for(int i=0; i<songsByArtist.size();i++){
+            song = songsByArtist.get(i);
+            songArtist = song.getArtist();
+            if(songArtist==null)continue;
+            songArtist = songArtist.trim();
+            if(songArtist.contains(",") || songArtist.contains(";") || songArtist.contains("&")){
+                songArtist = songArtist.replaceAll("[;&]", ",");
+                songArtistArr = songArtist.split(",");
+                for(String songArtist1: songArtistArr){
+                    if(songArtist1.trim().equalsIgnoreCase(artist)){
+                        resultSongsByArtist.add(song);
+                        break;
+                    }
+                }
+            }else{
+                if(songArtist.equalsIgnoreCase(artist)){
+                    resultSongsByArtist.add(song);
+                }
+            }
+        }
+        return resultSongsByArtist;
     }
 
     public Map<String, List<Artist>> downloadArtistImgToDIr(){
