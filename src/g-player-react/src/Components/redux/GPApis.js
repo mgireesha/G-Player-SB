@@ -18,8 +18,12 @@ export const fetchAllAlbumsAPI = () => {
     return iAxios.get('/library/getAllAlbums').then(response => response);
 }
 
-export const fetchAlbumAPI = (albumName) => {
+export const fetchAlbumtracksAPI = (albumName) => {
     return iAxios.get(`/library/getByAlbum/${albumName}`).then(response => response);
+}
+
+export const fetchAlbumAPI = (albumName) => {
+    return iAxios.get(`/library/getAlbumByAlbumName/${albumName}`).then(response => response);
 }
 
 export const fetchAllAlbumDtlsAPI = () => {
@@ -42,7 +46,7 @@ export const fetchSongsByArtistAPI = (artist) => {
     return iAxios.get(`/library/getByArtist/${artist}`).then(response => response);
 }
 
-export const fetchalbumDetailsByAlbumArtistAPI = (albumArtist) => {
+export const fetchalbumListOfAAAPI = (albumArtist) => {
     return iAxios.get(`/library/getAllAlbumDetailsByAA/${albumArtist}`).then(response => response);
 }
 

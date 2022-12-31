@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import { fetchAlbumDetailsByAlbumArtist, fetchAllAlbumArtistsDtls, setGroupband } from "../../redux/library/LibraryActions";
+import { fetchAlbumDetailsByAlbumArtist, fetchAlbumlistOfAA, fetchAllAlbumArtistsDtls, setGroupband } from "../../redux/library/LibraryActions";
 import { scrollToPlaying } from "../../utli";
 import { AlbumThumb } from "../AlbumThumb";
 import def_album_art from '../../images/def_album_art.png';
@@ -11,7 +11,7 @@ import { ALBUM_ARTIST } from "../../redux/GPActionTypes";
 export const AlbumArtist = () => {
     const {albumArtist} = useParams();
     const dispatch = useDispatch();
-    const albumArtistAlbumsDetails = useSelector(state => state.library.albumArtistAlbumsDetails);
+    const albumListOfAA = useSelector(state => state.library.albumListOfAA);//AA -> Album Artist
     const albumArtistsDetails = useSelector(state => state.library.albumArtistsDetails);
     const [albumDtlsKeys, setAlbumDtlsKeys] = useState(null);
     const songPlaying = useSelector(state => state.player.songPlaying);
@@ -25,7 +25,7 @@ export const AlbumArtist = () => {
         setAlbumDtlsKeys([]);
         setArtistWikiImg(null);
         setArtistWiki({});
-        dispatch(fetchAlbumDetailsByAlbumArtist(albumArtist));
+        dispatch(fetchAlbumlistOfAA(albumArtist));
         fetchArtistDetailsfromWiki(albumArtist);
     },[albumArtist]);
 
@@ -36,12 +36,6 @@ export const AlbumArtist = () => {
             dispatch(fetchAllAlbumArtistsDtls(ALBUM_ARTIST));
         }
     },[albumArtist, albumArtistsDetails]);
-    
-    useEffect(()=>{
-        if(albumArtistAlbumsDetails!==null && albumArtistAlbumsDetails!==undefined){
-            setAlbumDtlsKeys(Object.keys(albumArtistAlbumsDetails));
-        }
-    },[albumArtistAlbumsDetails]);
 
     useEffect(()=>{
         dispatch(setGroupband("album_artists"));
@@ -69,9 +63,7 @@ export const AlbumArtist = () => {
                 </div>
                 <div className="album-artist-details">
                     <h3>{albumArtist}</h3>
-                    {albumArtistAlbumsDetails!==undefined && albumArtistAlbumsDetails!==null &&
-                        <label>Albums: {Object.keys(albumArtistAlbumsDetails).length}</label>
-                    }
+                    <label>Albums: {albumListOfAA.length}</label>
                     {playedFrom===ALBUM_ARTIST && songPlaying!==undefined && songPlaying!==null && songPlaying.albumArtist.includes(albumArtist) &&
                         <label>Playing:&nbsp;<i onClick={scrollToPlaying} style={{cursor:'pointer',color:'#ef6464'}}>{songPlaying.title}</i>&nbsp;<Link to={`/music/albums/${songPlaying.album}`}>{songPlaying.album!==null?'from '+songPlaying.album:''}</Link></label>
                     }
@@ -83,8 +75,8 @@ export const AlbumArtist = () => {
                 </div>
             </div>
             <div className="album-artist-album-list">
-            {albumArtistAlbumsDetails!==null && albumDtlsKeys!==null && albumDtlsKeys.length>0 && albumImgs!==null && albumDtlsKeys.map(albumName =>
-                albumArtistAlbumsDetails[albumName]!==undefined && <AlbumThumb album={albumArtistAlbumsDetails[albumName]} albumImg={albumImgs[albumName]} key={albumName} />
+            {albumListOfAA.length>0 && albumListOfAA.map((album, index) =>
+                <AlbumThumb album={album} key={index} />
             )}
         </div>
         </div>

@@ -1,16 +1,19 @@
 import { call, put, takeLatest } from "redux-saga/effects";
 import { handleAPIError } from "../../utli";
 import { fetchAlbumAPI, fetchalbumDetailsByAlbumArtistAPI, fetchAlbumImgsAPI,
+         fetchalbumListOfAAAPI,
+         fetchAlbumtracksAPI,
          fetchAllAlbumDtlsAPI, fetchAllAlbumsAPI, fetchAllArtistsDtlsAPI, 
          fetchSongsByArtistAPI, getAllSongsAPI 
     } from "../GPApis";
-import { fetchAlbumDetailsByAlbumArtistSucc, fetchAlbumImgsScc, fetchAlbumSucc, 
+import { fetchAlbumDetailsByAlbumArtistSucc, fetchAlbumImgsScc, fetchAlbumlistOfAASucc, fetchAlbumSucc, 
+        fetchAlbumTacksSucc, 
         fetchAllAlbumArtistsDtlsSucc, fetchAllAlbumsDtlsSucc, fetchAllAlbumsSucc, 
         fetchAllArtistsDtlsSucc, fetchSongsByArtistSucc, fethAllSongsSucc 
     } from "./LibraryActions";
 import { FETCH_SONGS_START, LIBRARY_FETCH_ALBUMS_DETAILS_START, LIBRARY_FETCH_ALBUMS_START, 
     LIBRARY_FETCH_ALBUM_ARTIST_LIST_START, LIBRARY_FETCH_ALBUM_DETAILS_BY_ALBUM_ARTIST_START, 
-    LIBRARY_FETCH_ALBUM_IMGS_START, LIBRARY_FETCH_ALBUM_START, LIBRARY_FETCH_ARTIST_LIST_START, 
+    LIBRARY_FETCH_ALBUM_IMGS_START, LIBRARY_FETCH_ALBUM_LIST_OF_AA_START, LIBRARY_FETCH_ALBUM_START, LIBRARY_FETCH_ALBUM_TRACKS_START, LIBRARY_FETCH_ARTIST_LIST_START, 
     LIBRARY_FETCH_SONGS_BY_ARTIST_START 
 } from "./LibraryActionTypes";
 
@@ -73,6 +76,22 @@ export function* onFetchAlbumimgsAsync(){
         const response = yield call(fetchAlbumImgsAPI);
         if(response.status === 200){
             yield put(fetchAlbumImgsScc(response.data));
+        }
+    } catch (error) {
+        console.log(error);
+        handleAPIError(error);
+    }
+}
+
+export function* onFetchAlbumTracks(){
+    yield takeLatest(LIBRARY_FETCH_ALBUM_TRACKS_START, onFetchAlbumTracksAsync);
+}
+
+export function* onFetchAlbumTracksAsync(payload){
+    try {
+        const response = yield call(fetchAlbumtracksAPI,payload.albumName);
+        if(response.status === 200){
+            yield put(fetchAlbumTacksSucc(response.data));
         }
     } catch (error) {
         console.log(error);
@@ -144,15 +163,15 @@ export function* onFetchAllAlbumArtistsDtlsAsync(payload){
     }
 }
 
-export function* onFetchAlbumDtlsByAlbumArtist(){
-    yield takeLatest(LIBRARY_FETCH_ALBUM_DETAILS_BY_ALBUM_ARTIST_START, onFetchAlbumDtlsByAlbumArtistAsync);
+export function* onFetchAlbumListOfAA(){
+    yield takeLatest(LIBRARY_FETCH_ALBUM_LIST_OF_AA_START, onFetchAlbumListOfAAAsync);
 }
 
-export function* onFetchAlbumDtlsByAlbumArtistAsync(payload){
+export function* onFetchAlbumListOfAAAsync(payload){
     try {
-        const response = yield call(fetchalbumDetailsByAlbumArtistAPI,payload.albumArtist);
+        const response = yield call(fetchalbumListOfAAAPI,payload.albumArtist);
         if(response.status === 200){
-            yield put(fetchAlbumDetailsByAlbumArtistSucc(response.data));
+            yield put(fetchAlbumlistOfAASucc(response.data));
         }
     } catch (error) {
         console.log(error);
