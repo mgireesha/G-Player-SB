@@ -24,7 +24,7 @@ export const Player = () => {
     const playedFrom = useSelector(state => state.player.playedFrom);
     const playingSongStat = useSelector(state => state.player.playingSongStat);
     const tracks = useSelector(state => state.library.tracks);
-    const album = useSelector(state => state.library.album);
+    const albumTracks = useSelector(state => state.library.albumTracks);
     const artistTracks = useSelector(state => state.library.artistTracks);
     const currentVolume = useSelector(state => state.player.currentVolume);
     const [statClearIntrvl, setStatClearIntrvl] = useState(0);
@@ -89,7 +89,7 @@ export const Player = () => {
         if(playedFrom===TRACK_LIST){
             library = tracks;
         }else if(playedFrom===ALBUM){
-            library = album;
+            library = albumTracks;
         }else if(playedFrom===ARTIST){
             library = artistTracks;
         }else{

@@ -122,7 +122,7 @@ export const ShowLyrics = () => {
         }
             <div style={{display:'flex', flexDirection:'column', rowGap:10}}>
                 {lyricsObj===null && !showEditLyrics && !showCreateLyrics && <label>Lyrics not found for the song playing.</label>}
-                <textarea cols="70" rows="8" id="new_lyrics_ta" style={{display:showEditLyrics || showCreateLyrics?'block':'none'}}></textarea>
+                <textarea cols="60" rows="8" id="new_lyrics_ta" style={{display:showEditLyrics || showCreateLyrics?'block':'none'}}></textarea>
             </div>
 
         <div className="show-lyrics-btn-container">

@@ -500,7 +500,8 @@
 
 .album-img-div-container{
     display: grid;
-    grid-template-columns: 3fr 3fr 8fr;
+    //grid-template-columns: 3fr 3fr 8fr;
+    grid-template-columns: 7fr 11fr 18fr;
 
     .album-details{
         display: flex;
