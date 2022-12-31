@@ -58,7 +58,7 @@ export const Player = () => {
        if((trackLength - currentTime)<3){
             clearInterval(statClearIntrvl);
             if(isRepeat){
-                setTimeout(playNextSong(NEXT),2000);
+                setTimeout(playNextSong(NEXT),4000);
             }else{
                 dispatch(setIsPlaying(false))
             }

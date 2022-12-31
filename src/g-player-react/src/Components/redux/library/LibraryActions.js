@@ -7,7 +7,7 @@ import { FETCH_SONGS_START, FETCH_SONGS_SUCCESS,
         LIBRARY_FETCH_ALBUM_TRACKS_START, 
         LIBRARY_FETCH_ALBUM_TRACKS_SUCCESS, 
         LIBRARY_FETCH_ARTIST_LIST_START, LIBRARY_FETCH_ARTIST_LIST_SUCCESS, 
-        LIBRARY_FETCH_SONGS_BY_ARTIST_START, LIBRARY_FETCH_SONGS_BY_ARTIST_SUCCESS, SET_GROUP_BAND 
+        LIBRARY_FETCH_SONGS_BY_ARTIST_START, LIBRARY_FETCH_SONGS_BY_ARTIST_SUCCESS, LIBrARY_INIT_BUILD_LIBRARY_START, LIBrARY_INIT_BUILD_LIBRARY_SUCESS, LIBRARY_SAVE_MUSIC_PATH_START, LIBRARY_SAVE_MUSIC_PATH_SUCCESS, SET_GROUP_BAND 
     } from "./LibraryActionTypes";
 
 export const fethAllSongs = () => ({
@@ -111,5 +111,26 @@ export const fetchAlbumlistOfAASucc = (albumListOfAA) => ({
     albumListOfAA
 })
 
+
+
+//Side bar Library
+export const initLibraryBuild = () => ({
+    type: LIBrARY_INIT_BUILD_LIBRARY_START
+})
+
+export const initLibraryBuildSucc = (response) => ({
+    type: LIBrARY_INIT_BUILD_LIBRARY_SUCESS,
+    response
+})
+
+export const saveMusicPath = (musicPath) => ({
+    type: LIBRARY_SAVE_MUSIC_PATH_START,
+    musicPath
+})
+
+export const saveMusicPathSucc = (response) => ({
+    type: LIBRARY_SAVE_MUSIC_PATH_SUCCESS,
+    response
+})
 
 

@@ -17,6 +17,7 @@ import com.gmt.gp.model.Album;
 import com.gmt.gp.model.Artist;
 import com.gmt.gp.model.GPResponse;
 import com.gmt.gp.model.Library;
+import com.gmt.gp.model.Message;
 import com.gmt.gp.services.LibraryService;
 
 @CrossOrigin(origins= {"http://localhost:3000","http://gplayer.test.com:3000"})
@@ -135,7 +136,10 @@ public class LibraryController {
         libraryService.resizeArtistImgs();
     }
 
-    
+    @RequestMapping(method = RequestMethod.POST , value = "/saveMusicPath")
+    public void saveMusicPath(@RequestBody Message message){
+        libraryService.saveMusicPath(message);
+    }
 
 
 

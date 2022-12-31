@@ -44,9 +44,11 @@ import com.gmt.gp.model.Album;
 import com.gmt.gp.model.Artist;
 import com.gmt.gp.model.GPResponse;
 import com.gmt.gp.model.Library;
+import com.gmt.gp.model.Message;
 import com.gmt.gp.repositories.AlbumRepository;
 import com.gmt.gp.repositories.ArtistRepository;
 import com.gmt.gp.repositories.LibraryRepository;
+import com.gmt.gp.repositories.MessageRepository;
 
 import java.awt.image.BufferedImage;
 import java.awt.Image;
@@ -64,6 +66,9 @@ public class LibraryService {
 
     @Autowired
     private ArtistRepository artistRepository;
+
+    @Autowired
+    private MessageRepository messageRepository;
 
     private static final String ARTIST = "ARTIST";
 
@@ -723,6 +728,10 @@ public class LibraryService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void saveMusicPath(Message message) {
+        messageRepository.save(message);
     }
 
 }

@@ -192,6 +192,7 @@
         width: 2em;
         border-radius: 39%;
         box-shadow: rgb(0 0 0 / 35%) 0px 5px 15px;
+        text-align: center;
     }
 
 }
@@ -747,6 +748,153 @@ a{
     }
     
     
+}
+
+.library {
+    width: 78vw;
+    .header{
+        margin-left: 10px;
+        border-bottom: 1px solid grey;
+        padding-bottom: 10px;
+    }
+
+    .body{
+        padding: 2em;
+        padding-left: 10px;
+        display: flex;
+        column-gap: 20px;
+        .library-build, .library-list{
+            height: 15em;
+            width: 30em;
+            border: 1px solid grey;
+            box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
+            border-radius: 5px;
+            padding: 10px;
+            position: relative;
+            h4{
+                padding-bottom: 10px;
+            }
+
+            p{
+                margin-bottom: 5px;
+            }
+
+            .btn-container{
+                position: absolute;
+                bottom: 5px;
+                width: 100%;
+                height: 3em;
+                display: flex;
+
+                .library-btn{
+                    padding: 10px;
+                    background-color: #2B3A69;
+                    border-radius: 5px;
+                    margin-left: auto;
+                    margin-right: 2em;
+                    height: 2.8em;
+                    font-weight: 600;
+                    transition: all 300ms;
+                }
+
+                .library-btn:hover{
+                    background-color: #364981;
+                }
+            }
+        }
+
+        .library-list{
+            .content{
+                p{
+                    padding-bottom: 5px;
+                }
+                input{
+                    padding: 8px;
+                    outline: none;
+                    border-radius: 5px;
+                    width: 75%;
+                }
+
+                .input-container{
+                    display: flex;
+                    .library-btn{
+                        padding: 5px;
+                        background-color: #2B3A69;
+                        border-radius: 5px;
+                        margin-left: 20px;
+                        height: 2.2em;
+                        width: 5em;
+                        text-align: center;
+                        font-weight: 600;
+                        transition: all 300ms;
+                    }
+                }
+                
+            }
+
+            .existing-lib-paths{
+                padding-top: 10px;
+                padding-left: 2px;
+                max-height: 8em;
+                overflow-y: auto;
+                label{
+                    display: flex;
+                    align-items: center;
+                    flex-direction: row;
+                    padding: 10px 0;
+                    padding-left: 5px;
+                    border-bottom: 1px solid gray;
+                    span{
+                        display: flex;
+                        align-items: center;
+                        svg{
+                            margin: 0 5px;
+                            padding-top: 2px
+                        }
+                    }
+                    >svg{
+                        margin-left: auto;
+                        font-size: 20px;
+                        margin-right: 10px;
+                        color: rgb(181 51 51 / 86%);
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.sidebar{
+    padding-top: 3em;
+    opacity: 0.9;
+
+    .row{
+        padding: 10px 5px 10px 10px;
+        background-color: #AB3C3C;
+        cursor: pointer;
+
+        label{
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+
+            .icon{
+                padding-top: 6px;
+                margin-right: 5px;
+                font-size: 24px;
+            }
+        }
+    }
+
+    .row:hover{
+        //border-bottom: 1px solid gray;
+        //border-top: 1px solid gray;
+        opacity: 0.8;
+        background-color: #54545485;
+    }
 }
 
 

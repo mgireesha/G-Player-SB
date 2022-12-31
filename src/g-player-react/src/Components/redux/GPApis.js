@@ -54,6 +54,16 @@ export const updateLyricsAPI = (songId, lyrics) => {
     return iAxios.put(`/library/updateLyrics/${songId}`,lyrics).then(response => response);
 }
 
+//Sidebar library
+export const initLibraryBuildAPI = () => {
+    return iAxios.get(`/library/initLibraryBuild`).then(response => response);
+}
+
+export const saveMusicpathAPI = (musicpath) => {
+    return iAxios.post(`/library/saveMusicPath`,musicpath).then(response => response);
+}
+
+//Media
 export const playPauseAPI = () => {
     return iAxios.get('/media/playPause').then(response => response);
 }
