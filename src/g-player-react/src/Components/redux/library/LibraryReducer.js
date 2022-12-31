@@ -8,11 +8,11 @@ export const initialState = {
     albumImgs: null,
     albumsDetails:[],
     albumArtistAlbumsDetails:[],
-    artistsDetails:{},
-    artistsImgsDetails:[],
+    artistsDetails:[],
+    //artistsImgsDetails:[],
     artistTracks:[],
     albumArtistsDetails:[],
-    albumArtistsImgsDetails:[],
+    //albumArtistsImgsDetails:[],
     groupBand:"",
     phase:INIT
 }
@@ -89,7 +89,7 @@ const libraryReducer = (state = initialState, action) => {
                 return{
                     ...state,
                     artistsDetails:action.artistsDetails,
-                    artistsImgsDetails:action.artistsImgsDetails,
+                    //artistsImgsDetails:action.artistsImgsDetails,
                     phase:SUCCESS
                 }
             case LIBRARY_FETCH_SONGS_BY_ARTIST_START:
@@ -112,7 +112,7 @@ const libraryReducer = (state = initialState, action) => {
                 return{
                     ...state,
                     albumArtistsDetails:action.albumArtistsDetails,
-                    albumArtistsImgsDetails:action.albumArtistsImgsDetails,
+                    //albumArtistsImgsDetails:action.albumArtistsImgsDetails,
                     phase:SUCCESS
                 }
             case LIBRARY_FETCH_ALBUM_DETAILS_BY_ALBUM_ARTIST_START:

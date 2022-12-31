@@ -30,20 +30,12 @@ export const fetchAlbumImgsAPI = () => {
     return iAxios.get('/library/getAlbumImgs').then(response => response);
 }
 
-export const fetchAllArtistsDtlsAPI = () => {
-    return iAxios.get('/library/getAllArtistDetails').then(response => response);
+export const fetchAllArtistsDtlsAPI = (artistType) => {
+    return iAxios.get(`/library/getAllArtistDetails/${artistType}`).then(response => response);
 }
 
 export const fetchAllArtistsImgDtlsAPI = () => {
     return iAxios.get('/library/getAllArtistImgDetails').then(response => response);
-}
-
-export const fetchAllAlbumArtistsDtlsAPI = () => {
-    return iAxios.get('/library/getAllAlbumArtistDetails').then(response => response);
-}
-
-export const fetchAllAlbumArtistsImgDtlsAPI = () => {
-    return iAxios.get('/library/getAllAlbumArtistImgDetails').then(response => response);
 }
 
 export const fetchSongsByArtistAPI = (artist) => {

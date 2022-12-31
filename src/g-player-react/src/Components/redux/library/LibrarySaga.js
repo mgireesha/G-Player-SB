@@ -1,8 +1,8 @@
 import { call, put, takeLatest } from "redux-saga/effects";
 import { handleAPIError } from "../../utli";
-import { fetchAlbumAPI, fetchalbumDetailsByAlbumArtistAPI, fetchAlbumImgsAPI, fetchAllAlbumArtistsDtlsAPI, 
-        fetchAllAlbumArtistsImgDtlsAPI, fetchAllAlbumDtlsAPI, fetchAllAlbumsAPI, fetchAllArtistsDtlsAPI, 
-        fetchAllArtistsImgDtlsAPI, fetchSongsByArtistAPI, getAllSongsAPI 
+import { fetchAlbumAPI, fetchalbumDetailsByAlbumArtistAPI, fetchAlbumImgsAPI,
+         fetchAllAlbumDtlsAPI, fetchAllAlbumsAPI, fetchAllArtistsDtlsAPI, 
+         fetchSongsByArtistAPI, getAllSongsAPI 
     } from "../GPApis";
 import { fetchAlbumDetailsByAlbumArtistSucc, fetchAlbumImgsScc, fetchAlbumSucc, 
         fetchAllAlbumArtistsDtlsSucc, fetchAllAlbumsDtlsSucc, fetchAllAlbumsSucc, 
@@ -100,12 +100,11 @@ export function* onFetchAllArtistsDtls(){
     yield takeLatest(LIBRARY_FETCH_ARTIST_LIST_START, onFetchAllArtistsDtlsAsync);
 }
 
-export function* onFetchAllArtistsDtlsAsync(){
+export function* onFetchAllArtistsDtlsAsync(payload){
     try {
-        const response = yield call(fetchAllArtistsDtlsAPI);
-        const response1 = yield call(fetchAllArtistsImgDtlsAPI);
-        if(response.status === 200 && response1.status===200){
-            yield put(fetchAllArtistsDtlsSucc(response.data,response1.data));
+        const response = yield call(fetchAllArtistsDtlsAPI,payload.artistType);
+        if(response.status === 200){
+            yield put(fetchAllArtistsDtlsSucc(response.data));
         }
     } catch (error) {
         console.log(error);
@@ -133,12 +132,11 @@ export function* onFetchAllAlbumArtistsDtls(){
     yield takeLatest(LIBRARY_FETCH_ALBUM_ARTIST_LIST_START, onFetchAllAlbumArtistsDtlsAsync);
 }
 
-export function* onFetchAllAlbumArtistsDtlsAsync(){
+export function* onFetchAllAlbumArtistsDtlsAsync(payload){
     try {
-        const response = yield call(fetchAllAlbumArtistsDtlsAPI);
-        const response1 = yield call(fetchAllAlbumArtistsImgDtlsAPI);
-        if(response.status === 200 && response1.status===200){
-            yield put(fetchAllAlbumArtistsDtlsSucc(response.data,response1.data));
+        const response = yield call(fetchAllArtistsDtlsAPI,payload.artistType);
+        if(response.status === 200){
+            yield put(fetchAllAlbumArtistsDtlsSucc(response.data));
         }
     } catch (error) {
         console.log(error);
