@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gmt.gp.model.AlbumArtist;
 import com.gmt.gp.model.Artist;
 import com.gmt.gp.model.GPResponse;
 import com.gmt.gp.model.Library;
@@ -99,9 +98,9 @@ public class LibraryController {
         return libraryService.getAlbumImgs();
     }
 
-    @RequestMapping("/getAllArtistDetails")
-    public List<String> getAllArtistDetails(){
-        return libraryService.getAllArtistDetails();
+    @RequestMapping("/getAllArtistDetails/{type}")
+    public List<Artist> getAllArtistDetails(@PathVariable String type){
+        return libraryService.getAllArtistDetails(type);
     }
 
     @RequestMapping("/getAllAlbumArtistDetails")
@@ -109,30 +108,14 @@ public class LibraryController {
         return libraryService.getAllAlbumArtistDetails();
     }
 
-    @RequestMapping("/readAndStoreArtistnames")
-    public Iterable<Artist> readAndStoreArtistnames(){
-        libraryService.readAndStoreAlbumArtistnames();
-        return libraryService.readAndStoreArtistnames();
-    }
-
-    @RequestMapping("/getAllArtistImgDetails")
-    public Iterable<Artist> getAllArtistImgDetails(){
-        return libraryService.getAllArtistImgDetails();
-    }
-
-    @RequestMapping("/getAllAlbumArtistImgDetails")
-    public Iterable<AlbumArtist> getAllAlbumArtistImgDetails(){
-        return libraryService.getAllAlbumArtistImgDetails();
+    @RequestMapping("/readAndStoreArtistnames/{artistType}")
+    public Iterable<Artist> readAndStoreArtistnames(@PathVariable String artistType){
+        return libraryService.setArtistLocalImgAvlStatus(artistType);
     }
 
     @RequestMapping("/downloadArtistImgToDIr")
-    public Map<String, List<String>> downloadArtistImgToDIr(){
+    public Map<String, List<Artist>> downloadArtistImgToDIr(){
         return libraryService.downloadArtistImgToDIr();
-    }
-
-    @RequestMapping("/downloadAlbumArtistImgToDIr")
-    public Map<String, List<String>> downloadAlbumArtistImgToDIr(){
-        return libraryService.downloadAlbumArtistImgToDIr();
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/updateLyrics/{songId}")

@@ -74,7 +74,7 @@ export function* onSetMediaVolumeAsync(payload){
         const response = yield call(setMediaVolumeAPI,payload.volume);
         if(response.status === 200){
             yield put(setMediaVolumeSucc(response.data.gMedia));
-            yield put(setCookies("currentVolume",response.data.gMedia.currentVolume));
+            setCookies("currentVolume",response.data.gMedia.currentVolume);
         }
     } catch (error) {
         console.log(error);

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ALBUM_ARTISTS } from "../../redux/GPActionTypes";
+import { ALBUM_ARTIST, ALBUM_ARTISTS } from "../../redux/GPActionTypes";
 import { fetchAllAlbumArtistsDtls, setGroupband } from "../../redux/library/LibraryActions";
 import { setPlayedFrom } from "../../redux/player/PlayerActions";
 import { AlbumArtistThumb } from "../artist/AlbumArtistThumb";
@@ -11,16 +11,15 @@ export const AlbumArtistList = () => {
     if(albumArtistsDetails!==null && albumArtistsDetails!==undefined && albumArtistsDetails.length>0){
         albumArtistsDetails = albumArtistsDetails.sort();
     }
-    const albumArtistsImgsDetails = useSelector(state => state.library.albumArtistsImgsDetails);
     useEffect(()=>{
-        dispatch(fetchAllAlbumArtistsDtls());
+        dispatch(fetchAllAlbumArtistsDtls(ALBUM_ARTIST));
         dispatch(setGroupband("album_artists"));
         dispatch(setPlayedFrom(ALBUM_ARTISTS));
     },[]);
     return(
         <div className="album-artists-list">
-            {albumArtistsDetails!==null && albumArtistsDetails!==undefined && albumArtistsDetails.length>0 && albumArtistsDetails.map(albumArtist =>
-                    <AlbumArtistThumb albumArtist={albumArtist} albumArtistsImgsDetails={albumArtistsImgsDetails} />
+            {albumArtistsDetails!==null && albumArtistsDetails!==undefined && albumArtistsDetails.length>0 && albumArtistsDetails.map((albumArtist, index) =>
+                    <AlbumArtistThumb albumArtist={albumArtist} key={index} />
                 )}
         </div>
     );

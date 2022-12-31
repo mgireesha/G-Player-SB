@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import { fetchAlbumDetailsByAlbumArtist, setGroupband } from "../../redux/library/LibraryActions";
+import { fetchAlbumDetailsByAlbumArtist, fetchAllAlbumArtistsDtls, setGroupband } from "../../redux/library/LibraryActions";
 import { scrollToPlaying } from "../../utli";
 import { AlbumThumb } from "../AlbumThumb";
 import def_album_art from '../../images/def_album_art.png';
@@ -12,14 +12,14 @@ export const AlbumArtist = () => {
     const {albumArtist} = useParams();
     const dispatch = useDispatch();
     const albumArtistAlbumsDetails = useSelector(state => state.library.albumArtistAlbumsDetails);
-    const albumArtistsImgsDetails = useSelector(state => state.library.albumArtistsImgsDetails);
-    const artistImg = albumArtistsImgsDetails.find(albumArtistsImgsDetail => albumArtistsImgsDetail.albumArtistName === albumArtist);
+    const albumArtistsDetails = useSelector(state => state.library.albumArtistsDetails);
     const [albumDtlsKeys, setAlbumDtlsKeys] = useState(null);
     const songPlaying = useSelector(state => state.player.songPlaying);
     const playedFrom = useSelector(state => state.player.playedFrom);
     const albumImgs = useSelector(state => state.library.albumImgs);
     const [artistWiki, setArtistWiki] = useState({});
     const [artistWikiImg, setArtistWikiImg] = useState(null);
+    const [albumArtistObj, setAlbumArtistObj] = useState({});
     
     useEffect(()=>{
         setAlbumDtlsKeys([]);
@@ -28,6 +28,14 @@ export const AlbumArtist = () => {
         dispatch(fetchAlbumDetailsByAlbumArtist(albumArtist));
         fetchArtistDetailsfromWiki(albumArtist);
     },[albumArtist]);
+
+    useEffect(()=>{
+        if(albumArtistsDetails.length>0){
+            setAlbumArtistObj(albumArtistsDetails.find(albumArtistObj => albumArtistObj.artistName===albumArtist));
+        }else{
+            dispatch(fetchAllAlbumArtistsDtls(ALBUM_ARTIST));
+        }
+    },[albumArtist, albumArtistsDetails]);
     
     useEffect(()=>{
         if(albumArtistAlbumsDetails!==null && albumArtistAlbumsDetails!==undefined){
@@ -55,9 +63,9 @@ export const AlbumArtist = () => {
         <div className="album-artist">
             <div className="album-artist-img-div-container">
                 <div className="album-artist-img-div">
-                    {artistImg!==undefined && artistImg !==null  && <img src={"/images/artists/"+artistImg.albumArtistName+".jpg"} />}
-                    {(artistImg===undefined || artistImg ===null) && artistWikiImg!==null &&  <img src={artistWikiImg} />}
-                    {(artistImg===undefined || artistImg ===null) && artistWiki.thumbnail===undefined &&<img src={def_album_art} />}
+                    {albumArtistObj.imgAvl  && <img src={"/images/artists/"+albumArtistObj.artistName+".jpg"} />}
+                    {!albumArtistObj.imgAvl && artistWikiImg!==null &&  <img src={artistWikiImg} />}
+                    {!albumArtistObj.imgAvl && artistWikiImg===null &&<img src={def_album_art} />}
                 </div>
                 <div className="album-artist-details">
                     <h3>{albumArtist}</h3>

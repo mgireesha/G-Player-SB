@@ -24,6 +24,8 @@ import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.datatype.Artwork;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
@@ -37,17 +39,17 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.gmt.gp.model.Album;
-import com.gmt.gp.model.AlbumArtist;
 import com.gmt.gp.model.Artist;
 import com.gmt.gp.model.GPResponse;
 import com.gmt.gp.model.Library;
-import com.gmt.gp.repositories.AlbumArtistRepository;
 import com.gmt.gp.repositories.AlbumRepository;
 import com.gmt.gp.repositories.ArtistRepository;
 import com.gmt.gp.repositories.LibraryRepository;
 
 @Service
 public class LibraryService {
+
+        private static final Logger LOG = LoggerFactory.getLogger(LibraryService.class);
 
     @Autowired
     private LibraryRepository libraryRepository;
@@ -58,8 +60,21 @@ public class LibraryService {
     @Autowired
     private ArtistRepository artistRepository;
 
-    @Autowired
-    private AlbumArtistRepository albumArtistRepository;
+    private static final String ARTIST = "ARTIST";
+
+    private static final String ALBUM_ARTIST = "ALBUM_ARTIST";
+
+    static FileFilter mp3filter = new FileFilter() {
+        @Override 
+          public boolean accept(File file)
+        {
+            if (file.getName().endsWith(".mp3")
+                || file.getName().endsWith(".m4a")) {
+                return true;
+            }
+            return false;
+        }
+    };
 
     @Transactional
     public void truncateMyTable() {
@@ -78,24 +93,12 @@ public class LibraryService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        try {
-            albumArtistRepository.truncateMyTable();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // try {
+        //     albumArtistRepository.truncateMyTable();
+        // } catch (Exception e) {
+        //     e.printStackTrace();
+        // }
     }
-
-    static FileFilter mp3filter = new FileFilter() {
-        @Override 
-          public boolean accept(File file)
-        {
-            if (file.getName().endsWith(".mp3")
-                || file.getName().endsWith(".m4a")) {
-                return true;
-            }
-            return false;
-        }
-    };
 
     public List<File> getMusicFiles(List<String> mainFolderList) {
         List<File> tempFileList = new ArrayList<File>();
@@ -114,44 +117,6 @@ public class LibraryService {
         }
         return fileList;
     }
-
-    // public static List<File> filterMusicFiles(File[] files) {
-    //     List<File> fileList = new ArrayList<File>();
-    //     String extension = null;
-    //     for(int i=0;i<files.length;i++){
-    //         int index = files[i].getName().lastIndexOf('.');
-    //         if (index > 0) {
-    //             extension = files[i].getName().substring(index + 1);
-    //             if (extension.equalsIgnoreCase("mp3") || extension.equalsIgnoreCase("m4a")){
-    //                 fileList.add(files[i]);
-    //             }
-    //         }
-            
-    //     }
-    //     return fileList;
-    // }
-
-    // public static List<File> filterMusicFiles(List<File> files) {
-    //     List<File> tFiles = files;
-    //     String extension = null;
-    //     for(int i=0;i<tFiles.size();i++){
-    //         //int index = files.get(i).getName().lastIndexOf('.');
-    //         //if (index > 0) {
-    //             extension = tFiles.get(i).getName().substring(tFiles.get(i).getName().length()-3,tFiles.get(i).getName().length());
-    //             System.out.println("extension: "+extension);
-    //         //}
-    //         System.out.println(tFiles.get(i).getName());
-    //             System.out.println("size: "+tFiles.size());
-    //         if (!extension.equals("mp3") && !extension.equals("m4a")){
-                
-    //             tFiles.remove(i);
-    //             System.out.println("size: "+tFiles.size());
-    //         }
-                
-    //     }
-       
-    //     return tFiles;
-    // }
 
     public List<File> recursiveSearch(File[] folders, int index, int level, List<File> tempFileList) {
         // terminate condition
@@ -174,9 +139,7 @@ public class LibraryService {
         recursiveSearch(folders, ++index, level, tempFileList);
         return tempFileList;
     }
-
-    // file filter for sort mp3 files
-    
+   
 
     public void buildLibrary(List<File> fileList) {
         AudioFile audioF = null;
@@ -184,6 +147,9 @@ public class LibraryService {
         Album album = null;
         Blob albumImg = null;
         Tag tag = null;
+        Artist artist = null;
+        Artist albumArtist = null;
+        List<Artist> artistList = new ArrayList<Artist>();
         List<Library> libList = new ArrayList<Library>();
         List<Album> albumList = new ArrayList<Album>();
         int exceptionCounter = 0;
@@ -212,23 +178,92 @@ public class LibraryService {
                             albumList.add(album);
                         }
                     }
+
                 } catch (Exception e) {
                     System.out.println("exceptionCount: "+ ++exceptionCounter);
                     e.printStackTrace();
                 }
             }
             long endingTime = System.currentTimeMillis();
-            System.out.println("Read time: "+ (endingTime-startingTime)/1000);
+            LOG.info("Time took to read mp3 metadata: "+ (endingTime-startingTime) +" ms, "+(endingTime-startingTime)/1000+" secs");
+            
             startingTime = System.currentTimeMillis();
             libraryRepository.saveAll(libList);
             albumRepository.saveAll(albumList);
             endingTime = System.currentTimeMillis();
-            System.out.println("Save Time: "+(endingTime-startingTime)/1000);
+            LOG.info("Time took to save library and album list: "+ (endingTime-startingTime) +" ms, "+(endingTime-startingTime)/1000+" secs");
+
+            startingTime = System.currentTimeMillis();
+            List<String> artistNameList = getFilteredArtistDetailsFromDb(ARTIST);
+            for(String artistName : artistNameList){
+                artist = new Artist();
+                artist.setArtistName(artistName);
+                artist.setType(ARTIST);
+                artist.setImgAvl(false);
+                artistList.add(artist);
+            }
+            List<String> albumArtistNameList = getFilteredArtistDetailsFromDb(ALBUM_ARTIST);
+            for(String albumArtistName : albumArtistNameList){
+                albumArtist = new Artist();
+                albumArtist.setArtistName(albumArtistName);
+                albumArtist.setType(ALBUM_ARTIST);
+                albumArtist.setImgAvl(false);
+                artistList.add(albumArtist);
+            }
+            artistRepository.saveAll(artistList);
+
+            setArtistLocalImgAvlStatus(ARTIST);
+            setArtistLocalImgAvlStatus(ALBUM_ARTIST);
+
+            endingTime = System.currentTimeMillis();
+            LOG.info("Time took to filter, save and update imgAvl of artist and album artist: "+ (endingTime-startingTime) +" ms, "+(endingTime-startingTime)/1000+" secs");
+
         } catch (Exception e) {
             System.out.println("exceptionCount: "+ ++exceptionCounter);
             e.printStackTrace();
         }
         System.out.println("exceptionCount: "+ exceptionCounter);
+    }
+
+    public Library getLibraryFromFile(Tag tag, AudioFile audioF) throws Exception{
+        Library library = new Library();
+        try {
+            library = new Library();
+            if(!tag.getFirst(FieldKey.TITLE).equals("") && tag.getFirst(FieldKey.TITLE)!=null)
+                library.setTitle(tag.getFirst(FieldKey.TITLE));
+            
+            if(!tag.getFirst(FieldKey.ARTIST).equals("") && tag.getFirst(FieldKey.ARTIST)!=null)
+                library.setArtist(tag.getFirst(FieldKey.ARTIST));
+            
+            if(!tag.getFirst(FieldKey.ALBUM).equals("") && tag.getFirst(FieldKey.ALBUM)!=null)
+                library.setAlbum(tag.getFirst(FieldKey.ALBUM));
+            
+            try{library.setTrackNumber(Integer.parseInt(tag.getFirst(FieldKey.TRACK)));}catch(Exception e){}
+            
+            try{library.setYear(Integer.parseInt(tag.getFirst(FieldKey.YEAR)));}catch(Exception e){}
+            
+            if(!tag.getFirst(FieldKey.ALBUM_ARTIST).equals("") && tag.getFirst(FieldKey.ALBUM_ARTIST)!=null)
+                library.setAlbumArtist(tag.getFirst(FieldKey.ALBUM_ARTIST));
+            
+            if(!tag.getFirst(FieldKey.COMPOSER).equals("") && tag.getFirst(FieldKey.COMPOSER)!=null)
+                library.setComposer(tag.getFirst(FieldKey.COMPOSER));
+            
+            if(!tag.getFirst(FieldKey.GENRE).equals("") && tag.getFirst(FieldKey.GENRE)!=null)
+                library.setGenre(tag.getFirst(FieldKey.GENRE));
+            
+            try{library.setTotaltracks(Integer.parseInt(tag.getFirst(FieldKey.TRACK_TOTAL)));}catch(Exception e){}
+            
+            if(!tag.getFirst(FieldKey.LYRICIST).equals("") && tag.getFirst(FieldKey.LYRICIST)!=null)
+                library.setLyricist(tag.getFirst(FieldKey.LYRICIST));
+            
+            //if(!tag.getFirst(FieldKey.LYRICS).equals("") && tag.getFirst(FieldKey.LYRICS)!=null)
+            //    library.setLyrics(tag.getFirst(FieldKey.LYRICS));
+
+            try{library.setTrackLength(audioF.getAudioHeader().getTrackLength());}catch(Exception e){}
+        } catch (Exception e) {
+            throw e;
+        }
+    return library;
     }
 
     public boolean containsName(final List<Album> list, final String name){
@@ -290,6 +325,15 @@ public class LibraryService {
     	return imgPath;
     }
 
+    //Transactional
+    public List<Library> getAllSongs() {
+        return libraryRepository.findAllByOrderByTitleAsc();
+    }
+
+    public Library getSongBySongId(int songId) {
+        return libraryRepository.getBySongId(songId);
+    }
+
     public List<Library> getSongsByAlbum(String album){
         return libraryRepository.getByAlbum(album);
     }
@@ -300,14 +344,6 @@ public class LibraryService {
 
     public List<Library> getSongsByGenre(String genre) {
         return libraryRepository.getByGenre(genre);
-    }
-
-    public List<Library> getAllSongs() {
-        return libraryRepository.findAllByOrderByTitleAsc();
-    }
-
-    public Library getSongBySongId(int songId) {
-        return libraryRepository.getBySongId(songId);
     }
 
     public Library getSongBySongPath(String songPath) {
@@ -350,13 +386,7 @@ public class LibraryService {
 
     public Map<String, String> getAlbumImgs () {
         Map<String, String> rAlbumImgs = new HashMap<String, String>(); 
-        // Iterable<Album> rAlbums = albumRepository.findAll();
-        // for(Album album2 : rAlbums){
-        //    rAlbumImgs.put(album2.getAlbumName(), album2.getAlbumImgPath());
-        // }
-        //String asd = "2964";
         byte[] btes=null;
-        //Album album = albumRepository.getByAlbumId(Long.parseLong(asd));
         try {
             Iterable<Album> rAlbums = albumRepository.findAll();
             for(Album album2 : rAlbums){
@@ -364,14 +394,10 @@ public class LibraryService {
                     btes = album2.getAlbumImgPath().getBinaryStream().readAllBytes();
                     rAlbumImgs.put(album2.getAlbumName(), getImagePath(btes));
                 }
-                
             }
-            
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     return rAlbumImgs;
@@ -383,7 +409,7 @@ public class LibraryService {
         try {
             if(filterColumn==null){
                 trackList = libraryRepository.findAllByOrderByAlbumAsc();
-            }else if(filterColumn.equalsIgnoreCase("ALBUM_ARTIST")){
+            }else if(filterColumn.equalsIgnoreCase(ALBUM_ARTIST)){
                 trackList = libraryRepository.getByAlbumArtistOrderByYearAsc(filterValue);
             }
              
@@ -403,23 +429,43 @@ public class LibraryService {
     return albums;
     }
 
+    
+    public List<Artist> getAllArtistDetails(String type) {
+        return artistRepository.getByType(type);
+    }
+
     /** 
      * Customized code for ; and &
      *  **/
-    public List<String> getAllArtistDetails() {
-        List<String> artistList =  libraryRepository.findAllByGroupByArtist();
-        List<String> artistList1 =  artistList;
-        List<String> artistList2 =  new ArrayList<String>();;
-        String[] splitters = {",",";","&"};
-        for(String splitter: splitters){
-            artistList1 = filterArtistList(artistList1, splitter);
+    public List<String> getFilteredArtistDetailsFromDb(String type) {
+        List<String> artistList = null;
+        if(type.equals(ARTIST)){
+            artistList = libraryRepository.findAllByGroupByArtist();
+        }else if(type.equals(ALBUM_ARTIST)){
+            artistList = libraryRepository.findAllByGroupByAlbumArtist();
         }
-        for(String artist: artistList1){
-            if(!artistList2.contains(artist)){
-                artistList2.add(artist);
+        List<String> artistList2 = new ArrayList<String>();
+        String[] artistArr = null;
+        for(String artist1 : artistList){
+            if(artist1!=null)artist1 = artist1.trim();
+            else continue;
+            if(artist1.contains(";") || artist1.contains("&")){
+                artist1 = artist1.replaceAll("[;&]", ",");
+            }
+            if(artist1.contains(",")){
+                artistArr = artist1.split(",");
+                for(String artist2 : artistArr){
+                    if(!artistList2.contains(artist2.trim())){
+                        artistList2.add(artist2.trim());
+                    }
+                }
+            }else{
+                if(!artistList2.contains(artist1.trim())){
+                    artistList2.add(artist1.trim());
+                }
             }
         }
-        return artistList2;
+    return artistList2;
     }
 
     public List<String> filterArtistList(List<String> artistList, String splitter){
@@ -445,85 +491,49 @@ public class LibraryService {
                 artistList1.add(artist);
             }
         }
-
         return artistList1;
     }
 
     @Transactional
-    public Iterable<Artist> readAndStoreArtistnames(){
-        artistRepository.truncateMyTable();
-        String ArtistPath = "D:\\SWorkspace\\G-Player-SB\\src\\main\\resources\\public\\images\\artists";
-        File artistsDir = new File(ArtistPath);
-        File[] artistsImgs = artistsDir.listFiles();
+    public Iterable<Artist> setArtistLocalImgAvlStatus(String artistType){
+        String artistPath = "D:\\SWorkspace\\G-Player-SB\\src\\main\\resources\\public\\images\\artists";
         Artist artist = null;
-        List<Artist> artistList = new ArrayList<Artist>();
-        String albumImgName= null;
-        for(File artistsImg: artistsImgs){
-            artist = new Artist();
-            albumImgName = artistsImg.getName();
-            System.out.println("artistsImg.getName() 449: "+albumImgName);
-            albumImgName = albumImgName.substring(0, albumImgName.length()-4);
-            System.out.println("artistsImg.getName() 449: "+albumImgName);
-            artist.setArtistName(artistsImg.getName().substring(0,artistsImg.getName().length()-4));
-            artistList.add(artist);
+        List<Artist> artistList = artistRepository.getByType(artistType);
+        File artistImgFIle = null;
+        for(int i=0;i<artistList.size();i++){
+            artist = artistList.get(i);
+            artistImgFIle = new File(artistPath+"\\"+artist.getArtistName()+".jpg");
+            artist.setImgAvl(artistImgFIle.exists());
+            artistList.set(i, artist);
         }
         return artistRepository.saveAll(artistList);
-    }
-
-    public Iterable<Artist> getAllArtistImgDetails() {
-        return artistRepository.findAll();
-    }
-
-    public Iterable<AlbumArtist> getAllAlbumArtistImgDetails() {
-        return albumArtistRepository.findAll();
-    }
-
-    @Transactional
-    public Iterable<AlbumArtist> readAndStoreAlbumArtistnames(){
-        albumArtistRepository.truncateMyTable();
-        String ArtistPath = "D:\\SWorkspace\\G-Player-SB\\src\\main\\resources\\public\\images\\album_artists";
-        File artistsDir = new File(ArtistPath);
-        File[] artistsImgs = artistsDir.listFiles();
-        AlbumArtist artist = null;
-        List<AlbumArtist> artistList = new ArrayList<AlbumArtist>();
-        String albumImgName= null;
-        for(File artistsImg: artistsImgs){
-            artist = new AlbumArtist();
-            albumImgName = artistsImg.getName();
-            System.out.println("artistsImg.getName() 449: "+albumImgName);
-            albumImgName = albumImgName.substring(0, albumImgName.length()-4);
-            System.out.println("artistsImg.getName() 449: "+albumImgName);
-            artist.setAlbumArtistName(artistsImg.getName().substring(0,artistsImg.getName().length()-4));
-            artistList.add(artist);
-        }
-        return albumArtistRepository.saveAll(artistList);
     }
 
     public List<Library> getSongsByArtist(String artist) {
         return libraryRepository.getByArtistContains(artist);
     }
 
-    public Map<String, List<String>> downloadArtistImgToDIr(){
-        Map<String, List<String>> artists = new HashMap<String, List<String>>();
-        List<String> artistList = getAllArtistDetails();
-        List<String> downloadedArtists = new ArrayList<String>();
-        List<String> failedArtists = new ArrayList<String>();
+    public Map<String, List<Artist>> downloadArtistImgToDIr(){
+        Map<String, List<Artist>> artists = new HashMap<String, List<Artist>>();
+        Iterable<Artist> artistList = artistRepository.findAll();
+        List<Artist> downloadedArtists = new ArrayList<Artist>();
+        List<Artist> failedArtists = new ArrayList<Artist>();
         File localArtistImg = null;
         String localArtistPath = "D:\\SWorkspace\\G-Player-SB\\src\\g-player-react\\public\\images\\artists";
         String wikiUri = "https://en.wikipedia.org/api/rest_v1/page/summary/";
         String wikiResp = "";
         JSONObject wikiRespJson = null;
-        for(String artist : artistList){
-            localArtistImg =  new File(localArtistPath+"\\"+artist+".jpg");
+        for(Artist artist : artistList){
+            localArtistImg =  new File(localArtistPath+"\\"+artist.getArtistName()+".jpg");
             if(!localArtistImg.exists()){
-                wikiResp = restExchange(wikiUri+artist);
+                wikiResp = restExchange(wikiUri+artist.getArtistName());
                 try {
                     wikiRespJson = new JSONObject(wikiResp);
                     if(wikiRespJson.getString("title").contains("Not found") ||  wikiRespJson.getString("extract").contains("may refer to")){
-                        wikiResp = restExchange(wikiUri+artist+"_(singer)");
+                        wikiResp = restExchange(wikiUri+artist.getArtistName()+"_(singer)");
                         wikiRespJson = new JSONObject(wikiResp);
                         if(wikiRespJson.getString("title").contains("Not found")){
-                            wikiResp = restExchange(wikiUri+artist+"_(actor)");
+                            wikiResp = restExchange(wikiUri+artist.getArtistName()+"_(actor)");
                             wikiRespJson = new JSONObject(wikiResp);
                         }
                     }
@@ -531,7 +541,7 @@ public class LibraryService {
                         || !wikiRespJson.getString("extract").contains("actor") || !wikiRespJson.getString("extract").contains("composer") 
                         || !wikiRespJson.getString("extract").contains("musician")
                         || !wikiRespJson.getString("extract").contains("director"))continue;
-                        
+
                     System.out.println("wikiRespJson: "+wikiRespJson.getJSONObject("thumbnail").getString("source"));
                     FileUtils.copyURLToFile(new URL(wikiRespJson.getJSONObject("thumbnail").getString("source")), localArtistImg);
                     downloadedArtists.add(artist);
@@ -546,43 +556,16 @@ public class LibraryService {
     return artists;
     }
 
-    public Map<String, List<String>> downloadAlbumArtistImgToDIr(){
-        Map<String, List<String>> artists = new HashMap<String, List<String>>();
-        List<String> artistList = getAllAlbumArtistDetails();
-        List<String> downloadedArtists = new ArrayList<String>();
-        List<String> failedArtists = new ArrayList<String>();
-        File localArtistImg = null;
-        String localArtistPath = "D:\\SWorkspace\\G-Player-SB\\src\\g-player-react\\public\\images\\album_artists";
-        String wikiUri = "https://en.wikipedia.org/api/rest_v1/page/summary/";
-        String wikiResp = "";
-        JSONObject wikiRespJson = null;
-        for(String artist : artistList){
-            localArtistImg =  new File(localArtistPath+"\\"+artist+".jpg");
-            if(!localArtistImg.exists()){
-                wikiResp = restExchange(wikiUri+artist);
-                try {
-                    wikiRespJson = new JSONObject(wikiResp);
-                    if(wikiRespJson.getString("title").contains("Not found") || wikiRespJson.getString("extract").contains("may refer to")){
-                        wikiResp = restExchange(wikiUri+artist+"_(singer)");
-                        wikiRespJson = new JSONObject(wikiResp);
-                        if(wikiRespJson.getString("title").contains("Not found")){
-                            wikiResp = restExchange(wikiUri+artist+"_(actor)");
-                            wikiRespJson = new JSONObject(wikiResp);
-                        }
-                    }
-                    if(wikiRespJson.getJSONObject("thumbnail")==null)continue;
-                    System.out.println("wikiRespJson: "+wikiRespJson.getJSONObject("thumbnail").getString("source"));
-                    FileUtils.copyURLToFile(new URL(wikiRespJson.getJSONObject("thumbnail").getString("source")), localArtistImg);
-                    downloadedArtists.add(artist);
-                } catch (Exception e) {
-                    failedArtists.add(artist);
-                    e.printStackTrace();
-                }
-            }
-        }
-        artists.put("downloadedArtists: ", downloadedArtists);
-        artists.put("failedArtists: ", failedArtists);
-    return artists;
+    public List<Library> getSongsByAlbumArtist(String albumArtist) {
+        return libraryRepository.getByAlbumArtistOrderByAlbum(albumArtist);
+    }
+
+    public List<String> getAllAlbumArtistDetails() {
+        return libraryRepository.findAllByGroupByAlbumArtist();
+    }
+
+    public Map<String, Library> getAllAlbumDetailsByAA(String albumArtist) {
+        return null;
     }
 
     public String restExchange(String uUrl) {
@@ -603,61 +586,6 @@ public class LibraryService {
 		}
 		return respBody;
 	}
-
-    public List<Library> getSongsByAlbumArtist(String albumArtist) {
-        return libraryRepository.getByAlbumArtistOrderByAlbum(albumArtist);
-    }
-
-    public List<String> getAllAlbumArtistDetails() {
-        return libraryRepository.findAllByGroupByAlbumArtist();
-    }
-
-    public Map<String, Library> getAllAlbumDetailsByAA(String albumArtist) {
-        return null;
-    }
-
-    public Library getLibraryFromFile(Tag tag, AudioFile audioF) throws Exception{
-        Library library = new Library();
-        try {
-            library = new Library();
-            //AudioFile audioF = AudioFileIO.read(song);
-            //Tag tag = audioF.getTag();
-            if(!tag.getFirst(FieldKey.TITLE).equals("") && tag.getFirst(FieldKey.TITLE)!=null)
-                library.setTitle(tag.getFirst(FieldKey.TITLE));
-            
-            if(!tag.getFirst(FieldKey.ARTIST).equals("") && tag.getFirst(FieldKey.ARTIST)!=null)
-                library.setArtist(tag.getFirst(FieldKey.ARTIST));
-            
-            if(!tag.getFirst(FieldKey.ALBUM).equals("") && tag.getFirst(FieldKey.ALBUM)!=null)
-                library.setAlbum(tag.getFirst(FieldKey.ALBUM));
-            
-            try{library.setTrackNumber(Integer.parseInt(tag.getFirst(FieldKey.TRACK)));}catch(Exception e){}
-            
-            try{library.setYear(Integer.parseInt(tag.getFirst(FieldKey.YEAR)));}catch(Exception e){}
-            
-            if(!tag.getFirst(FieldKey.ALBUM_ARTIST).equals("") && tag.getFirst(FieldKey.ALBUM_ARTIST)!=null)
-                library.setAlbumArtist(tag.getFirst(FieldKey.ALBUM_ARTIST));
-            
-            if(!tag.getFirst(FieldKey.COMPOSER).equals("") && tag.getFirst(FieldKey.COMPOSER)!=null)
-                library.setComposer(tag.getFirst(FieldKey.COMPOSER));
-            
-            if(!tag.getFirst(FieldKey.GENRE).equals("") && tag.getFirst(FieldKey.GENRE)!=null)
-                library.setGenre(tag.getFirst(FieldKey.GENRE));
-            
-            try{library.setTotaltracks(Integer.parseInt(tag.getFirst(FieldKey.TRACK_TOTAL)));}catch(Exception e){}
-            
-            if(!tag.getFirst(FieldKey.LYRICIST).equals("") && tag.getFirst(FieldKey.LYRICIST)!=null)
-                library.setLyricist(tag.getFirst(FieldKey.LYRICIST));
-            
-            if(!tag.getFirst(FieldKey.LYRICS).equals("") && tag.getFirst(FieldKey.LYRICS)!=null)
-                library.setLyrics(tag.getFirst(FieldKey.LYRICS));
-
-            try{library.setTrackLength(audioF.getAudioHeader().getTrackLength());}catch(Exception e){}
-        } catch (Exception e) {
-            throw e;
-        }
-    return library;
-    }
 
     public GPResponse updateLyrics(String songId, String lyrics) {
         GPResponse resp = new GPResponse();

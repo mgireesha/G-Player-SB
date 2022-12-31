@@ -59,14 +59,14 @@ export const setGroupband = (groupBand) => ({
     groupBand
 })
 
-export const fetchAllArtistsDtls = () => ({
-    type: LIBRARY_FETCH_ARTIST_LIST_START
+export const fetchAllArtistsDtls = (artistType) => ({
+    type: LIBRARY_FETCH_ARTIST_LIST_START,
+    artistType
 })
 
-export const fetchAllArtistsDtlsSucc = (artistsDetails, artistsImgsDetails) => ({
+export const fetchAllArtistsDtlsSucc = (artistsDetails) => ({
     type: LIBRARY_FETCH_ARTIST_LIST_SUCCESS,
-    artistsDetails,
-    artistsImgsDetails
+    artistsDetails
 })
 
 export const fetchSongsByArtist = (artist) => ({
@@ -79,14 +79,14 @@ export const fetchSongsByArtistSucc = (artistTracks) => ({
     artistTracks
 })
 
-export const fetchAllAlbumArtistsDtls = () => ({
-    type: LIBRARY_FETCH_ALBUM_ARTIST_LIST_START
+export const fetchAllAlbumArtistsDtls = (artistType) => ({
+    type: LIBRARY_FETCH_ALBUM_ARTIST_LIST_START,
+    artistType
 })
 
-export const fetchAllAlbumArtistsDtlsSucc = (albumArtistsDetails, albumArtistsImgsDetails) => ({
+export const fetchAllAlbumArtistsDtlsSucc = (albumArtistsDetails) => ({
     type: LIBRARY_FETCH_ALBUM_ARTIST_LIST_SUCCESS,
-    albumArtistsDetails,
-    albumArtistsImgsDetails
+    albumArtistsDetails
 })
 
 export const fetchAlbumDetailsByAlbumArtist = (albumArtist) => ({
