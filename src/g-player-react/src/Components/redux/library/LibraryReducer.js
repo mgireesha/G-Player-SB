@@ -1,13 +1,14 @@
 import { INIT, LOADING, SUCCESS } from "../GPActionTypes";
-import { FETCH_SONGS_START, FETCH_SONGS_SUCCESS, LIBRARY_FETCH_ALBUMS_DETAILS_START, LIBRARY_FETCH_ALBUMS_DETAILS_SUCCESS, LIBRARY_FETCH_ALBUMS_START, LIBRARY_FETCH_ALBUMS_SUCCESS, LIBRARY_FETCH_ALBUM_ARTIST_LIST_START, LIBRARY_FETCH_ALBUM_ARTIST_LIST_SUCCESS, LIBRARY_FETCH_ALBUM_DETAILS_BY_ALBUM_ARTIST_START, LIBRARY_FETCH_ALBUM_DETAILS_BY_ALBUM_ARTIST_SUCCESS, LIBRARY_FETCH_ALBUM_IMGS_START, LIBRARY_FETCH_ALBUM_IMGS_SUCCESS, LIBRARY_FETCH_ALBUM_START, LIBRARY_FETCH_ALBUM_SUCCESS, LIBRARY_FETCH_ARTIST_LIST_START, LIBRARY_FETCH_ARTIST_LIST_SUCCESS, LIBRARY_FETCH_SONGS_BY_ARTIST_START, LIBRARY_FETCH_SONGS_BY_ARTIST_SUCCESS, SET_GROUP_BAND } from "./LibraryActionTypes";
+import { FETCH_SONGS_START, FETCH_SONGS_SUCCESS, LIBRARY_FETCH_ALBUMS_DETAILS_START, LIBRARY_FETCH_ALBUMS_DETAILS_SUCCESS, LIBRARY_FETCH_ALBUMS_START, LIBRARY_FETCH_ALBUMS_SUCCESS, LIBRARY_FETCH_ALBUM_ARTIST_LIST_START, LIBRARY_FETCH_ALBUM_ARTIST_LIST_SUCCESS, LIBRARY_FETCH_ALBUM_DETAILS_BY_ALBUM_ARTIST_START, LIBRARY_FETCH_ALBUM_DETAILS_BY_ALBUM_ARTIST_SUCCESS, LIBRARY_FETCH_ALBUM_IMGS_START, LIBRARY_FETCH_ALBUM_IMGS_SUCCESS, LIBRARY_FETCH_ALBUM_LIST_OF_AA_START, LIBRARY_FETCH_ALBUM_LIST_OF_AA_SUCCESS, LIBRARY_FETCH_ALBUM_START, LIBRARY_FETCH_ALBUM_SUCCESS, LIBRARY_FETCH_ALBUM_TRACKS_START, LIBRARY_FETCH_ALBUM_TRACKS_SUCCESS, LIBRARY_FETCH_ARTIST_LIST_START, LIBRARY_FETCH_ARTIST_LIST_SUCCESS, LIBRARY_FETCH_SONGS_BY_ARTIST_START, LIBRARY_FETCH_SONGS_BY_ARTIST_SUCCESS, SET_GROUP_BAND } from "./LibraryActionTypes";
 
 export const initialState = {
     tracks:[],
-    album:null,
-    albums : null,
+    albumTracks:[],
+    album:{},
+    albums : [],
     albumImgs: null,
     albumsDetails:[],
-    albumArtistAlbumsDetails:[],
+    albumListOfAA:[],
     artistsDetails:[],
     //artistsImgsDetails:[],
     artistTracks:[],
@@ -63,6 +64,17 @@ const libraryReducer = (state = initialState, action) => {
                 albumImgs:action.albumImgs,
                 phase:SUCCESS
             }
+        case LIBRARY_FETCH_ALBUM_TRACKS_START:
+            return{
+                ...state,
+                phase: LOADING
+            }
+        case LIBRARY_FETCH_ALBUM_TRACKS_SUCCESS:
+            return{
+                ...state,
+                albumTracks:action.albumTracks,
+                phase:SUCCESS
+            }
         case LIBRARY_FETCH_ALBUM_START:
             return{
                 ...state,
@@ -115,16 +127,16 @@ const libraryReducer = (state = initialState, action) => {
                     //albumArtistsImgsDetails:action.albumArtistsImgsDetails,
                     phase:SUCCESS
                 }
-            case LIBRARY_FETCH_ALBUM_DETAILS_BY_ALBUM_ARTIST_START:
+            case LIBRARY_FETCH_ALBUM_LIST_OF_AA_START:
                 return{
                     ...state,
                     phase: LOADING
 
                 }
-            case LIBRARY_FETCH_ALBUM_DETAILS_BY_ALBUM_ARTIST_SUCCESS:
+            case LIBRARY_FETCH_ALBUM_LIST_OF_AA_SUCCESS:
                 return{
                     ...state,
-                    albumArtistAlbumsDetails: action.albumArtistAlbumsDetails,
+                    albumListOfAA: action.albumListOfAA,
                     phase:SUCCESS
                 }
         default:

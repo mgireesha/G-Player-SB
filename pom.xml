@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.0.0</version>
+		<version>3.0.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.gmt</groupId>
@@ -48,13 +48,6 @@
     <artifactId>jaudiotagger</artifactId>
     <version>2.0.3</version>
 </dependency>
-<!-- https://mvnrepository.com/artifact/com.levigo/gwt-awt -->
-<dependency>
-    <groupId>com.levigo</groupId>
-    <artifactId>gwt-awt</artifactId>
-    <version>0.0.1</version>
-</dependency>
-<!-- https://mvnrepository.com/artifact/org.json/json -->
 <dependency>
     <groupId>org.json</groupId>
     <artifactId>json</artifactId>
@@ -66,14 +59,7 @@
     <artifactId>commons-io</artifactId>
     <version>2.6</version>
 </dependency>
-
-
-
-
-
-
-	</dependencies>
-
+</dependencies>
 	<build>
 		<plugins>
 			<plugin>
@@ -82,5 +68,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>

@@ -3,7 +3,9 @@ import { FETCH_SONGS_START, FETCH_SONGS_SUCCESS,
         LIBRARY_FETCH_ALBUMS_START, LIBRARY_FETCH_ALBUMS_SUCCESS, LIBRARY_FETCH_ALBUM_ARTIST_LIST_START, 
         LIBRARY_FETCH_ALBUM_ARTIST_LIST_SUCCESS, LIBRARY_FETCH_ALBUM_DETAILS_BY_ALBUM_ARTIST_START, 
         LIBRARY_FETCH_ALBUM_DETAILS_BY_ALBUM_ARTIST_SUCCESS, LIBRARY_FETCH_ALBUM_IMGS_START, 
-        LIBRARY_FETCH_ALBUM_IMGS_SUCCESS, LIBRARY_FETCH_ALBUM_START, LIBRARY_FETCH_ALBUM_SUCCESS, 
+        LIBRARY_FETCH_ALBUM_IMGS_SUCCESS, LIBRARY_FETCH_ALBUM_LIST_OF_AA_START, LIBRARY_FETCH_ALBUM_LIST_OF_AA_SUCCESS, LIBRARY_FETCH_ALBUM_START, LIBRARY_FETCH_ALBUM_SUCCESS, 
+        LIBRARY_FETCH_ALBUM_TRACKS_START, 
+        LIBRARY_FETCH_ALBUM_TRACKS_SUCCESS, 
         LIBRARY_FETCH_ARTIST_LIST_START, LIBRARY_FETCH_ARTIST_LIST_SUCCESS, 
         LIBRARY_FETCH_SONGS_BY_ARTIST_START, LIBRARY_FETCH_SONGS_BY_ARTIST_SUCCESS, SET_GROUP_BAND 
     } from "./LibraryActionTypes";
@@ -42,6 +44,16 @@ export const fetchAlbumImgs = () => ({
 export const fetchAlbumImgsScc = (albumImgs) => ({
     type: LIBRARY_FETCH_ALBUM_IMGS_SUCCESS,
     albumImgs
+})
+
+export const fetchAlbumTacks = (albumName) => ({
+    type:LIBRARY_FETCH_ALBUM_TRACKS_START,
+    albumName
+})
+
+export const fetchAlbumTacksSucc = (albumTracks) => ({
+    type: LIBRARY_FETCH_ALBUM_TRACKS_SUCCESS,
+    albumTracks
 })
 
 export const fetchAlbum = (albumName) => ({
@@ -89,14 +101,14 @@ export const fetchAllAlbumArtistsDtlsSucc = (albumArtistsDetails) => ({
     albumArtistsDetails
 })
 
-export const fetchAlbumDetailsByAlbumArtist = (albumArtist) => ({
-    type: LIBRARY_FETCH_ALBUM_DETAILS_BY_ALBUM_ARTIST_START,
+export const fetchAlbumlistOfAA = (albumArtist) => ({
+    type: LIBRARY_FETCH_ALBUM_LIST_OF_AA_START,
     albumArtist
 })
 
-export const fetchAlbumDetailsByAlbumArtistSucc = (albumArtistAlbumsDetails) => ({
-    type: LIBRARY_FETCH_ALBUM_DETAILS_BY_ALBUM_ARTIST_SUCCESS,
-    albumArtistAlbumsDetails
+export const fetchAlbumlistOfAASucc = (albumListOfAA) => ({
+    type: LIBRARY_FETCH_ALBUM_LIST_OF_AA_SUCCESS,
+    albumListOfAA
 })
 
 

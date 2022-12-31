@@ -1,5 +1,6 @@
 package com.gmt.gp.services;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -15,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.sql.rowset.serial.SerialBlob;
 
 import org.apache.commons.io.FileUtils;
@@ -46,6 +48,9 @@ import com.gmt.gp.repositories.AlbumRepository;
 import com.gmt.gp.repositories.ArtistRepository;
 import com.gmt.gp.repositories.LibraryRepository;
 
+import java.awt.image.BufferedImage;
+import java.awt.Image;
+
 @Service
 public class LibraryService {
 
@@ -63,6 +68,10 @@ public class LibraryService {
     private static final String ARTIST = "ARTIST";
 
     private static final String ALBUM_ARTIST = "ALBUM_ARTIST";
+
+    private static final String ALBUM_IMAGES_PATH = "D:\\SWorkspace\\G-Player-SB\\src\\main\\resources\\public\\images\\albums\\";
+
+    private static final String ARTIST_IMAGES_PATH = "D:\\SWorkspace\\G-Player-SB\\src\\main\\resources\\public\\images\\artists\\";
 
     static FileFilter mp3filter = new FileFilter() {
         @Override 
@@ -145,7 +154,7 @@ public class LibraryService {
         AudioFile audioF = null;
         Library library = null;
         Album album = null;
-        Blob albumImg = null;
+        byte[] albumImg = null;
         Tag tag = null;
         Artist artist = null;
         Artist albumArtist = null;
@@ -173,9 +182,17 @@ public class LibraryService {
                         //System.out.println("getAlbumImgBinFromTag(tag): "+getAlbumImgBinFromTag(tag));
                         if(albumImg!=null){
                             album = new Album();
+                            album.setAlbumImgAvl(true);
                             album.setAlbumName(library.getAlbum());
-                            album.setAlbumImgPath(getAlbumImgBinFromTag(tag));
+                            album.setAlbumArtist(library.getAlbumArtist());
+                            album.setComposer(library.getComposer());
+                            album.setGenre(library.getGenre());
+                            album.setTotaltracks(library.getTotaltracks());
+                            album.setYear(library.getYear());
+                            album = writeByteArryaTOimgFile(album, albumImg);
                             albumList.add(album);
+                    }else{
+                            // Logic to include albums without image
                         }
                     }
 
@@ -301,7 +318,7 @@ public class LibraryService {
     return getImagePath(awtb);
     }
 
-    public Blob getAlbumImgBinFromTag(Tag tag){
+    public Blob getAlbumImgBlobFromTag(Tag tag){
         byte[] awtb = null;
         Blob blob = null;
         try {
@@ -315,6 +332,20 @@ public class LibraryService {
             e.printStackTrace();
         }
     return blob;
+    }
+
+    public byte[] getAlbumImgBinFromTag(Tag tag){
+        byte[] awtb = null;
+        try {
+            List<Artwork> artworks = tag.getArtworkList();
+            for(Artwork awt : artworks){
+                awtb = awt.getBinaryData();
+                if(awtb!=null)break;
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    return awtb;
     }
 
     public String getImagePath(byte [] DP) {
@@ -429,6 +460,9 @@ public class LibraryService {
     return albums;
     }
 
+    public Iterable<Album> getAllAlbumsFromDb(){
+        return albumRepository.findAll();
+    }
     
     public List<Artist> getAllArtistDetails(String type) {
         return artistRepository.getByType(type);
@@ -449,10 +483,10 @@ public class LibraryService {
         for(String artist1 : artistList){
             if(artist1!=null)artist1 = artist1.trim();
             else continue;
-            if(artist1.contains(";") || artist1.contains("&")){
+            if((artist1.contains(";") || artist1.contains("&") && !type.equals(ALBUM_ARTIST))){
                 artist1 = artist1.replaceAll("[;&]", ",");
             }
-            if(artist1.contains(",")){
+            if(artist1.contains(",") && !type.equals(ALBUM_ARTIST)){
                 artistArr = artist1.split(",");
                 for(String artist2 : artistArr){
                     if(!artistList2.contains(artist2.trim())){
@@ -606,6 +640,64 @@ public class LibraryService {
             e.printStackTrace();
         }
         return resp;
+    }
+
+    private Album writeByteArryaTOimgFile (Album album, byte[] binImg) {
+        try {
+            File albumImgFile = new File(ALBUM_IMAGES_PATH+album.getAlbumName()+".jpg");
+            if(!albumImgFile.exists()){
+                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(binImg);
+                BufferedImage newImage  = ImageIO.read(byteArrayInputStream);
+                Image image = newImage.getScaledInstance(250, 250, Image.SCALE_DEFAULT);
+
+                newImage = new BufferedImage(250, 250, BufferedImage.TYPE_INT_RGB);
+                newImage.getGraphics().drawImage(image, 0, 0, null);
+
+                ImageIO.write(newImage, "jpg", albumImgFile);
+                album.setAlbumImgAvl(true);
+            }else{
+                album.setAlbumImgAvl(true);
+            }
+            
+        } catch (IOException e) {
+            album.setAlbumImgAvl(false);
+            e.printStackTrace();
+        }
+    return album;
+    }
+
+    public void cleanAlbumImageDir(){
+        try {
+            FileUtils.cleanDirectory(new File(ALBUM_IMAGES_PATH));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Album getAlbumByAlbumName(String albumName) {
+        return albumRepository.getByAlbumName(albumName);
+    }
+
+    public List<Album> getAlbumListOfAA(String albumArtist) {
+        return albumRepository.getByAlbumArtist(albumArtist);
+    }
+
+    public void resizeArtistImgs(){
+        try {
+            File artistDir = new File(ARTIST_IMAGES_PATH);
+            File[] artistImgs = artistDir.listFiles();
+            for(File artistImg : artistImgs){
+                ByteArrayInputStream byteArrayInputStream 
+                                = new ByteArrayInputStream(FileUtils.readFileToByteArray(artistImg));
+                BufferedImage newImage  = ImageIO.read(byteArrayInputStream);
+                Image image = newImage.getScaledInstance(250, 250, Image.SCALE_DEFAULT);
+                newImage = new BufferedImage(250, 250, BufferedImage.TYPE_INT_RGB);
+                newImage.getGraphics().drawImage(image, 0, 0, null);
+                ImageIO.write(newImage, "jpg", artistImg);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

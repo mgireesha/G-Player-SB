@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gmt.gp.model.Album;
 import com.gmt.gp.model.Artist;
 import com.gmt.gp.model.GPResponse;
 import com.gmt.gp.model.Library;
@@ -25,7 +26,7 @@ public class LibraryController {
     
     //private static String MUSIC_PATH1 = "E:\\Music\\myFav1";
     //private static String MUSIC_PATH2 = "E:\\Music\\Kannada";
-    private static String MUSIC_PATH3 = "E:\\Music\\AAA_Updated";
+    private static String MUSIC_PATH3 = "E:\\Music\\AAA_Updated\\";
 
     List<File> tempFileList = new ArrayList<File>();
 
@@ -37,6 +38,7 @@ public class LibraryController {
         List<File> fileList = new ArrayList<File>();
         
         libraryService.truncateMyTable();
+        libraryService.cleanAlbumImageDir();
 
         List<String> mainFolderList = new ArrayList<String>();
         //mainFolderList.add(MUSIC_PATH1);
@@ -79,8 +81,8 @@ public class LibraryController {
     }
 
     @RequestMapping("/getAllAlbums")
-    public Map<String, List<Library>> getAllAlbums(){
-        return libraryService.getAllAlbums();
+    public Iterable<Album> getAllAlbums(){
+        return libraryService.getAllAlbumsFromDb();
     }
 
     @RequestMapping("/getAllAlbumDetails")
@@ -88,9 +90,14 @@ public class LibraryController {
         return libraryService.getAllAlbumdetails(null,null);
     }
 
+    @RequestMapping("/getAlbumByAlbumName/{albumName}")
+    public Album getAlbumByAlbumName(@PathVariable String albumName){
+        return libraryService.getAlbumByAlbumName(albumName);
+    }
+
     @RequestMapping("/getAllAlbumDetailsByAA/{albumArtist}")
-    public Map<String, Library> getAllAlbumDetailsByAA(@PathVariable String albumArtist){
-        return libraryService.getAllAlbumdetails("ALBUM_ARTIST",albumArtist);
+    public List<Album> getAllAlbumDetailsByAA(@PathVariable String albumArtist){
+        return libraryService.getAlbumListOfAA(albumArtist);
     }
 
     @RequestMapping("/getAlbumImgs")
@@ -121,6 +128,11 @@ public class LibraryController {
     @RequestMapping(method = RequestMethod.PUT, value = "/updateLyrics/{songId}")
     public GPResponse updateLyrics(@RequestBody String lyrics, @PathVariable String songId){
         return libraryService.updateLyrics(songId, lyrics);
+    }
+
+    @RequestMapping("/resizeArtistImgs")
+    public void resizeArtistImgs(){
+        libraryService.resizeArtistImgs();
     }
 
     

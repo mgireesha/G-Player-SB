@@ -10,8 +10,8 @@ export const ArtistsList = () => {
     let artistsDetails = useSelector(state => state.library.artistsDetails);
     if(artistsDetails!==null && artistsDetails!==undefined && artistsDetails.length>0){
         console.log("artistsDetails: ",typeof(artistsDetails))
-        //artistsDetails = artistsDetails.sort();
-        artistsDetails = artistsDetails.sort((a,b) => b.artistName - a.artistName);
+        artistsDetails = artistsDetails.sort((a,b) => a.artistName>b.artistName?1:-1);
+        artistsDetails = artistsDetails.sort((a,b) => b.imgAvl?1:-1);
     }
     
     const artistsImgsDetails = useSelector(state => state.library.artistsImgsDetails);

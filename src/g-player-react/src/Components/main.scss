@@ -351,7 +351,7 @@
         grid-row-gap: 15px;
         max-height: 73vh;
         overflow-y: auto;
-       
+        overflow-x: hidden;
         padding: 10px;
 
         .album-artist-thumb-img-div{
@@ -369,6 +369,7 @@
         .album-artist-thumb-details{
             padding: 0 5px;
             width: 13em;
+            max-width: 11em;
         }
     }
 

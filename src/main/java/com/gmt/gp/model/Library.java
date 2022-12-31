@@ -30,7 +30,6 @@ public class Library {
     private String lyrics;
 
     
-    
 
     public void setTrackLength(long trackLength) {
         this.trackLength = trackLength;
