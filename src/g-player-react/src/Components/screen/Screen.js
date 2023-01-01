@@ -16,15 +16,17 @@ export const Screen = () => {
                 <h1 style={{fontWeight:'500'}}>Music</h1>
             </div>
             <GroupBand />
-                <Routes>
-                    <Route path='/music/tracks' element={<TrackList />} />
-                    <Route path='/music/albums/:albumName' element={<Album />} />
-                    <Route path='/music/albums' element={<AlbumList />} />
-                    <Route path='/music/artists/:artist' element={<Artist />} />
-                    <Route path='/music/artists' element={<ArtistsList />} />
-                    <Route path='/music/album_artists/:albumArtist' element={<AlbumArtist />} />
-                    <Route path='/music/album_artists' element={<AlbumArtistList />} />
-                </Routes>
+            <Routes>
+                <Route path='/' element={<TrackList />} />
+                <Route path='tracks' element={<TrackList />} />
+                <Route path='tracks' element={<TrackList />} />
+                <Route path='albums/:albumName' element={<Album />} />
+                <Route path='albums' element={<AlbumList />} />
+                <Route path='artists/:artist' element={<Artist />} />
+                <Route path='artists' element={<ArtistsList />} />
+                <Route path='album_artists/:albumArtist' element={<AlbumArtist />} />
+                <Route path='album_artists' element={<AlbumArtistList />} />
+            </Routes>
         </div>
     );
 }

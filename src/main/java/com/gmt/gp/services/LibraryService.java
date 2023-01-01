@@ -44,6 +44,7 @@ import com.gmt.gp.model.Album;
 import com.gmt.gp.model.Artist;
 import com.gmt.gp.model.GPResponse;
 import com.gmt.gp.model.Library;
+import com.gmt.gp.model.Message;
 import com.gmt.gp.repositories.AlbumRepository;
 import com.gmt.gp.repositories.ArtistRepository;
 import com.gmt.gp.repositories.LibraryRepository;
@@ -54,7 +55,7 @@ import java.awt.Image;
 @Service
 public class LibraryService {
 
-        private static final Logger LOG = LoggerFactory.getLogger(LibraryService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LibraryService.class);
 
     @Autowired
     private LibraryRepository libraryRepository;
@@ -109,7 +110,7 @@ public class LibraryService {
         // }
     }
 
-    public List<File> getMusicFiles(List<String> mainFolderList) {
+    public List<File> getMusicFiles(List<Message> mainFolderList) {
         List<File> tempFileList = new ArrayList<File>();
         List<File> fileList = new ArrayList<File>();
         FileFilter folderFilter = new FileFilter() {
@@ -118,8 +119,8 @@ public class LibraryService {
             }
         };
         File[] folders = null;
-        for (String mainFolder : mainFolderList) {
-            File musicDir = new File(mainFolder);
+        for (Message mainFolder : mainFolderList) {
+            File musicDir = new File(mainFolder.getValue());
             fileList.addAll(Arrays.asList(musicDir.listFiles(mp3filter)));
             folders = musicDir.listFiles(folderFilter);
             fileList.addAll(recursiveSearch(folders, 0, 0, tempFileList));

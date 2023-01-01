@@ -7,6 +7,8 @@ import { fetchAlbumImgs, fetchAllAlbums, fetchAllAlbumsDtls, fethAllSongs } from
 import { fetchCurrentSontAndStatus, fettchCurrentSongStatus, playASongSucc, setIsRepeat, setIsShuffle, setMediaVolume } from "./redux/player/PlayerActions";
 import { getCookieDetails } from "./utli";
 import { TRACK_LIST } from "./redux/GPActionTypes";
+import { Route, Routes } from "react-router-dom";
+import { Library } from "./Library";
 
 export const Home = () => {
     const dispatch = useDispatch();
@@ -41,7 +43,10 @@ export const Home = () => {
     return(
         <div className="main-container">
             <Sidebar />
-            <Screen />
+            <Routes>
+                <Route path="/music/*" element={<Screen/>} />
+                <Route path="/library/*" element={<Library/>} />
+            </Routes>
             <Player />
         </div>
     );

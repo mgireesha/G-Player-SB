@@ -17,21 +17,20 @@ import com.gmt.gp.model.Album;
 import com.gmt.gp.model.Artist;
 import com.gmt.gp.model.GPResponse;
 import com.gmt.gp.model.Library;
+import com.gmt.gp.model.Message;
 import com.gmt.gp.services.LibraryService;
+import com.gmt.gp.services.MessageService;
 
 @CrossOrigin(origins= {"http://localhost:3000","http://gplayer.test.com:3000"})
 @RequestMapping("/library")
 @RestController
 public class LibraryController {
-    
-    //private static String MUSIC_PATH1 = "E:\\Music\\myFav1";
-    //private static String MUSIC_PATH2 = "E:\\Music\\Kannada";
-    private static String MUSIC_PATH3 = "E:\\Music\\AAA_Updated\\";
-
-    List<File> tempFileList = new ArrayList<File>();
 
     @Autowired
     private LibraryService libraryService;
+
+    @Autowired
+    private MessageService messageService;
 
     @RequestMapping("/initLibraryBuild")
     public List<File> runBuild(){
@@ -40,10 +39,7 @@ public class LibraryController {
         libraryService.truncateMyTable();
         libraryService.cleanAlbumImageDir();
 
-        List<String> mainFolderList = new ArrayList<String>();
-        //mainFolderList.add(MUSIC_PATH1);
-        //mainFolderList.add(MUSIC_PATH2);
-        mainFolderList.add(MUSIC_PATH3);
+        List<Message> mainFolderList = messageService.getAllMusicPaths();
 
         fileList = libraryService.getMusicFiles(mainFolderList);
         libraryService.buildLibrary(fileList);
@@ -134,9 +130,5 @@ public class LibraryController {
     public void resizeArtistImgs(){
         libraryService.resizeArtistImgs();
     }
-
-    
-
-
 
 }
