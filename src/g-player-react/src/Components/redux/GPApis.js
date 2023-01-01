@@ -59,6 +59,10 @@ export const initLibraryBuildAPI = () => {
     return iAxios.get(`/library/initLibraryBuild`).then(response => response);
 }
 
+export const searchByKeyAPI = (searchKey) => {
+    return iAxios.get(`/library/searchByKey/${searchKey}`).then(response => response);
+}
+
 export const saveMusicpathAPI = (musicpath) => {
     return iAxios.post(`/message/saveMusicPath`,musicpath).then(response => response);
 }

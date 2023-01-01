@@ -14,4 +14,6 @@ public interface ArtistRepository extends CrudRepository<Artist, Long>{
     void truncateMyTable();
 
     List<Artist> getByType(String type);
+
+    List<Object> getByArtistNameContainsIgnoreCaseAndType(String searchKey, String artist);
 }

@@ -25,7 +25,7 @@ export const ArtistsList = () => {
     return(
         <div className="artists-list">
             {artistsDetails!==null && artistsDetails!==undefined && artistsDetails.length>0 && artistsDetails.map((artist, index) =>
-                    <ArtistThumb artist={artist} artistsImgsDetails={artistsImgsDetails} key={index} />
+                    <ArtistThumb artist={artist} key={index} />
                 )}
         </div>
     );

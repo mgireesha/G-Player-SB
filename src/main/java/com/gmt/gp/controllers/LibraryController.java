@@ -131,4 +131,9 @@ public class LibraryController {
         libraryService.resizeArtistImgs();
     }
 
+    @RequestMapping("/searchByKey/{searchKey}")
+    public Map<String, List<Object>> searchbyKey(@PathVariable String searchKey){
+        return libraryService.searchbyKey(searchKey);
+    }
+
 }

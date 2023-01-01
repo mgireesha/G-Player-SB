@@ -74,6 +74,14 @@ public class LibraryService {
 
     private static final String ARTIST_IMAGES_PATH = "D:\\SWorkspace\\G-Player-SB\\src\\main\\resources\\public\\images\\artists\\";
 
+    private static final String TRACK_LIST = "TRACK_LIST";
+
+    private static final String ALBUM_ARTISTS = "ALBUM_ARTISTS";
+
+    private static final String ARTISTS = "ARTISTS";
+
+    private static final String ALBUMS = "ALBUMS";
+
     static FileFilter mp3filter = new FileFilter() {
         @Override 
           public boolean accept(File file)
@@ -724,6 +732,19 @@ public class LibraryService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public Map<String, List<Object>> searchbyKey(String searchKey) {
+        Map<String, List<Object>> resultMap = new HashMap<String, List<Object>>();
+        List<Object> tracks = libraryRepository.getByTitleContainsIgnoreCase(searchKey);
+        List<Object> artists = artistRepository.getByArtistNameContainsIgnoreCaseAndType(searchKey, ARTIST);
+        List<Object> albumArtists = artistRepository.getByArtistNameContainsIgnoreCaseAndType(searchKey, ALBUM_ARTIST);
+        List<Object> albums = albumRepository.getByAlbumNameContainsIgnoreCase(searchKey);
+        resultMap.put(TRACK_LIST, tracks);
+        resultMap.put(ARTISTS, artists);
+        resultMap.put(ALBUM_ARTISTS, albumArtists);
+        resultMap.put(ALBUMS, albums);
+        return resultMap;
     }
 
 }

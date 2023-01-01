@@ -8,7 +8,8 @@ import { fetchCurrentSontAndStatus, fettchCurrentSongStatus, playASongSucc, setI
 import { getCookieDetails } from "./utli";
 import { TRACK_LIST } from "./redux/GPActionTypes";
 import { Route, Routes } from "react-router-dom";
-import { Library } from "./Library";
+import { Library } from "./library/Library";
+import { Search } from "./search/Search";
 
 export const Home = () => {
     const dispatch = useDispatch();
@@ -45,6 +46,7 @@ export const Home = () => {
             <Sidebar />
             <Routes>
                 <Route path="/music/*" element={<Screen/>} />
+                <Route path="/search/:searchKey" element={<Search/>} />
                 <Route path="/library/*" element={<Library/>} />
             </Routes>
             <Player />
