@@ -2,8 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import def_album_art from '../../images/def_album_art.png';
 
-export const ArtistThumb = ({artist, artistsImgsDetails}) => {
-    //const artistImg = artistsImgsDetails.find(artistsImgsDetail => artistsImgsDetail.artistName === artist.artistName);
+export const ArtistThumb = ({artist}) => {
     return(
         <div className="artist-thumb">
             <div className="artist-thumb-img-div">

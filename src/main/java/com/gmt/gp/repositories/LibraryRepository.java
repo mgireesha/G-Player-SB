@@ -41,4 +41,6 @@ public interface LibraryRepository extends CrudRepository<Library, Long>{
 
     List<Library> getByAlbumArtistOrderByAlbum(String albumArtist);
 
+    List<Object> getByTitleContainsIgnoreCase(String searchKey);
+
 }

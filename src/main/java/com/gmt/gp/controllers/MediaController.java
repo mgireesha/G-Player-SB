@@ -172,10 +172,9 @@ public class MediaController {
                 String fileName = media.getSource();
                 fileName = fileName.substring(6, fileName.length());
                 fileName = URLDecoder.decode(fileName, "UTF-8");
-                Tag tag = AudioFileIO.read(new File(fileName)).getTag();
                 fileName = fileName.replaceAll("/", "\\\\");
                 Library library = libraryService.getSongBySongPath(fileName);
-                library.setAlbumArt(libraryService.getAlbumImgFromTag(tag));
+                library = libraryService.getAAttrFromTag(library, true, true);
                 resp.setLibrary(library);
                 resp.setStatus(mPlayer.getStatus().toString());
                 resp.setgMedia(gMedia);

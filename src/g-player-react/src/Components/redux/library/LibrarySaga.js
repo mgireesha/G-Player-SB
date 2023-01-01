@@ -5,12 +5,12 @@ import { deleteMusicPathAPI, fetchAlbumAPI, fetchalbumDetailsByAlbumArtistAPI, f
          fetchAlbumtracksAPI,
          fetchAllAlbumDtlsAPI, fetchAllAlbumsAPI, fetchAllArtistsDtlsAPI, 
          fetchMusicpathAPI, 
-         fetchSongsByArtistAPI, getAllSongsAPI, initLibraryBuildAPI, saveMusicpathAPI 
+         fetchSongsByArtistAPI, getAllSongsAPI, initLibraryBuildAPI, saveMusicpathAPI, searchByKeyAPI 
     } from "../GPApis";
 import { deleteMusicPathSucc, fetchAlbumDetailsByAlbumArtistSucc, fetchAlbumImgsScc, fetchAlbumlistOfAASucc, fetchAlbumSucc, 
         fetchAlbumTacksSucc, 
         fetchAllAlbumArtistsDtlsSucc, fetchAllAlbumsDtlsSucc, fetchAllAlbumsSucc, 
-        fetchAllArtistsDtlsSucc, fetchMusicPathSucc, fetchSongsByArtistSucc, fethAllSongsSucc, initLibraryBuildSucc, saveMusicPathSucc 
+        fetchAllArtistsDtlsSucc, fetchMusicPathSucc, fetchSongsByArtistSucc, fethAllSongsSucc, initLibraryBuildSucc, saveMusicPathSucc, searchByKeySucc 
     } from "./LibraryActions";
 import { FETCH_SONGS_START, LIBRARY_DELETE_MUSIC_PATH_START, LIBRARY_FETCH_ALBUMS_DETAILS_START, LIBRARY_FETCH_ALBUMS_START, 
     LIBRARY_FETCH_ALBUM_ARTIST_LIST_START, LIBRARY_FETCH_ALBUM_DETAILS_BY_ALBUM_ARTIST_START, 
@@ -18,7 +18,8 @@ import { FETCH_SONGS_START, LIBRARY_DELETE_MUSIC_PATH_START, LIBRARY_FETCH_ALBUM
     LIBRARY_FETCH_MUSIC_PATH_START, 
     LIBRARY_FETCH_SONGS_BY_ARTIST_START, 
     LIBrARY_INIT_BUILD_LIBRARY_START,
-    LIBRARY_SAVE_MUSIC_PATH_START
+    LIBRARY_SAVE_MUSIC_PATH_START,
+    LIBRARY_SEARCH_BY_KEY_START
 } from "./LibraryActionTypes";
 
 export function* onFetchAllSongs(){
@@ -205,7 +206,7 @@ export function* onsaveMusicPath(){
     yield takeLatest(LIBRARY_SAVE_MUSIC_PATH_START, onsaveMusicPathAsync);
 }
 
-export function*onsaveMusicPathAsync(payload){
+export function* onsaveMusicPathAsync(payload){
     try {
         const response = yield call(saveMusicpathAPI, payload.musicPath);
         if(response.status === 200){
@@ -242,6 +243,22 @@ export function* onDeleteMusicPathAsync(payload){
         const response = yield call(deleteMusicPathAPI, payload.musicPath.messageId);
         if(response.status === 200){
             yield put(deleteMusicPathSucc(response.data, payload.musicPath));
+        }
+    } catch (error) {
+        console.log(error);
+        handleAPIError(error);
+    }
+}
+
+export function* onSearchByKey(){
+    yield takeLatest(LIBRARY_SEARCH_BY_KEY_START, onSearchByKeyAsync);
+}
+
+export function* onSearchByKeyAsync(payload){
+    try {
+        const response = yield call(searchByKeyAPI, payload.searchKey);
+        if(response.status === 200){
+            yield put(searchByKeySucc(response.data));
         }
     } catch (error) {
         console.log(error);
