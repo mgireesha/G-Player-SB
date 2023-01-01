@@ -1,17 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {RxDoubleArrowRight} from 'react-icons/rx';
 import {RiDeleteBinLine} from 'react-icons/ri';
-import { initLibraryBuild, saveMusicPath } from "./redux/library/LibraryActions";
-import { useDispatch } from "react-redux";
+import { deleteMusicPath, fetchMusicPath, initLibraryBuild, saveMusicPath } from "./redux/library/LibraryActions";
+import { useDispatch, useSelector } from "react-redux";
 import { MUSIC_PATH } from "./redux/GPActionTypes";
+import { LIBRARY_SAVE_MUSIC_PATH_SUCCESS } from "./redux/library/LibraryActionTypes";
 
 export const Library = () => {
     const dispatch = useDispatch();
-    let mPath = "E:\\Music\\AAA_Updated";
-    mPath = mPath.replaceAll(":", "");
-    mPath = mPath.replace(/([\\])/mg, ",");
-    const mPathArr = mPath.split(",");
-
+    const musicPaths = useSelector(state => state.library.musicPaths);
+    const libraryPhase = useSelector(state => state.library.phase);
     const onInitLibraryBuild = () => {
         if(window.confirm("Build library ?")===true){
             dispatch(initLibraryBuild());
@@ -32,6 +30,16 @@ export const Library = () => {
             console.log(error)
         }
     }
+
+    useEffect(()=>{
+        dispatch(fetchMusicPath());
+    },[])
+
+    useEffect(()=>{
+        if(libraryPhase===LIBRARY_SAVE_MUSIC_PATH_SUCCESS){
+            document.getElementById('music_path').value = "";
+        }
+    },[libraryPhase])
 
     return(
         <div className="library">
@@ -64,36 +72,9 @@ export const Library = () => {
                         </div>
                     </div>
                     <div className="existing-lib-paths">
-                        <label>
-                            {mPathArr.map((p,index)=>
-                                <span>{p} {index<mPathArr.length-1 && <RxDoubleArrowRight/>}</span>
-                            )}
-                            <RiDeleteBinLine />
-                        </label>
-                        <label>
-                            {mPathArr.map((p,index)=>
-                                <span>{p} {index<mPathArr.length-1 && <RxDoubleArrowRight/>}</span>
-                            )}
-                            <RiDeleteBinLine />
-                        </label>
-                        <label>
-                            {mPathArr.map((p,index)=>
-                                <span>{p} {index<mPathArr.length-1 && <RxDoubleArrowRight/>}</span>
-                            )}
-                            <RiDeleteBinLine />
-                        </label>
-                        <label>
-                            {mPathArr.map((p,index)=>
-                                <span>{p} {index<mPathArr.length-1 && <RxDoubleArrowRight/>}</span>
-                            )}
-                            <RiDeleteBinLine />
-                        </label>
-                        <label>
-                            {mPathArr.map((p,index)=>
-                                <span>{p} {index<mPathArr.length-1 && <RxDoubleArrowRight/>}</span>
-                            )}
-                            <RiDeleteBinLine />
-                        </label>
+                        {musicPaths.map((musicPath, index)=>
+                            <label key={index}>{musicPath.value}<RiDeleteBinLine onClick={()=>dispatch(deleteMusicPath(musicPath))} /></label>
+                        )}
                     </div>
                 </div>
             </div>

@@ -48,7 +48,6 @@ import com.gmt.gp.model.Message;
 import com.gmt.gp.repositories.AlbumRepository;
 import com.gmt.gp.repositories.ArtistRepository;
 import com.gmt.gp.repositories.LibraryRepository;
-import com.gmt.gp.repositories.MessageRepository;
 
 import java.awt.image.BufferedImage;
 import java.awt.Image;
@@ -56,7 +55,7 @@ import java.awt.Image;
 @Service
 public class LibraryService {
 
-        private static final Logger LOG = LoggerFactory.getLogger(LibraryService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LibraryService.class);
 
     @Autowired
     private LibraryRepository libraryRepository;
@@ -66,9 +65,6 @@ public class LibraryService {
 
     @Autowired
     private ArtistRepository artistRepository;
-
-    @Autowired
-    private MessageRepository messageRepository;
 
     private static final String ARTIST = "ARTIST";
 
@@ -114,7 +110,7 @@ public class LibraryService {
         // }
     }
 
-    public List<File> getMusicFiles(List<String> mainFolderList) {
+    public List<File> getMusicFiles(List<Message> mainFolderList) {
         List<File> tempFileList = new ArrayList<File>();
         List<File> fileList = new ArrayList<File>();
         FileFilter folderFilter = new FileFilter() {
@@ -123,8 +119,8 @@ public class LibraryService {
             }
         };
         File[] folders = null;
-        for (String mainFolder : mainFolderList) {
-            File musicDir = new File(mainFolder);
+        for (Message mainFolder : mainFolderList) {
+            File musicDir = new File(mainFolder.getValue());
             fileList.addAll(Arrays.asList(musicDir.listFiles(mp3filter)));
             folders = musicDir.listFiles(folderFilter);
             fileList.addAll(recursiveSearch(folders, 0, 0, tempFileList));
@@ -728,10 +724,6 @@ public class LibraryService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void saveMusicPath(Message message) {
-        messageRepository.save(message);
     }
 
 }

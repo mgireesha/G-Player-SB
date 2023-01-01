@@ -1,4 +1,7 @@
+import { SUCCESS } from "../GPActionTypes";
 import { FETCH_SONGS_START, FETCH_SONGS_SUCCESS, 
+        LIBRARY_DELETE_MUSIC_PATH_START, 
+        LIBRARY_DELETE_MUSIC_PATH_SUCCESS, 
         LIBRARY_FETCH_ALBUMS_DETAILS_START, LIBRARY_FETCH_ALBUMS_DETAILS_SUCCESS, 
         LIBRARY_FETCH_ALBUMS_START, LIBRARY_FETCH_ALBUMS_SUCCESS, LIBRARY_FETCH_ALBUM_ARTIST_LIST_START, 
         LIBRARY_FETCH_ALBUM_ARTIST_LIST_SUCCESS, LIBRARY_FETCH_ALBUM_DETAILS_BY_ALBUM_ARTIST_START, 
@@ -7,6 +10,8 @@ import { FETCH_SONGS_START, FETCH_SONGS_SUCCESS,
         LIBRARY_FETCH_ALBUM_TRACKS_START, 
         LIBRARY_FETCH_ALBUM_TRACKS_SUCCESS, 
         LIBRARY_FETCH_ARTIST_LIST_START, LIBRARY_FETCH_ARTIST_LIST_SUCCESS, 
+        LIBRARY_FETCH_MUSIC_PATH_START, 
+        LIBRARY_FETCH_MUSIC_PATH_SUCCESS, 
         LIBRARY_FETCH_SONGS_BY_ARTIST_START, LIBRARY_FETCH_SONGS_BY_ARTIST_SUCCESS, LIBrARY_INIT_BUILD_LIBRARY_START, LIBrARY_INIT_BUILD_LIBRARY_SUCESS, LIBRARY_SAVE_MUSIC_PATH_START, LIBRARY_SAVE_MUSIC_PATH_SUCCESS, SET_GROUP_BAND 
     } from "./LibraryActionTypes";
 
@@ -132,5 +137,34 @@ export const saveMusicPathSucc = (response) => ({
     type: LIBRARY_SAVE_MUSIC_PATH_SUCCESS,
     response
 })
+
+export const fetchMusicPath = (musicPath) => ({
+    type: LIBRARY_FETCH_MUSIC_PATH_START,
+    musicPath
+})
+
+export const fetchMusicPathSucc = (response) => ({
+    type: LIBRARY_FETCH_MUSIC_PATH_SUCCESS,
+    response
+})
+
+export const deleteMusicPath = (musicPath) =>({
+    type:LIBRARY_DELETE_MUSIC_PATH_START,
+    musicPath
+})
+
+export const deleteMusicPathSucc = (response, musicPath) =>({
+    type:LIBRARY_DELETE_MUSIC_PATH_SUCCESS,
+    response,
+    musicPath
+})
+
+
+export const filterMusicPath = (response, musicPath,musicPaths) => {
+    if(response.status===SUCCESS){
+        musicPaths = musicPaths.filter(mPath => {return mPath.messageId!==musicPath.messageId});
+    }
+    return musicPaths;
+}
 
 

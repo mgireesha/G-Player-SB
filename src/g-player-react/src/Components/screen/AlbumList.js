@@ -6,7 +6,10 @@ import { Spinner } from "./Spinner";
 
 export const AlbumList = () => {
     const dispatch = useDispatch();
-    const albums = useSelector(state => state.library.albums);
+    let albums = useSelector(state => state.library.albums);
+    if(albums.length>0){
+        albums = albums.sort((a,b)=>a.albumName>b.albumName?1:-1);
+    }
     //const [albumDtlsKeys, setAlbumDtlsKeys] = useState(null);
     
     //const albumImgs = useSelector(state => state.library.albumImgs);

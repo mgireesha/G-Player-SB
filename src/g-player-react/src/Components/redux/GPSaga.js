@@ -1,4 +1,4 @@
-import { onFetchAlbum, onFetchAlbumDtlsByAlbumArtist, onFetchAlbumimgs, onFetchAlbumListOfAA, onFetchAlbumTracks, onFetchAllAlbumArtistsDtls, onFetchAllAlbumDtls, onFetchAllAlbums, onFetchAllArtistsDtls, onFetchAllSongs, onFetchSongsByArtist, onInitLibraryBuild, onsaveMusicPath } from "./library/LibrarySaga";
+import { onDeleteMusicPath, onFetchAlbum, onFetchAlbumDtlsByAlbumArtist, onFetchAlbumimgs, onFetchAlbumListOfAA, onFetchAlbumTracks, onFetchAllAlbumArtistsDtls, onFetchAllAlbumDtls, onFetchAllAlbums, onFetchAllArtistsDtls, onFetchAllSongs, onFetchMusicPath, onFetchSongsByArtist, onInitLibraryBuild, onsaveMusicPath } from "./library/LibrarySaga";
 import {all} from 'redux-saga/effects'
 import { onFetchCurrentSongAndStatus, onFetchCurrentSongStatus, onPlayASong, onPlayPause, onSetMediaVolume, onSetPlayBackTime, onUpdateLyrics } from "./player/PlayerSaga";
 
@@ -22,6 +22,8 @@ export function* GPSaga(){
         onUpdateLyrics(),
         onFetchAlbum(),
         onInitLibraryBuild(),
-        onsaveMusicPath()
+        onsaveMusicPath(),
+        onFetchMusicPath(),
+        onDeleteMusicPath()
     ])
 }

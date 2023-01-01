@@ -60,7 +60,15 @@ export const initLibraryBuildAPI = () => {
 }
 
 export const saveMusicpathAPI = (musicpath) => {
-    return iAxios.post(`/library/saveMusicPath`,musicpath).then(response => response);
+    return iAxios.post(`/message/saveMusicPath`,musicpath).then(response => response);
+}
+
+export const fetchMusicpathAPI = () => {
+    return iAxios.get(`/message/getAllMusicPaths`).then(response => response);
+}
+
+export const deleteMusicPathAPI = (messageId) => {
+    return iAxios.delete(`/message/removeMusicPath/${messageId}`, ).then(response => response);
 }
 
 //Media
