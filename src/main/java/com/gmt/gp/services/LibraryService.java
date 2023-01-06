@@ -160,6 +160,7 @@ public class LibraryService {
    
 
     public void buildLibrary(List<File> fileList) {
+        final String methodName = "buildLibrary";
         AudioFile audioF = null;
         Library library = null;
         Album album = null;
@@ -173,18 +174,23 @@ public class LibraryService {
         Map<String, Integer> artistArtCount = new HashMap<String, Integer>();
         Map<String, Integer> albumArtistArtCount = new HashMap<String, Integer>();
         String artistName = null;
+        int artistCount = 0;
         int artCount = 0;
         String[] artistNameArr = null;
         int exceptionCounter = 0;
         long startingTime = System.currentTimeMillis();
+        LOG.info(methodName+" - Started reading audiofiles using jaudiotagger, files to read: "+fileList.size());
+        removeJAudioTagLogger();
+        int fileListCounter = 0;
         try {
-            for (File file : fileList) {
+            for (int i = 0; i<fileList.size();i++) {
+                fileListCounter++;
                 try {
                     try {
-                        audioF = AudioFileIO.read(file);
+                        audioF = AudioFileIO.read(fileList.get(i));
                         tag = audioF.getTag();
                         library = getLibraryFromFile(tag, audioF);
-                        library.setSongPath(file.getAbsolutePath());
+                        library.setSongPath(fileList.get(i).getAbsolutePath());
                         libList.add(library);
                         if (library.getArtist() != null) {
                             artistName = library.getArtist().trim();
@@ -208,15 +214,13 @@ public class LibraryService {
                                 }
                             }
                         }
-                        System.out.println("artistArtCount: "+artistArtCount);
                     } catch (Exception e) {
-                        System.out.println("exceptionCount: "+ ++exceptionCounter);
+                        LOG.error(methodName+" - exceptionCount: "+ ++exceptionCounter);
                         e.printStackTrace();
                     }
                     
                     if(!containsName(albumList, library.getAlbum())){
                         albumImg = getAlbumImgBinFromTag(tag);
-                        //System.out.println("getAlbumImgBinFromTag(tag): "+getAlbumImgBinFromTag(tag));
                         if(albumImg!=null){
                             album = new Album();
                             album.setAlbumImgAvl(true);
@@ -242,18 +246,22 @@ public class LibraryService {
                     }
 
                 } catch (Exception e) {
-                    System.out.println("exceptionCount: "+ ++exceptionCounter);
+                    LOG.error(methodName+" - exceptionCount: "+ ++exceptionCounter);
                     e.printStackTrace();
+                }
+                if(fileListCounter==100){
+                    LOG.info(methodName+" - Reading audiofiles,  remaining files: "+(fileList.size()-i));
+                        fileListCounter = 0;
                 }
             }
             long endingTime = System.currentTimeMillis();
-            LOG.info("Time took to read mp3 metadata: "+ (endingTime-startingTime) +" ms, "+(endingTime-startingTime)/1000+" secs");
+            LOG.info(methodName+" - Time took to read mp3 metadata: "+ (endingTime-startingTime) +" ms, "+(endingTime-startingTime)/1000+" secs");
             
             startingTime = System.currentTimeMillis();
             libraryRepository.saveAll(libList);
             albumRepository.saveAll(albumList);
             endingTime = System.currentTimeMillis();
-            LOG.info("Time took to save library and album list: "+ (endingTime-startingTime) +" ms, "+(endingTime-startingTime)/1000+" secs");
+            LOG.info(methodName+" - Time took to save library and album list: "+ (endingTime-startingTime) +" ms, "+(endingTime-startingTime)/1000+" secs");
 
             startingTime = System.currentTimeMillis();
             List<String> artistNameList = new ArrayList<String>(artistArtCount.keySet());//getFilteredArtistDetailsFromDb(ARTIST);
@@ -266,6 +274,8 @@ public class LibraryService {
                 artist.setCount(artCount);
                 artistList.add(artist);
             }
+            artistCount = artistList.size(); // Reading artist count before inserting album artist into same list
+
             List<String> albumArtistNameList = new ArrayList<String>(albumArtistArtCount.keySet());//getFilteredArtistDetailsFromDb(ALBUM_ARTIST);
             for(String albumArtistName : albumArtistNameList){
                 artCount = albumArtistArtCount.get(albumArtistName)!=null?albumArtistArtCount.get(albumArtistName):0;
@@ -282,13 +292,14 @@ public class LibraryService {
             setArtistLocalImgAvlStatus(ALBUM_ARTIST);
 
             endingTime = System.currentTimeMillis();
-            LOG.info("Time took to filter, save and update imgAvl of artist and album artist: "+ (endingTime-startingTime) +" ms, "+(endingTime-startingTime)/1000+" secs");
+            LOG.info(methodName+" - Time took to filter, save and update imgAvl of artist and album artist: "+ (endingTime-startingTime) +" ms, "+(endingTime-startingTime)/1000+" secs");
 
         } catch (Exception e) {
-            System.out.println("exceptionCount: "+ ++exceptionCounter);
+            LOG.error(methodName+" - exceptionCount: "+ ++exceptionCounter);
             e.printStackTrace();
         }
-        System.out.println("exceptionCount: "+ exceptionCounter);
+        LOG.error(methodName+" - exceptionCount: "+ exceptionCounter);
+        LOG.info(methodName+" - Summary: \nTotal tracks: "+libList.size()+" \nArtists found: "+artistCount+" \nAlbum artist found: "+(artistList.size()-artistCount));
     }
 
     public Library getLibraryFromFile(Tag tag, AudioFile audioF) throws Exception{
@@ -785,6 +796,18 @@ public class LibraryService {
         resultMap.put(ALBUM_ARTISTS, albumArtists);
         resultMap.put(ALBUMS, albums);
         return resultMap;
+    }
+
+    public void removeJAudioTagLogger(){
+        String[] loggerNames = new String[] {"org.jaudiotagger.audio","org.jaudiotagger.tag.mp4","org.jaudiotagger.tag.id3", "org.jaudiotagger.tag.datatype"};
+        try {
+            for(String loggerName : loggerNames){
+                java.util.logging.Logger[] pin = new java.util.logging.Logger[]{ java.util.logging.Logger.getLogger(loggerName) };
+                for (java.util.logging.Logger l : pin){l.setLevel(java.util.logging.Level.OFF);}
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }
