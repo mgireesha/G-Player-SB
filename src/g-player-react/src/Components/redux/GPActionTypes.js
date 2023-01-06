@@ -10,3 +10,6 @@ export const ALBUM_ARTIST = 'ALBUM_ARTIST';
 export const NEXT = 'NEXT';
 export const PREVIOUS = 'PREVIOUS';
 export const MUSIC_PATH = 'MUSIC_PATH';
+export const A_TO_Z = "A - Z";
+export const SORT_YEAR = 'Year';
+export const SORT_ARTIST = 'Artist';

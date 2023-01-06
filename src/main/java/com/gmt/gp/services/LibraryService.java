@@ -170,6 +170,11 @@ public class LibraryService {
         List<Artist> artistList = new ArrayList<Artist>();
         List<Library> libList = new ArrayList<Library>();
         List<Album> albumList = new ArrayList<Album>();
+        Map<String, Integer> artistArtCount = new HashMap<String, Integer>();
+        Map<String, Integer> albumArtistArtCount = new HashMap<String, Integer>();
+        String artistName = null;
+        int artCount = 0;
+        String[] artistNameArr = null;
         int exceptionCounter = 0;
         long startingTime = System.currentTimeMillis();
         try {
@@ -181,6 +186,29 @@ public class LibraryService {
                         library = getLibraryFromFile(tag, audioF);
                         library.setSongPath(file.getAbsolutePath());
                         libList.add(library);
+                        if (library.getArtist() != null) {
+                            artistName = library.getArtist().trim();
+                            if (library.getArtist().contains(",") || library.getArtist().contains(";")
+                                    || library.getArtist().contains("&")) {
+                                artistName = artistName.replaceAll("[;&]", ",");
+                                artistNameArr = artistName.split(",");
+                                for (String artistName1 : artistNameArr) {
+                                    if(artistName1!=null)artistName1=artistName1.trim();
+                                    if (artistArtCount.get(artistName1) != null) {
+                                        artistArtCount.put(artistName1, artistArtCount.get(artistName1) + 1);
+                                    } else {
+                                        artistArtCount.put(artistName1, 1);
+                                    }
+                                }
+                            } else {
+                                if (artistArtCount.get(artistName) != null) {
+                                    artistArtCount.put(artistName, artistArtCount.get(artistName) + 1);
+                                } else {
+                                    artistArtCount.put(artistName, 1);
+                                }
+                            }
+                        }
+                        System.out.println("artistArtCount: "+artistArtCount);
                     } catch (Exception e) {
                         System.out.println("exceptionCount: "+ ++exceptionCounter);
                         e.printStackTrace();
@@ -200,7 +228,15 @@ public class LibraryService {
                             album.setYear(library.getYear());
                             album = writeByteArryaTOimgFile(album, albumImg);
                             albumList.add(album);
-                    }else{
+                            if(album.getAlbumArtist()!=null){
+                                artistName = album.getAlbumArtist().trim();
+                                if(albumArtistArtCount.get(artistName)!=null){
+                                    albumArtistArtCount.put(artistName, albumArtistArtCount.get(artistName)+1);
+                                }else{
+                                    albumArtistArtCount.put(artistName, 1);
+                                }
+                            }
+                        }else{
                             // Logic to include albums without image
                         }
                     }
@@ -220,20 +256,24 @@ public class LibraryService {
             LOG.info("Time took to save library and album list: "+ (endingTime-startingTime) +" ms, "+(endingTime-startingTime)/1000+" secs");
 
             startingTime = System.currentTimeMillis();
-            List<String> artistNameList = getFilteredArtistDetailsFromDb(ARTIST);
-            for(String artistName : artistNameList){
+            List<String> artistNameList = new ArrayList<String>(artistArtCount.keySet());//getFilteredArtistDetailsFromDb(ARTIST);
+            for(String artistName2 : artistNameList){
+                artCount = artistArtCount.get(artistName2)!=null?artistArtCount.get(artistName2):0;
                 artist = new Artist();
-                artist.setArtistName(artistName);
+                artist.setArtistName(artistName2);
                 artist.setType(ARTIST);
                 artist.setImgAvl(false);
+                artist.setCount(artCount);
                 artistList.add(artist);
             }
-            List<String> albumArtistNameList = getFilteredArtistDetailsFromDb(ALBUM_ARTIST);
+            List<String> albumArtistNameList = new ArrayList<String>(albumArtistArtCount.keySet());//getFilteredArtistDetailsFromDb(ALBUM_ARTIST);
             for(String albumArtistName : albumArtistNameList){
+                artCount = albumArtistArtCount.get(albumArtistName)!=null?albumArtistArtCount.get(albumArtistName):0;
                 albumArtist = new Artist();
                 albumArtist.setArtistName(albumArtistName);
                 albumArtist.setType(ALBUM_ARTIST);
                 albumArtist.setImgAvl(false);
+                albumArtist.setCount(artCount);
                 artistList.add(albumArtist);
             }
             artistRepository.saveAll(artistList);

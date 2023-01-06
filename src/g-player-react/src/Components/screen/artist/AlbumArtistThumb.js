@@ -13,6 +13,7 @@ export const AlbumArtistThumb = ({albumArtist}) => {
             </div>
             <div className="album-artist-thumb-details">
                 <label><Link to={`/music/album_artists/${albumArtist.artistName}`}>{albumArtist.artistName}</Link></label>
+                <label className="album-count">Albums&nbsp;{albumArtist.count}</label>
             </div>
         </div>
     )

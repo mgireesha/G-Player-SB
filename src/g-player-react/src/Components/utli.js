@@ -36,7 +36,8 @@ export function handleAPIError(error){
 export function scrolltoId(id){
     try {
         const access = document.getElementById(id);
-        access.scrollIntoView({behavior: 'smooth'}, true);
+        access.scrollIntoView(true);
+        //access.scrollIntoView({behavior: 'smooth'}, true);
         //var rect = access.getBoundingClientRect();
         //console.log(rect.top, rect.right, rect.bottom, rect.left);
         //ccess.scrollTo(0, rect.bottom);
