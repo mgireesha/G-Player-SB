@@ -14,7 +14,6 @@ export const ArtistsList = () => {
         artistsDetails = artistsDetails.sort((a,b) => b.imgAvl?1:-1);
     }
     
-    const artistsImgsDetails = useSelector(state => state.library.artistsImgsDetails);
     useEffect(()=>{
         console.log(fetchAllArtistsDtls(ARTIST));
         dispatch(fetchAllArtistsDtls(ARTIST));

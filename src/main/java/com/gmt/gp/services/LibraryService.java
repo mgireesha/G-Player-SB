@@ -514,7 +514,7 @@ public class LibraryService {
     }
     
     public List<Artist> getAllArtistDetails(String type) {
-        return artistRepository.getByType(type);
+        return artistRepository.getByTypeOrderByArtistNameAsc(type);
     }
 
     /** 
@@ -581,7 +581,7 @@ public class LibraryService {
     public Iterable<Artist> setArtistLocalImgAvlStatus(String artistType){
         String artistPath = "D:\\SWorkspace\\G-Player-SB\\src\\main\\resources\\public\\images\\artists";
         Artist artist = null;
-        List<Artist> artistList = artistRepository.getByType(artistType);
+        List<Artist> artistList = artistRepository.getByTypeOrderByArtistNameAsc(artistType);
         File artistImgFIle = null;
         for(int i=0;i<artistList.size();i++){
             artist = artistList.get(i);

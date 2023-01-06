@@ -13,3 +13,5 @@ export const MUSIC_PATH = 'MUSIC_PATH';
 export const A_TO_Z = "A - Z";
 export const SORT_YEAR = 'Year';
 export const SORT_ARTIST = 'Artist';
+export const SORT_COUNT_ALBUMS = 'No of Albums';
+export const SORT_COUNT_TRACKS = 'No of Songs';
