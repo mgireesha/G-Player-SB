@@ -1,9 +1,10 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { A_TO_Z, TRACK_LIST, SORT_YEAR, SORT_ARTIST, ARTIST } from "../redux/GPActionTypes";
-import { fethAllSongs, setGroupband } from "../redux/library/LibraryActions";
+import { A_TO_Z, TRACK_LIST, SORT_YEAR, SORT_ARTIST } from "../redux/GPActionTypes";
+import { setGroupband } from "../redux/library/LibraryActions";
 import { setPlayedFrom } from "../redux/player/PlayerActions";
-import { scrollToPlaying, scrolltoId } from "../utli";
+import { scrollToPlaying, sortGroupByField } from "../utli";
+import { SortingContainer } from "./SortingContainer";
 import { Spinner } from "./Spinner";
 import { Track } from "./Track";
 
@@ -39,53 +40,14 @@ export const TrackList = () => {
     useEffect(()=>{
         if(tracks.length>0){
             if(sortBy===A_TO_Z){
-                sortAZ(tracks);
+                setTrackList(sortGroupByField(tracks, 'title'));
             }else if(sortBy===SORT_YEAR){
-                sortByYear(tracks);
+                setTrackList(sortGroupByField(tracks, 'year'));
             }else if(sortBy===SORT_ARTIST){
                 sortByArtist(tracks);
             }
         }
     },[tracks, sortBy])
-
-    const sortAZ = (tracks) => {
-        let trackList = {};
-        let tempArr = [];
-        tracks.forEach((track) => {
-            if (track.title !== null && track.title !== undefined && track.title !== "") {
-                let ind = track.title.substring(0, 1).toUpperCase();
-                if (!isNaN(ind)) {
-                    ind = '#';
-                }
-                if (trackList[ind] !== undefined) {
-                    tempArr = trackList[ind];
-                    tempArr.push(track);
-                    trackList[ind] = tempArr;
-                } else {
-                    trackList[ind] = [track];
-                }
-            }
-        });
-    setTrackList(trackList);
-    }
-
-    const sortByYear = (tracks) => {
-        let trackList = {};
-        let tempArr = [];
-        tracks.forEach((track) => {
-            if (track.year !== null && track.year !== undefined && track.year !== "") {
-                let ind = track.year;
-                if (trackList[ind] !== undefined) {
-                    tempArr = trackList[ind];
-                    tempArr.push(track);
-                    trackList[ind] = tempArr;
-                } else {
-                    trackList[ind] = [track];
-                }
-            }
-        })
-        setTrackList(trackList);
-    }
 
     const sortByArtist = (tracks) => {
         let trackList = {};
@@ -125,19 +87,7 @@ export const TrackList = () => {
 
     return(
         <>
-            <div className="order-container">
-                <span>Sort By:</span>
-                <select onChange={(event)=>setSortBy(event.target.value)} className="sortby">
-                    <option value={A_TO_Z}>{A_TO_Z}</option>
-                    <option value={SORT_YEAR}>{SORT_YEAR}</option>
-                    <option value={SORT_ARTIST}>{SORT_ARTIST}</option>
-                </select>
-            </div>
-            <div className="lKey-line">
-                {sortBy!==SORT_ARTIST && trackListKeys !== undefined && trackListKeys.length > 0 && trackListKeys.map((lKey, index) =>
-                    <span onClick={() => scrolltoId("lKey" + lKey)} className={lKey.length>8?sortBy+"_25":sortBy+"_10"}>{lKey}</span>
-                )}
-            </div>
+            <SortingContainer sortListKeys={trackListKeys} setSortBy={setSortBy} sortBy={sortBy} sortSelectors={[A_TO_Z, SORT_YEAR, SORT_ARTIST]} />
             <div className="track-list">
                 {/* {tracks!==undefined && tracks!==null &&
                             tracks.map((track,index) => 

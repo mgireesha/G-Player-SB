@@ -87,3 +87,29 @@ export const setCookies = (name, value) => {
     expires.setDate(expires.getDate()+5);
     document.cookie=name+"="+value+"; expires="+expires+"; path=/";
 }
+
+export const sortGroupByField = (entArr, field) => {
+    let entListObj = {};
+    let tempArr = [];
+    let ind;
+    entArr.forEach((ent) => {
+        if (ent[field] !== null && ent[field] !== undefined && ent[field] !== "") {
+            if(field==='title' || field==='albumName' || field==='artistName'){
+                ind = ent[field].substring(0, 1).toUpperCase();
+                if (!isNaN(ind)) {
+                    ind = '#';
+                }
+            }else{
+                ind = ent[field];
+            }
+            if (entListObj[ind] !== undefined) {
+                tempArr = entListObj[ind];
+                tempArr.push(ent);
+                entListObj[ind] = tempArr;
+            } else {
+                entListObj[ind] = [ent];
+            }
+        }
+    });
+return entListObj;
+}

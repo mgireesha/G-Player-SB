@@ -254,6 +254,14 @@
         background: #303030;
         padding: 10px;
 
+        .album-lKey{
+            padding: 5px;
+            padding-left: 2px;
+            font-size: 18px;
+            font-weight: 700;
+            grid-column: span 6;
+        }
+
         .album-artist-thumb{
             width: 10em;
         }
@@ -323,6 +331,14 @@
         overflow-x: hidden;
         padding: 10px;
 
+        .artists-lKey{
+            padding: 5px;
+            padding-left: 2px;
+            font-size: 18px;
+            font-weight: 700;
+            grid-column: span 6;
+        }
+
         .artist-thumb{
             width: 10em;
         }
@@ -359,6 +375,14 @@
         overflow-y: auto;
         overflow-x: hidden;
         padding: 10px;
+
+        .album-artists-lKey{
+            padding: 5px;
+            padding-left: 2px;
+            font-size: 18px;
+            font-weight: 700;
+            grid-column: span 6;
+        }
 
         .album-artist-thumb-img-div{
             position: relative;
@@ -663,7 +687,7 @@
         margin-left: 10px;
         padding: 3px;
         border-radius: 4px;
-        width: 6em;
+        width: 10em;
         background-color: #303030;
         color: beige;
         cursor: pointer;
@@ -1071,6 +1095,8 @@ a{
             .album-thumb-details{
                 padding-right: 5px;
                 width: 10em;
+                display: flex;
+                flex-direction: column;
     
                 label{
                     font-size: 15px;
@@ -1112,6 +1138,12 @@ a{
             .artist-thumb-details{
                 width: 13em;
                 max-width: 11em;
+                display: flex;
+                flex-direction: column;
+
+                .track-count{
+                    font-size: 14px;
+                }
             }
         }
 
@@ -1139,6 +1171,12 @@ a{
             .album-artist-thumb-details{
                 width: 13em;
                 max-width: 11em;
+                display: flex;
+                flex-direction: column;
+
+                .album-count{
+                    font-size: 14px;
+                }
             }
         }
 
