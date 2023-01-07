@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,10 +22,11 @@ import com.gmt.gp.model.Message;
 import com.gmt.gp.services.LibraryService;
 import com.gmt.gp.services.MessageService;
 
-@CrossOrigin(origins= {"http://localhost:3000","http://gplayer.test.com:3000"})
 @RequestMapping("/library")
 @RestController
 public class LibraryController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(LibraryService.class);
 
     @Autowired
     private LibraryService libraryService;
@@ -34,14 +36,22 @@ public class LibraryController {
 
     @RequestMapping("/initLibraryBuild")
     public List<File> runBuild(){
+        final String methodName = "runBuild";
         List<File> fileList = new ArrayList<File>();
         
         libraryService.truncateMyTable();
+        LOG.info(methodName+" - Truncated all repositories.");
+
         libraryService.cleanAlbumImageDir();
+        LOG.info(methodName+" - Deleted all images from albums folder");
 
         List<Message> mainFolderList = messageService.getAllMusicPaths();
 
+        LOG.info(methodName+" - Started searching for audio files in : "+mainFolderList);
         fileList = libraryService.getMusicFiles(mainFolderList);
+        LOG.info(methodName+" - Found "+fileList.size()+" audio files");
+
+        LOG.info(methodName+" - calling build library");
         libraryService.buildLibrary(fileList);
         return fileList;
     }

@@ -3,10 +3,7 @@ package com.gmt.gp.controllers;
 import java.io.File;
 import java.net.URLDecoder;
 
-import org.jaudiotagger.audio.AudioFileIO;
-import org.jaudiotagger.tag.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,7 +21,6 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
 
-@CrossOrigin(origins= {"http://localhost:3000","http://gplayer.test.com:3000"})
 @RestController
 @RequestMapping("/media")
 public class MediaController {
