@@ -527,7 +527,7 @@ public class LibraryService {
     }
 
     public Iterable<Album> getAllAlbumsFromDb(){
-        return albumRepository.findAll();
+        return albumRepository.findAllByOrderByAlbumNameAsc();
     }
     
     public List<Artist> getAllArtistDetails(String type) {

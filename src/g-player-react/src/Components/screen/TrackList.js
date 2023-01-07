@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { A_TO_Z, TRACK_LIST, SORT_YEAR, SORT_ARTIST } from "../redux/GPActionTypes";
+import { A_TO_Z, TRACK_LIST, SORT_YEAR, SORT_ARTIST, A_TO_Z_DESC } from "../redux/GPActionTypes";
 import { setGroupband } from "../redux/library/LibraryActions";
 import { setPlayedFrom } from "../redux/player/PlayerActions";
 import { scrollToPlaying, sortGroupByField } from "../utli";
@@ -26,12 +26,13 @@ export const TrackList = () => {
     useEffect(()=>{
         if(Object.keys(trackList).length>0){
             let tempTrakListKeys = Object.keys(trackList);
-            if(sortBy===SORT_YEAR){
+            if(sortBy===SORT_YEAR || sortBy===A_TO_Z_DESC){
                 tempTrakListKeys = tempTrakListKeys.sort((a,b)=>{return a>b?-1:1});
             }
             if(sortBy===SORT_ARTIST){
                 tempTrakListKeys = tempTrakListKeys.sort((a,b)=>{return a>b?1:-1});
             }
+
             setTrackListKeys(tempTrakListKeys);
             scrollToPlaying(isPlaying);
         }
@@ -39,7 +40,7 @@ export const TrackList = () => {
 
     useEffect(()=>{
         if(tracks.length>0){
-            if(sortBy===A_TO_Z){
+            if(sortBy===A_TO_Z || sortBy===A_TO_Z_DESC){
                 setTrackList(sortGroupByField(tracks, 'title'));
             }else if(sortBy===SORT_YEAR){
                 setTrackList(sortGroupByField(tracks, 'year'));
@@ -87,7 +88,7 @@ export const TrackList = () => {
 
     return(
         <>
-            <SortingContainer sortListKeys={trackListKeys} setSortBy={setSortBy} sortBy={sortBy} sortSelectors={[A_TO_Z, SORT_YEAR, SORT_ARTIST]} />
+            <SortingContainer sortListKeys={trackListKeys} setSortBy={setSortBy} sortBy={sortBy} sortSelectors={[A_TO_Z,A_TO_Z_DESC, SORT_YEAR, SORT_ARTIST]} />
             <div className="track-list">
                 {/* {tracks!==undefined && tracks!==null &&
                             tracks.map((track,index) => 
