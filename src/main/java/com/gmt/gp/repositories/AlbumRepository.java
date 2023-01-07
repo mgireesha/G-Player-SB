@@ -14,7 +14,7 @@ public interface AlbumRepository extends CrudRepository<Album, Long>{
     @Query(value = "truncate table album",nativeQuery = true)
     void truncateMyTable();
     
-    Iterable<Album> findAllByOrderByAlbumName();
+    Iterable<Album> findAllByOrderByAlbumNameAsc();
 
     Album getByAlbumId(Long id);
 

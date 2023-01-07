@@ -13,7 +13,10 @@ export const Artist = () => {
     const { artist } = useParams();
     const artistsDetails = useSelector(state => state.library.artistsDetails);
     //const artistObj = artistsDetails.find(artistObj => artistObj.artistName===artist);
-    const artistTracks = useSelector(state => state.library.artistTracks);
+    let artistTracks = useSelector(state => state.library.artistTracks);
+    if(artistTracks.length>0){
+        artistTracks = artistTracks.sort((a,b)=>{return a.year>b.year?-1:1});
+    }
     const songPlaying = useSelector(state => state.player.songPlaying);
     const playedFrom = useSelector(state => state.player.playedFrom);
     const isPlaying = useSelector(state => state.player.isPlaying);
