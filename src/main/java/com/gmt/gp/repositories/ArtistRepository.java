@@ -13,7 +13,7 @@ public interface ArtistRepository extends CrudRepository<Artist, Long>{
     @Query(value = "truncate table artist",nativeQuery = true)
     void truncateMyTable();
 
-    List<Artist> getByType(String type);
+    List<Artist> getByTypeOrderByArtistNameAsc(String type);
 
     List<Object> getByArtistNameContainsIgnoreCaseAndType(String searchKey, String artist);
 }
