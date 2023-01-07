@@ -331,6 +331,14 @@
         overflow-x: hidden;
         padding: 10px;
 
+        .artists-lKey{
+            padding: 5px;
+            padding-left: 2px;
+            font-size: 18px;
+            font-weight: 700;
+            grid-column: span 6;
+        }
+
         .artist-thumb{
             width: 10em;
         }
@@ -1087,6 +1095,8 @@ a{
             .album-thumb-details{
                 padding-right: 5px;
                 width: 10em;
+                display: flex;
+                flex-direction: column;
     
                 label{
                     font-size: 15px;
@@ -1128,6 +1138,12 @@ a{
             .artist-thumb-details{
                 width: 13em;
                 max-width: 11em;
+                display: flex;
+                flex-direction: column;
+
+                .track-count{
+                    font-size: 14px;
+                }
             }
         }
 
@@ -1155,6 +1171,12 @@ a{
             .album-artist-thumb-details{
                 width: 13em;
                 max-width: 11em;
+                display: flex;
+                flex-direction: column;
+
+                .album-count{
+                    font-size: 14px;
+                }
             }
         }
 

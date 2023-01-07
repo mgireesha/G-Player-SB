@@ -9,15 +9,12 @@ import { SortingContainer } from "../SortingContainer";
 
 export const AlbumArtistList = () => {
     const dispatch = useDispatch();
-    let albumArtistsDetailsUS = useSelector(state => state.library.albumArtistsDetails);
+    let albumArtistsDetailsFS = useSelector(state => state.library.albumArtistsDetails);
     const [albumArtistsDetails, setAlbumArtistsDetails] = useState([]);
     const [albumArtistsDetailsList, setAlbumArtistsDetailsList] = useState({});
     const [albumArtistsDetailsListKeys, setAlbumArtistsDetailsListKeys] = useState([]);
     const [sortBy, setSortBy] = useState(SORT_COUNT_ALBUMS);
-    // if(albumArtistsDetails!==null && albumArtistsDetails!==undefined && albumArtistsDetails.length>0){
-    //     albumArtistsDetails = albumArtistsDetails.sort((a, b)=>a.count > b.count?-1:1);
-    //     albumArtistsDetails = albumArtistsDetails.sort((a, b)=>b.imgAvl?1:-1);
-    // }
+
     useEffect(()=>{
         dispatch(fetchAllAlbumArtistsDtls(ALBUM_ARTIST));
         dispatch(setGroupband("album_artists"));
@@ -25,25 +22,25 @@ export const AlbumArtistList = () => {
     },[]);
 
     useEffect(()=>{
-        if(albumArtistsDetailsUS.length>0){
+        if(albumArtistsDetailsFS.length>0){
             if(sortBy===A_TO_Z){
-                setAlbumArtistsDetailsList(sortGroupByField(albumArtistsDetailsUS,'artistName'));
+                setAlbumArtistsDetailsList(sortGroupByField(albumArtistsDetailsFS,'artistName'));
             }
             if(sortBy===SORT_COUNT_ALBUMS){
-                let tempAlbumArtistsDetails = [...albumArtistsDetailsUS];
+                let tempAlbumArtistsDetails = [...albumArtistsDetailsFS];
                 tempAlbumArtistsDetails = tempAlbumArtistsDetails.sort((a, b)=>a.count > b.count?-1:1);
                 tempAlbumArtistsDetails = tempAlbumArtistsDetails.sort((a, b)=>b.imgAvl?1:-1);
                 setAlbumArtistsDetails(tempAlbumArtistsDetails);
             }
         }
-    },[albumArtistsDetailsUS, sortBy])
+    },[albumArtistsDetailsFS, sortBy]);
 
     useEffect(()=>{
         if(Object.keys(albumArtistsDetailsList).length>0){
             let tempAlbumArtistsDetailsList = Object.keys(albumArtistsDetailsList);
             setAlbumArtistsDetailsListKeys(tempAlbumArtistsDetailsList);
         }
-    },[albumArtistsDetailsList])
+    },[albumArtistsDetailsList]);
 
     return(
         <>

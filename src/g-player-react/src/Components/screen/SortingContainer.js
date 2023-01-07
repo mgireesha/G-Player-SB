@@ -1,5 +1,5 @@
 import React from "react";
-import { A_TO_Z, SORT_ARTIST, SORT_COUNT_ALBUMS, SORT_YEAR } from "../redux/GPActionTypes";
+import { A_TO_Z, SORT_ARTIST, SORT_COUNT_ALBUMS, SORT_COUNT_TRACKS, SORT_YEAR } from "../redux/GPActionTypes";
 import { scrolltoId } from "../utli";
 
 export const SortingContainer = ({sortBy, setSortBy, sortListKeys, sortSelectors}) => {
@@ -12,6 +12,7 @@ export const SortingContainer = ({sortBy, setSortBy, sortListKeys, sortSelectors
                     {sortSelectors.includes(SORT_YEAR) && <option value={SORT_YEAR} selected={sortBy===SORT_YEAR?true:false}>{SORT_YEAR}</option>}
                     {sortSelectors.includes(SORT_YEAR) && <option value={SORT_ARTIST} selected={sortBy===SORT_ARTIST?true:false}>{SORT_ARTIST}</option>}
                     {sortSelectors.includes(SORT_COUNT_ALBUMS) && <option value={SORT_COUNT_ALBUMS} selected={sortBy===SORT_COUNT_ALBUMS?true:false}>{SORT_COUNT_ALBUMS}</option>}
+                    {sortSelectors.includes(SORT_COUNT_TRACKS) && <option value={SORT_COUNT_TRACKS} selected={sortBy===SORT_COUNT_TRACKS?true:false}>{SORT_COUNT_TRACKS}</option>}
                 </select>
             </div>
             <div className="lKey-line">
