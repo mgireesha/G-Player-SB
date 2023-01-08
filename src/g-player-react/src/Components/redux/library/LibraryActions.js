@@ -1,5 +1,7 @@
 import { SUCCESS } from "../GPActionTypes";
 import { FETCH_SONGS_START, FETCH_SONGS_SUCCESS, 
+        HISTORY_FETCH_ALL_HISTORY_START, 
+        HISTORY_FETCH_ALL_HISTORY_SUCCESS, 
         LIBRARY_DELETE_MUSIC_PATH_START, 
         LIBRARY_DELETE_MUSIC_PATH_SUCCESS, 
         LIBRARY_FETCH_ALBUMS_DETAILS_START, LIBRARY_FETCH_ALBUMS_DETAILS_SUCCESS, 
@@ -166,6 +168,15 @@ export const searchByKey = (searchKey) => ({
 
 export const searchByKeySucc = (response) => ({
     type: LIBRARY_SEARCH_BY_KEY_SUCCESS,
+    response
+})
+
+export const fetchAllHistory = () => ({
+    type: HISTORY_FETCH_ALL_HISTORY_START
+})
+
+export const fetchAllHistorySucc = (response) => ({
+    type: HISTORY_FETCH_ALL_HISTORY_SUCCESS,
     response
 })
 

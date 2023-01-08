@@ -99,3 +99,8 @@ export const setMediaVolumeAPI = (volume) => {
 export const setPlaybackLengthAPI = (pbVal) => {
     return iAxios.get(`/media/forward/${pbVal}`).then(response => response);
 }
+
+//History
+export const fetchAllHistoryAPI = () => {
+    return iAxios.get(`/history/getAllHistory`).then(response => response);
+}

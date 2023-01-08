@@ -1224,6 +1224,103 @@ a{
     }
 }
 
+.recent-plays{
+    width: 78vw;
+
+    .header{
+        margin-left: 10px;
+        border-bottom: 1px solid grey;
+        padding-bottom: 10px;
+    }
+
+    .body{
+        max-height: 75vh;
+        overflow-y: auto;
+        .albums{
+            h3{
+                padding-left: 10px;
+                margin-top: 10px;
+            }
+
+            .album-list{
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+                grid-row-gap: 15px;
+                //max-height: 72vh;
+                overflow-y: auto;
+                z-index: 1;
+                position: relative;
+                background: #303030;
+                padding: 10px;
+        
+                .album-artist-thumb{
+                    width: 10em;
+                }
+        
+                .album-thumb-img-div{
+                    position: relative;
+                    img{
+                        height: 9em;
+                        width: 9em;
+                        cursor: pointer;
+                        border-radius: 20px;
+                        border-bottom-left-radius: unset;
+                        box-shadow: rgb(0 0 0 / 40%) 0px 2px 4px, rgb(0 0 0 / 30%) 0px 7px 13px -3px, rgb(0 0 0 / 20%) 0px -3px 0px inset;
+                    }
+                }
+        
+                .album-thumb-img-div-link{
+                    position: absolute;
+                    height: 9em;
+                    width: 9em;
+                    top: 0;
+                    align-items: center;
+                    display: flex;
+                    justify-content: center;
+                    display: none;
+                    background-color: #eaf0f0;
+                    opacity: 0.2;
+                    color: #093fa3;
+                    cursor: pointer;
+        
+                    svg{
+                        font-size: 2em;
+                        font-weight: 900;
+                    }
+                }
+        
+                .album-thumb-img-div a:hover + .album-thumb-img-div-link{
+                    display: flex;
+                }
+        
+                .album-thumb-details{
+                    padding-right: 5px;
+                    width: 10em;
+                    display: flex;
+                    flex-direction: column;
+        
+                    label{
+                        font-size: 15px;
+                    }
+        
+                    p{
+                        margin-top: 5px;
+                        font-size: 13px;
+                    }
+                }
+            }
+        }
+        .track-list{
+            max-height: unset;
+            .track{
+                grid-template-columns: 1fr 5fr 4fr 5fr 1fr 2fr 1fr;
+            }
+        }
+    }
+
+
+}
+
 
 
 /*Custom Scrollbar*/
