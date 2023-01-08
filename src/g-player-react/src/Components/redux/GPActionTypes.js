@@ -2,6 +2,7 @@ export const INIT = 'INIT';
 export const SUCCESS = 'SUCCESS';
 export const LOADING = 'LOADING';
 export const TRACK_LIST = 'TRACK_LIST';
+export const RECENT_PLAYS = 'RECENT_PLAYS';
 export const ALBUM = 'ALBUM';
 export const ARTISTS = 'ARTISTS';
 export const ARTIST = 'ARTIST';

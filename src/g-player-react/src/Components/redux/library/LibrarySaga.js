@@ -4,15 +4,16 @@ import { deleteMusicPathAPI, fetchAlbumAPI, fetchalbumDetailsByAlbumArtistAPI, f
          fetchalbumListOfAAAPI,
          fetchAlbumtracksAPI,
          fetchAllAlbumDtlsAPI, fetchAllAlbumsAPI, fetchAllArtistsDtlsAPI, 
+         fetchAllHistoryAPI, 
          fetchMusicpathAPI, 
          fetchSongsByArtistAPI, getAllSongsAPI, initLibraryBuildAPI, saveMusicpathAPI, searchByKeyAPI 
     } from "../GPApis";
 import { deleteMusicPathSucc, fetchAlbumDetailsByAlbumArtistSucc, fetchAlbumImgsScc, fetchAlbumlistOfAASucc, fetchAlbumSucc, 
         fetchAlbumTacksSucc, 
         fetchAllAlbumArtistsDtlsSucc, fetchAllAlbumsDtlsSucc, fetchAllAlbumsSucc, 
-        fetchAllArtistsDtlsSucc, fetchMusicPathSucc, fetchSongsByArtistSucc, fethAllSongsSucc, initLibraryBuildSucc, saveMusicPathSucc, searchByKeySucc 
+        fetchAllArtistsDtlsSucc, fetchAllHistorySucc, fetchMusicPathSucc, fetchSongsByArtistSucc, fethAllSongsSucc, initLibraryBuildSucc, saveMusicPathSucc, searchByKeySucc 
     } from "./LibraryActions";
-import { FETCH_SONGS_START, LIBRARY_DELETE_MUSIC_PATH_START, LIBRARY_FETCH_ALBUMS_DETAILS_START, LIBRARY_FETCH_ALBUMS_START, 
+import { FETCH_SONGS_START, HISTORY_FETCH_ALL_HISTORY_START, LIBRARY_DELETE_MUSIC_PATH_START, LIBRARY_FETCH_ALBUMS_DETAILS_START, LIBRARY_FETCH_ALBUMS_START, 
     LIBRARY_FETCH_ALBUM_ARTIST_LIST_START, LIBRARY_FETCH_ALBUM_DETAILS_BY_ALBUM_ARTIST_START, 
     LIBRARY_FETCH_ALBUM_IMGS_START, LIBRARY_FETCH_ALBUM_LIST_OF_AA_START, LIBRARY_FETCH_ALBUM_START, LIBRARY_FETCH_ALBUM_TRACKS_START, LIBRARY_FETCH_ARTIST_LIST_START, 
     LIBRARY_FETCH_MUSIC_PATH_START, 
@@ -259,6 +260,22 @@ export function* onSearchByKeyAsync(payload){
         const response = yield call(searchByKeyAPI, payload.searchKey);
         if(response.status === 200){
             yield put(searchByKeySucc(response.data));
+        }
+    } catch (error) {
+        console.log(error);
+        handleAPIError(error);
+    }
+}
+
+export function* onFetchAllHistory(){
+    yield takeLatest(HISTORY_FETCH_ALL_HISTORY_START, onFetchAllHistoryAsync);
+}
+
+export function* onFetchAllHistoryAsync(){
+    try {
+        const response = yield call(fetchAllHistoryAPI);
+        if(response.status === 200){
+            yield put(fetchAllHistorySucc(response.data));
         }
     } catch (error) {
         console.log(error);

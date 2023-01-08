@@ -10,6 +10,7 @@ import { TRACK_LIST } from "./redux/GPActionTypes";
 import { Route, Routes } from "react-router-dom";
 import { Library } from "./library/Library";
 import { Search } from "./search/Search";
+import { RecentPlays } from "./history/RecentPlays";
 
 export const Home = () => {
     const dispatch = useDispatch();
@@ -47,6 +48,7 @@ export const Home = () => {
             <Routes>
                 <Route path="/music/*" element={<Screen/>} />
                 <Route path="/search/:searchKey" element={<Search/>} />
+                <Route path="/recent" element={<RecentPlays />} />
                 <Route path="/library/*" element={<Library/>} />
             </Routes>
             <Player />

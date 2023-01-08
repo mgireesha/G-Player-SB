@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fettchCurrentSongStatus, playASong, playPause, setIsPlaying, setIsRepeat, setIsShuffle, setPlayBackLength } from "../redux/player/PlayerActions";
 import { getMins, scrolltoId, scrollToPlaying, setCookies } from "../utli";
 import { VolumeH } from "./VolumeH";
-import { ALBUM, ARTIST, NEXT, NEXXT, PREVIOUS, TRACK_LIST } from "../redux/GPActionTypes";
+import { ALBUM, ARTIST, NEXT, NEXXT, PREVIOUS, RECENT_PLAYS, TRACK_LIST } from "../redux/GPActionTypes";
 import { Link } from "react-router-dom";
 import { ArtistLink } from "../screen/artist/ArtistLink";
 import def_album_art from '../images/def_album_art.png';
@@ -26,6 +26,7 @@ export const Player = () => {
     const tracks = useSelector(state => state.library.tracks);
     const albumTracks = useSelector(state => state.library.albumTracks);
     const artistTracks = useSelector(state => state.library.artistTracks);
+    const historyTracks = useSelector(state => state.library.history.songs);
     const currentVolume = useSelector(state => state.player.currentVolume);
     const [statClearIntrvl, setStatClearIntrvl] = useState(0);
     const [currentPlayVal, setCurrentplayVal] = useState(0);
@@ -92,6 +93,8 @@ export const Player = () => {
             library = albumTracks;
         }else if(playedFrom===ARTIST){
             library = artistTracks;
+        }else if(playedFrom===RECENT_PLAYS){
+            library = historyTracks;
         }else{
             library = tracks;
         }

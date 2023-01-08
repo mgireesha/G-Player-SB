@@ -160,33 +160,39 @@ public class LibraryService {
    
 
     public void buildLibrary(List<File> fileList) {
+        
         final String methodName = "buildLibrary";
+        
         AudioFile audioF = null;
+        Tag tag = null;
+        
         Library library = null;
         Album album = null;
-        byte[] albumImg = null;
-        Tag tag = null;
         Artist artist = null;
         Artist albumArtist = null;
+
+        String artistName = null;
+        String[] artistNameArr = null;
+        byte[] albumImg = null;
         List<Artist> artistList = new ArrayList<Artist>();
         List<Library> libList = new ArrayList<Library>();
         List<Album> albumList = new ArrayList<Album>();
         Map<String, Integer> artistArtCount = new HashMap<String, Integer>();
         Map<String, Integer> albumArtistArtCount = new HashMap<String, Integer>();
-        String artistName = null;
         int artistCount = 0;
         int artCount = 0;
-        String[] artistNameArr = null;
         int exceptionCounter = 0;
+        int fileListCounter = 0;
         long startingTime = System.currentTimeMillis();
+
         LOG.info(methodName+" - Started reading audiofiles using jaudiotagger, files to read: "+fileList.size());
         removeJAudioTagLogger();
-        int fileListCounter = 0;
-        try {
+        
+        try { // label for try block : main_try_for_method_buildLibrary
             for (int i = 0; i<fileList.size();i++) {
                 fileListCounter++;
-                try {
-                    try {
+                try { //label for try block : file_list_for_loop 
+                    try { // label for try block : jaudiotagger_read 
                         audioF = AudioFileIO.read(fileList.get(i));
                         tag = audioF.getTag();
                         library = getLibraryFromFile(tag, audioF);
@@ -215,7 +221,7 @@ public class LibraryService {
                             }
                         }
                     } catch (Exception e) {
-                        LOG.error(methodName+" - exceptionCount: "+ ++exceptionCounter);
+                        LOG.error(methodName+" - Exception in jaudiotagger_read, exceptionCount: "+ ++exceptionCounter);
                         e.printStackTrace();
                     }
                     
@@ -246,7 +252,7 @@ public class LibraryService {
                     }
 
                 } catch (Exception e) {
-                    LOG.error(methodName+" - exceptionCount: "+ ++exceptionCounter);
+                    LOG.error(methodName+" - Exception in file_list_for_loop, exceptionCount: "+ ++exceptionCounter);
                     e.printStackTrace();
                 }
                 if(fileListCounter==100){
@@ -295,7 +301,7 @@ public class LibraryService {
             LOG.info(methodName+" - Time took to filter, save and update imgAvl of artist and album artist: "+ (endingTime-startingTime) +" ms, "+(endingTime-startingTime)/1000+" secs");
 
         } catch (Exception e) {
-            LOG.error(methodName+" - exceptionCount: "+ ++exceptionCounter);
+            LOG.error(methodName+" - Exception in main_try_for_method_buildLibrary, exceptionCount: "+ ++exceptionCounter);
             e.printStackTrace();
         }
         LOG.error(methodName+" - exceptionCount: "+ exceptionCounter);
@@ -656,14 +662,18 @@ public class LibraryService {
                             wikiRespJson = new JSONObject(wikiResp);
                         }
                     }
-                    if(wikiRespJson.getJSONObject("thumbnail")==null || !wikiRespJson.getString("extract").contains("singer") 
-                        || !wikiRespJson.getString("extract").contains("actor") || !wikiRespJson.getString("extract").contains("composer") 
-                        || !wikiRespJson.getString("extract").contains("musician")
-                        || !wikiRespJson.getString("extract").contains("director"))continue;
-
-                    System.out.println("wikiRespJson: "+wikiRespJson.getJSONObject("thumbnail").getString("source"));
-                    FileUtils.copyURLToFile(new URL(wikiRespJson.getJSONObject("thumbnail").getString("source")), localArtistImg);
-                    downloadedArtists.add(artist);
+                    if(wikiRespJson.getJSONObject("thumbnail")!=null && 
+                        (   wikiRespJson.getString("extract").contains("singer") 
+                            || wikiRespJson.getString("extract").contains("actor") 
+                            || wikiRespJson.getString("extract").contains("actress")
+                            || wikiRespJson.getString("extract").contains("composer") 
+                            || wikiRespJson.getString("extract").contains("musician")
+                            || wikiRespJson.getString("extract").contains("director"))){
+                            
+                            System.out.println("wikiRespJson: "+wikiRespJson.getJSONObject("thumbnail").getString("source"));
+                            FileUtils.copyURLToFile(new URL(wikiRespJson.getJSONObject("thumbnail").getString("source")), localArtistImg);
+                            downloadedArtists.add(artist);
+                    }
                 } catch (Exception e) {
                     failedArtists.add(artist);
                     e.printStackTrace();

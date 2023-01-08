@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gmt.gp.model.GMedia;
 import com.gmt.gp.model.GPResponse;
 import com.gmt.gp.model.Library;
+import com.gmt.gp.services.HistoryService;
 import com.gmt.gp.services.LibraryService;
 
 import javafx.application.Platform;
@@ -36,7 +37,10 @@ public class MediaController {
     }
 
     @Autowired
-    LibraryService libraryService;
+    private LibraryService libraryService;
+
+    @Autowired
+    private HistoryService historyService;
 
     @RequestMapping(method = RequestMethod.PUT, value = "/playSong/{songId}")
     public GPResponse playSong(@RequestBody String currentVolume,@PathVariable String songId){
@@ -47,6 +51,7 @@ public class MediaController {
             return resp;
         }
         Library song = libraryService.getSongBySongId(Integer.parseInt(songId));
+        historyService.updateHistory(song);
         boolean getLyrics = false;
         if(song.getLyrics()==null){
             getLyrics = true;
@@ -65,12 +70,13 @@ public class MediaController {
                 resp.setError(ise.getMessage());
                 ise.printStackTrace();
                 if(ise.getMessage().contains("Toolkit not initialized")){
-                    return initAndPlay(song, volume);
+                    resp =  initAndPlay(song, volume);
                 }
             }
         }else{
-            return initAndPlay(song, volume);
+            resp =  initAndPlay(song, volume);
         }
+        
         return resp;
     }
 
