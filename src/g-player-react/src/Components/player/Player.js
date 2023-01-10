@@ -8,10 +8,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { fettchCurrentSongStatus, playASong, playPause, setIsPlaying, setIsRepeat, setIsShuffle, setPlayBackLength } from "../redux/player/PlayerActions";
 import { getMins, scrolltoId, scrollToPlaying, setCookies } from "../utli";
 import { VolumeH } from "./VolumeH";
-import { ALBUM, ARTIST, NEXT, NEXXT, PREVIOUS, RECENT_PLAYS, TRACK_LIST } from "../redux/GPActionTypes";
+import { ALBUM, ARTIST, NEXT, PREVIOUS, RECENT_PLAYS, TRACK_LIST } from "../redux/GPActionTypes";
 import { Link } from "react-router-dom";
 import { ArtistLink } from "../screen/artist/ArtistLink";
 import def_album_art from '../images/def_album_art.png';
+import { updateHistory } from "../redux/library/LibraryActions";
 
 export const Player = () => {
 
@@ -32,6 +33,7 @@ export const Player = () => {
     const [currentPlayVal, setCurrentplayVal] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
     const [isPlayingL, setIsPlayingL] = useState(false);
+    const [playTime, setPlayTime] = useState(0); // Play time is updated every time playingSongStat chnage and is reset every time songPlaying chnages 
 
     useEffect(()=>{
         setIsPlayingL(isPlaying);
@@ -45,10 +47,19 @@ export const Player = () => {
     },[songPlaying,isPlaying]);
 
     useEffect(()=>{
-        if(isPlaying)
+        if(isPlaying){
             dispatch(fettchCurrentSongStatus());
-       
+        }
+        setPlayTime(0);
     },[songPlaying]);
+
+    useEffect(()=>{
+        const tempPlayTime = playTime;
+        if(playTime===10000 && songPlaying!==null){
+            dispatch(updateHistory(songPlaying.songId));
+        }
+        setPlayTime(tempPlayTime+500);
+    },[playingSongStat])
 
 
     useEffect(()=>{

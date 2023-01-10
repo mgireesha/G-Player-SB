@@ -43,6 +43,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.gmt.gp.model.Album;
 import com.gmt.gp.model.Artist;
 import com.gmt.gp.model.GPResponse;
+import com.gmt.gp.model.History;
 import com.gmt.gp.model.Library;
 import com.gmt.gp.model.Message;
 import com.gmt.gp.repositories.AlbumRepository;
@@ -57,6 +58,9 @@ public class LibraryService {
 
     private static final Logger LOG = LoggerFactory.getLogger(LibraryService.class);
 
+    @Autowired
+    private HistoryService historyService;
+    
     @Autowired
     private LibraryRepository libraryRepository;
 
@@ -222,6 +226,7 @@ public class LibraryService {
                         }
                     } catch (Exception e) {
                         LOG.error(methodName+" - Exception in jaudiotagger_read, exceptionCount: "+ ++exceptionCounter);
+                        LOG.error(methodName+" - File Filed: "+fileList.get(i));
                         e.printStackTrace();
                     }
                     
@@ -264,7 +269,7 @@ public class LibraryService {
             LOG.info(methodName+" - Time took to read mp3 metadata: "+ (endingTime-startingTime) +" ms, "+(endingTime-startingTime)/1000+" secs");
             
             startingTime = System.currentTimeMillis();
-            libraryRepository.saveAll(libList);
+            libList = (List<Library>) libraryRepository.saveAll(libList);
             albumRepository.saveAll(albumList);
             endingTime = System.currentTimeMillis();
             LOG.info(methodName+" - Time took to save library and album list: "+ (endingTime-startingTime) +" ms, "+(endingTime-startingTime)/1000+" secs");
@@ -299,6 +304,27 @@ public class LibraryService {
 
             endingTime = System.currentTimeMillis();
             LOG.info(methodName+" - Time took to filter, save and update imgAvl of artist and album artist: "+ (endingTime-startingTime) +" ms, "+(endingTime-startingTime)/1000+" secs");
+
+            startingTime = System.currentTimeMillis();
+            List<History> historyList = historyService.getAllHistory();
+            List<History> historyListR = new ArrayList<History>();
+            List<History> historyListU = new ArrayList<History>();
+            History history = null;
+            for(int i=0; i<historyList.size();i++){
+                history = historyList.get(i);
+                library = getLibraryFromLibList(libList, history);
+                if(library!=null){
+                    history.setSongId(library.getSongId());
+                    history.setSongPath(library.getSongPath());
+                    historyListU.add(history);
+                }else{
+                    historyListR.add(history);
+                }
+            }
+            historyService.removeAll(historyListR);
+            historyService.saveAll(historyListU);
+            endingTime = System.currentTimeMillis();
+            LOG.info(methodName+" - Time took to update history table : "+ (endingTime-startingTime) +" ms, "+(endingTime-startingTime)/1000+" secs");
 
         } catch (Exception e) {
             LOG.error(methodName+" - Exception in main_try_for_method_buildLibrary, exceptionCount: "+ ++exceptionCounter);
@@ -351,6 +377,10 @@ public class LibraryService {
 
     public boolean containsName(final List<Album> list, final String name){
         return list.stream().filter(o -> o.getAlbumName().equals(name)).findFirst().isPresent();
+    }
+
+    public Library getLibraryFromLibList(final List<Library> libList, History history){
+        return libList.stream().filter(o -> (o.getTitle().equalsIgnoreCase(history.getTitle()) && o.getAlbum().equalsIgnoreCase(history.getAlbum()))).findFirst().orElse(null);
     }
 
     public Library getAAttrFromTag(Library song, boolean getAlbumImg, boolean getLyrics){

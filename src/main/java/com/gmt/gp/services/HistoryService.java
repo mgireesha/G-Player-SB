@@ -35,11 +35,14 @@ public class HistoryService {
         historyRepository.save(history);
     }
 
-    public Map<String, Object> getAllHistory() {
+    public List<History> getAllHistory(){
+        return (List<History>) historyRepository.findAll();
+    }
+
+    public Map<String, Object> getAllGroupedHistory() {
         Map<String, Object> allHistory = new HashMap<String, Object>();
-        allHistory.put("songs", historyRepository.findAllByOrderByLastPlayedTimeDesc());
-        List<Map<String, Object>> albums  = getAlbumsGroupedFromHistoryJDBC();
-        allHistory.put("albums", albums);
+        allHistory.put("songs", historyRepository.findTop30ByOrderByLastPlayedTimeDesc());
+        allHistory.put("albums", getAlbumsGroupedFromHistoryJDBC());
         return allHistory;
     }
 
@@ -77,6 +80,14 @@ public class HistoryService {
             e.printStackTrace();
         }
         return albumArr;
+    }
+
+    public void removeAll(List<History> historyListR) {
+        historyRepository.deleteAll(historyListR);
+    }
+
+    public void saveAll(List<History> historyListU) {
+        historyRepository.saveAll(historyListU);
     }
     
 }

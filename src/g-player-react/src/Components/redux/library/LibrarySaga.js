@@ -1,20 +1,20 @@
 import { call, put, takeLatest } from "redux-saga/effects";
 import { handleAPIError } from "../../utli";
-import { deleteMusicPathAPI, fetchAlbumAPI, fetchalbumDetailsByAlbumArtistAPI, fetchAlbumImgsAPI,
+import { deleteMusicPathAPI, fetchAlbumAPI, fetchAlbumImgsAPI,
          fetchalbumListOfAAAPI,
          fetchAlbumtracksAPI,
          fetchAllAlbumDtlsAPI, fetchAllAlbumsAPI, fetchAllArtistsDtlsAPI, 
          fetchAllHistoryAPI, 
          fetchMusicpathAPI, 
-         fetchSongsByArtistAPI, getAllSongsAPI, initLibraryBuildAPI, saveMusicpathAPI, searchByKeyAPI 
+         fetchSongsByArtistAPI, getAllSongsAPI, initLibraryBuildAPI, saveMusicpathAPI, searchByKeyAPI, updateHistoryAPI 
     } from "../GPApis";
-import { deleteMusicPathSucc, fetchAlbumDetailsByAlbumArtistSucc, fetchAlbumImgsScc, fetchAlbumlistOfAASucc, fetchAlbumSucc, 
+import { deleteMusicPathSucc, fetchAlbumImgsScc, fetchAlbumlistOfAASucc, fetchAlbumSucc, 
         fetchAlbumTacksSucc, 
         fetchAllAlbumArtistsDtlsSucc, fetchAllAlbumsDtlsSucc, fetchAllAlbumsSucc, 
-        fetchAllArtistsDtlsSucc, fetchAllHistorySucc, fetchMusicPathSucc, fetchSongsByArtistSucc, fethAllSongsSucc, initLibraryBuildSucc, saveMusicPathSucc, searchByKeySucc 
+        fetchAllArtistsDtlsSucc, fetchAllHistorySucc, fetchMusicPathSucc, fetchSongsByArtistSucc, fethAllSongsSucc, initLibraryBuildSucc, saveMusicPathSucc, searchByKeySucc, updateHistorySucc 
     } from "./LibraryActions";
-import { FETCH_SONGS_START, HISTORY_FETCH_ALL_HISTORY_START, LIBRARY_DELETE_MUSIC_PATH_START, LIBRARY_FETCH_ALBUMS_DETAILS_START, LIBRARY_FETCH_ALBUMS_START, 
-    LIBRARY_FETCH_ALBUM_ARTIST_LIST_START, LIBRARY_FETCH_ALBUM_DETAILS_BY_ALBUM_ARTIST_START, 
+import { FETCH_SONGS_START, HISTORY_FETCH_ALL_HISTORY_START, HISTORY_UPDATE_HISTORY_START, LIBRARY_DELETE_MUSIC_PATH_START, LIBRARY_FETCH_ALBUMS_DETAILS_START, LIBRARY_FETCH_ALBUMS_START, 
+    LIBRARY_FETCH_ALBUM_ARTIST_LIST_START, 
     LIBRARY_FETCH_ALBUM_IMGS_START, LIBRARY_FETCH_ALBUM_LIST_OF_AA_START, LIBRARY_FETCH_ALBUM_START, LIBRARY_FETCH_ALBUM_TRACKS_START, LIBRARY_FETCH_ARTIST_LIST_START, 
     LIBRARY_FETCH_MUSIC_PATH_START, 
     LIBRARY_FETCH_SONGS_BY_ARTIST_START, 
@@ -267,6 +267,7 @@ export function* onSearchByKeyAsync(payload){
     }
 }
 
+//History Start
 export function* onFetchAllHistory(){
     yield takeLatest(HISTORY_FETCH_ALL_HISTORY_START, onFetchAllHistoryAsync);
 }
@@ -282,3 +283,20 @@ export function* onFetchAllHistoryAsync(){
         handleAPIError(error);
     }
 }
+
+export function* onUpdateHistory(){
+    yield takeLatest(HISTORY_UPDATE_HISTORY_START, onUpdateHistoryAsync);
+}
+
+export function* onUpdateHistoryAsync(payload){
+    try {
+        const response = yield call(updateHistoryAPI, payload.songId);
+        if(response.status === 200){
+            yield put(updateHistorySucc(response.data));
+        }
+    } catch (error) {
+        console.log(error);
+        handleAPIError(error);
+    }
+}
+//History End

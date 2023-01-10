@@ -100,7 +100,12 @@ export const setPlaybackLengthAPI = (pbVal) => {
     return iAxios.get(`/media/forward/${pbVal}`).then(response => response);
 }
 
-//History
+//History Start
 export const fetchAllHistoryAPI = () => {
-    return iAxios.get(`/history/getAllHistory`).then(response => response);
+    return iAxios.get(`/history/getAllGroupedHistory`).then(response => response);
 }
+
+export const updateHistoryAPI = (songId) => {
+    return iAxios.put(`/history/updateHistory/${songId}`).then(response => response);
+}
+//History End

@@ -11,6 +11,8 @@ public interface HistoryRepository extends CrudRepository<History, Long>{
     History getBySongId(long songId);
 
     List<History> findAllByOrderByLastPlayedTimeDesc();
+
+    List<History> findTop30ByOrderByLastPlayedTimeDesc();
     
     
 }

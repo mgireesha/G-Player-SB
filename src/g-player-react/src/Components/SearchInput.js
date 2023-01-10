@@ -6,7 +6,6 @@ export const SearchInput = () => {
     const navigate = useNavigate();
     const [isFocussed, setIsFocussed] = useState(false);
     const searchBySearchKey = () => {
-        console.log("isFocussed",isFocussed);
         const searchKey = document.getElementById('search_input').value;
         if(searchKey.length<3)return;
         setIsFocussed(false);
