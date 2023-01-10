@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RECENT_PLAYS, TRACK_LIST } from "../redux/GPActionTypes";
+import { RECENT_PLAYS } from "../redux/GPActionTypes";
 import { fetchAllHistory } from "../redux/library/LibraryActions";
 import { setPlayedFrom } from "../redux/player/PlayerActions";
 import { AlbumThumb } from "../screen/AlbumThumb";
@@ -45,7 +45,7 @@ export const RecentPlays = () => {
                 <div className="track-list">
                     <h3>Tracks</h3>
                     {historyTracks!==undefined && historyTracks.length>0 && historyTracks.map((track, index)=>
-                        <Track track={track} key={index} playedFrom={RECENT_PLAYS} index={index} />
+                        <Track track={track} key={index} playedFrom={RECENT_PLAYS} index={index} hideTrackNum={true} />
                     )}
                 </div>
             </div>

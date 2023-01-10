@@ -992,11 +992,22 @@ a{
         }
     }
 
-    .row:hover{
+    //.row:hover{
         //border-bottom: 1px solid gray;
         //border-top: 1px solid gray;
-        opacity: 0.8;
+        //opacity: 0.8;
+        //background-color: #54545485;
+   // }
+
+    .sidebar-slected-row{
+        border-left: 3px solid #dfbd16;
+        border-right: 3px solid #dfbd16;
+        opacity: 0.7;
         background-color: #54545485;
+
+        a:hover{
+            color: beige;
+        }
     }
 
     .search-row{
@@ -1313,7 +1324,8 @@ a{
         .track-list{
             max-height: unset;
             .track{
-                grid-template-columns: 1fr 5fr 4fr 5fr 1fr 2fr 1fr;
+                //grid-template-columns: 1fr 5fr 4fr 5fr 1fr 2fr 1fr; // when tracknumber/serial number shown
+                grid-template-columns: 5fr 4fr 5fr 1fr 2fr 1fr; // when tracknumber/serial number hidden
             }
         }
     }

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gmt.gp.model.GMedia;
 import com.gmt.gp.model.GPResponse;
 import com.gmt.gp.model.Library;
-import com.gmt.gp.services.HistoryService;
 import com.gmt.gp.services.LibraryService;
 
 import javafx.application.Platform;
@@ -39,9 +38,6 @@ public class MediaController {
     @Autowired
     private LibraryService libraryService;
 
-    @Autowired
-    private HistoryService historyService;
-
     @RequestMapping(method = RequestMethod.PUT, value = "/playSong/{songId}")
     public GPResponse playSong(@RequestBody String currentVolume,@PathVariable String songId){
         GPResponse resp = new GPResponse();
@@ -51,7 +47,7 @@ public class MediaController {
             return resp;
         }
         Library song = libraryService.getSongBySongId(Integer.parseInt(songId));
-        historyService.updateHistory(song);
+        //historyService.updateHistory(song);
         boolean getLyrics = false;
         if(song.getLyrics()==null){
             getLyrics = true;
