@@ -195,6 +195,18 @@
         text-align: center;
     }
 
+    .other-actions{
+        .volume-h-div{
+            display: flex;
+            align-items: center;
+
+            span{
+                padding: 0 5px;
+                padding-bottom: 3px;
+            }
+        }
+    }
+
 }
 
 .sidebar{

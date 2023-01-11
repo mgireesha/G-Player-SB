@@ -4,7 +4,7 @@ import { Sidebar } from "./Sidebar";
 import { Screen } from "./screen/Screen";
 import { useDispatch } from "react-redux";
 import { fetchAlbumImgs, fetchAllAlbums, fetchAllAlbumsDtls, fethAllSongs } from "./redux/library/LibraryActions";
-import { fetchCurrentSontAndStatus, fettchCurrentSongStatus, playASongSucc, setIsRepeat, setIsShuffle, setMediaVolume } from "./redux/player/PlayerActions";
+import { fetchCurrentSontAndStatus, fettchCurrentSongStatus, playASongSucc, setIsRepeat, setIsShuffle, setMediaVolume, setRepeat } from "./redux/player/PlayerActions";
 import { getCookieDetails } from "./utli";
 import { TRACK_LIST } from "./redux/GPActionTypes";
 import { Route, Routes } from "react-router-dom";
@@ -25,8 +25,8 @@ export const Home = () => {
 
     const getSetCookieDetails = () =>{
         const cookieDetails = getCookieDetails();
-        if(cookieDetails["isRepeat"]!==undefined){
-            dispatch(setIsRepeat(cookieDetails["isRepeat"]==='true'));
+        if(cookieDetails["repeat"]!==undefined){
+            dispatch(setRepeat(cookieDetails["repeat"]));
         }
         if(cookieDetails["isShuffle"]!==undefined){
             dispatch(setIsShuffle(cookieDetails["isShuffle"]==='true'));

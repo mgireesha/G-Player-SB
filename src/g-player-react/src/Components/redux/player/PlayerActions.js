@@ -77,9 +77,9 @@ export const fetchCurrentSontAndStatusSucc = (response) => ({
     response
 })
 
-export const setIsRepeat = (isRepeat) => ({
+export const setRepeat = (repeat) => ({
     type: SET_PLAYER_ISREPEAT,
-    isRepeat
+    repeat
 })
 
 export const setIsShuffle = (isShuffle) => ({

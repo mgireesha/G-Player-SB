@@ -6,6 +6,8 @@ export const ALBUM_ARTISTS = 'ALBUM_ARTISTS';
 export const ARTIST = 'ARTIST';
 export const ARTISTS = 'ARTISTS';
 
+export const CURRENT = 'CURRENT';
+
 export const INIT = 'INIT';
 
 export const LIBRARY = 'LIBRARY'
@@ -20,6 +22,9 @@ export const PREVIOUS = 'PREVIOUS';
 
 export const RECENT = 'RECENT';
 export const RECENT_PLAYS = 'RECENT_PLAYS';
+export const REPEAT_ALL = 'REPEAT_ALL';
+export const REPEAT_OFF = 'REPEAT_OFF';
+export const REPEAT_ONE = 'REPEAT_ONE';
 
 export const SORT_ARTIST = 'Artist';
 export const SORT_COUNT_ALBUMS = 'No of Albums';

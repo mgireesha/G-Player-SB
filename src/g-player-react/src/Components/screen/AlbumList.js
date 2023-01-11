@@ -12,7 +12,7 @@ export const AlbumList = () => {
     let albums = useSelector(state => state.library.albums);
     const [albumList, setAlbumList] = useState({});
     const [albumListKeys, setAlbumListKeys] = useState([]);
-    const [sortBy, setSortBy] = useState(A_TO_Z);
+    const [sortBy, setSortBy] = useState(SORT_YEAR);
     //const [albumDtlsKeys, setAlbumDtlsKeys] = useState(null);
     
     //const albumImgs = useSelector(state => state.library.albumImgs);

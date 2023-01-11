@@ -3,12 +3,12 @@ import React, { useEffect, useState } from "react";
 import { FaPauseCircle, FaPlay } from "react-icons/fa";
 import { MdSkipNext, MdSkipPrevious } from "react-icons/md";
 import { TiArrowRepeat } from "react-icons/ti";
-import { TbArrowsShuffle } from "react-icons/tb";
+import { TbArrowsShuffle , TbRepeatOnce} from "react-icons/tb";
 import { useDispatch, useSelector } from "react-redux";
-import { fettchCurrentSongStatus, playASong, playPause, setIsPlaying, setIsRepeat, setIsShuffle, setPlayBackLength } from "../redux/player/PlayerActions";
+import { fettchCurrentSongStatus, playASong, playPause, setIsPlaying, setIsRepeat, setIsShuffle, setPlayBackLength, setRepeat } from "../redux/player/PlayerActions";
 import { getMins, scrolltoId, scrollToPlaying, setCookies } from "../utli";
 import { VolumeH } from "./VolumeH";
-import { ALBUM, ARTIST, NEXT, PREVIOUS, RECENT_PLAYS, TRACK_LIST } from "../redux/GPActionTypes";
+import { ALBUM, ARTIST, CURRENT, NEXT, PREVIOUS, RECENT_PLAYS, REPEAT_ALL, REPEAT_OFF, REPEAT_ONE, TRACK_LIST } from "../redux/GPActionTypes";
 import { Link } from "react-router-dom";
 import { ArtistLink } from "../screen/artist/ArtistLink";
 import def_album_art from '../images/def_album_art.png';
@@ -18,7 +18,7 @@ export const Player = () => {
 
     const dispatch = useDispatch();
     const isPlaying = useSelector(state => state.player.isPlaying);
-    const isRepeat = useSelector(state => state.player.isRepeat);
+    const repeat = useSelector(state => state.player.repeat);
     const isShuffle = useSelector(state => state.player.isShuffle);
     const songPlayingImg = useSelector(state => state.player.songPlayingImg);
     const songPlaying = useSelector(state => state.player.songPlaying);
@@ -69,8 +69,10 @@ export const Player = () => {
        const trackLength = songPlaying.trackLength;
        if((trackLength - currentTime)<3){
             clearInterval(statClearIntrvl);
-            if(isRepeat){
+            if(repeat===REPEAT_ALL){
                 setTimeout(playNextSong(NEXT),4000);
+            }else if(repeat===REPEAT_ONE){
+                setTimeout(playNextSong(CURRENT),4000);
             }else{
                 dispatch(setIsPlaying(false))
             }
@@ -98,40 +100,44 @@ export const Player = () => {
     const playNextSong = (action) => {
         if(songPlaying===null)return false;
         let library;
-        if(playedFrom===TRACK_LIST){
-            library = tracks;
-        }else if(playedFrom===ALBUM){
-            library = albumTracks;
-        }else if(playedFrom===ARTIST){
-            library = artistTracks;
-        }else if(playedFrom===RECENT_PLAYS){
-            library = historyTracks;
-        }else{
-            library = tracks;
-        }
         let nextSong = {};
-        if(isShuffle){
-            const randomIndex = Math.floor(Math.random()*library.length);
-            nextSong = library[randomIndex];
+        if(action===CURRENT){
+            nextSong = songPlaying;
         }else{
-            const crrntindex = library.findIndex((track)=>track.songId===songPlaying.songId);
-            if(action===NEXT){
-                if(library[crrntindex+1]!==undefined){
-                    nextSong = library[crrntindex+1];
-                }else{
-                    nextSong = library[0];
-                }
+            if(playedFrom===TRACK_LIST){
+                library = tracks;
+            }else if(playedFrom===ALBUM){
+                library = albumTracks;
+            }else if(playedFrom===ARTIST){
+                library = artistTracks;
+            }else if(playedFrom===RECENT_PLAYS){
+                library = historyTracks;
             }else{
-                if(library[crrntindex-1]!==undefined){
-                    nextSong = library[crrntindex-1];
-                }else{
-                    nextSong = library[library.length-1];
+                library = tracks;
+            }
+            if(isShuffle){
+                const randomIndex = Math.floor(Math.random()*library.length);
+                nextSong = library[randomIndex];
+            }else{
+                const crrntindex = library.findIndex((track)=>track.songId===songPlaying.songId);
+                if(action===NEXT){
+                    if(library[crrntindex+1]!==undefined){
+                        nextSong = library[crrntindex+1];
+                    }else{
+                        nextSong = library[0];
+                    }
+                }else if(action===PREVIOUS){
+                    if(library[crrntindex-1]!==undefined){
+                        nextSong = library[crrntindex-1];
+                    }else{
+                        nextSong = library[library.length-1];
+                    }
                 }
             }
         }
         scrolltoId("track-"+nextSong.songId);
         dispatch(playASong(nextSong.songId, playedFrom, currentVolume));
-        dispatch(setIsPlaying(true))
+        dispatch(setIsPlaying(true));
     }
 
     const setSlctdPlayBackTime = (event) => {
@@ -142,14 +148,17 @@ export const Player = () => {
     }
 
 
-    const setIsRepeatL = () => {
-        if(isRepeat){
-            dispatch(setIsRepeat(false))
-            setCookies("isRepeat", false);
-        }else {
-            dispatch(setIsRepeat(true))
-            setCookies("isRepeat", true);
+    const setRepeatL = () => {
+        let tempRepeat;
+        if(repeat===REPEAT_OFF){
+            tempRepeat = REPEAT_ALL;
+        }else if(repeat===REPEAT_ALL){
+            tempRepeat = REPEAT_ONE;
+        }else if(repeat===REPEAT_ONE){
+            tempRepeat = REPEAT_OFF;
         }
+        dispatch(setRepeat(tempRepeat))
+        setCookies("repeat", tempRepeat);
     }
 
     const setIsShuffleL = () => {
@@ -202,8 +211,9 @@ export const Player = () => {
                         </div>
                     </div>
                     <div className="repeat">
-                        <div className={isRepeat?"repeat-button btn-selected":"repeat-button"}>
-                            <TiArrowRepeat onClick={setIsRepeatL} />
+                        <div className={repeat===REPEAT_ONE || repeat===REPEAT_ALL?"repeat-button btn-selected":"repeat-button"}>
+                            {(repeat===REPEAT_OFF || repeat===REPEAT_ALL) && <TiArrowRepeat onClick={setRepeatL} />}
+                            {repeat===REPEAT_ONE && <TbRepeatOnce onClick={setRepeatL} />}
                         </div>
                     </div>
                 </div>
