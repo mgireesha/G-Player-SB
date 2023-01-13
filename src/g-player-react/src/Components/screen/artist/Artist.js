@@ -7,6 +7,7 @@ import { setPlayedFrom } from "../../redux/player/PlayerActions";
 import { Track } from "../Track";
 import def_album_art from '../../images/def_album_art.png';
 import { scrolltoId } from "../..//utli";
+import { FilterComp } from "../../FilterComp";
 
 export const Artist = () => {
     const dispatch = useDispatch();
@@ -23,6 +24,8 @@ export const Artist = () => {
     const [artistWiki, setArtistWiki] = useState({});
     const [artistWikiImg, setArtistWikiImg] = useState(null);
     const [artistObj, setArtistObj] = useState({});
+    const [artistTracksL, setArtistTracksL] = useState([]);
+    const [filterTxt, setFilterTxt] = useState(null);
     useEffect(()=>{
         setArtistWikiImg(null);
         setArtistWiki({});
@@ -37,6 +40,37 @@ export const Artist = () => {
             dispatch(fetchAllArtistsDtls(ARTIST));
         }
     },[artist, artistsDetails]);
+
+    useEffect(()=>{
+        setArtistTracksL(artistTracks);
+    },[artistTracks]);
+
+    useEffect(()=>{
+        if(filterTxt===null){
+            setArtistTracksL(artistTracks);
+        }else if(filterTxt.length>2){
+            let tempArtistTracks = [...artistTracks];
+            tempArtistTracks = tempArtistTracks.filter(track => {return track.title.toLowerCase().includes(filterTxt) 
+                                                                            || track.album.toLowerCase().includes(filterTxt) 
+                                                                            || track.year===filterTxt 
+                                                                            || track.genre.toLowerCase().includes(filterTxt)
+                                                                    });
+            if(tempArtistTracks.length>0){
+                setArtistTracksL(tempArtistTracks);
+            }else{
+                setArtistTracksL([]);
+            }
+        }
+    },[filterTxt]);
+
+    const onSetFilterTxt = (event) => {
+        const tempFilterTxt = event.target.value;
+        if(tempFilterTxt==="" || tempFilterTxt.length<3){
+            setFilterTxt(null);
+        }else if(tempFilterTxt.length>2){
+            setFilterTxt(tempFilterTxt.toLowerCase());
+        }
+    }
 
     useEffect(()=>{
         dispatch(setGroupband("artists"));
@@ -85,8 +119,12 @@ export const Artist = () => {
                     }
                 </div>
             </div>
+            <div style={{width:'100%'}}>
+                <FilterComp onSetFilterTxt={onSetFilterTxt} />
+            </div>
+            
             <div className="artist-track-list">
-                {artistTracks!==null && artistTracks!==undefined && artistTracks.map((track, index)=>
+                {artistTracksL!==null && artistTracksL!==undefined && artistTracksL.map((track, index)=>
                     track.title!==null && <Track track={track} key={track.songId} playedFrom={ARTIST} index={index} />
                 )}
             </div>

@@ -433,8 +433,8 @@
         .artist-img-div-container{
             display: grid;
             grid-template-columns: 1fr 4fr;
-            min-height: 12em;
-            max-height: 12em;
+            min-height: 10em;
+            max-height: 10em;
             margin-bottom: 10px;
         
             .artist-details{
@@ -455,8 +455,8 @@
                 .artist-wiki-summary{
                     margin-top: 5px;
                     font-size: 14px;
-                    width: 94%;
-                    max-height: 9em;
+                    width: 96%;
+                    max-height: 7em;
                     overflow-y: auto;
                 }
             }
@@ -1345,7 +1345,33 @@ a{
 
 }
 
+.filter-component{
+    margin-left:auto;
+    width:30%;
+    position:relative;
+    margin-bottom: 5px;
 
+    .filter-input-field{
+        padding:8px;
+        border-radius:2px;
+        outline:none;
+        border:none;
+        width:90%;
+    }
+
+    .filter-close-icon{
+        position:absolute;
+        font-size:20px;
+        right:10%;
+        top: 15%;
+        color: #303030;
+        cursor: pointer;
+    }
+
+    .filter-close-icon:hover{
+        color: #616060;
+    }
+}
 
 /*Custom Scrollbar*/
 /* width */
