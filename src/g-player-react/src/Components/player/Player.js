@@ -86,8 +86,6 @@ export const Player = () => {
         dispatch(fettchCurrentSongStatus());
     }
 
-    
-
     const playPauseFunc = () => {
         if(isPlaying){
             setIsPlayingL(false)

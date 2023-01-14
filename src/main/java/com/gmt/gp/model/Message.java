@@ -46,4 +46,11 @@ public class Message {
 
     public Message() {
     }
+    public Message(String type, String name, String value) {
+        this.type = type;
+        this.name = name;
+        this.value = value;
+    }
+
+    
 }

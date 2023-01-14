@@ -840,6 +840,14 @@ a{
     }
 }
 
+a.disabled-click{
+    pointer-events: none;
+    pointer-events: none;
+    cursor: not-allowed;
+    color: #363636;
+    background-color: grey;
+}
+
 .show-lyrics{
     display: flex;
     flex-direction: column;
@@ -878,7 +886,7 @@ a{
         display: flex;
         column-gap: 20px;
         .library-build, .library-list{
-            height: 15em;
+            height: 16em;
             width: 30em;
             border: 1px solid grey;
             box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
@@ -913,6 +921,27 @@ a{
 
                 .library-btn:hover{
                     background-color: #364981;
+                }
+            }
+        }
+
+        .library-build{
+            .status{
+                margin-top: 10px;
+                .completed, .running{
+                    label:first-child{
+                        padding-left: 0;
+                    }
+                    label{
+                        font-size: 14px;
+                        padding-left: 10px;
+                        display: block;
+                        line-height: 1.5em;
+                        span{
+                            width: 11em;
+                            display: inline-block;
+                        }
+                    }
                 }
             }
         }

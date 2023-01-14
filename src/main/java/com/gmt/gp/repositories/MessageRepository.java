@@ -9,5 +9,7 @@ import com.gmt.gp.model.Message;
 public interface MessageRepository extends CrudRepository<Message, Long>{
 
     List<Message> getByType(String type);
+
+    Message getByName(String name);
     
 }

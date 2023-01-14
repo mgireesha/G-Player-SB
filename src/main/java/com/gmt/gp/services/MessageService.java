@@ -13,6 +13,8 @@ public class MessageService {
 
     private static final String MUSIC_PATH = "MUSIC_PATH";
 
+    private static final String BUILD_STATUS = "BUILD_STATUS";
+
     @Autowired
     private MessageRepository messageRepository;
 
@@ -27,5 +29,26 @@ public class MessageService {
     public void removeMessageById(long messageId) {
         messageRepository.deleteById(messageId);
     }
+
+    public void removeMessageType(String type) {
+        List<Message> msgTypes = messageRepository.getByType(type);
+        for(Message msg : msgTypes)removeMessageById(msg.getMessageId());
+    }
+
+    public void updateBuildStatus(String type, String name, String value) {
+        Message message = messageRepository.getByName(name);
+        if(message==null){
+            message = new Message(type, name, value);
+        }else{
+            message.setValue(value);
+        }
+        messageRepository.save(message);
+    }
+
+    public List<Message> getbuldStatus(){
+        return messageRepository.getByType(BUILD_STATUS);
+    }
+
+    
     
 }

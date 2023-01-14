@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ALBUM_ARTIST, ALBUM_ARTISTS, A_TO_Z, A_TO_Z_DESC, SORT_COUNT_ALBUMS, SORT_YEAR } from "../../redux/GPActionTypes";
+import { ALBUM_ARTIST, ALBUM_ARTISTS, A_TO_Z, A_TO_Z_DESC, SORT_COUNT_ALBUMS } from "../../redux/GPActionTypes";
 import { fetchAllAlbumArtistsDtls, setGroupband } from "../../redux/library/LibraryActions";
 import { setPlayedFrom } from "../../redux/player/PlayerActions";
 import { sortGroupByField } from "../../utli";

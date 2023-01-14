@@ -48,4 +48,9 @@ public class MessageController {
 
         return resp;
     }
+
+    @RequestMapping("/getBuildStatus")
+    public List<Message> getBuildStatus(){
+        return messageService.getbuldStatus();
+    }
 }
