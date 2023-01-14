@@ -49,6 +49,7 @@ import com.gmt.gp.model.Message;
 import com.gmt.gp.repositories.AlbumRepository;
 import com.gmt.gp.repositories.ArtistRepository;
 import com.gmt.gp.repositories.LibraryRepository;
+import com.gmt.gp.util.GPUtil;
 
 import java.awt.image.BufferedImage;
 import java.awt.Image;
@@ -60,6 +61,9 @@ public class LibraryService {
 
     @Autowired
     private HistoryService historyService;
+
+    @Autowired
+    private MessageService messageService;
     
     @Autowired
     private LibraryRepository libraryRepository;
@@ -85,6 +89,22 @@ public class LibraryService {
     private static final String ARTISTS = "ARTISTS";
 
     private static final String ALBUMS = "ALBUMS";
+
+    private static final String BUILD_STATUS = "BUILD_STATUS";
+
+    private static final String COMPLETED = "COMPLETED";
+
+    private static final String FILES_TO_READ = "FILES_TO_READ";
+
+    private static final String FILES_READ_TIME = "FILES_READ_TIME";
+
+    private static final String TOTAL_TRACKS = "TOTAL_TRACKS";
+
+    private static final String ARTIST_COUNT = "ARTIST_COUNT";
+
+    private static final String ALBUM_ARTIST_COUNT = "ALBUM_ARTIST_COUNT";
+
+    private static final String BUILD_STATUS_STEP = "BUILD_STATUS_STEP";
 
     static FileFilter mp3filter = new FileFilter() {
         @Override 
@@ -123,19 +143,23 @@ public class LibraryService {
     }
 
     public List<File> getMusicFiles(List<Message> mainFolderList) {
-        List<File> tempFileList = new ArrayList<File>();
         List<File> fileList = new ArrayList<File>();
-        FileFilter folderFilter = new FileFilter() {
-            public boolean accept(File file) {
-                return file.isDirectory();
+        try {
+            List<File> tempFileList = new ArrayList<File>();
+            FileFilter folderFilter = new FileFilter() {
+                public boolean accept(File file) {
+                    return file.isDirectory();
+                }
+            };
+            File[] folders = null;
+            for (Message mainFolder : mainFolderList) {
+                File musicDir = new File(mainFolder.getValue());
+                fileList.addAll(Arrays.asList(musicDir.listFiles(mp3filter)));
+                folders = musicDir.listFiles(folderFilter);
+                fileList.addAll(recursiveSearch(folders, 0, 0, tempFileList));
             }
-        };
-        File[] folders = null;
-        for (Message mainFolder : mainFolderList) {
-            File musicDir = new File(mainFolder.getValue());
-            fileList.addAll(Arrays.asList(musicDir.listFiles(mp3filter)));
-            folders = musicDir.listFiles(folderFilter);
-            fileList.addAll(recursiveSearch(folders, 0, 0, tempFileList));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return fileList;
     }
@@ -190,6 +214,7 @@ public class LibraryService {
         long startingTime = System.currentTimeMillis();
 
         LOG.info(methodName+" - Started reading audiofiles using jaudiotagger, files to read: "+fileList.size());
+        messageService.updateBuildStatus(BUILD_STATUS, BUILD_STATUS_STEP, "Started reading audiofiles using jaudiotagger");
         removeJAudioTagLogger();
         
         try { // label for try block : main_try_for_method_buildLibrary
@@ -262,19 +287,28 @@ public class LibraryService {
                 }
                 if(fileListCounter==100){
                     LOG.info(methodName+" - Reading audiofiles,  remaining files: "+(fileList.size()-i));
+                        messageService.updateBuildStatus(BUILD_STATUS, FILES_TO_READ, String.valueOf((fileList.size()-i)));
                         fileListCounter = 0;
                 }
             }
             long endingTime = System.currentTimeMillis();
+            messageService.updateBuildStatus(BUILD_STATUS, FILES_TO_READ, "0");
+            GPUtil.ThreadSleep(1000);
+            messageService.updateBuildStatus(BUILD_STATUS, BUILD_STATUS_STEP, "Finished reading all music files.");
             LOG.info(methodName+" - Time took to read mp3 metadata: "+ (endingTime-startingTime) +" ms, "+(endingTime-startingTime)/1000+" secs");
+            messageService.updateBuildStatus(BUILD_STATUS, FILES_READ_TIME, String.valueOf((endingTime-startingTime)));
             
             startingTime = System.currentTimeMillis();
+            messageService.updateBuildStatus(BUILD_STATUS, BUILD_STATUS_STEP, "Saving library and album list");
+            GPUtil.ThreadSleep(1000);
             libList = (List<Library>) libraryRepository.saveAll(libList);
             albumRepository.saveAll(albumList);
             endingTime = System.currentTimeMillis();
             LOG.info(methodName+" - Time took to save library and album list: "+ (endingTime-startingTime) +" ms, "+(endingTime-startingTime)/1000+" secs");
 
             startingTime = System.currentTimeMillis();
+            messageService.updateBuildStatus(BUILD_STATUS, BUILD_STATUS_STEP, "Reading and Saving artists");
+            GPUtil.ThreadSleep(1000);
             List<String> artistNameList = new ArrayList<String>(artistArtCount.keySet());//getFilteredArtistDetailsFromDb(ARTIST);
             for(String artistName2 : artistNameList){
                 artCount = artistArtCount.get(artistName2)!=null?artistArtCount.get(artistName2):0;
@@ -306,6 +340,8 @@ public class LibraryService {
             LOG.info(methodName+" - Time took to filter, save and update imgAvl of artist and album artist: "+ (endingTime-startingTime) +" ms, "+(endingTime-startingTime)/1000+" secs");
 
             startingTime = System.currentTimeMillis();
+            messageService.updateBuildStatus(BUILD_STATUS, BUILD_STATUS_STEP, "Started updating history");
+            GPUtil.ThreadSleep(1000);
             List<History> historyList = historyService.getAllHistory();
             List<History> historyListR = new ArrayList<History>();
             List<History> historyListU = new ArrayList<History>();
@@ -332,6 +368,10 @@ public class LibraryService {
         }
         LOG.error(methodName+" - exceptionCount: "+ exceptionCounter);
         LOG.info(methodName+" - Summary: \nTotal tracks: "+libList.size()+" \nArtists found: "+artistCount+" \nAlbum artist found: "+(artistList.size()-artistCount));
+        messageService.updateBuildStatus(BUILD_STATUS, TOTAL_TRACKS, String.valueOf(libList.size()));
+        messageService.updateBuildStatus(BUILD_STATUS, ARTIST_COUNT, String.valueOf(artistCount));
+        messageService.updateBuildStatus(BUILD_STATUS, ALBUM_ARTIST_COUNT, String.valueOf((artistList.size()-artistCount)));
+        messageService.updateBuildStatus(BUILD_STATUS, BUILD_STATUS, COMPLETED);
     }
 
     public Library getLibraryFromFile(Tag tag, AudioFile audioF) throws Exception{

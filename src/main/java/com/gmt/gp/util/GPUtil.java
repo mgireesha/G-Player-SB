@@ -8,4 +8,12 @@ public class GPUtil {
         }
     return stringObject;   
     }
+
+    public static void ThreadSleep(long time){
+        try {
+            Thread.sleep(time);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }

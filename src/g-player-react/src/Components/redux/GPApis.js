@@ -75,6 +75,10 @@ export const deleteMusicPathAPI = (messageId) => {
     return iAxios.delete(`/message/removeMusicPath/${messageId}`, ).then(response => response);
 }
 
+export const fetchBuildStatusAPI = () => {
+    return iAxios.get(`/message/getBuildStatus`).then(response => response);
+}
+
 //Media
 export const playPauseAPI = () => {
     return iAxios.get('/media/playPause').then(response => response);
