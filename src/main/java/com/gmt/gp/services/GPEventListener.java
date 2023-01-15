@@ -13,7 +13,7 @@ public class GPEventListener {
     public void runAppInBrowser(){
         try {
             Runtime rt = Runtime.getRuntime();
-            String url = "http://localhost:8085/#/music/tracks";
+            String url = "http://localhost:8085/#/music";
             rt.exec("rundll32 url.dll,FileProtocolHandler " + url);
         } catch (IOException e) {
             e.printStackTrace();

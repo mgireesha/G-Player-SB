@@ -29,16 +29,18 @@ public class GPUtil {
         String[] artistNameArr = null;
         String artistName = null;
         for(String artistNameO : artistHisCount.keySet()){
-            artistName = artistNameO;
+            artistName = artistNameO.trim();
             if(artistName.contains(";") || artistName.contains("&")){
                 artistName = artistName.replaceAll("[;&]", ",");
             }
             artistNameArr = artistName.split(",");
             for(String artistName1: artistNameArr){
-                if(artistHisCount1.get(artistName1)!=null){
-                    artistHisCount1.put(artistName1, artistHisCount.get(artistName1)+artistHisCount.get(artistNameO));
-                }else{
-                    artistHisCount1.put(artistName1, artistHisCount.get(artistNameO));
+                if(artistHisCount.get(artistNameO)!=null){
+                    if(artistHisCount1.get(artistName1)!=null){
+                        artistHisCount1.put(artistName1, artistHisCount1.get(artistName1)+artistHisCount.get(artistNameO));
+                    }else{
+                        artistHisCount1.put(artistName1, artistHisCount.get(artistNameO));
+                    }
                 }
             }
         }

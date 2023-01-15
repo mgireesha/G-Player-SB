@@ -25,9 +25,11 @@ public class SQL_QUERIES {
                 + "inner join "
                 + "(select artist_name,is_img_avl from artist where type='ARTIST' ) art "
                 + "on "
-                + "his.artist like CONCAT('%', art.artist_name, '%')) group by artist "
+                + "his.artist like CONCAT('%', art.artist_name, '%')) "
+                + "group by artist "
                 + "order by count desc "
-                + "fetch first 5 rows only;";
+                //+ "fetch first 5 rows only;"
+                ;
     }
 
     public static String getTopAlbumArtistFromHistoryJDBCQuery(){
