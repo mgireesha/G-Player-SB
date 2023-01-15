@@ -112,4 +112,8 @@ export const fetchAllHistoryAPI = () => {
 export const updateHistoryAPI = (songId) => {
     return iAxios.put(`/history/updateHistory/${songId}`).then(response => response);
 }
+
+export const fetchMostPlayedDataAPI = () => {
+    return iAxios.get(`/history/getMostPlayedData`).then(response => response);
+}
 //History End

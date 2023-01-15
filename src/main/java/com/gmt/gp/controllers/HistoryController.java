@@ -36,4 +36,9 @@ public class HistoryController {
         resp.setStatus("SUCCESS");
         return resp;
     }
+
+    @RequestMapping("/getMostPlayedData")
+    public Map<String, Object> getMostPlayedData(){
+        return historyService.getMostPlayedData();
+    }
 }

@@ -543,6 +543,151 @@
         
         
     }
+
+    .music{
+        max-height: 73vh;
+        overflow-y: auto;
+        h3{
+            padding: 10px 0 10px 15px;
+        }
+        .artists-list{
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+            grid-row-gap: 15px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 10px;
+            text-align: center;
+            
+    
+            .artist-thumb{
+                width: 10em;
+            }
+    
+            .artist-thumb-img-div{
+                position: relative;
+                img{
+                    height: 9em;
+                    width: 9em;
+                    cursor: pointer;
+                    border-radius: 50%;
+                    //border-bottom-left-radius: unset;
+                    box-shadow: rgb(0 0 0 / 40%) 0px 2px 4px, rgb(0 0 0 / 30%) 0px 7px 13px -3px, rgb(0 0 0 / 20%) 0px -3px 0px inset;
+                }
+            }
+    
+            .artist-thumb-details{
+                
+                display: flex;
+                flex-direction: column;
+
+                .track-count{
+                    font-size: 14px;
+                }
+            }
+        }
+
+        .albums-list{
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+            grid-row-gap: 15px;
+            overflow-y: auto;
+            z-index: 1;
+            position: relative;
+            background: #303030;
+            padding: 10px;
+            text-align: center;
+    
+            .album-artist-thumb{
+                width: 10em;
+            }
+    
+            .album-thumb-img-div{
+                position: relative;
+                img{
+                    height: 9em;
+                    width: 9em;
+                    cursor: pointer;
+                    border-radius: 50%;
+                    box-shadow: rgb(0 0 0 / 40%) 0px 2px 4px, rgb(0 0 0 / 30%) 0px 7px 13px -3px, rgb(0 0 0 / 20%) 0px -3px 0px inset;
+                }
+            }
+    
+            .album-thumb-img-div-link{
+                position: absolute;
+                height: 9em;
+                width: 9em;
+                top: 0;
+                align-items: center;
+                display: flex;
+                justify-content: center;
+                display: none;
+                background-color: #eaf0f0;
+                opacity: 0.2;
+                color: #093fa3;
+                cursor: pointer;
+    
+                svg{
+                    font-size: 2em;
+                    font-weight: 900;
+                }
+            }
+    
+            .album-thumb-img-div a:hover + .album-thumb-img-div-link{
+                display: flex;
+            }
+    
+            .album-thumb-details{
+                padding-right: 5px;
+                width: 10em;
+                display: flex;
+                flex-direction: column;
+    
+                label{
+                    font-size: 15px;
+                }
+    
+                p{
+                    margin-top: 5px;
+                    font-size: 13px;
+                }
+            }
+    
+        }
+
+        .album-artists-list{
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+            grid-row-gap: 15px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 10px;
+            justify-content: center;
+            text-align: center;
+    
+            .album-artist-thumb-img-div{
+                position: relative;
+                img{
+                    height: 9em;
+                    width: 9em;
+                    cursor: pointer;
+                    border-radius: 50%;
+                    box-shadow: rgb(0 0 0 / 40%) 0px 2px 4px, rgb(0 0 0 / 30%) 0px 7px 13px -3px, rgb(0 0 0 / 20%) 0px -3px 0px inset;
+                }
+            }
+    
+            .album-artist-thumb-details{
+                width: 13em;
+                max-width: 11em;
+                display: flex;
+                flex-direction: column;
+
+                .album-count{
+                    font-size: 14px;
+                }
+            }
+        }
+    }
 }
 
 .album-img-div-container{
