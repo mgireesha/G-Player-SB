@@ -6,22 +6,30 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.gmt.gp.model.History;
 import com.gmt.gp.model.Library;
 import com.gmt.gp.repositories.HistoryRepository;
 import com.gmt.gp.util.DbUtil;
+import com.gmt.gp.util.GPUtil;
+import com.gmt.gp.util.SQL_QUERIES;
 
 @Service
 public class HistoryService {
 
     @Autowired
     private HistoryRepository historyRepository;
+
+    @Autowired
+    @Lazy
+    private LibraryService libraryService;
 
     public void updateHistory(Library song) {
         History history =  historyRepository.getBySongId(song.getSongId());
@@ -42,25 +50,15 @@ public class HistoryService {
     public Map<String, Object> getAllGroupedHistory() {
         Map<String, Object> allHistory = new HashMap<String, Object>();
         allHistory.put("songs", historyRepository.findTop30ByOrderByLastPlayedTimeDesc());
-        allHistory.put("albums", getAlbumsGroupedFromHistoryJDBC());
+        allHistory.put("albums", getAlbumsGroupedFromHistoryJDBC(30, "last_played_time"));
         return allHistory;
     }
 
-    public List<Map<String, Object>> getAlbumsGroupedFromHistoryJDBC(){
+    public List<Map<String, Object>> getAlbumsGroupedFromHistoryJDBC(int rowCount, String orderBy){
         Map<String, Object> album = null;
         List<Map<String, Object>> albumArr = new ArrayList<Map<String, Object>>();
         Connection con = null;
-        String query = "select "
-                        + "his.album, his.count, his.last_played_time, alb.album_artist, alb.year, alb.genre, alb.is_album_img_avl "
-                        + "from "
-                        + "(select album, sum(count) as count, max(last_played_time) as last_played_time from history group by album) his "
-                        + "inner join "
-                        + "(select album_name, album_artist,year,genre,is_album_img_avl from album group by album, album_artist,year , genre,is_album_img_avl ) alb "
-                        + "on "
-                        + "alb.album_name=his.album "
-                        + "order by "
-                        + "his.last_played_time desc "
-                        + "fetch first 30 rows only;";
+        String query = SQL_QUERIES.getAlbumsGroupedFromHistoryJDBCQuery(rowCount, orderBy);
         try {
             con = DbUtil.getConnection();
             Statement stmt = con.createStatement();
@@ -90,4 +88,45 @@ public class HistoryService {
         historyRepository.saveAll(historyListU);
     }
     
+    public Map<String, Object> getMostPlayedData(){
+        Map<String, Object> finalRes = new HashMap<String, Object>();
+        Map<String, Integer> hisCount = executeMostPlayedHisQuery(SQL_QUERIES.getTopArtistsFromHistoryJDBCQuery());
+        List<Map.Entry<String, Integer>> list = GPUtil.splitSortArtists(hisCount);
+        List<Object> pData = new ArrayList<Object>();
+        int counter = 0;
+        for (Map.Entry<String, Integer> l : list) {
+            counter++;
+            pData.add(libraryService.getByArtistNameAndType(l.getKey().trim(), "ARTIST"));
+            if(counter==5)break;
+        }
+        finalRes.put("ARTISTS", pData);
+        pData = new ArrayList<Object>();
+        
+        hisCount = executeMostPlayedHisQuery(SQL_QUERIES.getTopAlbumArtistFromHistoryJDBCQuery());
+        for(String albumArtistName : hisCount.keySet()){
+            pData.add(libraryService.getByArtistNameAndType(albumArtistName, "ALBUM_ARTIST"));
+        }
+        finalRes.put("ALBUM_ARTISTS", pData);
+        pData = new ArrayList<Object>();
+
+        finalRes.put("ALBUMS", getAlbumsGroupedFromHistoryJDBC(5, "count"));
+
+        return finalRes;
+    }
+
+    private Map<String, Integer> executeMostPlayedHisQuery(String query){
+        Connection con = null;
+        Map<String, Integer> hisRes = new LinkedHashMap<String, Integer>();
+        try {
+            con = DbUtil.getConnection();
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+            while(rs.next()){
+                hisRes.put(rs.getString(1), rs.getInt(2));
+            }
+        } catch (Exception e) {
+           e.printStackTrace();
+        }
+    return hisRes;
+    }
 }

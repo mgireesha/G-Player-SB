@@ -47,5 +47,12 @@ public class Artist {
     public void setCount(int count) {
         this.count = count;
     }
+    @Override
+    public String toString() {
+        return "Artist [artistId=" + artistId + ", artistName=" + artistName + ", type=" + type + ", isImgAvl="
+                + isImgAvl + ", count=" + count + "]";
+    }
+
+    
     
 }

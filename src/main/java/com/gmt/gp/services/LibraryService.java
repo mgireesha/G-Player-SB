@@ -890,4 +890,12 @@ public class LibraryService {
         }
     }
 
+    public List<Artist> getArtistsByNames(List<String> artistNames) {
+        return artistRepository.getByArtistNames(artistNames);
+    }
+
+    public Artist getByArtistNameAndType(String artistName, String type){
+        return artistRepository.getByArtistNameAndType(artistName, type);
+    }
+
 }
