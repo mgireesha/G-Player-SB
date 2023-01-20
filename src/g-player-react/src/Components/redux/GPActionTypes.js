@@ -37,3 +37,6 @@ export const SORT_YEAR = 'Year';
 export const SUCCESS = 'SUCCESS';
 
 export const TRACK_LIST = 'TRACK_LIST';
+
+//URL
+export const WIKI_SUMMARY_URL = "https://en.wikipedia.org/api/rest_v1/page/summary/";

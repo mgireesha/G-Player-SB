@@ -31,6 +31,7 @@ export const ArtistsList = () => {
                 let tempArtistsDetails = [...artistsDetailsFS];
                 tempArtistsDetails = tempArtistsDetails.sort((a, b)=>a.count > b.count?-1:1);
                 tempArtistsDetails = tempArtistsDetails.sort((a, b)=>b.imgAvl?1:-1);
+                tempArtistsDetails = tempArtistsDetails.filter(artist => {return artist.imgAvl || artist.count>1})
                 setAlbumArtistsDetails(tempArtistsDetails);
             }
         }

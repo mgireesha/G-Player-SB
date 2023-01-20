@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setMediaVolume } from "../redux/player/PlayerActions";
 
 import {HiOutlineSpeakerWave, HiOutlineSpeakerXMark} from "react-icons/hi2";
+import { SliderRC } from "../SliderRC";
 
 export const VolumeH = () => {
     const dispatch = useDispatch();
@@ -34,7 +35,7 @@ export const VolumeH = () => {
     },[currentVolume, currentVolVal]);
 
     const updateMediaVolume = (event) => {
-        const value = event.target.value;
+        const value = event;//event.target.value;
         setCurrentVolVal(value);
         dispatch(setMediaVolume(value/100));
     }
@@ -52,10 +53,13 @@ export const VolumeH = () => {
     }
     return(
         <div className="volume-h-div">
-            {!isMute && <HiOutlineSpeakerWave className="volume-h-speaker-img" onClick={()=>muteMedia(true)} />}
-            {isMute && <HiOutlineSpeakerXMark className="volume-h-speaker-img" onClick={()=>muteMedia(false)} />}
-            <input type="range" min="0" max="100"  className="volume_progress_bar" id="volume_progress_bar" value={currentVolume*100} onChange={(event)=>updateMediaVolume(event)}></input>
-            <span>{currentVolVal}</span>
+            <div className="volume-h-speaker-img">
+                {!isMute && <HiOutlineSpeakerWave className="volume-h-speaker-img" onClick={()=>muteMedia(true)} />}
+                {isMute && <HiOutlineSpeakerXMark className="volume-h-speaker-img" onClick={()=>muteMedia(false)} />}
+            </div>
+            <input type="range" min="0" max="100"  className="volume_progress_bar no-display" id="volume_progress_bar" value={currentVolume*100} onChange={(event)=>updateMediaVolume(event)}></input>
+            <div className="volume_progress_bar"><SliderRC value={currentVolume*100} onValChange={updateMediaVolume} step={5} /></div>
+            <span className="volume-h-value">{currentVolVal}</span>
         </div>
     );
 }

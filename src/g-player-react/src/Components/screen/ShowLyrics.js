@@ -152,6 +152,11 @@ export const ShowLyrics = () => {
                 <a onClick={initEditLyrics} className="lyrics-btn lyrics-btn-add">Edit lyrics</a>
             }
         </div>
+        {songPlaying!==null &&  songPlaying.lyricist!==null && 
+            <div className="lyrics-written-by-div">
+                <span>Lyricist: {songPlaying.lyricist}</span>
+            </div>
+        }
     </div>}
     {isreateLyricsStarted && 
         <div className="show-lyrics" style={{width:'100%'}}>

@@ -73,8 +73,19 @@
         align-self: center;
         font-size: 18px;
 
+        ::-webkit-scrollbar-track {
+            margin-top: 2px;
+            margin-bottom: 2px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 3px;
+            height: unset;
+        }
+
         p{
             padding: 2px;
+
         }
 
         :last-child{
@@ -148,12 +159,14 @@
         position: relative;
         justify-content: center;
         margin-left: 10px;
+        margin-bottom: 10px;
     }
 
     .play-progress-bar{
         //border: 3px solid beige;
         width: 350px;
         cursor: pointer;
+        margin-bottom: 5px;
     }
 
     .play-progress-bar::-webkit-slider-thumb {
@@ -182,7 +195,7 @@
 
     .volume-h-speaker-img{
         font-size: 18px;
-        margin-right: 5px;
+        margin-right: 2px;
         cursor: pointer;
     }
 
@@ -204,8 +217,24 @@
                 padding: 0 5px;
                 padding-bottom: 3px;
             }
+
+            .volume_progress_bar{
+                width: 50%;
+        
+                
+            }
+            .volume-h-speaker-img{
+                svg{
+                    margin-top: 10px;
+                }
+            }
+            .volume-h-value{
+                    margin-top: 5px;
+            }
         }
     }
+
+    
 
 }
 
@@ -338,7 +367,7 @@
         display: grid;
         grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
         grid-row-gap: 15px;
-        max-height: 73vh;
+        max-height: 67vh;
         overflow-y: auto;
         overflow-x: hidden;
         padding: 10px;
@@ -383,7 +412,7 @@
         display: grid;
         grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
         grid-row-gap: 15px;
-        max-height: 73vh;
+        max-height: 69vh;
         overflow-y: auto;
         overflow-x: hidden;
         padding: 10px;
@@ -545,7 +574,7 @@
     }
 
     .music{
-        max-height: 73vh;
+        max-height: 74vh;
         overflow-y: auto;
         h3{
             padding: 10px 0 10px 15px;
@@ -561,7 +590,7 @@
             
     
             .artist-thumb{
-                width: 10em;
+                width: 13em;
             }
     
             .artist-thumb-img-div{
@@ -577,10 +606,9 @@
             }
     
             .artist-thumb-details{
-                
                 display: flex;
                 flex-direction: column;
-
+                max-width: 13em;
                 .track-count{
                     font-size: 14px;
                 }
@@ -731,6 +759,19 @@
             width: 90%;
             height: 20%;
         }
+
+        .lyrics-written-by-div{
+            position: absolute;
+            width: 40%;
+            bottom: 10px;
+            right: 10px;
+            text-align: right;
+
+            span{
+                font-size: 14px;
+            }
+        }
+
         .lyrics-btn{
             color: beige;
             cursor: pointer;
@@ -997,6 +1038,7 @@ a.disabled-click{
     display: flex;
     flex-direction: column;
     row-gap: 15px;
+    margin-bottom: 15px;
     label{
         //animation: slideIn 500ms ease-in;
         text-align: center;
@@ -1013,6 +1055,8 @@ a.disabled-click{
         }
         
     }
+
+
     
     
 }
@@ -1644,4 +1688,8 @@ a.disabled-click{
        // color: rgba(0, 0, 0, .1);
        color: rgb(199, 199, 182);
     }
+}
+
+.no-display{
+    display: none;
 }

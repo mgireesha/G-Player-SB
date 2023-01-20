@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 import { ArtistLink } from "../screen/artist/ArtistLink";
 import def_album_art from '../images/def_album_art.png';
 import { updateHistory } from "../redux/library/LibraryActions";
+import { SliderRC } from "../SliderRC";
 
 export const Player = () => {
 
@@ -140,7 +141,7 @@ export const Player = () => {
 
     const setSlctdPlayBackTime = (event) => {
         if(!isPlaying || songPlaying===null)return;
-        const pbVal = event.target.value;
+        const pbVal = event;//event.target.value;
         const fPbVal = Math.floor(((songPlaying.trackLength*pbVal)/100)*1000);
         dispatch(setPlayBackLength(fPbVal))
     }
@@ -181,7 +182,7 @@ export const Player = () => {
                     </Link>
                     <div className="song-info-title">
                         <p onClick={()=>scrollToPlaying(isPlaying)} style={{cursor:'pointer'}}>{songPlaying!==null && songPlaying.title}</p>
-                        <p>{songPlaying!==null && <ArtistLink artist={songPlaying.artist} />}</p>
+                        <p style={{maxHeight: '2em',overflow: 'auto'}}>{songPlaying!==null && <ArtistLink artist={songPlaying.artist} />}</p>
                     </div>
                     
                 </div>
@@ -218,7 +219,10 @@ export const Player = () => {
                 <div className="player-controls-status-bar">
                     <div className="play-progress-bar-div">
                         <span className="play-progress-bar-start-time">{getMins(currentTime)}</span>
-                        <input type="range" min="1" max="100"  className="play-progress-bar" id="play_progress_bar" value={currentPlayVal}  onChange={(event)=>setSlctdPlayBackTime(event)}></input>
+                        <input type="range" min="1" max="100"  className="play-progress-bar no-display" id="play_progress_bar" value={currentPlayVal}  onChange={(event)=>setSlctdPlayBackTime(event)}></input>
+                        <div className="play-progress-bar">
+                            <SliderRC value={currentPlayVal} onValChange={setSlctdPlayBackTime} step={0} />
+                        </div>
                         <span className="play-progress-bar-end-time">{songPlaying!==null ? getMins(songPlaying.trackLength):'0:00'}</span>
                     </div>
                 </div>

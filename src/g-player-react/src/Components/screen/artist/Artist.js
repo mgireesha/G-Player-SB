@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import { ARTIST } from "../../redux/GPActionTypes";
+import { ARTIST, WIKI_SUMMARY_URL } from "../../redux/GPActionTypes";
 import { fetchAllArtistsDtls, fetchSongsByArtist, setGroupband } from "../../redux/library/LibraryActions";
 import { setPlayedFrom } from "../../redux/player/PlayerActions";
 import { Track } from "../Track";
@@ -78,16 +78,48 @@ export const Artist = () => {
         //scrollToPlaying();
     },[]);
     const fetchArtistDetailsfromWiki =async(artist) => {
-        const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${artist}`);
-        const data = await response.json();
-        if(data['extract']!==undefined && (data['extract'].toLowerCase().includes('singer')
-            || data['extract'].toLowerCase().includes('actor')) && !data['extract'].toLowerCase().includes('may refer to')){
-            setArtistWiki(data);
-            if(data["thumbnail"]!==undefined){
-                setArtistWikiImg(data.thumbnail.source);
+        let searchedSingerActor = false;
+        let data = await callWikiAPI(`${WIKI_SUMMARY_URL}${artist}`);
+        // if(data['extract']!==undefined && (data['extract'].toLowerCase().includes('singer')
+        //     || data['extract'].toLowerCase().includes('actor')) && !data['extract'].toLowerCase().includes('may refer to')){
+        //     setArtistWiki(data);
+        //     if(data["thumbnail"]!==undefined){
+        //         setArtistWikiImg(data.thumbnail.source);
+        //     }
+        // }
+        if(data.title.includes("Not Found") || data.title.includes("doesn't exist") || data.extract.includes("may refer to")){
+            data = await callWikiAPI(`${WIKI_SUMMARY_URL}${artist}_(singer)`);
+            if(data.title.includes("Not Found") || data.title.includes("doesn't exist")){
+                data = await callWikiAPI(`${WIKI_SUMMARY_URL}${artist}_(actor)`);
+                searchedSingerActor = true;
             }
         }
+        if(!(data.extract.includes("singer") || data.extract.includes("director")
+                        || data.extract.includes("actress") || data.extract.includes("actor")
+                        || data.extract.includes("composer") || data.extract.includes("musician")
+                        )){
+            if(!searchedSingerActor){
+                data = await callWikiAPI(`${WIKI_SUMMARY_URL}${artist}_(singer)`);
+                if(data.title.includes("Not Found") || data.title.includes("doesn't exist")){
+                    data = await callWikiAPI(`${WIKI_SUMMARY_URL}${artist}_(actor)`);
+                }
+            }else{
+                data = null;
+            }
+        }
+        console.log("data", data);
+        setArtistWiki(data);
+        if(data["thumbnail"]!==undefined){
+            setArtistWikiImg(data.thumbnail.source);
+        }
     }
+
+    const callWikiAPI = async(wikiURL) => {
+        const response = await fetch(wikiURL);
+        const data = await response.json();
+        return data;
+    }
+
     const scrollToPlaying = ()=>{
         if(isPlaying){
             const trackPlaying = document.getElementsByClassName("text-highlighted-y");

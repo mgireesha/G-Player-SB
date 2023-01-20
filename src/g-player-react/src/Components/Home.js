@@ -11,6 +11,8 @@ import { Route, Routes } from "react-router-dom";
 import { Library } from "./library/Library";
 import { Search } from "./search/Search";
 import { RecentPlays } from "./history/RecentPlays";
+import Slider from "rc-slider";
+import { SliderC } from "./SliderRC";
 
 export const Home = () => {
     const dispatch = useDispatch();
@@ -50,6 +52,7 @@ export const Home = () => {
                 <Route path="/search/:searchKey" element={<Search/>} />
                 <Route path="/recent" element={<RecentPlays />} />
                 <Route path="/library/*" element={<Library/>} />
+                <Route path="/*" element={<Screen/>} />
             </Routes>
             <Player />
         </div>
