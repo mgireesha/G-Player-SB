@@ -88,6 +88,22 @@ export const setCookies = (name, value) => {
     document.cookie=name+"="+value+"; expires="+expires+"; path=/";
 }
 
+export const getCookieValue = (name) => {
+    const cookies = document.cookie;
+    const cookieArr = cookies.split(";");
+    let cookieArr1;
+    let cookieValue;
+    cookieArr.forEach((cookie => {
+        if(cookie!==""){
+            cookieArr1 = cookie.split("=");
+            if(cookieArr1[0].trim() ===name){
+                cookieValue = cookieArr1[1].trim();
+            }
+        }
+    }))
+    return cookieValue;
+}
+
 export const sortGroupByField = (entArr, field) => {
     let entListObj = {};
     let tempArr = [];

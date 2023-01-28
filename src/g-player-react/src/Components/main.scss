@@ -212,16 +212,12 @@
         .volume-h-div{
             display: flex;
             align-items: center;
-
             span{
                 padding: 0 5px;
                 padding-bottom: 3px;
             }
-
             .volume_progress_bar{
                 width: 50%;
-        
-                
             }
             .volume-h-speaker-img{
                 svg{
@@ -229,7 +225,7 @@
                 }
             }
             .volume-h-value{
-                    margin-top: 5px;
+                    margin: 5px 5px 0 0;
             }
         }
     }

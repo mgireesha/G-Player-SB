@@ -37,6 +37,7 @@ export const SORT_COUNT_TRACKS = 'No of Songs';
 export const SORT_YEAR = 'Year';
 export const SUCCESS = 'SUCCESS';
 
+export const TEMP_VOLUME = 'TEMP_VOLUME';
 export const TRACK_LIST = 'TRACK_LIST';
 
 //URL

@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -74,13 +75,12 @@ public class LibraryService {
     @Autowired
     private ArtistRepository artistRepository;
 
+    @Autowired
+    private Environment env;
+
     private static final String ARTIST = "ARTIST";
 
     private static final String ALBUM_ARTIST = "ALBUM_ARTIST";
-
-    private static final String ALBUM_IMAGES_PATH = "D:\\SWorkspace\\G-Player-SB\\src\\main\\resources\\public\\images\\albums\\";
-
-    private static final String ARTIST_IMAGES_PATH = "D:\\SWorkspace\\G-Player-SB\\src\\main\\resources\\public\\images\\artists\\";
 
     private static final String TRACK_LIST = "TRACK_LIST";
 
@@ -107,6 +107,12 @@ public class LibraryService {
     private static final String ALBUM_ARTIST_COUNT = "ALBUM_ARTIST_COUNT";
 
     private static final String BUILD_STATUS_STEP = "BUILD_STATUS_STEP";
+
+    //@Value("${library.ALBUM_IMAGES_PATH}")
+    //private String ALBUM_IMAGES_PATH = "D:\\SWorkspace\\G-Player-SB\\src\\main\\resources\\public\\images\\albums\\";
+
+    //@Value("${library.ARTIST_IMAGES_PATH}")
+    //private String ARTIST_IMAGES_PATH = "D:\\SWorkspace\\G-Player-SB\\src\\main\\resources\\public\\images\\artists\\";
 
     static FileFilter mp3filter = new FileFilter() {
         @Override 
@@ -674,7 +680,7 @@ public class LibraryService {
         }
         for(int i=0;i<artistList.size();i++){
             artist = artistList.get(i);
-            artistImgFIle = new File(ARTIST_IMAGES_PATH+"\\"+artist.getArtistName()+".jpg");
+            artistImgFIle = new File(env.getProperty("library.ARTIST_IMAGES_PATH")+"\\"+artist.getArtistName()+".jpg");
             artist.setImgAvl(artistImgFIle.exists());
             artistList.set(i, artist);
         }
@@ -682,7 +688,7 @@ public class LibraryService {
     }
 
     public boolean setArtistLocalImgAvlStatus(String artistName){
-        File artistImgFIle = new File(ARTIST_IMAGES_PATH+"\\"+artistName+".jpg");
+        File artistImgFIle = new File(env.getProperty("library.ARTIST_IMAGES_PATH")+"\\"+artistName+".jpg");
         return artistImgFIle.exists();
     }
 
@@ -721,8 +727,8 @@ public class LibraryService {
         List<Artist> downloadedArtists = new ArrayList<Artist>();
         List<Artist> failedArtists = new ArrayList<Artist>();
         File localArtistImg = null;
-        String localArtistPath = "D:\\SWorkspace\\G-Player-SB\\src\\g-player-react\\public\\images\\artists";
-        String wikiUri = "https://en.wikipedia.org/api/rest_v1/page/summary/";
+        String localArtistPath = env.getProperty("library.ARTIST_IMAGES_PATH");
+        String wikiUri = env.getProperty("library.WIKI_SUMMARY_URI");
         String wikiResp = "";
         JSONObject wikiRespJson = null;
         for(Artist artist : artistList){
@@ -816,7 +822,7 @@ public class LibraryService {
 
     private Album writeByteArryaTOimgFile (Album album, byte[] binImg) {
         try {
-            File albumImgFile = new File(ALBUM_IMAGES_PATH+album.getAlbumName()+".jpg");
+            File albumImgFile = new File(env.getProperty("library.ALBUM_IMAGES_PATH")+album.getAlbumName()+".jpg");
             if(!albumImgFile.exists()){
                 ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(binImg);
                 BufferedImage newImage  = ImageIO.read(byteArrayInputStream);
@@ -840,7 +846,7 @@ public class LibraryService {
 
     public void cleanAlbumImageDir(){
         try {
-            FileUtils.cleanDirectory(new File(ALBUM_IMAGES_PATH));
+            FileUtils.cleanDirectory(new File(env.getProperty("library.ALBUM_IMAGES_PATH")));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -856,7 +862,7 @@ public class LibraryService {
 
     public void resizeArtistImgs(){
         try {
-            File artistDir = new File(ARTIST_IMAGES_PATH);
+            File artistDir = new File(env.getProperty("library.ARTIST_IMAGES_PATH"));
             File[] artistImgs = artistDir.listFiles();
             for(File artistImg : artistImgs){
                 ByteArrayInputStream byteArrayInputStream 
