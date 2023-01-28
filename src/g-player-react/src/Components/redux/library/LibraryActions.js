@@ -79,10 +79,10 @@ export const fetchAlbumSucc = (album) => ({
     album
 })
 
-export const setGroupband = (groupBand) => ({
-    type: SET_GROUP_BAND,
-    groupBand
-})
+// export const setGroupband = (groupBand) => ({
+//     type: SET_GROUP_BAND,
+//     groupBand
+// })
 
 export const fetchAllArtistsDtls = (artistType) => ({
     type: LIBRARY_FETCH_ARTIST_LIST_START,

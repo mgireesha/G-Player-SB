@@ -38,7 +38,7 @@ export const AlbumArtist = () => {
     },[albumArtist, albumArtistsDetails]);
 
     useEffect(()=>{
-        dispatch(setGroupband("album_artists"));
+        //dispatch(setGroupband("album_artists"));
         dispatch(setPlayedFrom(ALBUM_ARTIST))
     },[]);
 

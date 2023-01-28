@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Link, Route, Routes } from "react-router-dom";
 import { Album } from "./Album";
 import { AlbumArtistList } from "./artist/AlbumArtistList";
 import { AlbumList } from "./AlbumList";
@@ -14,7 +14,7 @@ export const Screen = () => {
     return(
         <div className="screen">
             <div className="header">
-                <h1 style={{fontWeight:'500'}}>Music</h1>
+                <h1 style={{fontWeight:'500'}}><Link to='/music'>Music</Link></h1>
             </div>
             <GroupBand />
             <Routes>

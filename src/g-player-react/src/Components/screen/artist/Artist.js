@@ -73,7 +73,7 @@ export const Artist = () => {
     }
 
     useEffect(()=>{
-        dispatch(setGroupband("artists"));
+        //dispatch(setGroupband("artists"));
         dispatch(setPlayedFrom(ARTIST));
         //scrollToPlaying();
     },[]);

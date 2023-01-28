@@ -137,7 +137,7 @@ public class LibraryController {
 
     @RequestMapping("/readAndStoreArtistnames/{artistType}")
     public Iterable<Artist> readAndStoreArtistnames(@PathVariable String artistType){
-        return libraryService.setArtistLocalImgAvlStatus(artistType);
+        return libraryService.setArtistLocalImgAvlStatusList(artistType, null);
     }
 
     @RequestMapping("/downloadArtistImgToDIr")

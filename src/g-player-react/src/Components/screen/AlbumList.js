@@ -24,7 +24,7 @@ export const AlbumList = () => {
      },[albums]);
 
     useEffect(()=>{
-        dispatch(setGroupband("albums"));
+        //dispatch(setGroupband("albums"));
 
     },[]);
 

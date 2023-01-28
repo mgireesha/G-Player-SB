@@ -1,6 +1,7 @@
 export const A_TO_Z = "A - Z Asc";
 export const A_TO_Z_DESC = "A - Z Desc";
 export const ALBUM = 'ALBUM';
+export const ALBUMS = 'ALBUMS';
 export const ALBUM_ARTIST = 'ALBUM_ARTIST';
 export const ALBUM_ARTISTS = 'ALBUM_ARTISTS';
 export const ARTIST = 'ARTIST';

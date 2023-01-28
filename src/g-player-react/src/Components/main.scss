@@ -623,7 +623,7 @@
             z-index: 1;
             position: relative;
             background: #303030;
-            padding: 10px;
+            padding: 5px;
             text-align: center;
     
             .album-artist-thumb{
@@ -667,7 +667,7 @@
     
             .album-thumb-details{
                 padding-right: 5px;
-                width: 10em;
+                width: 13em;
                 display: flex;
                 flex-direction: column;
     
@@ -712,6 +712,23 @@
 
                 .album-count{
                     font-size: 14px;
+                }
+            }
+        }
+        
+        .statisticts{
+            height: 20em;
+            width: 95%;
+            margin: 20px;
+            padding: 10px;
+            box-shadow: rgba(0, 0, 0, 0.4) 0px 30px 90px;
+            border-radius: 5px;
+
+            .groups{
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr 1fr;
+                .group{
+                    text-align: center;
                 }
             }
         }
@@ -1075,7 +1092,7 @@ a.disabled-click{
         display: flex;
         column-gap: 20px;
         .library-build, .library-list{
-            height: 16em;
+            height: auto;
             width: 30em;
             border: 1px solid grey;
             box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
@@ -1477,78 +1494,106 @@ a.disabled-click{
     .body{
         max-height: 75vh;
         overflow-y: auto;
+
         .albums{
+            .album-group{
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+
+                .album-grouped-list{
+
+                    .album-thumbs-grouped{
+                        display: grid;
+                        grid-template-columns: 1fr 1fr 1fr;
+                        width: 80%;
+                        border-radius: 35%;
+                        overflow: hidden;
+                        margin-left: auto;
+                        margin-right: auto;
+        
+                        .album-thumb-img-div{
+                            img{
+                                height: 9em;
+                                width: 9em;
+                            }
+                        }
+                    }
+                }
+    
+                .album-list{
+                    display: grid;
+                    grid-template-columns: 1fr 1fr 1fr;
+                    //grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+                    grid-row-gap: 35px;
+                    //max-height: 72vh;
+                    overflow-y: auto;
+                    z-index: 1;
+                    position: relative;
+                    background: #303030;
+                    padding: 10px;
+            
+                    .album-artist-thumb{
+                        width: 10em;
+                    }
+            
+                    .album-thumb-img-div{
+                        position: relative;
+                        img{
+                            height: 9em;
+                            width: 9em;
+                            cursor: pointer;
+                            border-radius: 20px;
+                            border-bottom-left-radius: unset;
+                            box-shadow: rgb(0 0 0 / 40%) 0px 2px 4px, rgb(0 0 0 / 30%) 0px 7px 13px -3px, rgb(0 0 0 / 20%) 0px -3px 0px inset;
+                        }
+                    }
+            
+                    .album-thumb-img-div-link{
+                        position: absolute;
+                        height: 9em;
+                        width: 9em;
+                        top: 0;
+                        align-items: center;
+                        display: flex;
+                        justify-content: center;
+                        display: none;
+                        background-color: #eaf0f0;
+                        opacity: 0.2;
+                        color: #093fa3;
+                        cursor: pointer;
+            
+                        svg{
+                            font-size: 2em;
+                            font-weight: 900;
+                        }
+                    }
+            
+                    .album-thumb-img-div a:hover + .album-thumb-img-div-link{
+                        display: flex;
+                    }
+            
+                    .album-thumb-details{
+                        padding-right: 5px;
+                        width: 10em;
+                        display: flex;
+                        flex-direction: column;
+            
+                        label{
+                            font-size: 15px;
+                        }
+            
+                        p{
+                            margin-top: 5px;
+                            font-size: 13px;
+                        }
+                    }
+                }
+            }
+
             h3{
                 padding-left: 10px;
                 margin-top: 10px;
-            }
-
-            .album-list{
-                display: grid;
-                grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-                grid-row-gap: 15px;
-                //max-height: 72vh;
-                overflow-y: auto;
-                z-index: 1;
-                position: relative;
-                background: #303030;
-                padding: 10px;
-        
-                .album-artist-thumb{
-                    width: 10em;
-                }
-        
-                .album-thumb-img-div{
-                    position: relative;
-                    img{
-                        height: 9em;
-                        width: 9em;
-                        cursor: pointer;
-                        border-radius: 20px;
-                        border-bottom-left-radius: unset;
-                        box-shadow: rgb(0 0 0 / 40%) 0px 2px 4px, rgb(0 0 0 / 30%) 0px 7px 13px -3px, rgb(0 0 0 / 20%) 0px -3px 0px inset;
-                    }
-                }
-        
-                .album-thumb-img-div-link{
-                    position: absolute;
-                    height: 9em;
-                    width: 9em;
-                    top: 0;
-                    align-items: center;
-                    display: flex;
-                    justify-content: center;
-                    display: none;
-                    background-color: #eaf0f0;
-                    opacity: 0.2;
-                    color: #093fa3;
-                    cursor: pointer;
-        
-                    svg{
-                        font-size: 2em;
-                        font-weight: 900;
-                    }
-                }
-        
-                .album-thumb-img-div a:hover + .album-thumb-img-div-link{
-                    display: flex;
-                }
-        
-                .album-thumb-details{
-                    padding-right: 5px;
-                    width: 10em;
-                    display: flex;
-                    flex-direction: column;
-        
-                    label{
-                        font-size: 15px;
-                    }
-        
-                    p{
-                        margin-top: 5px;
-                        font-size: 13px;
-                    }
-                }
+                width: 100%;
             }
         }
         .track-list{

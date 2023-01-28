@@ -10,10 +10,8 @@ export const Sidebar = () => {
     const [selectedRow, setSelectedRow] = useState('');
     const locationL = useLocation();
     useEffect(()=>{
-        console.log("locationL",locationL);
         let uri = locationL.pathname;
         if(uri!==null && uri!==''){
-            //uri = uri.substring(locationL.origin.length,uri.length);
             if(uri.startsWith("/music")){
                 setSelectedRow(MUSIC);
             }else if(uri.startsWith("/recent")){
@@ -22,7 +20,7 @@ export const Sidebar = () => {
                 setSelectedRow(LIBRARY);
             }
         }
-    },[locationL])
+    },[locationL]);
     return(
         <div className="sidebar">
             <div className="search-row">

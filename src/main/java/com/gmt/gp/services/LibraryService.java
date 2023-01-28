@@ -100,6 +100,8 @@ public class LibraryService {
 
     private static final String TOTAL_TRACKS = "TOTAL_TRACKS";
 
+    private static final String ALBUM_COUNT = "ALBUM_COUNT";
+
     private static final String ARTIST_COUNT = "ARTIST_COUNT";
 
     private static final String ALBUM_ARTIST_COUNT = "ALBUM_ARTIST_COUNT";
@@ -317,6 +319,7 @@ public class LibraryService {
                 artist.setType(ARTIST);
                 artist.setImgAvl(false);
                 artist.setCount(artCount);
+                artist.setImgAvl(setArtistLocalImgAvlStatus(artist.getArtistName()));
                 artistList.add(artist);
             }
             artistCount = artistList.size(); // Reading artist count before inserting album artist into same list
@@ -329,13 +332,10 @@ public class LibraryService {
                 albumArtist.setType(ALBUM_ARTIST);
                 albumArtist.setImgAvl(false);
                 albumArtist.setCount(artCount);
+                albumArtist.setImgAvl(setArtistLocalImgAvlStatus(albumArtist.getArtistName()));
                 artistList.add(albumArtist);
             }
             artistRepository.saveAll(artistList);
-
-            setArtistLocalImgAvlStatus(ARTIST);
-            setArtistLocalImgAvlStatus(ALBUM_ARTIST);
-
             endingTime = System.currentTimeMillis();
             LOG.info(methodName+" - Time took to filter, save and update imgAvl of artist and album artist: "+ (endingTime-startingTime) +" ms, "+(endingTime-startingTime)/1000+" secs");
 
@@ -367,8 +367,9 @@ public class LibraryService {
             e.printStackTrace();
         }
         LOG.error(methodName+" - exceptionCount: "+ exceptionCounter);
-        LOG.info(methodName+" - Summary: \nTotal tracks: "+libList.size()+" \nArtists found: "+artistCount+" \nAlbum artist found: "+(artistList.size()-artistCount));
+        LOG.info(methodName+" - Summary: \nTotal tracks: "+libList.size()+" \nTotal albums: "+albumList.size()+" \nArtists found: "+artistCount+" \nAlbum artist found: "+(artistList.size()-artistCount));
         messageService.updateBuildStatus(BUILD_STATUS, TOTAL_TRACKS, String.valueOf(libList.size()));
+        messageService.updateBuildStatus(BUILD_STATUS, ALBUM_COUNT, String.valueOf(albumList.size()));
         messageService.updateBuildStatus(BUILD_STATUS, ARTIST_COUNT, String.valueOf(artistCount));
         messageService.updateBuildStatus(BUILD_STATUS, ALBUM_ARTIST_COUNT, String.valueOf((artistList.size()-artistCount)));
         messageService.updateBuildStatus(BUILD_STATUS, BUILD_STATUS, COMPLETED);
@@ -665,18 +666,24 @@ public class LibraryService {
     }
 
     @Transactional
-    public Iterable<Artist> setArtistLocalImgAvlStatus(String artistType){
-        String artistPath = "D:\\SWorkspace\\G-Player-SB\\src\\main\\resources\\public\\images\\artists";
+    public Iterable<Artist> setArtistLocalImgAvlStatusList(String artistType, List<Artist> artistList){
         Artist artist = null;
-        List<Artist> artistList = artistRepository.getByTypeOrderByArtistNameAsc(artistType);
         File artistImgFIle = null;
+        if(artistList==null){
+            artistList = artistRepository.getByTypeOrderByArtistNameAsc(artistType);
+        }
         for(int i=0;i<artistList.size();i++){
             artist = artistList.get(i);
-            artistImgFIle = new File(artistPath+"\\"+artist.getArtistName()+".jpg");
+            artistImgFIle = new File(ARTIST_IMAGES_PATH+"\\"+artist.getArtistName()+".jpg");
             artist.setImgAvl(artistImgFIle.exists());
             artistList.set(i, artist);
         }
         return artistRepository.saveAll(artistList);
+    }
+
+    public boolean setArtistLocalImgAvlStatus(String artistName){
+        File artistImgFIle = new File(ARTIST_IMAGES_PATH+"\\"+artistName+".jpg");
+        return artistImgFIle.exists();
     }
 
     public List<Library> getSongsByArtist(String artist) {

@@ -103,6 +103,7 @@ export const Library = () => {
                                 <div className="completed">
                                     <label>Summary of current build</label>
                                     <label><span>Total tracks</span><span>:&nbsp;&nbsp;&nbsp;&nbsp;{buildStatusL.TOTAL_TRACKS}</span></label>
+                                    <label><span>Total albums</span><span>:&nbsp;&nbsp;&nbsp;&nbsp;{buildStatusL.ALBUM_COUNT}</span></label>
                                     <label><span>Artists found</span><span>:&nbsp;&nbsp;&nbsp;&nbsp;{buildStatusL.ARTIST_COUNT}</span></label>
                                     <label><span>Album Artists found</span><span>:&nbsp;&nbsp;&nbsp;&nbsp;{buildStatusL.ALBUM_ARTIST_COUNT}</span></label>
                                     <label><span>Time took to finish</span><span>:&nbsp;&nbsp;&nbsp;&nbsp;{Math.floor(buildStatusL.FILES_READ_TIME/1000)} Secs</span></label>

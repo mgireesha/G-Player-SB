@@ -18,7 +18,7 @@ export const TrackList = () => {
     const [trackListKeys, setTrackListKeys] = useState([]);
     const [sortBy, setSortBy] = useState(A_TO_Z);
     useEffect(()=>{
-        dispatch(setGroupband("tracks"));
+        //dispatch(setGroupband("tracks"));
         dispatch(setPlayedFrom(TRACK_LIST));
         
     },[]);

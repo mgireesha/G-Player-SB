@@ -12,7 +12,7 @@ import { ALBUM, ARTIST, CURRENT, NEXT, PREVIOUS, RECENT_PLAYS, REPEAT_ALL, REPEA
 import { Link } from "react-router-dom";
 import { ArtistLink } from "../screen/artist/ArtistLink";
 import def_album_art from '../images/def_album_art.png';
-import { updateHistory } from "../redux/library/LibraryActions";
+import { fetchAllHistory, updateHistory } from "../redux/library/LibraryActions";
 import { SliderRC } from "../SliderRC";
 
 export const Player = () => {
@@ -58,6 +58,10 @@ export const Player = () => {
         const tempPlayTime = playTime;
         if(playTime===10000 && songPlaying!==null){
             dispatch(updateHistory(songPlaying.songId));
+        }
+
+        if(playTime===12000){
+            dispatch(fetchAllHistory());
         }
         setPlayTime(tempPlayTime+500);
     },[playingSongStat])
@@ -182,7 +186,7 @@ export const Player = () => {
                     </Link>
                     <div className="song-info-title">
                         <p onClick={()=>scrollToPlaying(isPlaying)} style={{cursor:'pointer'}}>{songPlaying!==null && songPlaying.title}</p>
-                        <p style={{maxHeight: '2em',overflow: 'auto'}}>{songPlaying!==null && <ArtistLink artist={songPlaying.artist} />}</p>
+                        <p style={{maxHeight: '3em',overflow: 'auto'}}>{songPlaying!==null && <ArtistLink artist={songPlaying.artist} />}</p>
                     </div>
                     
                 </div>
