@@ -1,11 +1,21 @@
 package com.gmt.gp.util;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 public class GPUtil {
     
@@ -67,4 +77,23 @@ public class GPUtil {
             });
     return list;
     }
+
+    public static String restExchange(String uUrl) {
+		String respBody = "";
+		try {
+            RestTemplate restTemplate = new RestTemplateBuilder()
+			        .setConnectTimeout(Duration.ofMillis(30000))
+			        .setReadTimeout(Duration.ofMillis(30000))
+			        .build();
+			HttpHeaders headers = new HttpHeaders();
+			UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(uUrl);
+		    UriComponents uriComponents = builder.build(); 
+			HttpEntity<String> request = new HttpEntity<String>(headers);
+			ResponseEntity<String> response = restTemplate.exchange(uriComponents.toUriString(), HttpMethod.GET, request, String.class);
+			respBody = response.getBody();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return respBody;
+	}
 }

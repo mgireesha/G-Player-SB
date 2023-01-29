@@ -18,7 +18,7 @@ export const SliderRC = ({value, onValChange, step}) => {
                     min={0}
                     max={100}
                     step={step}
-                    handleStyle={{top:5,width:18,height:18,border:'2px solid #346ef1',backgroundColor:'#346ef1', opacity:1}}
+                    handleStyle={{top:6,width:18,height:18,border:'5px solid #346ef1', opacity:1, marginLeft:5}}
                     trackStyle={{backgroundColor:'#346ef1', height:10}}
                     railStyle={{backgroundColor:'lightgrey', height:10}}
                     onChange={(val)=>setSLiderval(val)}
