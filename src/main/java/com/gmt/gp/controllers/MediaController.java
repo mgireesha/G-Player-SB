@@ -27,14 +27,6 @@ public class MediaController {
 
     private MediaPlayer mPlayer = null;
 
-    public MediaPlayer getmPlayer() {
-        return mPlayer;
-    }
-
-    public void setmPlayer(MediaPlayer mPlayer) {
-        this.mPlayer = mPlayer;
-    }
-
     @Autowired
     private LibraryService libraryService;
 
