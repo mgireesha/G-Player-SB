@@ -1,25 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import { ARTIST } from "../../redux/GPActionTypes";
+import { ARTIST, WIKI_SUMMARY_URL } from "../../redux/GPActionTypes";
 import { fetchAllArtistsDtls, fetchSongsByArtist, setGroupband } from "../../redux/library/LibraryActions";
 import { setPlayedFrom } from "../../redux/player/PlayerActions";
 import { Track } from "../Track";
 import def_album_art from '../../images/def_album_art.png';
 import { scrolltoId } from "../..//utli";
+import { FilterComp } from "../../FilterComp";
 
 export const Artist = () => {
     const dispatch = useDispatch();
     const { artist } = useParams();
     const artistsDetails = useSelector(state => state.library.artistsDetails);
     //const artistObj = artistsDetails.find(artistObj => artistObj.artistName===artist);
-    const artistTracks = useSelector(state => state.library.artistTracks);
+    let artistTracks = useSelector(state => state.library.artistTracks);
+    if(artistTracks.length>0){
+        artistTracks = artistTracks.sort((a,b)=>{return a.year>b.year?-1:1});
+    }
     const songPlaying = useSelector(state => state.player.songPlaying);
     const playedFrom = useSelector(state => state.player.playedFrom);
     const isPlaying = useSelector(state => state.player.isPlaying);
     const [artistWiki, setArtistWiki] = useState({});
     const [artistWikiImg, setArtistWikiImg] = useState(null);
     const [artistObj, setArtistObj] = useState({});
+    const [artistTracksL, setArtistTracksL] = useState([]);
+    const [filterTxt, setFilterTxt] = useState(null);
     useEffect(()=>{
         setArtistWikiImg(null);
         setArtistWiki({});
@@ -36,21 +42,84 @@ export const Artist = () => {
     },[artist, artistsDetails]);
 
     useEffect(()=>{
-        dispatch(setGroupband("artists"));
+        setArtistTracksL(artistTracks);
+    },[artistTracks]);
+
+    useEffect(()=>{
+        if(filterTxt===null){
+            setArtistTracksL(artistTracks);
+        }else if(filterTxt.length>2){
+            let tempArtistTracks = [...artistTracks];
+            tempArtistTracks = tempArtistTracks.filter(track => {return track.title.toLowerCase().includes(filterTxt) 
+                                                                            || track.album.toLowerCase().includes(filterTxt) 
+                                                                            || track.year===filterTxt 
+                                                                            || track.genre.toLowerCase().includes(filterTxt)
+                                                                    });
+            if(tempArtistTracks.length>0){
+                setArtistTracksL(tempArtistTracks);
+            }else{
+                setArtistTracksL([]);
+            }
+        }
+    },[filterTxt]);
+
+    const onSetFilterTxt = (event) => {
+        const tempFilterTxt = event.target.value;
+        if(tempFilterTxt==="" || tempFilterTxt.length<3){
+            setFilterTxt(null);
+        }else if(tempFilterTxt.length>2){
+            setFilterTxt(tempFilterTxt.toLowerCase());
+        }
+    }
+
+    useEffect(()=>{
+        //dispatch(setGroupband("artists"));
         dispatch(setPlayedFrom(ARTIST));
         //scrollToPlaying();
     },[]);
     const fetchArtistDetailsfromWiki =async(artist) => {
-        const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${artist}`);
-        const data = await response.json();
-        if(data['extract']!==undefined && (data['extract'].toLowerCase().includes('singer')
-            || data['extract'].toLowerCase().includes('actor')) && !data['extract'].toLowerCase().includes('may refer to')){
-            setArtistWiki(data);
-            if(data["thumbnail"]!==undefined){
-                setArtistWikiImg(data.thumbnail.source);
+        let searchedSingerActor = false;
+        let data = await callWikiAPI(`${WIKI_SUMMARY_URL}${artist}`);
+        // if(data['extract']!==undefined && (data['extract'].toLowerCase().includes('singer')
+        //     || data['extract'].toLowerCase().includes('actor')) && !data['extract'].toLowerCase().includes('may refer to')){
+        //     setArtistWiki(data);
+        //     if(data["thumbnail"]!==undefined){
+        //         setArtistWikiImg(data.thumbnail.source);
+        //     }
+        // }
+        if(data.title.includes("Not Found") || data.title.includes("doesn't exist") || data.extract.includes("may refer to")){
+            data = await callWikiAPI(`${WIKI_SUMMARY_URL}${artist}_(singer)`);
+            if(data.title.includes("Not Found") || data.title.includes("doesn't exist")){
+                data = await callWikiAPI(`${WIKI_SUMMARY_URL}${artist}_(actor)`);
+                searchedSingerActor = true;
             }
         }
+        if(!(data.extract.includes("singer") || data.extract.includes("director")
+                        || data.extract.includes("actress") || data.extract.includes("actor")
+                        || data.extract.includes("composer") || data.extract.includes("musician")
+                        )){
+            if(!searchedSingerActor){
+                data = await callWikiAPI(`${WIKI_SUMMARY_URL}${artist}_(singer)`);
+                if(data.title.includes("Not Found") || data.title.includes("doesn't exist")){
+                    data = await callWikiAPI(`${WIKI_SUMMARY_URL}${artist}_(actor)`);
+                }
+            }else{
+                data = null;
+            }
+        }
+        console.log("data", data);
+        setArtistWiki(data);
+        if(data["thumbnail"]!==undefined){
+            setArtistWikiImg(data.thumbnail.source);
+        }
     }
+
+    const callWikiAPI = async(wikiURL) => {
+        const response = await fetch(wikiURL);
+        const data = await response.json();
+        return data;
+    }
+
     const scrollToPlaying = ()=>{
         if(isPlaying){
             const trackPlaying = document.getElementsByClassName("text-highlighted-y");
@@ -82,8 +151,12 @@ export const Artist = () => {
                     }
                 </div>
             </div>
+            <div style={{width:'100%'}}>
+                <FilterComp onSetFilterTxt={onSetFilterTxt} />
+            </div>
+            
             <div className="artist-track-list">
-                {artistTracks!==null && artistTracks!==undefined && artistTracks.map((track, index)=>
+                {artistTracksL!==null && artistTracksL!==undefined && artistTracksL.map((track, index)=>
                     track.title!==null && <Track track={track} key={track.songId} playedFrom={ARTIST} index={index} />
                 )}
             </div>

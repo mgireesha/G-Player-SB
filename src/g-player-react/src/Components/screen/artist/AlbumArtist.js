@@ -1,28 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import { fetchAlbumDetailsByAlbumArtist, fetchAlbumlistOfAA, fetchAllAlbumArtistsDtls, setGroupband } from "../../redux/library/LibraryActions";
+import { fetchAlbumlistOfAA, fetchAllAlbumArtistsDtls, setGroupband } from "../../redux/library/LibraryActions";
 import { scrollToPlaying } from "../../utli";
 import { AlbumThumb } from "../AlbumThumb";
-import def_album_art from '../../images/def_album_art.png';
 import { setPlayedFrom } from "../../redux/player/PlayerActions";
 import { ALBUM_ARTIST } from "../../redux/GPActionTypes";
+import def_album_art from '../../images/def_album_art.png';
 
 export const AlbumArtist = () => {
     const {albumArtist} = useParams();
     const dispatch = useDispatch();
-    const albumListOfAA = useSelector(state => state.library.albumListOfAA);//AA -> Album Artist
+    let albumListOfAA = useSelector(state => state.library.albumListOfAA);//AA -> Album Artist
+    if(albumListOfAA.length>0){
+        albumListOfAA = albumListOfAA.sort((a,b)=>{return a.year>b.year?-1:1});
+    }
     const albumArtistsDetails = useSelector(state => state.library.albumArtistsDetails);
-    const [albumDtlsKeys, setAlbumDtlsKeys] = useState(null);
     const songPlaying = useSelector(state => state.player.songPlaying);
     const playedFrom = useSelector(state => state.player.playedFrom);
-    const albumImgs = useSelector(state => state.library.albumImgs);
     const [artistWiki, setArtistWiki] = useState({});
     const [artistWikiImg, setArtistWikiImg] = useState(null);
     const [albumArtistObj, setAlbumArtistObj] = useState({});
     
     useEffect(()=>{
-        setAlbumDtlsKeys([]);
         setArtistWikiImg(null);
         setArtistWiki({});
         dispatch(fetchAlbumlistOfAA(albumArtist));
@@ -38,7 +38,7 @@ export const AlbumArtist = () => {
     },[albumArtist, albumArtistsDetails]);
 
     useEffect(()=>{
-        dispatch(setGroupband("album_artists"));
+        //dispatch(setGroupband("album_artists"));
         dispatch(setPlayedFrom(ALBUM_ARTIST))
     },[]);
 

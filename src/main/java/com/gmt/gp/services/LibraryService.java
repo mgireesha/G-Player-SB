@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -43,11 +44,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.gmt.gp.model.Album;
 import com.gmt.gp.model.Artist;
 import com.gmt.gp.model.GPResponse;
+import com.gmt.gp.model.History;
 import com.gmt.gp.model.Library;
 import com.gmt.gp.model.Message;
 import com.gmt.gp.repositories.AlbumRepository;
 import com.gmt.gp.repositories.ArtistRepository;
 import com.gmt.gp.repositories.LibraryRepository;
+import com.gmt.gp.util.GPUtil;
 
 import java.awt.image.BufferedImage;
 import java.awt.Image;
@@ -58,6 +61,12 @@ public class LibraryService {
     private static final Logger LOG = LoggerFactory.getLogger(LibraryService.class);
 
     @Autowired
+    private HistoryService historyService;
+
+    @Autowired
+    private MessageService messageService;
+    
+    @Autowired
     private LibraryRepository libraryRepository;
 
     @Autowired
@@ -66,13 +75,12 @@ public class LibraryService {
     @Autowired
     private ArtistRepository artistRepository;
 
+    @Autowired
+    private Environment env;
+
     private static final String ARTIST = "ARTIST";
 
     private static final String ALBUM_ARTIST = "ALBUM_ARTIST";
-
-    private static final String ALBUM_IMAGES_PATH = "D:\\SWorkspace\\G-Player-SB\\src\\main\\resources\\public\\images\\albums\\";
-
-    private static final String ARTIST_IMAGES_PATH = "D:\\SWorkspace\\G-Player-SB\\src\\main\\resources\\public\\images\\artists\\";
 
     private static final String TRACK_LIST = "TRACK_LIST";
 
@@ -81,6 +89,30 @@ public class LibraryService {
     private static final String ARTISTS = "ARTISTS";
 
     private static final String ALBUMS = "ALBUMS";
+
+    private static final String BUILD_STATUS = "BUILD_STATUS";
+
+    private static final String COMPLETED = "COMPLETED";
+
+    private static final String FILES_TO_READ = "FILES_TO_READ";
+
+    private static final String FILES_READ_TIME = "FILES_READ_TIME";
+
+    private static final String TOTAL_TRACKS = "TOTAL_TRACKS";
+
+    private static final String ALBUM_COUNT = "ALBUM_COUNT";
+
+    private static final String ARTIST_COUNT = "ARTIST_COUNT";
+
+    private static final String ALBUM_ARTIST_COUNT = "ALBUM_ARTIST_COUNT";
+
+    private static final String BUILD_STATUS_STEP = "BUILD_STATUS_STEP";
+
+    //@Value("${library.ALBUM_IMAGES_PATH}")
+    //private String ALBUM_IMAGES_PATH = "D:\\SWorkspace\\G-Player-SB\\src\\main\\resources\\public\\images\\albums\\";
+
+    //@Value("${library.ARTIST_IMAGES_PATH}")
+    //private String ARTIST_IMAGES_PATH = "D:\\SWorkspace\\G-Player-SB\\src\\main\\resources\\public\\images\\artists\\";
 
     static FileFilter mp3filter = new FileFilter() {
         @Override 
@@ -119,19 +151,23 @@ public class LibraryService {
     }
 
     public List<File> getMusicFiles(List<Message> mainFolderList) {
-        List<File> tempFileList = new ArrayList<File>();
         List<File> fileList = new ArrayList<File>();
-        FileFilter folderFilter = new FileFilter() {
-            public boolean accept(File file) {
-                return file.isDirectory();
+        try {
+            List<File> tempFileList = new ArrayList<File>();
+            FileFilter folderFilter = new FileFilter() {
+                public boolean accept(File file) {
+                    return file.isDirectory();
+                }
+            };
+            File[] folders = null;
+            for (Message mainFolder : mainFolderList) {
+                File musicDir = new File(mainFolder.getValue());
+                fileList.addAll(Arrays.asList(musicDir.listFiles(mp3filter)));
+                folders = musicDir.listFiles(folderFilter);
+                fileList.addAll(recursiveSearch(folders, 0, 0, tempFileList));
             }
-        };
-        File[] folders = null;
-        for (Message mainFolder : mainFolderList) {
-            File musicDir = new File(mainFolder.getValue());
-            fileList.addAll(Arrays.asList(musicDir.listFiles(mp3filter)));
-            folders = musicDir.listFiles(folderFilter);
-            fileList.addAll(recursiveSearch(folders, 0, 0, tempFileList));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return fileList;
     }
@@ -160,35 +196,75 @@ public class LibraryService {
    
 
     public void buildLibrary(List<File> fileList) {
+        
+        final String methodName = "buildLibrary";
+        
         AudioFile audioF = null;
+        Tag tag = null;
+        
         Library library = null;
         Album album = null;
-        byte[] albumImg = null;
-        Tag tag = null;
         Artist artist = null;
         Artist albumArtist = null;
+
+        String artistName = null;
+        String[] artistNameArr = null;
+        byte[] albumImg = null;
         List<Artist> artistList = new ArrayList<Artist>();
         List<Library> libList = new ArrayList<Library>();
         List<Album> albumList = new ArrayList<Album>();
+        Map<String, Integer> artistArtCount = new HashMap<String, Integer>();
+        Map<String, Integer> albumArtistArtCount = new HashMap<String, Integer>();
+        int artistCount = 0;
+        int artCount = 0;
         int exceptionCounter = 0;
+        int fileListCounter = 0;
         long startingTime = System.currentTimeMillis();
-        try {
-            for (File file : fileList) {
-                try {
-                    try {
-                        audioF = AudioFileIO.read(file);
+
+        LOG.info(methodName+" - Started reading audiofiles using jaudiotagger, files to read: "+fileList.size());
+        messageService.updateBuildStatus(BUILD_STATUS, BUILD_STATUS_STEP, "Started reading audiofiles using jaudiotagger");
+        removeJAudioTagLogger();
+        
+        try { // label for try block : main_try_for_method_buildLibrary
+            for (int i = 0; i<fileList.size();i++) {
+                fileListCounter++;
+                try { //label for try block : file_list_for_loop 
+                    try { // label for try block : jaudiotagger_read 
+                        audioF = AudioFileIO.read(fileList.get(i));
                         tag = audioF.getTag();
                         library = getLibraryFromFile(tag, audioF);
-                        library.setSongPath(file.getAbsolutePath());
+                        library.setSongPath(fileList.get(i).getAbsolutePath());
                         libList.add(library);
+                        if (library.getArtist() != null) {
+                            artistName = library.getArtist().trim();
+                            if (library.getArtist().contains(",") || library.getArtist().contains(";")
+                                    || library.getArtist().contains("&")) {
+                                artistName = artistName.replaceAll("[;&]", ",");
+                                artistNameArr = artistName.split(",");
+                                for (String artistName1 : artistNameArr) {
+                                    if(artistName1!=null)artistName1=artistName1.trim();
+                                    if (artistArtCount.get(artistName1) != null) {
+                                        artistArtCount.put(artistName1, artistArtCount.get(artistName1) + 1);
+                                    } else {
+                                        artistArtCount.put(artistName1, 1);
+                                    }
+                                }
+                            } else {
+                                if (artistArtCount.get(artistName) != null) {
+                                    artistArtCount.put(artistName, artistArtCount.get(artistName) + 1);
+                                } else {
+                                    artistArtCount.put(artistName, 1);
+                                }
+                            }
+                        }
                     } catch (Exception e) {
-                        System.out.println("exceptionCount: "+ ++exceptionCounter);
+                        LOG.error(methodName+" - Exception in jaudiotagger_read, exceptionCount: "+ ++exceptionCounter);
+                        LOG.error(methodName+" - File Filed: "+fileList.get(i));
                         e.printStackTrace();
                     }
                     
                     if(!containsName(albumList, library.getAlbum())){
                         albumImg = getAlbumImgBinFromTag(tag);
-                        //System.out.println("getAlbumImgBinFromTag(tag): "+getAlbumImgBinFromTag(tag));
                         if(albumImg!=null){
                             album = new Album();
                             album.setAlbumImgAvl(true);
@@ -200,55 +276,109 @@ public class LibraryService {
                             album.setYear(library.getYear());
                             album = writeByteArryaTOimgFile(album, albumImg);
                             albumList.add(album);
-                    }else{
+                            if(album.getAlbumArtist()!=null){
+                                artistName = album.getAlbumArtist().trim();
+                                if(albumArtistArtCount.get(artistName)!=null){
+                                    albumArtistArtCount.put(artistName, albumArtistArtCount.get(artistName)+1);
+                                }else{
+                                    albumArtistArtCount.put(artistName, 1);
+                                }
+                            }
+                        }else{
                             // Logic to include albums without image
                         }
                     }
 
                 } catch (Exception e) {
-                    System.out.println("exceptionCount: "+ ++exceptionCounter);
+                    LOG.error(methodName+" - Exception in file_list_for_loop, exceptionCount: "+ ++exceptionCounter);
                     e.printStackTrace();
+                }
+                if(fileListCounter==100){
+                    LOG.info(methodName+" - Reading audiofiles,  remaining files: "+(fileList.size()-i));
+                        messageService.updateBuildStatus(BUILD_STATUS, FILES_TO_READ, String.valueOf((fileList.size()-i)));
+                        fileListCounter = 0;
                 }
             }
             long endingTime = System.currentTimeMillis();
-            LOG.info("Time took to read mp3 metadata: "+ (endingTime-startingTime) +" ms, "+(endingTime-startingTime)/1000+" secs");
+            messageService.updateBuildStatus(BUILD_STATUS, FILES_TO_READ, "0");
+            GPUtil.ThreadSleep(1000);
+            messageService.updateBuildStatus(BUILD_STATUS, BUILD_STATUS_STEP, "Finished reading all music files.");
+            LOG.info(methodName+" - Time took to read mp3 metadata: "+ (endingTime-startingTime) +" ms, "+(endingTime-startingTime)/1000+" secs");
+            messageService.updateBuildStatus(BUILD_STATUS, FILES_READ_TIME, String.valueOf((endingTime-startingTime)));
             
             startingTime = System.currentTimeMillis();
-            libraryRepository.saveAll(libList);
+            messageService.updateBuildStatus(BUILD_STATUS, BUILD_STATUS_STEP, "Saving library and album list");
+            GPUtil.ThreadSleep(1000);
+            libList = (List<Library>) libraryRepository.saveAll(libList);
             albumRepository.saveAll(albumList);
             endingTime = System.currentTimeMillis();
-            LOG.info("Time took to save library and album list: "+ (endingTime-startingTime) +" ms, "+(endingTime-startingTime)/1000+" secs");
+            LOG.info(methodName+" - Time took to save library and album list: "+ (endingTime-startingTime) +" ms, "+(endingTime-startingTime)/1000+" secs");
 
             startingTime = System.currentTimeMillis();
-            List<String> artistNameList = getFilteredArtistDetailsFromDb(ARTIST);
-            for(String artistName : artistNameList){
+            messageService.updateBuildStatus(BUILD_STATUS, BUILD_STATUS_STEP, "Reading and Saving artists");
+            GPUtil.ThreadSleep(1000);
+            List<String> artistNameList = new ArrayList<String>(artistArtCount.keySet());//getFilteredArtistDetailsFromDb(ARTIST);
+            for(String artistName2 : artistNameList){
+                artCount = artistArtCount.get(artistName2)!=null?artistArtCount.get(artistName2):0;
                 artist = new Artist();
-                artist.setArtistName(artistName);
+                artist.setArtistName(artistName2);
                 artist.setType(ARTIST);
                 artist.setImgAvl(false);
+                artist.setCount(artCount);
+                artist.setImgAvl(setArtistLocalImgAvlStatus(artist.getArtistName()));
                 artistList.add(artist);
             }
-            List<String> albumArtistNameList = getFilteredArtistDetailsFromDb(ALBUM_ARTIST);
+            artistCount = artistList.size(); // Reading artist count before inserting album artist into same list
+
+            List<String> albumArtistNameList = new ArrayList<String>(albumArtistArtCount.keySet());//getFilteredArtistDetailsFromDb(ALBUM_ARTIST);
             for(String albumArtistName : albumArtistNameList){
+                artCount = albumArtistArtCount.get(albumArtistName)!=null?albumArtistArtCount.get(albumArtistName):0;
                 albumArtist = new Artist();
                 albumArtist.setArtistName(albumArtistName);
                 albumArtist.setType(ALBUM_ARTIST);
                 albumArtist.setImgAvl(false);
+                albumArtist.setCount(artCount);
+                albumArtist.setImgAvl(setArtistLocalImgAvlStatus(albumArtist.getArtistName()));
                 artistList.add(albumArtist);
             }
             artistRepository.saveAll(artistList);
-
-            setArtistLocalImgAvlStatus(ARTIST);
-            setArtistLocalImgAvlStatus(ALBUM_ARTIST);
-
             endingTime = System.currentTimeMillis();
-            LOG.info("Time took to filter, save and update imgAvl of artist and album artist: "+ (endingTime-startingTime) +" ms, "+(endingTime-startingTime)/1000+" secs");
+            LOG.info(methodName+" - Time took to filter, save and update imgAvl of artist and album artist: "+ (endingTime-startingTime) +" ms, "+(endingTime-startingTime)/1000+" secs");
+
+            startingTime = System.currentTimeMillis();
+            messageService.updateBuildStatus(BUILD_STATUS, BUILD_STATUS_STEP, "Started updating history");
+            GPUtil.ThreadSleep(1000);
+            List<History> historyList = historyService.getAllHistory();
+            List<History> historyListR = new ArrayList<History>();
+            List<History> historyListU = new ArrayList<History>();
+            History history = null;
+            for(int i=0; i<historyList.size();i++){
+                history = historyList.get(i);
+                library = getLibraryFromLibList(libList, history);
+                if(library!=null){
+                    history.setSongId(library.getSongId());
+                    history.setSongPath(library.getSongPath());
+                    historyListU.add(history);
+                }else{
+                    historyListR.add(history);
+                }
+            }
+            historyService.removeAll(historyListR);
+            historyService.saveAll(historyListU);
+            endingTime = System.currentTimeMillis();
+            LOG.info(methodName+" - Time took to update history table : "+ (endingTime-startingTime) +" ms, "+(endingTime-startingTime)/1000+" secs");
 
         } catch (Exception e) {
-            System.out.println("exceptionCount: "+ ++exceptionCounter);
+            LOG.error(methodName+" - Exception in main_try_for_method_buildLibrary, exceptionCount: "+ ++exceptionCounter);
             e.printStackTrace();
         }
-        System.out.println("exceptionCount: "+ exceptionCounter);
+        LOG.error(methodName+" - exceptionCount: "+ exceptionCounter);
+        LOG.info(methodName+" - Summary: \nTotal tracks: "+libList.size()+" \nTotal albums: "+albumList.size()+" \nArtists found: "+artistCount+" \nAlbum artist found: "+(artistList.size()-artistCount));
+        messageService.updateBuildStatus(BUILD_STATUS, TOTAL_TRACKS, String.valueOf(libList.size()));
+        messageService.updateBuildStatus(BUILD_STATUS, ALBUM_COUNT, String.valueOf(albumList.size()));
+        messageService.updateBuildStatus(BUILD_STATUS, ARTIST_COUNT, String.valueOf(artistCount));
+        messageService.updateBuildStatus(BUILD_STATUS, ALBUM_ARTIST_COUNT, String.valueOf((artistList.size()-artistCount)));
+        messageService.updateBuildStatus(BUILD_STATUS, BUILD_STATUS, COMPLETED);
     }
 
     public Library getLibraryFromFile(Tag tag, AudioFile audioF) throws Exception{
@@ -294,6 +424,10 @@ public class LibraryService {
 
     public boolean containsName(final List<Album> list, final String name){
         return list.stream().filter(o -> o.getAlbumName().equals(name)).findFirst().isPresent();
+    }
+
+    public Library getLibraryFromLibList(final List<Library> libList, History history){
+        return libList.stream().filter(o -> (o.getTitle().equalsIgnoreCase(history.getTitle()) && o.getAlbum().equalsIgnoreCase(history.getAlbum()))).findFirst().orElse(null);
     }
 
     public Library getAAttrFromTag(Library song, boolean getAlbumImg, boolean getLyrics){
@@ -470,11 +604,11 @@ public class LibraryService {
     }
 
     public Iterable<Album> getAllAlbumsFromDb(){
-        return albumRepository.findAll();
+        return albumRepository.findAllByOrderByAlbumNameAsc();
     }
     
     public List<Artist> getAllArtistDetails(String type) {
-        return artistRepository.getByType(type);
+        return artistRepository.getByTypeOrderByArtistNameAsc(type);
     }
 
     /** 
@@ -538,18 +672,24 @@ public class LibraryService {
     }
 
     @Transactional
-    public Iterable<Artist> setArtistLocalImgAvlStatus(String artistType){
-        String artistPath = "D:\\SWorkspace\\G-Player-SB\\src\\main\\resources\\public\\images\\artists";
+    public Iterable<Artist> setArtistLocalImgAvlStatusList(String artistType, List<Artist> artistList){
         Artist artist = null;
-        List<Artist> artistList = artistRepository.getByType(artistType);
         File artistImgFIle = null;
+        if(artistList==null){
+            artistList = artistRepository.getByTypeOrderByArtistNameAsc(artistType);
+        }
         for(int i=0;i<artistList.size();i++){
             artist = artistList.get(i);
-            artistImgFIle = new File(artistPath+"\\"+artist.getArtistName()+".jpg");
+            artistImgFIle = new File(env.getProperty("library.ARTIST_IMAGES_PATH")+"\\"+artist.getArtistName()+".jpg");
             artist.setImgAvl(artistImgFIle.exists());
             artistList.set(i, artist);
         }
         return artistRepository.saveAll(artistList);
+    }
+
+    public boolean setArtistLocalImgAvlStatus(String artistName){
+        File artistImgFIle = new File(env.getProperty("library.ARTIST_IMAGES_PATH")+"\\"+artistName+".jpg");
+        return artistImgFIle.exists();
     }
 
     public List<Library> getSongsByArtist(String artist) {
@@ -587,8 +727,8 @@ public class LibraryService {
         List<Artist> downloadedArtists = new ArrayList<Artist>();
         List<Artist> failedArtists = new ArrayList<Artist>();
         File localArtistImg = null;
-        String localArtistPath = "D:\\SWorkspace\\G-Player-SB\\src\\g-player-react\\public\\images\\artists";
-        String wikiUri = "https://en.wikipedia.org/api/rest_v1/page/summary/";
+        String localArtistPath = env.getProperty("library.ARTIST_IMAGES_PATH");
+        String wikiUri = env.getProperty("library.WIKI_SUMMARY_URI");
         String wikiResp = "";
         JSONObject wikiRespJson = null;
         for(Artist artist : artistList){
@@ -605,14 +745,18 @@ public class LibraryService {
                             wikiRespJson = new JSONObject(wikiResp);
                         }
                     }
-                    if(wikiRespJson.getJSONObject("thumbnail")==null || !wikiRespJson.getString("extract").contains("singer") 
-                        || !wikiRespJson.getString("extract").contains("actor") || !wikiRespJson.getString("extract").contains("composer") 
-                        || !wikiRespJson.getString("extract").contains("musician")
-                        || !wikiRespJson.getString("extract").contains("director"))continue;
-
-                    System.out.println("wikiRespJson: "+wikiRespJson.getJSONObject("thumbnail").getString("source"));
-                    FileUtils.copyURLToFile(new URL(wikiRespJson.getJSONObject("thumbnail").getString("source")), localArtistImg);
-                    downloadedArtists.add(artist);
+                    if(wikiRespJson.getJSONObject("thumbnail")!=null && 
+                        (   wikiRespJson.getString("extract").contains("singer") 
+                            || wikiRespJson.getString("extract").contains("actor") 
+                            || wikiRespJson.getString("extract").contains("actress")
+                            || wikiRespJson.getString("extract").contains("composer") 
+                            || wikiRespJson.getString("extract").contains("musician")
+                            || wikiRespJson.getString("extract").contains("director"))){
+                            
+                            System.out.println("wikiRespJson: "+wikiRespJson.getJSONObject("thumbnail").getString("source"));
+                            FileUtils.copyURLToFile(new URL(wikiRespJson.getJSONObject("thumbnail").getString("source")), localArtistImg);
+                            downloadedArtists.add(artist);
+                    }
                 } catch (Exception e) {
                     failedArtists.add(artist);
                     e.printStackTrace();
@@ -678,7 +822,7 @@ public class LibraryService {
 
     private Album writeByteArryaTOimgFile (Album album, byte[] binImg) {
         try {
-            File albumImgFile = new File(ALBUM_IMAGES_PATH+album.getAlbumName()+".jpg");
+            File albumImgFile = new File(env.getProperty("library.ALBUM_IMAGES_PATH")+album.getAlbumName()+".jpg");
             if(!albumImgFile.exists()){
                 ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(binImg);
                 BufferedImage newImage  = ImageIO.read(byteArrayInputStream);
@@ -702,7 +846,7 @@ public class LibraryService {
 
     public void cleanAlbumImageDir(){
         try {
-            FileUtils.cleanDirectory(new File(ALBUM_IMAGES_PATH));
+            FileUtils.cleanDirectory(new File(env.getProperty("library.ALBUM_IMAGES_PATH")));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -718,7 +862,7 @@ public class LibraryService {
 
     public void resizeArtistImgs(){
         try {
-            File artistDir = new File(ARTIST_IMAGES_PATH);
+            File artistDir = new File(env.getProperty("library.ARTIST_IMAGES_PATH"));
             File[] artistImgs = artistDir.listFiles();
             for(File artistImg : artistImgs){
                 ByteArrayInputStream byteArrayInputStream 
@@ -745,6 +889,26 @@ public class LibraryService {
         resultMap.put(ALBUM_ARTISTS, albumArtists);
         resultMap.put(ALBUMS, albums);
         return resultMap;
+    }
+
+    public void removeJAudioTagLogger(){
+        String[] loggerNames = new String[] {"org.jaudiotagger.audio","org.jaudiotagger.tag.mp4","org.jaudiotagger.tag.id3", "org.jaudiotagger.tag.datatype"};
+        try {
+            for(String loggerName : loggerNames){
+                java.util.logging.Logger[] pin = new java.util.logging.Logger[]{ java.util.logging.Logger.getLogger(loggerName) };
+                for (java.util.logging.Logger l : pin){l.setLevel(java.util.logging.Level.OFF);}
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<Artist> getArtistsByNames(List<String> artistNames) {
+        return artistRepository.getByArtistNames(artistNames);
+    }
+
+    public Artist getByArtistNameAndType(String artistName, String type){
+        return artistRepository.getByArtistNameAndType(artistName, type);
     }
 
 }

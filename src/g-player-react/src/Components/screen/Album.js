@@ -21,7 +21,7 @@ export const Album = () => {
         dispatch(fetchAlbum(albumName));
     },[albumName]);
     useEffect(()=>{
-        dispatch(setGroupband("albums"));
+        //dispatch(setGroupband("albums"));
         dispatch(setPlayedFrom(ALBUM));
     },[]);
     return(

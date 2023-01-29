@@ -4,12 +4,15 @@ import { Sidebar } from "./Sidebar";
 import { Screen } from "./screen/Screen";
 import { useDispatch } from "react-redux";
 import { fetchAlbumImgs, fetchAllAlbums, fetchAllAlbumsDtls, fethAllSongs } from "./redux/library/LibraryActions";
-import { fetchCurrentSontAndStatus, fettchCurrentSongStatus, playASongSucc, setIsRepeat, setIsShuffle, setMediaVolume } from "./redux/player/PlayerActions";
+import { fetchCurrentSontAndStatus, fettchCurrentSongStatus, playASongSucc, setIsRepeat, setIsShuffle, setMediaVolume, setRepeat } from "./redux/player/PlayerActions";
 import { getCookieDetails } from "./utli";
 import { TRACK_LIST } from "./redux/GPActionTypes";
 import { Route, Routes } from "react-router-dom";
 import { Library } from "./library/Library";
 import { Search } from "./search/Search";
+import { RecentPlays } from "./history/RecentPlays";
+import Slider from "rc-slider";
+import { SliderC } from "./SliderRC";
 
 export const Home = () => {
     const dispatch = useDispatch();
@@ -24,8 +27,8 @@ export const Home = () => {
 
     const getSetCookieDetails = () =>{
         const cookieDetails = getCookieDetails();
-        if(cookieDetails["isRepeat"]!==undefined){
-            dispatch(setIsRepeat(cookieDetails["isRepeat"]==='true'));
+        if(cookieDetails["repeat"]!==undefined){
+            dispatch(setRepeat(cookieDetails["repeat"]));
         }
         if(cookieDetails["isShuffle"]!==undefined){
             dispatch(setIsShuffle(cookieDetails["isShuffle"]==='true'));
@@ -47,7 +50,9 @@ export const Home = () => {
             <Routes>
                 <Route path="/music/*" element={<Screen/>} />
                 <Route path="/search/:searchKey" element={<Search/>} />
+                <Route path="/recent" element={<RecentPlays />} />
                 <Route path="/library/*" element={<Library/>} />
+                <Route path="/*" element={<Screen/>} />
             </Routes>
             <Player />
         </div>

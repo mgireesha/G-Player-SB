@@ -6,7 +6,7 @@ import { playASong, setIsPlaying } from "../redux/player/PlayerActions";
 import { getMins } from "../utli";
 import { ArtistLink } from "./artist/ArtistLink";
 
-export const Track = ({track, playedFrom, index}) => {
+export const Track = ({track, playedFrom, index, hideTrackNum}) => {
     const dispatch = useDispatch();
     const songPlaying = useSelector(state => state.player.songPlaying);
     const currentVolume = useSelector(state => state.player.currentVolume);
@@ -18,7 +18,7 @@ export const Track = ({track, playedFrom, index}) => {
 
     return(
         <div className={songPlaying!==null && track.songId===songPlaying.songId?"track text-highlighted-y":"track"} id={"track-"+track.songId}>
-            <label style={{paddingLeft:'5'}}>{playedFrom===ALBUM && track.trackNumber!==undefined && track.trackNumber!==0?track.trackNumber:index+1}</label>
+            {!hideTrackNum && <label style={{paddingLeft:'5'}}>{playedFrom===ALBUM && track.trackNumber!==undefined && track.trackNumber!==0?track.trackNumber:index+1}</label>}
             <label onClick={()=>playSong(track.songId)} style={{cursor:'pointer'}}>{track.title}</label>
             <label onDoubleClick={()=>playSong(track.songId)}>
                 <ArtistLink artist={track.artist} />

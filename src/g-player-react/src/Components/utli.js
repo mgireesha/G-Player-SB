@@ -36,7 +36,8 @@ export function handleAPIError(error){
 export function scrolltoId(id){
     try {
         const access = document.getElementById(id);
-        access.scrollIntoView({behavior: 'smooth'}, true);
+        access.scrollIntoView(true);
+        //access.scrollIntoView({behavior: 'smooth'}, true);
         //var rect = access.getBoundingClientRect();
         //console.log(rect.top, rect.right, rect.bottom, rect.left);
         //ccess.scrollTo(0, rect.bottom);
@@ -85,4 +86,46 @@ export const setCookies = (name, value) => {
     const expires = new Date(date);
     expires.setDate(expires.getDate()+5);
     document.cookie=name+"="+value+"; expires="+expires+"; path=/";
+}
+
+export const getCookieValue = (name) => {
+    const cookies = document.cookie;
+    const cookieArr = cookies.split(";");
+    let cookieArr1;
+    let cookieValue;
+    cookieArr.forEach((cookie => {
+        if(cookie!==""){
+            cookieArr1 = cookie.split("=");
+            if(cookieArr1[0].trim() ===name){
+                cookieValue = cookieArr1[1].trim();
+            }
+        }
+    }))
+    return cookieValue;
+}
+
+export const sortGroupByField = (entArr, field) => {
+    let entListObj = {};
+    let tempArr = [];
+    let ind;
+    entArr.forEach((ent) => {
+        if (ent[field] !== null && ent[field] !== undefined && ent[field] !== "") {
+            if(field==='title' || field==='albumName' || field==='artistName'){
+                ind = ent[field].substring(0, 1).toUpperCase();
+                if (!isNaN(ind)) {
+                    ind = '#';
+                }
+            }else{
+                ind = ent[field];
+            }
+            if (entListObj[ind] !== undefined) {
+                tempArr = entListObj[ind];
+                tempArr.push(ent);
+                entListObj[ind] = tempArr;
+            } else {
+                entListObj[ind] = [ent];
+            }
+        }
+    });
+return entListObj;
 }

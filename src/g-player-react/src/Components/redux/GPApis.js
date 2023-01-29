@@ -75,6 +75,10 @@ export const deleteMusicPathAPI = (messageId) => {
     return iAxios.delete(`/message/removeMusicPath/${messageId}`, ).then(response => response);
 }
 
+export const fetchBuildStatusAPI = () => {
+    return iAxios.get(`/message/getBuildStatus`).then(response => response);
+}
+
 //Media
 export const playPauseAPI = () => {
     return iAxios.get('/media/playPause').then(response => response);
@@ -99,3 +103,17 @@ export const setMediaVolumeAPI = (volume) => {
 export const setPlaybackLengthAPI = (pbVal) => {
     return iAxios.get(`/media/forward/${pbVal}`).then(response => response);
 }
+
+//History Start
+export const fetchAllHistoryAPI = () => {
+    return iAxios.get(`/history/getAllGroupedHistory`).then(response => response);
+}
+
+export const updateHistoryAPI = (songId) => {
+    return iAxios.put(`/history/updateHistory/${songId}`).then(response => response);
+}
+
+export const fetchMostPlayedDataAPI = () => {
+    return iAxios.get(`/history/getMostPlayedData`).then(response => response);
+}
+//History End

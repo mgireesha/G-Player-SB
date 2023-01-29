@@ -1,23 +1,28 @@
 import { call, put, takeLatest } from "redux-saga/effects";
 import { handleAPIError } from "../../utli";
-import { deleteMusicPathAPI, fetchAlbumAPI, fetchalbumDetailsByAlbumArtistAPI, fetchAlbumImgsAPI,
+import { deleteMusicPathAPI, fetchAlbumAPI, fetchAlbumImgsAPI,
          fetchalbumListOfAAAPI,
          fetchAlbumtracksAPI,
          fetchAllAlbumDtlsAPI, fetchAllAlbumsAPI, fetchAllArtistsDtlsAPI, 
+         fetchAllHistoryAPI, 
+         fetchBuildStatusAPI, 
+         fetchMostPlayedDataAPI, 
          fetchMusicpathAPI, 
-         fetchSongsByArtistAPI, getAllSongsAPI, initLibraryBuildAPI, saveMusicpathAPI, searchByKeyAPI 
+         fetchSongsByArtistAPI, getAllSongsAPI, initLibraryBuildAPI, saveMusicpathAPI, searchByKeyAPI, updateHistoryAPI 
     } from "../GPApis";
-import { deleteMusicPathSucc, fetchAlbumDetailsByAlbumArtistSucc, fetchAlbumImgsScc, fetchAlbumlistOfAASucc, fetchAlbumSucc, 
+import { deleteMusicPathSucc, fetchAlbumImgsScc, fetchAlbumlistOfAASucc, fetchAlbumSucc, 
         fetchAlbumTacksSucc, 
         fetchAllAlbumArtistsDtlsSucc, fetchAllAlbumsDtlsSucc, fetchAllAlbumsSucc, 
-        fetchAllArtistsDtlsSucc, fetchMusicPathSucc, fetchSongsByArtistSucc, fethAllSongsSucc, initLibraryBuildSucc, saveMusicPathSucc, searchByKeySucc 
+        fetchAllArtistsDtlsSucc, fetchAllHistorySucc, fetchBuildStatusSucc, fetchMostPlayedDataSucc, fetchMusicPathSucc, fetchSongsByArtistSucc, fethAllSongsSucc, initLibraryBuildSucc, saveMusicPathSucc, searchByKeySucc, updateHistorySucc 
     } from "./LibraryActions";
-import { FETCH_SONGS_START, LIBRARY_DELETE_MUSIC_PATH_START, LIBRARY_FETCH_ALBUMS_DETAILS_START, LIBRARY_FETCH_ALBUMS_START, 
-    LIBRARY_FETCH_ALBUM_ARTIST_LIST_START, LIBRARY_FETCH_ALBUM_DETAILS_BY_ALBUM_ARTIST_START, 
+import { FETCH_SONGS_START, HISTORY_FETCH_ALL_HISTORY_START, HISTORY_UPDATE_HISTORY_START, LIBRARY_DELETE_MUSIC_PATH_START, LIBRARY_FETCH_ALBUMS_DETAILS_START, LIBRARY_FETCH_ALBUMS_START, 
+    LIBRARY_FETCH_ALBUM_ARTIST_LIST_START, 
     LIBRARY_FETCH_ALBUM_IMGS_START, LIBRARY_FETCH_ALBUM_LIST_OF_AA_START, LIBRARY_FETCH_ALBUM_START, LIBRARY_FETCH_ALBUM_TRACKS_START, LIBRARY_FETCH_ARTIST_LIST_START, 
+    LIBRARY_FETCH_BUILD_STATUS_START, 
+    LIBRARY_FETCH_MOST_PLAYED_DATA_START, 
     LIBRARY_FETCH_MUSIC_PATH_START, 
     LIBRARY_FETCH_SONGS_BY_ARTIST_START, 
-    LIBrARY_INIT_BUILD_LIBRARY_START,
+    LIBRARY_INIT_BUILD_LIBRARY_START,
     LIBRARY_SAVE_MUSIC_PATH_START,
     LIBRARY_SEARCH_BY_KEY_START
 } from "./LibraryActionTypes";
@@ -187,7 +192,7 @@ export function* onFetchAlbumListOfAAAsync(payload){
 
 //Side bar library
 export function* onInitLibraryBuild(){
-    yield takeLatest(LIBrARY_INIT_BUILD_LIBRARY_START, onInitLibraryBuildAsync);
+    yield takeLatest(LIBRARY_INIT_BUILD_LIBRARY_START, onInitLibraryBuildAsync);
 }
 
 export function*onInitLibraryBuildAsync(){
@@ -265,3 +270,69 @@ export function* onSearchByKeyAsync(payload){
         handleAPIError(error);
     }
 }
+
+export function* onFetchBuildStatus(){
+    yield takeLatest(LIBRARY_FETCH_BUILD_STATUS_START, onFetchBuildStatusAsync);
+}
+
+export function* onFetchBuildStatusAsync(){
+    try {
+        const response = yield call(fetchBuildStatusAPI);
+        if(response.status === 200){
+            yield put(fetchBuildStatusSucc(response.data));
+        }
+    } catch (error) {
+        console.log(error);
+        handleAPIError(error);
+    }
+}
+
+export function* onFetchMostPlayedData(){
+    yield takeLatest(LIBRARY_FETCH_MOST_PLAYED_DATA_START, onFetchMostPlayedDataAsync);
+}
+
+export function* onFetchMostPlayedDataAsync(){
+    try {
+        const response = yield call(fetchMostPlayedDataAPI);
+        if(response.status === 200){
+            yield put(fetchMostPlayedDataSucc(response.data));
+        }
+    } catch (error) {
+        console.log(error);
+        handleAPIError(error);
+    }
+}
+
+//History Start
+export function* onFetchAllHistory(){
+    yield takeLatest(HISTORY_FETCH_ALL_HISTORY_START, onFetchAllHistoryAsync);
+}
+
+export function* onFetchAllHistoryAsync(){
+    try {
+        const response = yield call(fetchAllHistoryAPI);
+        if(response.status === 200){
+            yield put(fetchAllHistorySucc(response.data));
+        }
+    } catch (error) {
+        console.log(error);
+        handleAPIError(error);
+    }
+}
+
+export function* onUpdateHistory(){
+    yield takeLatest(HISTORY_UPDATE_HISTORY_START, onUpdateHistoryAsync);
+}
+
+export function* onUpdateHistoryAsync(payload){
+    try {
+        const response = yield call(updateHistoryAPI, payload.songId);
+        if(response.status === 200){
+            yield put(updateHistorySucc(response.data));
+        }
+    } catch (error) {
+        console.log(error);
+        handleAPIError(error);
+    }
+}
+//History End
