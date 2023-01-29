@@ -3,23 +3,21 @@ import { Player } from "./player/Player";
 import { Sidebar } from "./Sidebar";
 import { Screen } from "./screen/Screen";
 import { useDispatch } from "react-redux";
-import { fetchAlbumImgs, fetchAllAlbums, fetchAllAlbumsDtls, fethAllSongs } from "./redux/library/LibraryActions";
-import { fetchCurrentSontAndStatus, fettchCurrentSongStatus, playASongSucc, setIsRepeat, setIsShuffle, setMediaVolume, setRepeat } from "./redux/player/PlayerActions";
+import { fetchAllAlbums, fethAllSongs } from "./redux/library/LibraryActions";
+import { fetchCurrentSontAndStatus, playASongSucc, setIsShuffle, setMediaVolume, setRepeat } from "./redux/player/PlayerActions";
 import { getCookieDetails } from "./utli";
 import { TRACK_LIST } from "./redux/GPActionTypes";
 import { Route, Routes } from "react-router-dom";
 import { Library } from "./library/Library";
 import { Search } from "./search/Search";
 import { RecentPlays } from "./history/RecentPlays";
-import Slider from "rc-slider";
-import { SliderC } from "./SliderRC";
 
 export const Home = () => {
     const dispatch = useDispatch();
     useEffect(()=>{
         dispatch(fethAllSongs());
         //dispatch(fetchAlbumImgs());
-        dispatch(fetchAllAlbumsDtls());
+        //dispatch(fetchAllAlbumsDtls());
         dispatch(fetchAllAlbums());
         //dispatch(fetchCurrentSontAndStatus());
         getSetCookieDetails();
