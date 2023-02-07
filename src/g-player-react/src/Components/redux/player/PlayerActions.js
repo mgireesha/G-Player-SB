@@ -11,8 +11,11 @@ export const setIsPlaying = (isPlaying) => ({
     isPlaying
 })
 
-export const playPause = () => ({
-    type: PLAYER_PLAY_PAUSE_START
+export const playPause = (songPlaying, playedFrom, currentVolume) => ({
+    type: PLAYER_PLAY_PAUSE_START,
+    songPlaying,
+    playedFrom,
+    currentVolume
 })
 
 export const playPauseSucc = (response) => ({

@@ -18,6 +18,14 @@ public class MessageService {
     @Autowired
     private MessageRepository messageRepository;
 
+    public Message saveMaMessage(Message message){
+        return messageRepository.save(message);
+    }
+
+    public Message getMessageByName(String messageName){
+        return messageRepository.getByName(messageName);
+    }
+
     public void removeMessageById(long messageId) {
         messageRepository.deleteById(messageId);
     }

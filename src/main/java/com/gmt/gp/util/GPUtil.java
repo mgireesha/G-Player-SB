@@ -26,6 +26,13 @@ public class GPUtil {
     return stringObject;   
     }
 
+    public static boolean checkIsNull(String stringObject){
+        if(null==stringObject || "null".equalsIgnoreCase(stringObject) || "".equalsIgnoreCase(stringObject)){
+            return false;   
+        }
+    return true;   
+    }
+
     public static void ThreadSleep(long time){
         try {
             Thread.sleep(time);

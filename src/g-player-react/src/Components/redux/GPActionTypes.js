@@ -17,6 +17,7 @@ export const INIT = 'INIT';
 export const LIBRARY = 'LIBRARY'
 export const LOADING = 'LOADING';
 
+export const MEDIA_PLAYER_NULL = 'MEDIA_PLAYER_NULL';
 export const MUSIC = 'MUSIC';
 export const MUSIC_PATH = 'MUSIC_PATH';
 

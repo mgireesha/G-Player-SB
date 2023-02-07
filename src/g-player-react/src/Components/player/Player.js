@@ -97,7 +97,7 @@ export const Player = () => {
         }else{
             setIsPlayingL(true);
         }
-        dispatch(playPause());
+        dispatch(playPause(songPlaying, playedFrom, currentVolume));
     }
 
     const playNextSong = (action) => {

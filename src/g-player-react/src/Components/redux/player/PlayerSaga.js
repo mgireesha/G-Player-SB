@@ -1,8 +1,9 @@
 import { call, put, takeLatest } from "redux-saga/effects";
 import { handleAPIError, setCookies } from "../../utli";
+import { MEDIA_PLAYER_NULL } from "../GPActionTypes";
 import { getCurrentSongAndStatusAPI, getCurrentSongStatusAPI, playASongAPI, playPauseAPI, setMediaVolumeAPI, 
             setPlaybackLengthAPI, updateLyricsAPI } from "../GPApis";
-import { fetchCurrentSontAndStatusSucc, fettchCurrentSongStatusSucc, playASongSucc, playPauseSucc, 
+import { fetchCurrentSontAndStatusSucc, fettchCurrentSongStatusSucc, playASong, playASongSucc, playPauseSucc, 
             setMediaVolumeSucc, setPlayBackLengthSucc, updateLyricsSucc } from "./PlayerActions";
 import { PLAYER_CURRENT_SONG_AND_STATUS_START, PLAYER_CURRENT_SONG_STATUS_START, PLAYER_PLAY_A_SONG_START, 
         PLAYER_PLAY_PAUSE_START, PLAYER_SET_MEDIA_VOLUME_START, PLAYER_SET_PB_LENGTH_START, 
@@ -13,12 +14,18 @@ export function * onPlayPause() {
     yield takeLatest(PLAYER_PLAY_PAUSE_START,onPlayPauseAsync);
 }
 
-export function* onPlayPauseAsync(){
+export function* onPlayPauseAsync(payload){
     try {
         const response = yield call(playPauseAPI);
         if(response.status===200){
             const data = response.data;
-            yield put(playPauseSucc(data));
+            if(data.status===MEDIA_PLAYER_NULL){
+                if(payload.songPlaying!==null){
+                    yield put(playASong(payload.songPlaying.songId, payload.playedFrom, payload.currentVolume))
+                }
+            }else{
+                yield put(playPauseSucc(data));
+            }
         }
     } catch (error) {
         console.log(error);

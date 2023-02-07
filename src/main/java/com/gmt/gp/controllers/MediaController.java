@@ -13,7 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gmt.gp.model.GMedia;
 import com.gmt.gp.model.GPResponse;
 import com.gmt.gp.model.Library;
+import com.gmt.gp.model.Message;
 import com.gmt.gp.services.LibraryService;
+import com.gmt.gp.services.MessageService;
+import com.gmt.gp.util.GPUtil;
+import com.gmt.gp.util.GP_CONSTANTS;
 
 import javafx.application.Platform;
 import javafx.scene.media.Media;
@@ -30,6 +34,9 @@ public class MediaController {
     @Autowired
     private LibraryService libraryService;
 
+    @Autowired
+    private MessageService messageService;
+
     @RequestMapping(method = RequestMethod.PUT, value = "/playSong/{songId}")
     public GPResponse playSong(@RequestBody String currentVolume,@PathVariable String songId){
         GPResponse resp = new GPResponse();
@@ -39,6 +46,12 @@ public class MediaController {
             return resp;
         }
         Library song = libraryService.getSongBySongId(Integer.parseInt(songId));
+        Message message = messageService.getMessageByName(GP_CONSTANTS.LAST_PLAYED_SONG_ID);
+        if(message!=null){
+            messageService.saveMaMessage(message.setValue(songId));
+        }else{
+            messageService.saveMaMessage(new Message(GP_CONSTANTS.LIBRARY, GP_CONSTANTS.LAST_PLAYED_SONG_ID, songId));
+        }
         //historyService.updateHistory(song);
         boolean getLyrics = false;
         if(song.getLyrics()==null){
@@ -64,7 +77,6 @@ public class MediaController {
         }else{
             resp =  initAndPlay(song, volume);
         }
-        
         return resp;
     }
 
@@ -101,6 +113,8 @@ public class MediaController {
             ThreadSleep(600);
             
             resp.setStatus(mPlayer.getStatus().toString());
+        }else{
+            resp.setStatus(GP_CONSTANTS.MEDIA_PLAYER_NULL);
         }
         return resp;
     }
@@ -169,7 +183,11 @@ public class MediaController {
                 resp.setStatus(mPlayer.getStatus().toString());
                 resp.setgMedia(gMedia);
             }else{
-                resp.setError("MEDIA_PLAYER_NULL");
+                resp.setError(GP_CONSTANTS.MEDIA_PLAYER_NULL);
+                String songId = messageService.getMessageByName(GP_CONSTANTS.LAST_PLAYED_SONG_ID).getValue();
+                if(GPUtil.checkIsNull(songId)){
+                    resp.setLibrary(libraryService.getAAttrFromTag(libraryService.getSongBySongId(Integer.parseInt(songId)), true, true));
+                }
             }
         } catch (Exception e) {
            e.printStackTrace();

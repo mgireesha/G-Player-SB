@@ -29,8 +29,9 @@ public class Message {
     public String getValue() {
         return value;
     }
-    public void setValue(String value) {
+    public Message setValue(String value) {
         this.value = value;
+        return this;
     }
     public String getType() {
         return type;
