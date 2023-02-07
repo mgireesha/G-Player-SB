@@ -3,7 +3,7 @@ import { Player } from "./player/Player";
 import { Sidebar } from "./Sidebar";
 import { Screen } from "./screen/Screen";
 import { useDispatch } from "react-redux";
-import { fetchAllAlbums, fethAllSongs } from "./redux/library/LibraryActions";
+import { fetchAllAlbums, fethAllSongs, setShowTrackActionsPopup } from "./redux/library/LibraryActions";
 import { fetchCurrentSontAndStatus, playASongSucc, setIsShuffle, setMediaVolume, setRepeat } from "./redux/player/PlayerActions";
 import { getCookieDetails } from "./utli";
 import { TRACK_LIST } from "./redux/GPActionTypes";

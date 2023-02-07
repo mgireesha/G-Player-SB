@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import def_album_art from '../images/def_album_art.png';
-import { ALBUM } from "../redux/GPActionTypes";
+import { ALBUM, TRACK_LIST } from "../redux/GPActionTypes";
 import { fetchAlbum, fetchAlbumImgs, fetchAlbumTacks, setGroupband } from "../redux/library/LibraryActions";
 import { setPlayedFrom } from "../redux/player/PlayerActions";
 import { ShowLyrics } from "./ShowLyrics";
@@ -42,7 +42,7 @@ export const Album = () => {
                     <ShowLyrics />
                 </div>
             </div>}
-            <div className="album-track-list">
+            <div className="album-track-list" id={TRACK_LIST}>
                 {albumTracks.length>0 && albumTracks.map((track, index)=>
                     track.title!==null && <Track track={track} key={index} playedFrom={ALBUM} index={index}  />
                 )}

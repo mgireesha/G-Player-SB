@@ -1632,6 +1632,17 @@ a.disabled-click{
     }
 }
 
+.track-actions-popup{
+    width: 13em;
+    height: auto;
+    background-color: #AB3C3C;
+    position: absolute;
+    padding: 10px;
+    padding-left: 20px;
+    z-index: 10;
+
+}
+
 /*Custom Scrollbar*/
 /* width */
 ::-webkit-scrollbar {

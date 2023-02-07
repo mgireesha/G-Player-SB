@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { A_TO_Z, TRACK_LIST, SORT_YEAR, SORT_ARTIST, A_TO_Z_DESC } from "../redux/GPActionTypes";
-import { setGroupband } from "../redux/library/LibraryActions";
+import { setGroupband, setShowTrackActionsPopup } from "../redux/library/LibraryActions";
 import { setPlayedFrom } from "../redux/player/PlayerActions";
 import { scrollToPlaying, sortGroupByField } from "../utli";
 import { SortingContainer } from "./SortingContainer";
@@ -86,10 +86,14 @@ export const TrackList = () => {
         setTrackList(trackList);
     }
 
+    
+
+    
+
     return(
         <>
             <SortingContainer sortListKeys={trackListKeys} setSortBy={setSortBy} sortBy={sortBy} sortSelectors={[A_TO_Z,A_TO_Z_DESC, SORT_YEAR, SORT_ARTIST]} />
-            <div className="track-list">
+            <div className="track-list" id={TRACK_LIST}>
                 {/* {tracks!==undefined && tracks!==null &&
                             tracks.map((track,index) => 
                             track.title!==null && <Track track={track} key={track.songId} playedFrom={TRACK_LIST} index={index} />
