@@ -11,11 +11,12 @@ export const setIsPlaying = (isPlaying) => ({
     isPlaying
 })
 
-export const playPause = (songPlaying, playedFrom, currentVolume) => ({
+export const playPause = (songPlaying, playedFrom, currentVolume, currentPlayTime) => ({
     type: PLAYER_PLAY_PAUSE_START,
     songPlaying,
     playedFrom,
-    currentVolume
+    currentVolume,
+    currentPlayTime
 })
 
 export const playPauseSucc = (response) => ({
@@ -23,11 +24,12 @@ export const playPauseSucc = (response) => ({
     response
 })
 
-export const playASong = (songId, playedFrom, currentVolume) => ({
+export const playASong = (songId, playedFrom, currentVolume, currentPlayTime) => ({
     type: PLAYER_PLAY_A_SONG_START,
     songId,
     playedFrom,
-    currentVolume
+    currentVolume,
+    currentPlayTime
 })
 
 export const playASongSucc = (response,playedFrom) => ({

@@ -42,6 +42,7 @@ import com.gmt.gp.repositories.AlbumRepository;
 import com.gmt.gp.repositories.ArtistRepository;
 import com.gmt.gp.repositories.LibraryRepository;
 import com.gmt.gp.util.GPUtil;
+import com.gmt.gp.util.GP_CONSTANTS;
 
 import java.awt.image.BufferedImage;
 import java.awt.Image;
@@ -68,36 +69,6 @@ public class LibraryService {
 
     @Autowired
     private Environment env;
-
-    private static final String ALBUM_COUNT = "ALBUM_COUNT";
-
-    private static final String ALBUMS = "ALBUMS";
-
-    private static final String ALBUM_ARTIST = "ALBUM_ARTIST";
-
-    private static final String ALBUM_ARTIST_COUNT = "ALBUM_ARTIST_COUNT";
-
-    private static final String ALBUM_ARTISTS = "ALBUM_ARTISTS";
-
-    private static final String ARTIST_COUNT = "ARTIST_COUNT";
-
-    private static final String ARTIST = "ARTIST";
-
-    private static final String ARTISTS = "ARTISTS";
-    
-    private static final String BUILD_STATUS = "BUILD_STATUS";
-
-    private static final String BUILD_STATUS_STEP = "BUILD_STATUS_STEP";
-
-    private static final String COMPLETED = "COMPLETED";
-
-    private static final String FILES_READ_TIME = "FILES_READ_TIME";
-
-    private static final String FILES_TO_READ = "FILES_TO_READ";
-    
-    private static final String TOTAL_TRACKS = "TOTAL_TRACKS";
-
-    private static final String TRACK_LIST = "TRACK_LIST";
 
     //@Value("${library.ALBUM_IMAGES_PATH}")
     //private String ALBUM_IMAGES_PATH = "D:\\SWorkspace\\G-Player-SB\\src\\main\\resources\\public\\images\\albums\\";
@@ -192,7 +163,7 @@ public class LibraryService {
         long startingTime = System.currentTimeMillis();
 
         LOG.info(methodName+" - Started reading audiofiles using jaudiotagger, files to read: "+fileList.size());
-        messageService.updateBuildStatus(BUILD_STATUS, BUILD_STATUS_STEP, "Started reading audiofiles using jaudiotagger");
+        messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS_STEP, "Started reading audiofiles using jaudiotagger");
         removeJAudioTagLogger();
         GPUtil.ThreadSleep(500);
         
@@ -266,26 +237,26 @@ public class LibraryService {
                 }
                 if(fileListCounter==100){
                     LOG.info(methodName+" - Reading audiofiles,  remaining files: "+(fileList.size()-i));
-                        messageService.updateBuildStatus(BUILD_STATUS, FILES_TO_READ, String.valueOf((fileList.size()-i)));
+                        messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.FILES_TO_READ, String.valueOf((fileList.size()-i)));
                         fileListCounter = 0;
                 }
             }
             long endingTime = System.currentTimeMillis();
-            messageService.updateBuildStatus(BUILD_STATUS, FILES_TO_READ, "0");
+            messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.FILES_TO_READ, "0");
             GPUtil.ThreadSleep(1000);
-            messageService.updateBuildStatus(BUILD_STATUS, BUILD_STATUS_STEP, "Finished reading all music files.");
+            messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS_STEP, "Finished reading all music files.");
             LOG.info(methodName+" - Time took to read mp3 metadata: "+ (endingTime-startingTime) +" ms, "+(endingTime-startingTime)/1000+" secs");
-            messageService.updateBuildStatus(BUILD_STATUS, FILES_READ_TIME, String.valueOf((endingTime-startingTime)));
+            messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.FILES_READ_TIME, String.valueOf((endingTime-startingTime)));
 
             startingTime = System.currentTimeMillis();
-            messageService.updateBuildStatus(BUILD_STATUS, BUILD_STATUS_STEP, "Reading artists");
+            messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS_STEP, "Reading artists");
             GPUtil.ThreadSleep(1000);
             List<String> artistNameList = new ArrayList<String>(artistArtCount.keySet());//getFilteredArtistDetailsFromDb(ARTIST);
             for(String artistName2 : artistNameList){
                 artCount = artistArtCount.get(artistName2)!=null?artistArtCount.get(artistName2):0;
                 artist = new Artist();
                 artist.setArtistName(artistName2);
-                artist.setType(ARTIST);
+                artist.setType(GP_CONSTANTS.ARTIST);
                 artist.setImgAvl(false);
                 artist.setCount(artCount);
                 artist.setImgAvl(setArtistLocalImgAvlStatus(artist.getArtistName()));
@@ -298,7 +269,7 @@ public class LibraryService {
                 artCount = albumArtistArtCount.get(albumArtistName)!=null?albumArtistArtCount.get(albumArtistName):0;
                 albumArtist = new Artist();
                 albumArtist.setArtistName(albumArtistName);
-                albumArtist.setType(ALBUM_ARTIST);
+                albumArtist.setType(GP_CONSTANTS.ALBUM_ARTIST);
                 albumArtist.setImgAvl(false);
                 albumArtist.setCount(artCount);
                 albumArtist.setImgAvl(setArtistLocalImgAvlStatus(albumArtist.getArtistName()));
@@ -311,18 +282,18 @@ public class LibraryService {
             try {
                 truncateMyTable();
                 LOG.info(methodName+" - Truncated all repositories.");
-                messageService.updateBuildStatus(BUILD_STATUS, BUILD_STATUS_STEP, "Truncated all repositories.");
+                messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS_STEP, "Truncated all repositories.");
                 GPUtil.ThreadSleep(1000);
             } catch (Exception e) {
                 e.printStackTrace();
                 LOG.error(methodName+" - Exception while trucating tables , exceptionCount: "+ ++exceptionCounter);
                 stepSuccess = false;
-                messageService.updateBuildStatus(BUILD_STATUS, BUILD_STATUS_STEP, "Exception while trucating tables");
+                messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS_STEP, "Exception while trucating tables");
             }
 
             if (stepSuccess) {
                 startingTime = System.currentTimeMillis();
-                messageService.updateBuildStatus(BUILD_STATUS, BUILD_STATUS_STEP, "Saving library, album and artists list");
+                messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS_STEP, "Saving library, album and artists list");
                 libList = (List<Library>) libraryRepository.saveAll(libList);
                 albumRepository.saveAll(albumList);
                 artistRepository.saveAll(artistList);
@@ -331,8 +302,8 @@ public class LibraryService {
                         + (endingTime - startingTime) + " ms, " + (endingTime - startingTime) / 1000 + " secs");
 
                 startingTime = System.currentTimeMillis();
-                messageService.updateBuildStatus(BUILD_STATUS, BUILD_STATUS_STEP, "Started updating history");
-                GPUtil.ThreadSleep(1000);
+                
+                GPUtil.ThreadSleep(1000);messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS_STEP, "Started updating history");
                 List<History> historyList = historyService.getAllHistory();
                 List<History> historyListR = new ArrayList<History>();
                 List<History> historyListU = new ArrayList<History>();
@@ -361,11 +332,11 @@ public class LibraryService {
         }
         LOG.error(methodName+" - exceptionCount: "+ exceptionCounter);
         LOG.info(methodName+" - Summary: \nTotal tracks: "+libList.size()+" \nTotal albums: "+albumList.size()+" \nArtists found: "+artistCount+" \nAlbum artist found: "+(artistList.size()-artistCount));
-        messageService.updateBuildStatus(BUILD_STATUS, TOTAL_TRACKS, String.valueOf(libList.size()));
-        messageService.updateBuildStatus(BUILD_STATUS, ALBUM_COUNT, String.valueOf(albumList.size()));
-        messageService.updateBuildStatus(BUILD_STATUS, ARTIST_COUNT, String.valueOf(artistCount));
-        messageService.updateBuildStatus(BUILD_STATUS, ALBUM_ARTIST_COUNT, String.valueOf((artistList.size()-artistCount)));
-        messageService.updateBuildStatus(BUILD_STATUS, BUILD_STATUS, COMPLETED);
+        messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.TOTAL_TRACKS, String.valueOf(libList.size()));
+        messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.ALBUM_COUNT, String.valueOf(albumList.size()));
+        messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.ARTIST_COUNT, String.valueOf(artistCount));
+        messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.ALBUM_ARTIST_COUNT, String.valueOf((artistList.size()-artistCount)));
+        messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.COMPLETED);
     }
 
     public Library getLibraryFromFile(Tag tag, AudioFile audioF) throws Exception{
@@ -479,9 +450,9 @@ public class LibraryService {
      *  **/
     public List<String> getFilteredArtistDetailsFromDb(String type) {
         List<String> artistList = null;
-        if(type.equals(ARTIST)){
+        if(type.equals(GP_CONSTANTS.ARTIST)){
             artistList = libraryRepository.findAllByGroupByArtist();
-        }else if(type.equals(ALBUM_ARTIST)){
+        }else if(type.equals(GP_CONSTANTS.ALBUM_ARTIST)){
             artistList = libraryRepository.findAllByGroupByAlbumArtist();
         }
         List<String> artistList2 = new ArrayList<String>();
@@ -489,10 +460,10 @@ public class LibraryService {
         for(String artist1 : artistList){
             if(artist1!=null)artist1 = artist1.trim();
             else continue;
-            if((artist1.contains(";") || artist1.contains("&") && !type.equals(ALBUM_ARTIST))){
+            if((artist1.contains(";") || artist1.contains("&") && !type.equals(GP_CONSTANTS.ALBUM_ARTIST))){
                 artist1 = artist1.replaceAll("[;&]", ",");
             }
-            if(artist1.contains(",") && !type.equals(ALBUM_ARTIST)){
+            if(artist1.contains(",") && !type.equals(GP_CONSTANTS.ALBUM_ARTIST)){
                 artistArr = artist1.split(",");
                 for(String artist2 : artistArr){
                     if(!artistList2.contains(artist2.trim())){
@@ -626,13 +597,13 @@ public class LibraryService {
     public Map<String, List<Object>> searchbyKey(String searchKey) {
         Map<String, List<Object>> resultMap = new HashMap<String, List<Object>>();
         List<Object> tracks = libraryRepository.getByTitleContainsIgnoreCase(searchKey);
-        List<Object> artists = artistRepository.getByArtistNameContainsIgnoreCaseAndType(searchKey, ARTIST);
-        List<Object> albumArtists = artistRepository.getByArtistNameContainsIgnoreCaseAndType(searchKey, ALBUM_ARTIST);
+        List<Object> artists = artistRepository.getByArtistNameContainsIgnoreCaseAndType(searchKey, GP_CONSTANTS.ARTIST);
+        List<Object> albumArtists = artistRepository.getByArtistNameContainsIgnoreCaseAndType(searchKey, GP_CONSTANTS.ALBUM_ARTIST);
         List<Object> albums = albumRepository.getByAlbumNameContainsIgnoreCase(searchKey);
-        resultMap.put(TRACK_LIST, tracks);
-        resultMap.put(ARTISTS, artists);
-        resultMap.put(ALBUM_ARTISTS, albumArtists);
-        resultMap.put(ALBUMS, albums);
+        resultMap.put(GP_CONSTANTS.TRACK_LIST, tracks);
+        resultMap.put(GP_CONSTANTS.ARTISTS, artists);
+        resultMap.put(GP_CONSTANTS.ALBUM_ARTISTS, albumArtists);
+        resultMap.put(GP_CONSTANTS.ALBUMS, albums);
         return resultMap;
     }
 
@@ -888,7 +859,7 @@ public class LibraryService {
         try {
             if(filterColumn==null){
                 trackList = libraryRepository.findAllByOrderByAlbumAsc();
-            }else if(filterColumn.equalsIgnoreCase(ALBUM_ARTIST)){
+            }else if(filterColumn.equalsIgnoreCase(GP_CONSTANTS.ALBUM_ARTIST)){
                 trackList = libraryRepository.getByAlbumArtistOrderByYearAsc(filterValue);
             }
              

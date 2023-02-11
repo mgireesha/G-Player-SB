@@ -35,6 +35,11 @@ public class MessageService {
         for(Message msg : msgTypes)removeMessageById(msg.getMessageId());
     }
 
+    public void removeMessageName(String name) {
+        Message msg = messageRepository.getByName(name);
+        if(msg!=null)removeMessageById(msg.getMessageId());
+    }
+
     // Music Path - start
     public List<Message> getAllMusicPaths() {
         return messageRepository.getByType(MUSIC_PATH);

@@ -28,9 +28,9 @@ public class GPUtil {
 
     public static boolean checkIsNull(String stringObject){
         if(null==stringObject || "null".equalsIgnoreCase(stringObject) || "".equalsIgnoreCase(stringObject)){
-            return false;   
+            return true;   
         }
-    return true;   
+    return false;   
     }
 
     public static void ThreadSleep(long time){

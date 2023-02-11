@@ -1,5 +1,5 @@
 import { call, put, takeLatest } from "redux-saga/effects";
-import { handleAPIError, setCookies } from "../../utli";
+import { getCookieValue, handleAPIError, setCookies } from "../../utli";
 import { MEDIA_PLAYER_NULL } from "../GPActionTypes";
 import { getCurrentSongAndStatusAPI, getCurrentSongStatusAPI, playASongAPI, playPauseAPI, setMediaVolumeAPI, 
             setPlaybackLengthAPI, updateLyricsAPI } from "../GPApis";
@@ -21,7 +21,7 @@ export function* onPlayPauseAsync(payload){
             const data = response.data;
             if(data.status===MEDIA_PLAYER_NULL){
                 if(payload.songPlaying!==null){
-                    yield put(playASong(payload.songPlaying.songId, payload.playedFrom, payload.currentVolume))
+                    yield put(playASong(payload.songPlaying.songId, payload.playedFrom, payload.currentVolume, payload.currentPlayTime))
                 }
             }else{
                 yield put(playPauseSucc(data));
@@ -40,7 +40,7 @@ export function* onPlayASong(){
 export function* onPlayASongAsync(payload){
     try {
         console.log("payload",payload)
-        const response = yield call(playASongAPI,payload.songId, payload.currentVolume);
+        const response = yield call(playASongAPI,payload.songId, payload.currentVolume, payload.currentPlayTime);
         if(response.status===200){
             const data = response.data;
             //console.log("data.library",data.library);
@@ -111,7 +111,14 @@ export function* onFetchCurrentSongAndStatusAsync(){
     try {
         const response = yield call(getCurrentSongAndStatusAPI);
         if(response.status === 200){
-            yield put(fetchCurrentSontAndStatusSucc(response.data));
+            const data = response.data;
+            if(data.gMedia===null){
+                const storedPlayingSongStat = getCookieValue("playingSongStat");
+                if(storedPlayingSongStat!==undefined && Object.keys(storedPlayingSongStat).length>0){
+                    data.gMedia = JSON.parse(getCookieValue("playingSongStat"))
+                }
+            }
+            yield put(fetchCurrentSontAndStatusSucc(data));
         }
     } catch (error) {
         console.log(error);

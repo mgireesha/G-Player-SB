@@ -69,16 +69,17 @@ export const Library = () => {
 
     useEffect(()=>{
         clearInterval(statClearIntrvl);
-        if(isBuildInit){
-            if(bStatus===RUNNING){
-                setIsBuildInit(false);
-            }
-            setStatClearIntrvl(setInterval( dispatch(fetchBuildStatus()), 1000));
-        }else{
-            if(bStatus===COMPLETED)setIsFetchBStat(false);
-            setStatClearIntrvl(setInterval( dispatch(fetchBuildStatus()), 1000));
-        }  
-        
+        if(isFetchBStat){
+            if(isBuildInit){
+                if(bStatus===RUNNING){
+                    setIsBuildInit(false);
+                }
+                setStatClearIntrvl(setInterval( dispatch(fetchBuildStatus()), 1000));
+            }else{
+                if(bStatus===COMPLETED)setIsFetchBStat(false);
+                setStatClearIntrvl(setInterval( dispatch(fetchBuildStatus()), 1000));
+            }  
+        }
     },[buildStatus, bStatus, isFetchBStat, isBuildInit])
 
     return(
