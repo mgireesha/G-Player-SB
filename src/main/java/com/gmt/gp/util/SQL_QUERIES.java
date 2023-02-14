@@ -1,5 +1,7 @@
 package com.gmt.gp.util;
 
+import java.time.LocalDate;
+
 public class SQL_QUERIES {
     
     public static String getAlbumsGroupedFromHistoryJDBCQuery(int rowCount, String orderBy){
@@ -43,5 +45,36 @@ public class SQL_QUERIES {
                 + "his.album_artist = art.artist_name "
                 + "order by count desc " 
                 + "fetch first 5 rows only;";
+    }
+
+    public static String getGenreCountJDBCQuery(){
+        return "select "
+               +"count(*) "
+               +"as GENRE_COUNT "
+               +"from "
+               +"(select genre from library group by genre);";
+    }
+
+    public static String getHisLibCountJDBCQuery(){
+        return "select "
+                +"his.count as HISTORY_COUNT, lib.count as LIBRARY_COUNT "
+                +"from "
+                +"(select count(*) as count from history) his, "
+                +"(select count(*) as count from library) lib;";
+    }
+
+    public static String getThismountPlayedCountJDBCQuery(LocalDate timeStamp) {
+        return "select "
+                +"count(*) as "+GP_CONSTANTS.THIS_MONTH_COUNT+" "
+                +"from "
+                +"(Select * from history where last_played_time >= '"+timeStamp+"');";
+    }
+
+    public static String getTotalTimePlayed(LocalDate timeStamp){
+        return "select "
+                +"total.tsum as TOTAL_TIME_PLAYED, tptm.tsum as TIME_PLAYED_THIS_MONTH "
+                +"from "
+                +"(select SUM(TRACK_LENGTH) as tsum from history) total, "
+                +"(select SUM(TRACK_LENGTH) as tsum from history where last_played_time >= '"+timeStamp+"') tptm;";
     }
 }
