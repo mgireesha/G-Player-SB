@@ -1,7 +1,6 @@
 package com.gmt.gp.services;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import com.gmt.gp.util.SQL_QUERIES;
 
