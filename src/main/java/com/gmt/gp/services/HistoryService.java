@@ -2,7 +2,9 @@ package com.gmt.gp.services;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,9 +18,12 @@ import org.springframework.stereotype.Service;
 
 import com.gmt.gp.model.History;
 import com.gmt.gp.model.Library;
+import com.gmt.gp.model.Message;
 import com.gmt.gp.repositories.HistoryRepository;
+import com.gmt.gp.util.DaoException;
 import com.gmt.gp.util.DbUtil;
 import com.gmt.gp.util.GPUtil;
+import com.gmt.gp.util.GP_CONSTANTS;
 import com.gmt.gp.util.SQL_QUERIES;
 
 @Service
@@ -30,6 +35,9 @@ public class HistoryService {
     @Autowired
     @Lazy
     private LibraryService libraryService;
+
+    @Autowired
+    private MessageService messageService;
 
     public void updateHistory(Library song) {
         History history =  historyRepository.getBySongId(song.getSongId());
@@ -90,43 +98,103 @@ public class HistoryService {
     
     public Map<String, Object> getMostPlayedData(){
         Map<String, Object> finalRes = new HashMap<String, Object>();
+        LocalDate today = LocalDate.now();
+        LocalDate lastMonth = today.minusMonths(1);
         Map<String, Integer> hisCount = executeMostPlayedHisQuery(SQL_QUERIES.getTopArtistsFromHistoryJDBCQuery());
         List<Map.Entry<String, Integer>> list = GPUtil.splitSortArtists(hisCount);
         List<Object> pData = new ArrayList<Object>();
         int counter = 0;
         for (Map.Entry<String, Integer> l : list) {
             counter++;
-            pData.add(libraryService.getByArtistNameAndType(l.getKey().trim(), "ARTIST"));
+            pData.add(libraryService.getByArtistNameAndType(l.getKey().trim(), GP_CONSTANTS.ARTIST));
             if(counter==5)break;
         }
-        finalRes.put("ARTISTS", pData);
+        finalRes.put(GP_CONSTANTS.ARTISTS, pData);
         pData = new ArrayList<Object>();
         
         hisCount = executeMostPlayedHisQuery(SQL_QUERIES.getTopAlbumArtistFromHistoryJDBCQuery());
         for(String albumArtistName : hisCount.keySet()){
-            pData.add(libraryService.getByArtistNameAndType(albumArtistName, "ALBUM_ARTIST"));
+            pData.add(libraryService.getByArtistNameAndType(albumArtistName, GP_CONSTANTS.ALBUM_ARTIST));
         }
-        finalRes.put("ALBUM_ARTISTS", pData);
+        finalRes.put(GP_CONSTANTS.ALBUM_ARTISTS, pData);
         pData = new ArrayList<Object>();
 
-        finalRes.put("ALBUMS", getAlbumsGroupedFromHistoryJDBC(5, "count"));
+        finalRes.put(GP_CONSTANTS.ALBUMS, getAlbumsGroupedFromHistoryJDBC(5, "count"));
+
+        finalRes.put(GP_CONSTANTS.GENRE_COUNT, getAllGenreCount());
+
+        finalRes.putAll(executeJDBCQuerySingleRow(SQL_QUERIES.getHisLibCountJDBCQuery()));
+
+        finalRes.putAll(executeJDBCQuerySingleRow(SQL_QUERIES.getThismountPlayedCountJDBCQuery(lastMonth)));
+
+        finalRes.putAll(executeJDBCQuerySingleRow(SQL_QUERIES.getTotalTimePlayed(lastMonth)));
 
         return finalRes;
     }
 
+    private int getAllGenreCount() {
+        int genreCount = 0;
+        Message message = messageService.getMessageByName(GP_CONSTANTS.GENRE_COUNT);
+        if(message!=null){
+            genreCount = Integer.parseInt(message.getValue());
+        }else{
+            Map<String, Object> genreCountList = executeJDBCQuerySingleRow(SQL_QUERIES.getGenreCountJDBCQuery());
+            if(genreCountList.get(GP_CONSTANTS.GENRE_COUNT)!=null){
+                genreCount = Integer.parseInt((String) genreCountList.get(GP_CONSTANTS.GENRE_COUNT));
+                messageService.saveMaMessage(new Message(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.GENRE_COUNT, String.valueOf(genreCount)));
+            }
+        }
+        return genreCount;
+    }
+
     private Map<String, Integer> executeMostPlayedHisQuery(String query){
         Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
         Map<String, Integer> hisRes = new LinkedHashMap<String, Integer>();
         try {
             con = DbUtil.getConnection();
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(query);
             while(rs.next()){
                 hisRes.put(rs.getString(1), rs.getInt(2));
             }
         } catch (Exception e) {
            e.printStackTrace();
+        } finally{
+            try {
+                DbUtil.closeResources(con, stmt, rs);
+            } catch (DaoException e) {
+                e.printStackTrace();
+            }
         }
     return hisRes;
+    }
+
+    public Map<String, Object> executeJDBCQuerySingleRow(String query){
+        Connection con = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        Map<String, Object> objMap = new HashMap<String, Object>();
+        try {
+            con = DbUtil.getConnection();
+            stmt = con.createStatement();
+            rs = stmt.executeQuery(query);
+            ResultSetMetaData rsMetData = rs.getMetaData();
+            while(rs.next()){
+                for(int i=0; i<rsMetData.getColumnCount();i++){
+                    objMap.put(rsMetData.getColumnLabel(i+1), rs.getString(i+1));
+                }
+            }
+        } catch (Exception e) {
+           e.printStackTrace();
+        } finally{
+            try {
+                DbUtil.closeResources(con, stmt, rs);
+            } catch (DaoException e) {
+                e.printStackTrace();
+            }
+        }
+    return objMap;
     }
 }
