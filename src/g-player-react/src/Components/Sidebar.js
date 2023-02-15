@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import {IoIosMusicalNotes} from 'react-icons/io';
 import {IoTimeOutline} from 'react-icons/io5';
 import {MdLibraryMusic} from 'react-icons/md'
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { LIBRARY, MUSIC, RECENT } from "./redux/GPActionTypes";
-import { SearchInput } from "./SearchInput";
+import { SearchInput } from "./search/SearchInput";
 
 export const Sidebar = () => {
     const [selectedRow, setSelectedRow] = useState('');

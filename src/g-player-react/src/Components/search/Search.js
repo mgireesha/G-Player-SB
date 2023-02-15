@@ -12,14 +12,12 @@ export const Search = () => {
     const dispatch = useDispatch();
     const searchResult = useSelector(state => state.library.searchResult);
     const { searchKey } = useParams();
-    console.log("searchKey",searchKey);
     useEffect(()=>{
         
         if(searchKey!==null && searchKey!==undefined){
             dispatch(searchByKey(searchKey));
         }
     },[searchKey])
-    console.log("searchResult",searchResult);
     return(
         <div className="search">
             <div className="header">

@@ -21,19 +21,13 @@ import com.gmt.gp.model.Library;
 import com.gmt.gp.model.Message;
 import com.gmt.gp.services.LibraryService;
 import com.gmt.gp.services.MessageService;
-import com.gmt.gp.util.GPUtil;
+import com.gmt.gp.util.GP_CONSTANTS;
 
 @RequestMapping("/library")
 @RestController
 public class LibraryController {
 
     private static final Logger LOG = LoggerFactory.getLogger(LibraryService.class);
-
-    private static final String BUILD_STATUS = "BUILD_STATUS";
-
-    private static final String BUILD_STATUS_STEP = "BUILD_STATUS_STEP";
-
-    private static final String RUNNING = "RUNNING";
 
     @Autowired
     private LibraryService libraryService;
@@ -46,25 +40,22 @@ public class LibraryController {
         final String methodName = "runBuild";
         List<File> fileList = new ArrayList<File>();
         
-        messageService.removeMessageType(BUILD_STATUS);
-        messageService.updateBuildStatus(BUILD_STATUS, BUILD_STATUS, RUNNING);
+        messageService.removeMessageType(GP_CONSTANTS.BUILD_STATUS);
+        messageService.removeMessageName(GP_CONSTANTS.LAST_PLAYED_SONG_ID);
+        messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.RUNNING);
 
-        libraryService.truncateMyTable();
-        LOG.info(methodName+" - Truncated all repositories.");
-        messageService.updateBuildStatus(BUILD_STATUS, BUILD_STATUS_STEP, "Truncated all repositories.");
-        GPUtil.ThreadSleep(1000);
-
-        libraryService.cleanAlbumImageDir();
-        LOG.info(methodName+" - Deleted all images from albums folder");
-        messageService.updateBuildStatus(BUILD_STATUS, BUILD_STATUS_STEP, "Deleted all images from albums folder.");
 
         List<Message> mainFolderList = messageService.getAllMusicPaths();
 
         LOG.info(methodName+" - Started searching for audio files in : "+mainFolderList);
         fileList = libraryService.getMusicFiles(mainFolderList);
         LOG.info(methodName+" - Found "+fileList.size()+" audio files");
-        messageService.updateBuildStatus(BUILD_STATUS, "FILES_TO_READ", String.valueOf(fileList.size()));
+        messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, "FILES_TO_READ", String.valueOf(fileList.size()));
 
+        libraryService.cleanAlbumImageDir();
+        LOG.info(methodName+" - Deleted all images from albums folder");
+        messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS_STEP, "Deleted all images from albums folder.");
+        
         LOG.info(methodName+" - calling build library");
         libraryService.buildLibrary(fileList);
         return fileList;

@@ -6,7 +6,7 @@ import { TiArrowRepeat } from "react-icons/ti";
 import { TbArrowsShuffle , TbRepeatOnce} from "react-icons/tb";
 import { useDispatch, useSelector } from "react-redux";
 import { fettchCurrentSongStatus, playASong, playPause, setIsPlaying, setIsRepeat, setIsShuffle, setPlayBackLength, setRepeat } from "../redux/player/PlayerActions";
-import { getMins, scrolltoId, scrollToPlaying, setCookies } from "../utli";
+import { getCookieValue, getMins, scrolltoId, scrollToPlaying, setCookies } from "../utli";
 import { VolumeH } from "./VolumeH";
 import { ALBUM, ARTIST, CURRENT, NEXT, PREVIOUS, RECENT_PLAYS, REPEAT_ALL, REPEAT_OFF, REPEAT_ONE, TRACK_LIST } from "../redux/GPActionTypes";
 import { Link } from "react-router-dom";
@@ -43,7 +43,7 @@ export const Player = () => {
     useEffect(()=>{
         clearInterval(statClearIntrvl);
         if(isPlaying)
-            setStatClearIntrvl(setInterval( dispatchFetchStat, 500));
+            setStatClearIntrvl(setInterval( dispatchFetchStat, 1000));
        
     },[songPlaying,isPlaying]);
 
@@ -62,6 +62,12 @@ export const Player = () => {
 
         if(playTime===12000){
             dispatch(fetchAllHistory());
+        }
+
+        if(playTime > 4000 && Number.isInteger(playTime/5000)){
+            // setCookies("playingSongStat",btoa(playingSongStat));
+            // console.log(atob((getCookieValue("playingSongStat"))));
+            setCookies("playingSongStat",JSON.stringify(playingSongStat));
         }
         setPlayTime(tempPlayTime+500);
     },[playingSongStat])
@@ -96,8 +102,9 @@ export const Player = () => {
             setIsPlayingL(false)
         }else{
             setIsPlayingL(true);
+            dispatch(setIsPlaying(true));
         }
-        dispatch(playPause());
+        dispatch(playPause(songPlaying, playedFrom, currentVolume, currentTime));
     }
 
     const playNextSong = (action) => {
@@ -144,6 +151,7 @@ export const Player = () => {
     }
 
     const setSlctdPlayBackTime = (event) => {
+        
         if(!isPlaying || songPlaying===null)return;
         const pbVal = event;//event.target.value;
         const fPbVal = Math.floor(((songPlaying.trackLength*pbVal)/100)*1000);
@@ -173,6 +181,20 @@ export const Player = () => {
             setCookies("isShuffle", true);
         }
     }
+    
+    useEffect(() => {
+        const handleEscape = (event) => {
+            if(event.code == "Space"){
+                playPauseFunc();
+            }
+        };
+
+        window.addEventListener('keyup', handleEscape);
+    
+        return () => {
+            window.removeEventListener('keyup', handleEscape);
+        };
+    }, []);
 
     return (
         <div className="player">

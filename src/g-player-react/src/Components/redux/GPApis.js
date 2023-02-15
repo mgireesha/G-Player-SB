@@ -84,8 +84,15 @@ export const playPauseAPI = () => {
     return iAxios.get('/media/playPause').then(response => response);
 }
 
-export const playASongAPI = (songId, currentVolume) => {
-    return iAxios.put(`/media/playSong/${songId}`,currentVolume).then(response => response);
+export const playASongAPI = (songId, currentVolume, currentPlayTime) => {
+    if(currentVolume===undefined)currentVolume=0.5;
+    let uri = `/media/playSong/${songId}`;
+    if(currentPlayTime!==undefined){
+        uri+=`?currentPlayTime=${currentPlayTime*1000}`;
+    }else{
+        uri+=`?currentPlayTime=`
+    }
+    return iAxios.put(uri,currentVolume).then(response => response);
 }
 
 export const getCurrentSongStatusAPI = () => {
