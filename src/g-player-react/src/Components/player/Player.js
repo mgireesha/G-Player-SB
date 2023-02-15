@@ -181,6 +181,20 @@ export const Player = () => {
             setCookies("isShuffle", true);
         }
     }
+    
+    useEffect(() => {
+        const handleEscape = (event) => {
+            if(event.code == "Space"){
+                playPauseFunc();
+            }
+        };
+
+        window.addEventListener('keyup', handleEscape);
+    
+        return () => {
+            window.removeEventListener('keyup', handleEscape);
+        };
+    }, []);
 
     return (
         <div className="player">
