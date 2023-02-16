@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fettchCurrentSongStatus, playASong, playPause, setIsPlaying, setIsRepeat, setIsShuffle, setPlayBackLength, setRepeat } from "../redux/player/PlayerActions";
 import { getCookieValue, getMins, scrolltoId, scrollToPlaying, setCookies } from "../utli";
 import { VolumeH } from "./VolumeH";
-import { ALBUM, ARTIST, CURRENT, NEXT, PREVIOUS, RECENT_PLAYS, REPEAT_ALL, REPEAT_OFF, REPEAT_ONE, TRACK_LIST } from "../redux/GPActionTypes";
+import { ALBUM, ALBUMS, ALBUM_ARTISTS, ARTIST, ARTISTS, CURRENT, NEXT, PREVIOUS, RECENT_PLAYS, REPEAT_ALL, REPEAT_OFF, REPEAT_ONE, TRACK_LIST } from "../redux/GPActionTypes";
 import { Link } from "react-router-dom";
 import { ArtistLink } from "../screen/artist/ArtistLink";
 import def_album_art from '../images/def_album_art.png';
@@ -63,10 +63,12 @@ export const Player = () => {
             dispatch(fettchCurrentSongStatus());
         }
         setPlayTime(0);
-        const rotatingBtn = [...document.getElementsByClassName('rotate-player-button')];
-        rotatingBtn.forEach((rBtn=>{
-            rBtn.classList.remove('rotate-player-button');
-        }))
+         const rotatingBtn = [...document.getElementsByClassName('rotate-player-button')];
+         rotatingBtn.forEach((rBtn=>{
+             rBtn.classList.remove('rotate-player-button');
+         }));
+
+        [...document.getElementsByClassName('player-controls')].forEach(pc => {pc.classList.remove('opacity-player-console')})
     },[songPlaying]);
 
     useEffect(()=>{
@@ -106,14 +108,16 @@ export const Player = () => {
     },[playingSongStat]);
 
     useEffect(()=> {
-        setPTrackList(getSetLibrary());
-    },[playedFrom, isShuffle]);
+        const library = getSetLibrary();
+        if(library.length>0)setPTrackList(library);
+    },[playedFrom, isShuffle, tracks, albumTracks, artistTracks, historyTracks]);
 
     const dispatchFetchStat = () => {
         dispatch(fettchCurrentSongStatus());
     }
 
     const getSetLibrary = () => {
+        if(playedFrom === ALBUM_ARTISTS || playedFrom ===ARTISTS || playedFrom === ALBUMS)return [];
         let library = [];
         if(playedFrom===TRACK_LIST){
             library = tracks;
@@ -127,6 +131,9 @@ export const Player = () => {
         // else{
         //     library = tracks;
         // }
+
+        if(library.length === 0)return [];
+
         if(isShuffle){
             library = getShuffledTrackList(library);
         }
@@ -148,20 +155,23 @@ export const Player = () => {
     }
 
     const playPauseFunc = () => {
-        if(isPlaying){
+        if(isPlayingL){
             setIsPlayingL(false);
-            dispatch(setIsPlaying(false));
+            //dispatch(setIsPlaying(false));
         }else{
             setIsPlayingL(true);
-            dispatch(setIsPlaying(true));
+            //dispatch(setIsPlaying(true));
         }
         dispatch(playPause(songPlaying, playedFrom, currentVolume, currentTime));
     }
 
     const playNextSong = (action, event) => {
-        if(event!==undefined){
-            event.target.parentElement.classList.add('rotate-player-button');
-        }
+         if(event!==undefined){
+             event.target.parentElement.classList.add('rotate-player-button');
+         }
+
+        [...document.getElementsByClassName('player-controls')].forEach(pc => {pc.classList.add('opacity-player-console')});
+
         if (songPlaying === null) return false;
         let library;
         let nextSong = {};

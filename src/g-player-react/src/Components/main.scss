@@ -1760,3 +1760,34 @@ a.disabled-click{
         transform:  rotateZ(0deg);
     }
 }
+
+.opacity-player-console{
+    animation: opacityRound 1500ms ease-in-out infinite;
+}
+
+@keyframes opacityRound {
+    0%{
+        opacity: 1;
+    }
+    15%{
+        opacity: 0.9;
+    }
+    30%{
+        opacity: 0.8;
+    }
+    45%{
+        opacity: 0.6;
+    }
+    60%{
+        opacity: 0.6;
+    }
+    75%{
+        opacity: 0.6;
+    }
+    90%{
+        opacity: 0.9;
+    }
+    100%{
+        opacity: 1;
+    }
+}
