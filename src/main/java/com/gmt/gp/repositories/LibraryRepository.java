@@ -43,4 +43,7 @@ public interface LibraryRepository extends CrudRepository<Library, Long>{
 
     List<Object> getByTitleContainsIgnoreCase(String searchKey);
 
+    @Query("SELECT l.songId from Library as l order by l.title asc")
+    List<Long> getAllLibraryIds();
+
 }

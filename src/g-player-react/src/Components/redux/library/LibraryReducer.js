@@ -4,6 +4,7 @@ import { FETCH_SONGS_START, FETCH_SONGS_SUCCESS, HISTORY_FETCH_ALL_HISTORY_START
 
 export const initialState = {
     tracks:[],
+    trackIds:[],
     albumTracks:[],
     album:{},
     albums : [],
@@ -32,7 +33,8 @@ const libraryReducer = (state = initialState, action) => {
         case FETCH_SONGS_SUCCESS:
             return{
                 ...state,
-                tracks:action.tracks.filter((track=>track.title!==null)),
+                tracks:action.tracks.SONGS.filter((track=>track.title!==null)),
+                trackIds:action.tracks.SONG_IDS,
                 phase:SUCCESS
             }
         case LIBRARY_FETCH_ALBUMS_START:
