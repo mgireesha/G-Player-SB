@@ -110,21 +110,23 @@ export const Player = () => {
     }
 
     const getSetLibrary = () => {
-        let library;
+        let library = [];
         if(playedFrom===TRACK_LIST){
             library = tracks;
-        }else if(playedFrom===ALBUM){
+        }else if(playedFrom===ALBUM && albumTracks.length>0){
             library = albumTracks.map((track) => { return track.songId});
-        }else if(playedFrom===ARTIST){
+        }else if(playedFrom===ARTIST && artistTracks.length>0){
             library = artistTracks.map((track) => { return track.songId});
-        }else if(playedFrom===RECENT_PLAYS){
+        }else if(playedFrom===RECENT_PLAYS && historyTracks!==undefined && historyTracks.length>0){
             library = historyTracks.map((track) => { return track.songId});
-        }else{
-            library = tracks;
         }
+        // else{
+        //     library = tracks;
+        // }
         if(isShuffle){
             library = getShuffledTrackList(library);
         }
+        setPTrackList(library);
         return library;
     }
 
