@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { A_TO_Z, TRACK_LIST, SORT_YEAR, SORT_ARTIST, A_TO_Z_DESC } from "../redux/GPActionTypes";
-import { setGroupband } from "../redux/library/LibraryActions";
 import { setPlayedFrom } from "../redux/player/PlayerActions";
 import { scrollToPlaying, sortGroupByField } from "../utli";
 import { SortingContainer } from "./SortingContainer";

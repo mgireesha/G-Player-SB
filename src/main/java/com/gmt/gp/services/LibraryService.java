@@ -384,8 +384,15 @@ public class LibraryService {
 
     //Transactional / Repository methods - Start
     //libraryRepository - start
-    public List<Library> getAllSongs() {
-        return libraryRepository.findAllByOrderByTitleAsc();
+    public Map<String, Object> getAllSongs() {
+        Map<String, Object> songs = new HashMap<String, Object>();
+        songs.put("SONGS", libraryRepository.findAllByOrderByTitleAsc());
+        songs.put("SONG_IDS", libraryRepository.getAllLibraryIds());
+        return songs;
+    }
+
+    public List<Long> getAllSongIds(){
+        return libraryRepository.getAllLibraryIds();
     }
     
     public Library getSongBySongId(int songId) {

@@ -25,7 +25,7 @@ export const Player = () => {
     const songPlaying = useSelector(state => state.player.songPlaying);
     const playedFrom = useSelector(state => state.player.playedFrom);
     const playingSongStat = useSelector(state => state.player.playingSongStat);
-    const tracks = useSelector(state => state.library.tracks);
+    const tracks = useSelector(state => state.library.trackIds);
     const albumTracks = useSelector(state => state.library.albumTracks);
     const artistTracks = useSelector(state => state.library.artistTracks);
     const historyTracks = useSelector(state => state.library.history.songs);
@@ -35,6 +35,19 @@ export const Player = () => {
     const [currentTime, setCurrentTime] = useState(0);
     const [isPlayingL, setIsPlayingL] = useState(false);
     const [playTime, setPlayTime] = useState(0); // Play time is updated every time playingSongStat chnage and is reset every time songPlaying chnages 
+    const [pTrackList, setPTrackList] = useState(tracks);
+
+    useEffect(() => {
+        const handleEscape = (event) => {
+            if(event.code == "Space"){
+                playPauseFunc();
+            }
+        };
+        window.addEventListener('keyup', handleEscape);
+        return () => {
+            window.removeEventListener('keyup', handleEscape);
+        };
+    }, []);
 
     useEffect(()=>{
         setIsPlayingL(isPlaying);
@@ -42,9 +55,7 @@ export const Player = () => {
 
     useEffect(()=>{
         clearInterval(statClearIntrvl);
-        if(isPlaying)
-            setStatClearIntrvl(setInterval( dispatchFetchStat, 1000));
-       
+        if(isPlaying)setStatClearIntrvl(setInterval( dispatchFetchStat, 1000));
     },[songPlaying,isPlaying]);
 
     useEffect(()=>{
@@ -65,13 +76,10 @@ export const Player = () => {
         }
 
         if(playTime > 4000 && Number.isInteger(playTime/5000)){
-            // setCookies("playingSongStat",btoa(playingSongStat));
-            // console.log(atob((getCookieValue("playingSongStat"))));
             setCookies("playingSongStat",JSON.stringify(playingSongStat));
         }
         setPlayTime(tempPlayTime+500);
     },[playingSongStat])
-
 
     useEffect(()=>{
         if(playingSongStat===null || playingSongStat===undefined || songPlaying===null)return;
@@ -93,8 +101,44 @@ export const Player = () => {
        }
     },[playingSongStat]);
 
+    useEffect(()=> {
+        setPTrackList(getSetLibrary());
+    },[playedFrom, isShuffle]);
+
     const dispatchFetchStat = () => {
         dispatch(fettchCurrentSongStatus());
+    }
+
+    const getSetLibrary = () => {
+        let library;
+        if(playedFrom===TRACK_LIST){
+            library = tracks;
+        }else if(playedFrom===ALBUM){
+            library = albumTracks.map((track) => { return track.songId});
+        }else if(playedFrom===ARTIST){
+            library = artistTracks.map((track) => { return track.songId});
+        }else if(playedFrom===RECENT_PLAYS){
+            library = historyTracks.map((track) => { return track.songId});
+        }else{
+            library = tracks;
+        }
+        if(isShuffle){
+            library = getShuffledTrackList(library);
+        }
+        return library;
+    }
+
+    const getShuffledTrackList = (trackList) => {
+        if(trackList.length === 0)return [];
+        let randomIndex;
+        const tempTrackIds = [...trackList];
+        const shuffledTracks = [];
+        for(let i=0; i<trackList.length;i++){
+            randomIndex = Math.floor(Math.random()*tempTrackIds.length);
+            shuffledTracks.push(tempTrackIds[randomIndex]);
+            tempTrackIds.splice(randomIndex,1);
+        }
+        return shuffledTracks;
     }
 
     const playPauseFunc = () => {
@@ -108,45 +152,35 @@ export const Player = () => {
     }
 
     const playNextSong = (action) => {
-        if(songPlaying===null)return false;
+        if (songPlaying === null) return false;
         let library;
         let nextSong = {};
-        if(action===CURRENT){
-            nextSong = songPlaying;
-        }else{
-            if(playedFrom===TRACK_LIST){
-                library = tracks;
-            }else if(playedFrom===ALBUM){
-                library = albumTracks;
-            }else if(playedFrom===ARTIST){
-                library = artistTracks;
-            }else if(playedFrom===RECENT_PLAYS){
-                library = historyTracks;
-            }else{
-                library = tracks;
+        if (action === CURRENT) {
+            nextSong = songPlaying.songId;
+        } else {
+            if (pTrackList.length > 0) {
+                library = pTrackList;
+            } else {
+                library = getSetLibrary();
             }
-            if(isShuffle){
-                const randomIndex = Math.floor(Math.random()*library.length);
-                nextSong = library[randomIndex];
-            }else{
-                const crrntindex = library.findIndex((track)=>track.songId===songPlaying.songId);
-                if(action===NEXT){
-                    if(library[crrntindex+1]!==undefined){
-                        nextSong = library[crrntindex+1];
-                    }else{
-                        nextSong = library[0];
-                    }
-                }else if(action===PREVIOUS){
-                    if(library[crrntindex-1]!==undefined){
-                        nextSong = library[crrntindex-1];
-                    }else{
-                        nextSong = library[library.length-1];
-                    }
+            const crrntindex = library.findIndex((track) => track === songPlaying.songId);
+            if (action === NEXT) {
+                if (library[crrntindex + 1] !== undefined) {
+                    nextSong = library[crrntindex + 1];
+                } else {
+                    nextSong = library[0];
+                }
+            } else if (action === PREVIOUS) {
+                if (library[crrntindex - 1] !== undefined) {
+                    nextSong = library[crrntindex - 1];
+                } else {
+                    nextSong = library[library.length - 1];
                 }
             }
         }
-        scrolltoId("track-"+nextSong.songId);
-        dispatch(playASong(nextSong.songId, playedFrom, currentVolume));
+        let songId = nextSong;
+        scrolltoId("track-" + songId);
+        dispatch(playASong(songId, playedFrom, currentVolume));
         dispatch(setIsPlaying(true));
     }
 
@@ -182,20 +216,6 @@ export const Player = () => {
         }
     }
     
-    useEffect(() => {
-        const handleEscape = (event) => {
-            if(event.code == "Space"){
-                playPauseFunc();
-            }
-        };
-
-        window.addEventListener('keyup', handleEscape);
-    
-        return () => {
-            window.removeEventListener('keyup', handleEscape);
-        };
-    }, []);
-
     return (
         <div className="player">
             <div className="player-container">
