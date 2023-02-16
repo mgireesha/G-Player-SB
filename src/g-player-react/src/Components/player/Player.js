@@ -63,6 +63,10 @@ export const Player = () => {
             dispatch(fettchCurrentSongStatus());
         }
         setPlayTime(0);
+        const rotatingBtn = [...document.getElementsByClassName('rotate-player-button')];
+        rotatingBtn.forEach((rBtn=>{
+            rBtn.classList.remove('rotate-player-button');
+        }))
     },[songPlaying]);
 
     useEffect(()=>{
@@ -145,7 +149,8 @@ export const Player = () => {
 
     const playPauseFunc = () => {
         if(isPlaying){
-            setIsPlayingL(false)
+            setIsPlayingL(false);
+            dispatch(setIsPlaying(false));
         }else{
             setIsPlayingL(true);
             dispatch(setIsPlaying(true));
@@ -153,7 +158,10 @@ export const Player = () => {
         dispatch(playPause(songPlaying, playedFrom, currentVolume, currentTime));
     }
 
-    const playNextSong = (action) => {
+    const playNextSong = (action, event) => {
+        if(event!==undefined){
+            event.target.parentElement.classList.add('rotate-player-button');
+        }
         if (songPlaying === null) return false;
         let library;
         let nextSong = {};
@@ -242,8 +250,8 @@ export const Player = () => {
                         </div>
                     </div>
                     <div className="previous">
-                        <div className="previous-button">
-                            <MdSkipPrevious onClick={()=>playNextSong(PREVIOUS)} />
+                        <div className="previous-button" id="previous-button">
+                            <MdSkipPrevious onClick={(event)=>playNextSong(PREVIOUS, event)} />
                         </div>
                     </div>
                     <div className="play">
@@ -253,8 +261,8 @@ export const Player = () => {
                         </div>
                     </div>
                     <div className="next">
-                        <div className="next-button">
-                            <MdSkipNext onClick={()=>playNextSong(NEXT)} />
+                        <div className="next-button" id="next-button">
+                            <MdSkipNext onClick={(event)=>playNextSong(NEXT, event)} />
                         </div>
                     </div>
                     <div className="repeat">
