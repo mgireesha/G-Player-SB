@@ -47,7 +47,7 @@ const playerReducer = (state = initialState, action) => {
         case PLAYER_PLAY_A_SONG_SUCCESS:
             return{
                 ...state,
-                //isPlaying: action.response.status==='PLAYING'?true:false,
+                isPlaying: action.response.status==='PLAYING'?true:false,
                 songPlaying: action.response.library,
                 songPlayingImg: action.response.library.albumArt,
                 playedFrom:action.playedFrom,

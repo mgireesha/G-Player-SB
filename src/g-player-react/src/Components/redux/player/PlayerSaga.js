@@ -39,7 +39,6 @@ export function* onPlayASong(){
 
 export function* onPlayASongAsync(payload){
     try {
-        console.log("payload",payload)
         const response = yield call(playASongAPI,payload.songId, payload.currentVolume, payload.currentPlayTime);
         if(response.status===200){
             const data = response.data;
@@ -80,8 +79,10 @@ export function* onSetMediaVolumeAsync(payload){
     try {
         const response = yield call(setMediaVolumeAPI,payload.volume);
         if(response.status === 200){
-            yield put(setMediaVolumeSucc(response.data.gMedia));
-            setCookies("currentVolume",response.data.gMedia.currentVolume);
+            if(response.data.gMedia!==null){
+                yield put(setMediaVolumeSucc(response.data.gMedia));
+                setCookies("currentVolume",response.data.gMedia.currentVolume);
+            }
         }
     } catch (error) {
         console.log(error);
