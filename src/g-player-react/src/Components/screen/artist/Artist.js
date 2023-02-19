@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { ARTIST, WIKI_SUMMARY_URL } from "../../redux/GPActionTypes";
-import { fetchAllArtistsDtls, fetchSongsByArtist, setGroupband } from "../../redux/library/LibraryActions";
+import { fetchAllArtistsDtls, fetchSongsByArtist } from "../../redux/library/LibraryActions";
 import { setPlayedFrom } from "../../redux/player/PlayerActions";
 import { Track } from "../Track";
 import def_album_art from '../../images/def_album_art.png';

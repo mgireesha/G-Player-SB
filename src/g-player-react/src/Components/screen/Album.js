@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import def_album_art from '../images/def_album_art.png';
 import { ALBUM } from "../redux/GPActionTypes";
-import { fetchAlbum, fetchAlbumImgs, fetchAlbumTacks, setGroupband } from "../redux/library/LibraryActions";
+import { fetchAlbum, fetchAlbumTacks } from "../redux/library/LibraryActions";
 import { setPlayedFrom } from "../redux/player/PlayerActions";
 import { ShowLyrics } from "./ShowLyrics";
 import { Track } from "./Track";

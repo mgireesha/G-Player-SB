@@ -5,15 +5,15 @@ import { MdSkipNext, MdSkipPrevious } from "react-icons/md";
 import { TiArrowRepeat } from "react-icons/ti";
 import { TbArrowsShuffle , TbRepeatOnce} from "react-icons/tb";
 import { useDispatch, useSelector } from "react-redux";
-import { fettchCurrentSongStatus, playASong, playPause, setIsPlaying, setIsRepeat, setIsShuffle, setPlayBackLength, setRepeat } from "../redux/player/PlayerActions";
-import { getCookieValue, getMins, scrolltoId, scrollToPlaying, setCookies } from "../utli";
+import { fettchCurrentSongStatus, playASong, playPause, setIsPlaying, setIsShuffle, setPlayBackLength, setRepeat } from "../redux/player/PlayerActions";
+import { getMins, scrolltoId, scrollToPlaying, setCookies } from "../utli";
 import { VolumeH } from "./VolumeH";
-import { ALBUM, ALBUMS, ALBUM_ARTISTS, ARTIST, ARTISTS, CURRENT, NEXT, PREVIOUS, RECENT_PLAYS, REPEAT_ALL, REPEAT_OFF, REPEAT_ONE, TRACK_LIST } from "../redux/GPActionTypes";
+import { ALBUM, ARTIST, CURRENT, NEXT, PREVIOUS, RECENT_PLAYS, REPEAT_ALL, REPEAT_OFF, REPEAT_ONE, TRACK_LIST } from "../redux/GPActionTypes";
 import { Link } from "react-router-dom";
 import { ArtistLink } from "../screen/artist/ArtistLink";
-import def_album_art from '../images/def_album_art.png';
-import { fetchAlbumTacks, fetchAllHistory, updateHistory } from "../redux/library/LibraryActions";
+import { fetchAllHistory, updateHistory } from "../redux/library/LibraryActions";
 import { SliderRC } from "../SliderRC";
+import def_album_art from '../images/def_album_art.png';
 
 export const Player = () => {
 
@@ -39,7 +39,7 @@ export const Player = () => {
 
     useEffect(() => {
         const handleEscape = (event) => {
-            if(event.code == "Space"){
+            if(event.code === "Space"){
                 playPauseFunc();
             }
         };

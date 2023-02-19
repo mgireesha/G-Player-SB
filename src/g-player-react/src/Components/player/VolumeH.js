@@ -13,6 +13,22 @@ export const VolumeH = () => {
     const songPlaying = useSelector(state => state.player.songPlaying);
     const [isMute,setIsMute] = useState(false);
 
+    useEffect(() => {
+        const handleEscape = (event) => {
+            if(event.code === "KeyM"){
+                if(isMute){
+                    muteMedia(false);
+                }else{
+                    muteMedia(true);
+                }
+            }
+        };
+        window.addEventListener('keyup', handleEscape);
+        return () => {
+            window.removeEventListener('keyup', handleEscape);
+        };
+    }, [isMute]);
+
     useEffect(()=>{
         if(songPlaying!==null){
             if(currentVolume===undefined || currentVolume===null)dispatch(setMediaVolume(0.6));
