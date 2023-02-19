@@ -22,7 +22,7 @@ export const Album = () => {
     },[albumName]);
     useEffect(()=>{
         //dispatch(setGroupband("albums"));
-        dispatch(setPlayedFrom(ALBUM));
+        dispatch(setPlayedFrom({pfKey:ALBUM, pfVal:albumName}));
     },[]);
     return(
         <div className="album">
@@ -44,7 +44,7 @@ export const Album = () => {
             </div>}
             <div className="album-track-list">
                 {albumTracks.length>0 && albumTracks.map((track, index)=>
-                    track.title!==null && <Track track={track} key={index} playedFrom={ALBUM} index={index}  />
+                    track.title!==null && <Track track={track} key={index} playedFrom={{pfKey:ALBUM, pfVal:albumName}} index={index}  />
                 )}
             </div>
         </div>

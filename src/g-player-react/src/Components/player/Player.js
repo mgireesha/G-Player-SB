@@ -12,7 +12,7 @@ import { ALBUM, ALBUMS, ALBUM_ARTISTS, ARTIST, ARTISTS, CURRENT, NEXT, PREVIOUS,
 import { Link } from "react-router-dom";
 import { ArtistLink } from "../screen/artist/ArtistLink";
 import def_album_art from '../images/def_album_art.png';
-import { fetchAllHistory, updateHistory } from "../redux/library/LibraryActions";
+import { fetchAlbumTacks, fetchAllHistory, updateHistory } from "../redux/library/LibraryActions";
 import { SliderRC } from "../SliderRC";
 
 export const Player = () => {
@@ -35,7 +35,7 @@ export const Player = () => {
     const [currentTime, setCurrentTime] = useState(0);
     const [isPlayingL, setIsPlayingL] = useState(false);
     const [playTime, setPlayTime] = useState(0); // Play time is updated every time playingSongStat chnage and is reset every time songPlaying chnages 
-    const [pTrackList, setPTrackList] = useState(tracks);
+    const [pTrackList, setPTrackList] = useState([]);
 
     useEffect(() => {
         const handleEscape = (event) => {
@@ -117,24 +117,33 @@ export const Player = () => {
     }
 
     const getSetLibrary = () => {
-        if(playedFrom === ALBUM_ARTISTS || playedFrom ===ARTISTS || playedFrom === ALBUMS)return [];
+        //if(playedFrom === ALBUM_ARTISTS || playedFrom ===ARTISTS || playedFrom === ALBUMS)return [];
         let library = [];
-        if(playedFrom===TRACK_LIST){
-            library = tracks;
-        }else if(playedFrom===ALBUM && albumTracks.length>0){
-            library = albumTracks.map((track) => { return track.songId});
-        }else if(playedFrom===ARTIST && artistTracks.length>0){
-            library = artistTracks.map((track) => { return track.songId});
-        }else if(playedFrom===RECENT_PLAYS && historyTracks!==undefined && historyTracks.length>0){
-            library = historyTracks.map((track) => { return track.songId});
+        switch (playedFrom.pfKey) {
+            case TRACK_LIST:
+                library = tracks;
+                break;
+            case ALBUM:
+                if(albumTracks.length>0){
+                    library = albumTracks.map((track) => { return track.songId});
+                }
+                break;
+            case ARTIST:
+                if(artistTracks.length>0){
+                    library = artistTracks.map((track) => { return track.songId});
+                }
+                break;
+            case RECENT_PLAYS:
+                if(historyTracks!==undefined && historyTracks.length>0){
+                    library = historyTracks.map((track) => { return track.songId});
+                }
+                break;
+            default:
+                library = tracks;
+                break;
         }
-        // else{
-        //     library = tracks;
-        // }
 
-        if(library.length === 0)return [];
-
-        if(isShuffle){
+        if(isShuffle && library.length>0){
             library = getShuffledTrackList(library);
         }
         setPTrackList(library);
@@ -178,6 +187,7 @@ export const Player = () => {
         if (action === CURRENT) {
             nextSong = songPlaying.songId;
         } else {
+            console.log("pTrackList", pTrackList);
             if (pTrackList.length > 0) {
                 library = pTrackList;
             } else {

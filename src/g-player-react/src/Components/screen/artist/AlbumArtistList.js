@@ -18,7 +18,7 @@ export const AlbumArtistList = () => {
     useEffect(()=>{
         dispatch(fetchAllAlbumArtistsDtls(ALBUM_ARTIST));
         //dispatch(setGroupband("album_artists"));
-        dispatch(setPlayedFrom(ALBUM_ARTISTS));
+        //dispatch(setPlayedFrom(ALBUM_ARTISTS));
     },[]);
 
     useEffect(()=>{

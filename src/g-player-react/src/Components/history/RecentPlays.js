@@ -18,7 +18,8 @@ export const RecentPlays = () => {
     const [hisAlbumsArr, setHisAlbumsArr] = useState([]);
     
     useEffect(()=>{
-        dispatch(setPlayedFrom(RECENT_PLAYS));
+        //dispatch(setPlayedFrom(RECENT_PLAYS));
+        dispatch(setPlayedFrom({pfKey:RECENT_PLAYS}));
     },[])
 
     useEffect(()=>{
@@ -71,7 +72,7 @@ export const RecentPlays = () => {
                 <div className="track-list">
                     <h3>Tracks</h3>
                     {historyTracks!==undefined && historyTracks.length>0 && historyTracks.map((track, index)=>
-                        <Track track={track} key={index} playedFrom={RECENT_PLAYS} index={index} hideTrackNum={true} />
+                        <Track track={track} key={index} playedFrom={{pfKey:RECENT_PLAYS}} index={index} hideTrackNum={true} />
                     )}
                 </div>
             </div>

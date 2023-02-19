@@ -106,13 +106,13 @@ export const Music = () => {
                                 <h2>{mostPlayedData[THIS_MONTH_COUNT]}</h2>
                             </div>
                         }
-                        <div className="group"></div>
                         {mostPlayedData[TOTAL_TIME_PLAYED]!==undefined &&
                             <div className="group">
                                 <h2>{TOTAL_TIME_PLAYED_LABEL}</h2>
                                 <h2>{Math.floor(mostPlayedData[TOTAL_TIME_PLAYED]/(60*60))} hrs</h2>
                             </div>
                         }
+                        <div className="group"></div>
                         {mostPlayedData[TIME_PLAYED_THIS_MONTH]!==undefined &&
                             <div className="group">
                                 <h2>{TIME_PLAYED_THIS_MONTH_LABEL}</h2>

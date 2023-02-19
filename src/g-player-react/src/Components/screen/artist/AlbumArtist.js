@@ -39,7 +39,8 @@ export const AlbumArtist = () => {
 
     useEffect(()=>{
         //dispatch(setGroupband("album_artists"));
-        dispatch(setPlayedFrom(ALBUM_ARTIST))
+        //dispatch(setPlayedFrom(ALBUM_ARTIST))
+        //dispatch(setPlayedFrom({pfKey:ALBUM_ARTIST, pfVal:albumArtist}));
     },[]);
 
     const fetchArtistDetailsfromWiki =async(albumArtist) => {

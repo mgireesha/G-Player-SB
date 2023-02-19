@@ -713,7 +713,7 @@
         }
         
         .statisticts{
-            height: 20em;
+            height: 24em;
             width: 95%;
             margin: 20px;
             padding: 10px;
@@ -722,7 +722,7 @@
 
             .groups{
                 display: grid;
-                grid-template-columns: 1fr 1fr 1fr 1fr;
+                grid-template-columns: 1fr 1fr 1fr;
                 row-gap: 20px;
                 .group{
                     text-align: center;

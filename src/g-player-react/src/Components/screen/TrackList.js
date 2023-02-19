@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { A_TO_Z, TRACK_LIST, SORT_YEAR, SORT_ARTIST, A_TO_Z_DESC } from "../redux/GPActionTypes";
+import { fethAllSongs } from "../redux/library/LibraryActions";
 import { setPlayedFrom } from "../redux/player/PlayerActions";
 import { scrollToPlaying, sortGroupByField } from "../utli";
 import { SortingContainer } from "./SortingContainer";
@@ -18,8 +19,8 @@ export const TrackList = () => {
     const [sortBy, setSortBy] = useState(A_TO_Z);
     useEffect(()=>{
         //dispatch(setGroupband("tracks"));
-        dispatch(setPlayedFrom(TRACK_LIST));
-        
+        dispatch(setPlayedFrom({pfKey:TRACK_LIST}));
+        dispatch(fethAllSongs());
     },[]);
 
     useEffect(()=>{
@@ -99,7 +100,7 @@ export const TrackList = () => {
                     <>
                         <label id={"lKey" + lKey} className="track-lKey">{lKey}</label>
                         {trackList[lKey] !== undefined && trackList[lKey].length > 0 && trackList[lKey].map((track, trackIndex) =>
-                            <Track track={track} key={track.songId} playedFrom={TRACK_LIST} index={index} hideTrackNum={true} />
+                            <Track track={track} key={track.songId} playedFrom={{pfKey:TRACK_LIST}} index={index} hideTrackNum={true} />
                         )}
                     </>
                 )}

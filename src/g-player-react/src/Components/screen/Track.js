@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { ALBUM } from "../redux/GPActionTypes";
-import { playASong, setIsPlaying } from "../redux/player/PlayerActions";
+import { playASong, playPause, setIsPlaying } from "../redux/player/PlayerActions";
 import { getMins } from "../utli";
 import { ArtistLink } from "./artist/ArtistLink";
 
@@ -12,13 +12,17 @@ export const Track = ({track, playedFrom, index, hideTrackNum}) => {
     const currentVolume = useSelector(state => state.player.currentVolume);
     //const isPlaying = useSelector(state => state.player.isPlaying);
     const playSong = async(songId) => {
-        dispatch(setIsPlaying(true));
-        dispatch(playASong(songId,playedFrom,currentVolume));
+        if(songPlaying!==null && songId===songPlaying.songId){
+            dispatch(playPause(songPlaying, playedFrom, currentVolume));
+        }else{
+            dispatch(setIsPlaying(true));
+            dispatch(playASong(songId,playedFrom,currentVolume));
+        }
     }
 
     return(
         <div className={songPlaying!==null && track.songId===songPlaying.songId?"track text-highlighted-y":"track"} id={"track-"+track.songId}>
-            {!hideTrackNum && <label style={{paddingLeft:'5'}}>{playedFrom===ALBUM && track.trackNumber!==undefined && track.trackNumber!==0?track.trackNumber:index+1}</label>}
+            {!hideTrackNum && <label style={{paddingLeft:'5'}}>{playedFrom.pfKey===ALBUM && track.trackNumber!==undefined && track.trackNumber!==0?track.trackNumber:index+1}</label>}
             <label onClick={()=>playSong(track.songId)} style={{cursor:'pointer'}}>{track.title}</label>
             <label onDoubleClick={()=>playSong(track.songId)}>
                 <ArtistLink artist={track.artist} />

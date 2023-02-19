@@ -19,7 +19,7 @@ export const ArtistsList = () => {
         console.log(fetchAllArtistsDtls(ARTIST));
         dispatch(fetchAllArtistsDtls(ARTIST));
         //(setGroupband("artists"));
-        dispatch(setPlayedFrom(ARTISTS));
+        //dispatch(setPlayedFrom(ARTISTS));
     },[]);
 
     useEffect(()=>{

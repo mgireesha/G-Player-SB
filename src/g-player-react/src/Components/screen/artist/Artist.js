@@ -74,7 +74,8 @@ export const Artist = () => {
 
     useEffect(()=>{
         //dispatch(setGroupband("artists"));
-        dispatch(setPlayedFrom(ARTIST));
+        //dispatch(setPlayedFrom(ARTIST));
+        dispatch(setPlayedFrom({pfKey:ARTIST, pfVal:artist}));
         //scrollToPlaying();
     },[]);
     const fetchArtistDetailsfromWiki =async(artist) => {
@@ -157,7 +158,7 @@ export const Artist = () => {
             
             <div className="artist-track-list">
                 {artistTracksL!==null && artistTracksL!==undefined && artistTracksL.map((track, index)=>
-                    track.title!==null && <Track track={track} key={track.songId} playedFrom={ARTIST} index={index} />
+                    track.title!==null && <Track track={track} key={track.songId} playedFrom={{pfKey:ARTIST, pfVal:artist}} index={index} />
                 )}
             </div>
         </div>
