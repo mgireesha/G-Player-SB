@@ -3,10 +3,10 @@ import { Player } from "./player/Player";
 import { Sidebar } from "./Sidebar";
 import { Screen } from "./screen/Screen";
 import { useDispatch } from "react-redux";
-import { fetchAllAlbums, fethAllSongs } from "./redux/library/LibraryActions";
-import { fetchCurrentSontAndStatus, playASongSucc, setIsShuffle, setMediaVolume, setRepeat } from "./redux/player/PlayerActions";
-import { getCookieDetails } from "./utli";
-import { TRACK_LIST } from "./redux/GPActionTypes";
+import { fetchAlbumTacks, fetchAllAlbums, fetchAllHistory, fetchSongsByArtist, fethAllSongs } from "./redux/library/LibraryActions";
+import { fetchCurrentSontAndStatus, playASongSucc, setIsShuffle, setMediaVolume, setMediaVolumeSucc, setRepeat } from "./redux/player/PlayerActions";
+import { getCookieDetails, getCookieValue } from "./utli";
+import { ALBUM, ARTIST, RECENT_PLAYS, TRACK_LIST } from "./redux/GPActionTypes";
 import { Route, Routes } from "react-router-dom";
 import { Library } from "./library/Library";
 import { Search } from "./search/Search";
@@ -15,12 +15,13 @@ import { RecentPlays } from "./history/RecentPlays";
 export const Home = () => {
     const dispatch = useDispatch();
     useEffect(()=>{
-        dispatch(fethAllSongs());
+        
         //dispatch(fetchAlbumImgs());
         //dispatch(fetchAllAlbumsDtls());
         dispatch(fetchAllAlbums());
         //dispatch(fetchCurrentSontAndStatus());
         getSetCookieDetails();
+        fetchTracks();
     },[]);
 
     const getSetCookieDetails = () =>{
@@ -38,7 +39,30 @@ export const Home = () => {
             dispatch(fetchCurrentSontAndStatus());
         }
         if(cookieDetails["currentVolume"]!==undefined){
-            dispatch(setMediaVolume(cookieDetails["currentVolume"]));
+            dispatch(setMediaVolumeSucc({currentVolume:cookieDetails["currentVolume"]}));
+        }
+    }
+
+    const fetchTracks = () => {
+        let playedFromCookieValue = getCookieValue("playedFrom");
+        if(playedFromCookieValue!==undefined)playedFromCookieValue = JSON.parse(playedFromCookieValue);
+        if(playedFromCookieValue.pfKey!==undefined){
+            switch (playedFromCookieValue.pfKey) {
+                case ALBUM:
+                    dispatch(fetchAlbumTacks(playedFromCookieValue.pfVal));
+                    break;
+                case ARTIST:
+                    dispatch(fetchSongsByArtist(playedFromCookieValue.pfVal));
+                    break;
+                case RECENT_PLAYS:
+                    dispatch(fetchAllHistory());
+                    break;
+                default:
+                    dispatch(fethAllSongs());
+                    break;
+            }
+        }else{
+            dispatch(fethAllSongs());
         }
     }
 

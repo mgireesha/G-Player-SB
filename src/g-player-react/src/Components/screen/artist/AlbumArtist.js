@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import { fetchAlbumlistOfAA, fetchAllAlbumArtistsDtls, setGroupband } from "../../redux/library/LibraryActions";
+import { fetchAlbumlistOfAA, fetchAllAlbumArtistsDtls } from "../../redux/library/LibraryActions";
 import { scrollToPlaying } from "../../utli";
 import { AlbumThumb } from "../AlbumThumb";
-import { setPlayedFrom } from "../../redux/player/PlayerActions";
 import { ALBUM_ARTIST } from "../../redux/GPActionTypes";
 import def_album_art from '../../images/def_album_art.png';
 
@@ -36,11 +35,6 @@ export const AlbumArtist = () => {
             dispatch(fetchAllAlbumArtistsDtls(ALBUM_ARTIST));
         }
     },[albumArtist, albumArtistsDetails]);
-
-    useEffect(()=>{
-        //dispatch(setGroupband("album_artists"));
-        dispatch(setPlayedFrom(ALBUM_ARTIST))
-    },[]);
 
     const fetchArtistDetailsfromWiki =async(albumArtist) => {
         const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${albumArtist}`);

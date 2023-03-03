@@ -21,7 +21,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && xcopy .\\build\\* D:\\SWorkspace\\G-Player-SB\\src\\main\\resources\\public /s /y",
+    "build": "react-scripts build && xcopy .\\build\\* D:\\VS_WorkSpace\\G-Player-SB\\src\\main\\resources\\public /s /y",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

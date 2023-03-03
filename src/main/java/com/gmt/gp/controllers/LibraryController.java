@@ -62,8 +62,13 @@ public class LibraryController {
     }
 
     @RequestMapping("/getAllSongs")
-    public List<Library> getAllSongs(){
+    public Map<String, Object> getAllSongs(){
         return libraryService.getAllSongs();
+    }
+
+    @RequestMapping("/getAllSongIds")
+    public List<Long> getAllSongIds(){
+        return libraryService.getAllSongIds();
     }
 
     @RequestMapping("/getByAlbum/{album}")

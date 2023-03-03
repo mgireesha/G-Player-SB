@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { ARTIST, WIKI_SUMMARY_URL } from "../../redux/GPActionTypes";
-import { fetchAllArtistsDtls, fetchSongsByArtist, setGroupband } from "../../redux/library/LibraryActions";
+import { fetchAllArtistsDtls, fetchSongsByArtist } from "../../redux/library/LibraryActions";
 import { setPlayedFrom } from "../../redux/player/PlayerActions";
 import { Track } from "../Track";
 import def_album_art from '../../images/def_album_art.png';
@@ -74,7 +74,8 @@ export const Artist = () => {
 
     useEffect(()=>{
         //dispatch(setGroupband("artists"));
-        dispatch(setPlayedFrom(ARTIST));
+        //dispatch(setPlayedFrom(ARTIST));
+        //dispatch(setPlayedFrom({pfKey:ARTIST, pfVal:artist}));
         //scrollToPlaying();
     },[]);
     const fetchArtistDetailsfromWiki =async(artist) => {
@@ -157,7 +158,7 @@ export const Artist = () => {
             
             <div className="artist-track-list">
                 {artistTracksL!==null && artistTracksL!==undefined && artistTracksL.map((track, index)=>
-                    track.title!==null && <Track track={track} key={track.songId} playedFrom={ARTIST} index={index} />
+                    track.title!==null && <Track track={track} key={track.songId} playedFrom={{pfKey:ARTIST, pfVal:artist}} index={index} />
                 )}
             </div>
         </div>

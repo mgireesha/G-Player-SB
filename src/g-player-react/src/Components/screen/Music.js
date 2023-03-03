@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { ALBUMS_LABEL, GENRES_COUNT_LABEL, GENRES_LABEL, GENRE_COUNT, HISTORY_COUNT, HISTORY_COUNT_LABEL, LIBRARY_COUNT, LIBRARY_COUNT_LABEL, POPULAR_COMPOSERS, THIS_MONTH_COUNT, THIS_MONTH_COUNT_LABEL, TIME_PLAYED_THIS_MONTH, TIME_PLAYED_THIS_MONTH_LABEL, TOTAL_TIME_PLAYED, TOTAL_TIME_PLAYED_LABEL, TRACKS_LABEL } from "../redux/GPActionTypes";
+import { ALBUMS_LABEL, GENRES_COUNT_LABEL, GENRE_COUNT, HISTORY_COUNT, HISTORY_COUNT_LABEL, LIBRARY_COUNT, LIBRARY_COUNT_LABEL, POPULAR_COMPOSERS, THIS_MONTH_COUNT, THIS_MONTH_COUNT_LABEL, TIME_PLAYED_THIS_MONTH, TIME_PLAYED_THIS_MONTH_LABEL, TOTAL_TIME_PLAYED, TOTAL_TIME_PLAYED_LABEL, TRACKS_LABEL } from "../redux/GPActionTypes";
 import { fetchBuildStatus, fetchMostPlayedData } from "../redux/library/LibraryActions";
 import { AlbumThumb } from "./AlbumThumb";
 import { AlbumArtistThumb } from "./artist/AlbumArtistThumb";
-import { Artist } from "./artist/Artist";
 import { ArtistThumb } from "./artist/ArtistThumb";
 export const Music = () => {
     const dispatch = useDispatch();
@@ -106,13 +105,13 @@ export const Music = () => {
                                 <h2>{mostPlayedData[THIS_MONTH_COUNT]}</h2>
                             </div>
                         }
-                        <div className="group"></div>
                         {mostPlayedData[TOTAL_TIME_PLAYED]!==undefined &&
                             <div className="group">
                                 <h2>{TOTAL_TIME_PLAYED_LABEL}</h2>
                                 <h2>{Math.floor(mostPlayedData[TOTAL_TIME_PLAYED]/(60*60))} hrs</h2>
                             </div>
                         }
+                        <div className="group"></div>
                         {mostPlayedData[TIME_PLAYED_THIS_MONTH]!==undefined &&
                             <div className="group">
                                 <h2>{TIME_PLAYED_THIS_MONTH_LABEL}</h2>

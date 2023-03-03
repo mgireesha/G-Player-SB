@@ -713,7 +713,7 @@
         }
         
         .statisticts{
-            height: 20em;
+            height: 24em;
             width: 95%;
             margin: 20px;
             padding: 10px;
@@ -722,7 +722,7 @@
 
             .groups{
                 display: grid;
-                grid-template-columns: 1fr 1fr 1fr 1fr;
+                grid-template-columns: 1fr 1fr 1fr;
                 row-gap: 20px;
                 .group{
                     text-align: center;
@@ -1734,4 +1734,60 @@ a.disabled-click{
 
 .no-display{
     display: none;
+}
+
+.rotate-player-button{
+    animation: rotate80deg 3200ms ease-in-out infinite;
+}
+
+@keyframes rotate80deg {
+    0%{
+        transform:  rotateZ(0deg);
+    }
+    20%{
+        transform:  rotateZ(80deg);
+    }
+    40%{
+        transform:  rotateZ(160deg);
+    }
+    60%{
+        transform:  rotateZ(240deg);
+    }
+    80%{
+        transform:  rotateZ(320deg);
+    }
+    100%{
+        transform:  rotateZ(0deg);
+    }
+}
+
+.opacity-player-console{
+    animation: opacityRound 1500ms ease-in-out infinite;
+}
+
+@keyframes opacityRound {
+    0%{
+        opacity: 1;
+    }
+    15%{
+        opacity: 0.9;
+    }
+    30%{
+        opacity: 0.8;
+    }
+    45%{
+        opacity: 0.6;
+    }
+    60%{
+        opacity: 0.6;
+    }
+    75%{
+        opacity: 0.6;
+    }
+    90%{
+        opacity: 0.9;
+    }
+    100%{
+        opacity: 1;
+    }
 }

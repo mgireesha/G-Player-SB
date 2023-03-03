@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.gmt.gp.model.Message;
 import com.gmt.gp.repositories.MessageRepository;
+import com.gmt.gp.util.GP_CONSTANTS;
 
 @Service
 public class MessageService {
@@ -23,7 +24,16 @@ public class MessageService {
     }
 
     public Message getMessageByName(String messageName){
-        return messageRepository.getByName(messageName);
+        try {
+            return messageRepository.getByName(messageName);
+        } catch (Exception e) {
+            if(e.getMessage().contains("query did not return a unique result")){
+                if(messageName.equals(GP_CONSTANTS.LAST_PLAYED_SONG_ID)){
+                    removeMessageName(messageName);
+                }
+            }
+        }
+        return null;
     }
 
     public void removeMessageById(long messageId) {
