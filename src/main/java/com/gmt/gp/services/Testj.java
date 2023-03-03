@@ -7,17 +7,19 @@ import com.gmt.gp.util.SQL_QUERIES;
 public class Testj {
     public static void main(String[] args) {
         try {
-           Testj.print_SQL_QUERIES();
-           Testj.testSelectDateRange();
-         } catch (Exception e) {
+            Testj.print_SQL_QUERIES();
+            Testj.testSelectDateRange();
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         HistoryService historyService = new HistoryService();
-        System.out.println("historyService.executeJDBCQuerySingleRow(SQL_QUERIES.getHisLibCountJDBCQuery());: "+historyService.executeJDBCQuerySingleRow(SQL_QUERIES.getHisLibCountJDBCQuery()));
+        System.out.println("historyService.executeJDBCQuerySingleRow(SQL_QUERIES.getHisLibCountJDBCQuery());: "
+                + historyService.executeJDBCQuerySingleRow(SQL_QUERIES.getHisLibCountJDBCQuery()));
+
     }
 
-    public static void print_SQL_QUERIES(){
+    public static void print_SQL_QUERIES() {
         LocalDate today = LocalDate.now();
         LocalDate lastMonth = today.minusMonths(1);
 
@@ -38,11 +40,11 @@ public class Testj {
         System.out.println("-----------------------------------------------------------------------------------");
     }
 
-
-    public static void testSelectDateRange(){
+    public static void testSelectDateRange() {
         LocalDate now = LocalDate.now(); // 2015-11-24
         LocalDate earlier = now.minusMonths(1); // 2015-10-24
-        String Query = "select count(*) as sfdf from (Select * from history where last_played_time between ("+now+") and ("+earlier+"))";
-        System.out.println("testSelectDateRange: "+Query);
+        String Query = "select count(*) as sfdf from (Select * from history where last_played_time between (" + now
+                + ") and (" + earlier + "))";
+        System.out.println("testSelectDateRange: " + Query);
     }
 }

@@ -36,123 +36,128 @@ public class LibraryController {
     private MessageService messageService;
 
     @RequestMapping("/initLibraryBuild")
-    public List<File> runBuild(){
+    public List<File> runBuild() {
         final String methodName = "runBuild";
         List<File> fileList = new ArrayList<File>();
-        
+
+        boolean isImgDirExists = libraryService.checkAndCreateUserImageFolders();
+        if (!isImgDirExists) {
+            return null;
+        }
+
         messageService.removeMessageType(GP_CONSTANTS.BUILD_STATUS);
         messageService.removeMessageName(GP_CONSTANTS.LAST_PLAYED_SONG_ID);
         messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.RUNNING);
 
-
         List<Message> mainFolderList = messageService.getAllMusicPaths();
 
-        LOG.info(methodName+" - Started searching for audio files in : "+mainFolderList);
+        LOG.info(methodName + " - Started searching for audio files in : " + mainFolderList);
         fileList = libraryService.getMusicFiles(mainFolderList);
-        LOG.info(methodName+" - Found "+fileList.size()+" audio files");
+        LOG.info(methodName + " - Found " + fileList.size() + " audio files");
         messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, "FILES_TO_READ", String.valueOf(fileList.size()));
 
         libraryService.cleanAlbumImageDir();
-        LOG.info(methodName+" - Deleted all images from albums folder");
-        messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS_STEP, "Deleted all images from albums folder.");
-        
-        LOG.info(methodName+" - calling build library");
+        LOG.info(methodName + " - Deleted all images from albums folder");
+        messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS_STEP,
+                "Deleted all images from albums folder.");
+
+        LOG.info(methodName + " - calling build library");
         libraryService.buildLibrary(fileList);
         return fileList;
     }
 
     @RequestMapping("/getAllSongs")
-    public Map<String, Object> getAllSongs(){
+    public Map<String, Object> getAllSongs() {
         return libraryService.getAllSongs();
     }
 
     @RequestMapping("/getAllSongIds")
-    public List<Long> getAllSongIds(){
+    public List<Long> getAllSongIds() {
         return libraryService.getAllSongIds();
     }
 
     @RequestMapping("/getByAlbum/{album}")
-    public List<Library> getSongsByAlbum(@PathVariable String album){
+    public List<Library> getSongsByAlbum(@PathVariable String album) {
         return libraryService.getSongsByAlbum(album);
     }
 
     @RequestMapping("/getByYear/{year}")
-    public List<Library> getSongsByYear(@PathVariable int year){
+    public List<Library> getSongsByYear(@PathVariable int year) {
         return libraryService.getSongsByYear(year);
     }
 
     @RequestMapping("/getByGenre/{genre}")
-    public List<Library> getSongsByGenre(@PathVariable String genre){
+    public List<Library> getSongsByGenre(@PathVariable String genre) {
         return libraryService.getSongsByGenre(genre);
     }
 
     @RequestMapping("/getByArtist/{artist}")
-    public List<Library> getSongsByArtist(@PathVariable String artist){
+    public List<Library> getSongsByArtist(@PathVariable String artist) {
         return libraryService.getSongsByArtist(artist);
     }
 
     @RequestMapping("/getByAlbumArtist/{albumArtist}")
-    public List<Library> getSongsByAlbumArtist(@PathVariable String albumArtist){
+    public List<Library> getSongsByAlbumArtist(@PathVariable String albumArtist) {
         return libraryService.getSongsByAlbumArtist(albumArtist);
     }
 
     @RequestMapping("/getAllAlbums")
-    public Iterable<Album> getAllAlbums(){
+    public Iterable<Album> getAllAlbums() {
         return libraryService.getAllAlbumsFromDb();
     }
 
     @RequestMapping("/getAllAlbumDetails")
-    public Map<String, Library> getAllAlbumdetails(){
-        return libraryService.getAllAlbumdetails(null,null);
+    public Map<String, Library> getAllAlbumdetails() {
+        return libraryService.getAllAlbumdetails(null, null);
     }
 
     @RequestMapping("/getAlbumByAlbumName/{albumName}")
-    public Album getAlbumByAlbumName(@PathVariable String albumName){
+    public Album getAlbumByAlbumName(@PathVariable String albumName) {
         return libraryService.getAlbumByAlbumName(albumName);
     }
 
     @RequestMapping("/getAllAlbumDetailsByAA/{albumArtist}")
-    public List<Album> getAllAlbumDetailsByAA(@PathVariable String albumArtist){
+    public List<Album> getAllAlbumDetailsByAA(@PathVariable String albumArtist) {
         return libraryService.getAlbumListOfAA(albumArtist);
     }
 
     @RequestMapping("/getAlbumImgs")
-    public Map<String, String> getAlbumImgs(){
+    public Map<String, String> getAlbumImgs() {
         return libraryService.getAlbumImgs();
     }
 
     @RequestMapping("/getAllArtistDetails/{type}")
-    public List<Artist> getAllArtistDetails(@PathVariable String type){
+    public List<Artist> getAllArtistDetails(@PathVariable String type) {
         return libraryService.getAllArtistDetails(type);
     }
 
     @RequestMapping("/getAllAlbumArtistDetails")
-    public List<String> getAllAlbumArtistDetails(){
+    public List<String> getAllAlbumArtistDetails() {
         return libraryService.getAllAlbumArtistDetails();
     }
 
     @RequestMapping("/readAndStoreArtistnames/{artistType}")
-    public Iterable<Artist> readAndStoreArtistnames(@PathVariable String artistType){
+    public Iterable<Artist> readAndStoreArtistnames(@PathVariable String artistType) {
         return libraryService.setArtistLocalImgAvlStatusList(artistType, null);
     }
 
     @RequestMapping("/downloadArtistImgToDIr")
-    public Map<String, List<Artist>> downloadArtistImgToDIr(){
+    public Map<String, List<Artist>> downloadArtistImgToDIr() {
         return libraryService.downloadArtistImgToDIr();
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/updateLyrics/{songId}")
-    public GPResponse updateLyrics(@RequestBody String lyrics, @PathVariable String songId){
+    public GPResponse updateLyrics(@RequestBody String lyrics, @PathVariable String songId) {
         return libraryService.updateLyrics(songId, lyrics);
     }
 
     @RequestMapping("/resizeArtistImgs")
-    public void resizeArtistImgs(){
+    public void resizeArtistImgs() {
         libraryService.resizeArtistImgs();
     }
 
     @RequestMapping("/searchByKey/{searchKey}")
-    public Map<String, List<Object>> searchbyKey(@PathVariable String searchKey){
+    public Map<String, List<Object>> searchbyKey(@PathVariable String searchKey) {
         return libraryService.searchbyKey(searchKey);
     }
 

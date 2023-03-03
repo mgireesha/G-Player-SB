@@ -39,32 +39,33 @@ public class MediaController {
     private MessageService messageService;
 
     @RequestMapping(method = RequestMethod.PUT, value = "/playSong/{songId}")
-    public GPResponse playSong(@RequestBody String currentVolume,@PathVariable String songId, @RequestParam("currentPlayTime") String currentPlayTime){
+    public GPResponse playSong(@RequestBody String currentVolume, @PathVariable String songId,
+            @RequestParam("currentPlayTime") String currentPlayTime) {
         GPResponse resp = new GPResponse();
         Double volume = Double.parseDouble(currentVolume);
-        if(songId.equals("0") || songId == null){
+        if (songId.equals("0") || songId == null) {
             resp.setError("songId 0 or null");
             return resp;
         }
 
-        if(GPUtil.checkIsNull(currentPlayTime)){
+        if (GPUtil.checkIsNull(currentPlayTime)) {
             currentPlayTime = null;
         }
 
         Library song = libraryService.getSongBySongId(Integer.parseInt(songId));
         Message message = messageService.getMessageByName(GP_CONSTANTS.LAST_PLAYED_SONG_ID);
-        if(message!=null){
+        if (message != null) {
             messageService.saveMaMessage(message.setValue(songId));
-        }else{
+        } else {
             messageService.saveMaMessage(new Message(GP_CONSTANTS.LIBRARY, GP_CONSTANTS.LAST_PLAYED_SONG_ID, songId));
         }
-        //historyService.updateHistory(song);
+        // historyService.updateHistory(song);
         boolean getLyrics = false;
-        if(song.getLyrics()==null){
+        if (song.getLyrics() == null) {
             getLyrics = true;
         }
         song = libraryService.getAAttrFromTag(song, true, getLyrics);
-        if(mPlayer!=null){
+        if (mPlayer != null) {
             try {
                 Media media = new Media(new File(song.getSongPath()).toURI().toString());
                 mPlayer.dispose();
@@ -76,25 +77,24 @@ public class MediaController {
             } catch (IllegalStateException ise) {
                 resp.setError(ise.getMessage());
                 ise.printStackTrace();
-                if(ise.getMessage().contains("Toolkit not initialized")){
-                    resp =  initAndPlay(song, volume, currentPlayTime);
+                if (ise.getMessage().contains("Toolkit not initialized")) {
+                    resp = initAndPlay(song, volume, currentPlayTime);
                 }
             }
-        }else{
-            resp =  initAndPlay(song, volume, currentPlayTime);
+        } else {
+            resp = initAndPlay(song, volume, currentPlayTime);
         }
         return resp;
     }
 
-   
-    public GPResponse initAndPlay(Library song, Double volume, String currentPlayTime){
+    public GPResponse initAndPlay(Library song, Double volume, String currentPlayTime) {
         GPResponse resp = new GPResponse();
         try {
-            Platform.startup(()->{
+            Platform.startup(() -> {
                 Media media = new Media(new File(song.getSongPath()).toURI().toString());
                 mPlayer = new MediaPlayer(media);
                 mPlayer.setVolume(volume);
-                if(currentPlayTime!=null){
+                if (currentPlayTime != null) {
                     mPlayer.setOnPlaying(new Runnable() {
                         public void run() {
                             mPlayer.seek(new Duration(Double.parseDouble(currentPlayTime)));
@@ -109,50 +109,50 @@ public class MediaController {
             resp.setError(e.getMessage());
             e.printStackTrace();
         }
-    return resp;
+        return resp;
     }
 
     @RequestMapping("/playPause")
-    public GPResponse playPause(){
+    public GPResponse playPause() {
         GPResponse resp = new GPResponse();
-        if(mPlayer!=null){
+        if (mPlayer != null) {
             Status mpStatus = mPlayer.getStatus();
-            if(mpStatus==Status.PLAYING){
+            if (mpStatus == Status.PLAYING) {
                 mPlayer.pause();
-            }else{
+            } else {
                 mPlayer.play();
             }
-            
+
             ThreadSleep(600);
-            
+
             resp.setStatus(mPlayer.getStatus().toString());
-        }else{
+        } else {
             resp.setStatus(GP_CONSTANTS.MEDIA_PLAYER_NULL);
         }
         return resp;
     }
 
     @RequestMapping("/forward/{playbackTime}")
-    public GPResponse forwardSong(@PathVariable Double playbackTime){
+    public GPResponse forwardSong(@PathVariable Double playbackTime) {
         GPResponse resp = new GPResponse();
         GMedia gMedia = new GMedia();
-        if(mPlayer!=null){
+        if (mPlayer != null) {
             mPlayer.seek(new Duration(playbackTime));
             ThreadSleep(200);
             gMedia.setCurrentTime(mPlayer.getCurrentTime().toString());
             resp.setgMedia(gMedia);
         }
-    return resp;
+        return resp;
     }
 
     @RequestMapping("/volume/{volume}")
-    public GPResponse setVolume(@PathVariable Double volume){
+    public GPResponse setVolume(@PathVariable Double volume) {
         GPResponse resp = new GPResponse();
         GMedia gMedia = new GMedia();
-        if(mPlayer!=null){
-            
+        if (mPlayer != null) {
+
             ThreadSleep(200);
-            
+
             mPlayer.setVolume(volume);
             resp.setStatus(mPlayer.getStatus().toString());
             gMedia.setCurrentVolume(mPlayer.getVolume());
@@ -162,14 +162,14 @@ public class MediaController {
     }
 
     @RequestMapping("/getCurrentSongStatus")
-    public GPResponse getCurrentSontStatus(){
+    public GPResponse getCurrentSontStatus() {
         GPResponse resp = new GPResponse();
         GMedia gMedia = new GMedia();
-        if(mPlayer!=null){
+        if (mPlayer != null) {
             gMedia.setCurrentTime(mPlayer.getCurrentTime().toString());
             gMedia.setCurrentVolume(mPlayer.getVolume());
             resp.setStatus(mPlayer.getStatus().toString());
-        }else{
+        } else {
             return null;
         }
         resp.setgMedia(gMedia);
@@ -177,11 +177,11 @@ public class MediaController {
     }
 
     @RequestMapping("/getCurrentSongAndStatus")
-    public GPResponse getCurrentSongAndStatus(){
+    public GPResponse getCurrentSongAndStatus() {
         GPResponse resp = new GPResponse();
         GMedia gMedia = new GMedia();
         try {
-            if(mPlayer!=null){
+            if (mPlayer != null) {
                 ThreadSleep(200);
                 gMedia.setCurrentTime(mPlayer.getCurrentTime().toString());
                 gMedia.setCurrentVolume(mPlayer.getVolume());
@@ -195,25 +195,27 @@ public class MediaController {
                 resp.setLibrary(library);
                 resp.setStatus(mPlayer.getStatus().toString());
                 resp.setgMedia(gMedia);
-            }else{
+            } else {
                 resp.setError(GP_CONSTANTS.MEDIA_PLAYER_NULL);
                 Message message = messageService.getMessageByName(GP_CONSTANTS.LAST_PLAYED_SONG_ID);
-                String songId = message!=null?message.getValue():null;
-                if(!GPUtil.checkIsNull(songId)){
-                    resp.setLibrary(libraryService.getAAttrFromTag(libraryService.getSongBySongId(Integer.parseInt(songId)), true, true));
+                String songId = message != null ? message.getValue() : null;
+                if (!GPUtil.checkIsNull(songId)) {
+                    resp.setLibrary(libraryService
+                            .getAAttrFromTag(libraryService.getSongBySongId(Integer.parseInt(songId)), true, true));
                 }
             }
         } catch (Exception e) {
-           e.printStackTrace();
+            e.printStackTrace();
         }
         return resp;
     }
 
-    public void ThreadSleep(long time){
+    public void ThreadSleep(long time) {
         try {
             Thread.sleep(time);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
+
 }
