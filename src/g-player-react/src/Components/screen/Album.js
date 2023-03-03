@@ -22,7 +22,7 @@ export const Album = () => {
     },[albumName]);
     useEffect(()=>{
         //dispatch(setGroupband("albums"));
-        dispatch(setPlayedFrom({pfKey:ALBUM, pfVal:albumName}));
+        //dispatch(setPlayedFrom({pfKey:ALBUM, pfVal:albumName}));
     },[]);
     return(
         <div className="album">

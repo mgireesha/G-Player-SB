@@ -75,7 +75,7 @@ export const Artist = () => {
     useEffect(()=>{
         //dispatch(setGroupband("artists"));
         //dispatch(setPlayedFrom(ARTIST));
-        dispatch(setPlayedFrom({pfKey:ARTIST, pfVal:artist}));
+        //dispatch(setPlayedFrom({pfKey:ARTIST, pfVal:artist}));
         //scrollToPlaying();
     },[]);
     const fetchArtistDetailsfromWiki =async(artist) => {

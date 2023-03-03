@@ -19,7 +19,7 @@ export const TrackList = () => {
     const [sortBy, setSortBy] = useState(A_TO_Z);
     useEffect(()=>{
         //dispatch(setGroupband("tracks"));
-        dispatch(setPlayedFrom({pfKey:TRACK_LIST}));
+        //dispatch(setPlayedFrom({pfKey:TRACK_LIST}));
         dispatch(fethAllSongs());
     },[]);
 
