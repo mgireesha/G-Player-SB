@@ -3,34 +3,38 @@ import React, { useEffect, useState } from "react";
 import { FaPauseCircle, FaPlay } from "react-icons/fa";
 import { MdSkipNext, MdSkipPrevious } from "react-icons/md";
 import { TiArrowRepeat } from "react-icons/ti";
-import { TbArrowsShuffle } from "react-icons/tb";
+import { TbArrowsShuffle , TbRepeatOnce} from "react-icons/tb";
 import { useDispatch, useSelector } from "react-redux";
-import { fettchCurrentSongStatus, playASong, playPause, setIsPlaying, setIsRepeat, setIsShuffle, setPlayBackLength } from "../redux/player/PlayerActions";
-import { getMins, scrolltoId, scrollToPlaying, setCookies } from "../utli";
+import { fettchCurrentSongStatus, playASong, playPause, setIsPlaying, setIsRepeat, setIsShuffle, setPlayBackLength, setRepeat } from "../redux/player/PlayerActions";
+import { getCookieValue, getMins, scrolltoId, scrollToPlaying, setCookies } from "../utli";
 import { VolumeH } from "./VolumeH";
-import { ALBUM, ARTIST, NEXT, NEXXT, PREVIOUS, TRACK_LIST } from "../redux/GPActionTypes";
+import { ALBUM, ARTIST, CURRENT, NEXT, PREVIOUS, RECENT_PLAYS, REPEAT_ALL, REPEAT_OFF, REPEAT_ONE, TRACK_LIST } from "../redux/GPActionTypes";
 import { Link } from "react-router-dom";
 import { ArtistLink } from "../screen/artist/ArtistLink";
 import def_album_art from '../images/def_album_art.png';
+import { fetchAllHistory, updateHistory } from "../redux/library/LibraryActions";
+import { SliderRC } from "../SliderRC";
 
 export const Player = () => {
 
     const dispatch = useDispatch();
     const isPlaying = useSelector(state => state.player.isPlaying);
-    const isRepeat = useSelector(state => state.player.isRepeat);
+    const repeat = useSelector(state => state.player.repeat);
     const isShuffle = useSelector(state => state.player.isShuffle);
     const songPlayingImg = useSelector(state => state.player.songPlayingImg);
     const songPlaying = useSelector(state => state.player.songPlaying);
     const playedFrom = useSelector(state => state.player.playedFrom);
     const playingSongStat = useSelector(state => state.player.playingSongStat);
     const tracks = useSelector(state => state.library.tracks);
-    const album = useSelector(state => state.library.album);
+    const albumTracks = useSelector(state => state.library.albumTracks);
     const artistTracks = useSelector(state => state.library.artistTracks);
+    const historyTracks = useSelector(state => state.library.history.songs);
     const currentVolume = useSelector(state => state.player.currentVolume);
     const [statClearIntrvl, setStatClearIntrvl] = useState(0);
     const [currentPlayVal, setCurrentplayVal] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
     const [isPlayingL, setIsPlayingL] = useState(false);
+    const [playTime, setPlayTime] = useState(0); // Play time is updated every time playingSongStat chnage and is reset every time songPlaying chnages 
 
     useEffect(()=>{
         setIsPlayingL(isPlaying);
@@ -39,15 +43,34 @@ export const Player = () => {
     useEffect(()=>{
         clearInterval(statClearIntrvl);
         if(isPlaying)
-            setStatClearIntrvl(setInterval( dispatchFetchStat, 500));
+            setStatClearIntrvl(setInterval( dispatchFetchStat, 1000));
        
     },[songPlaying,isPlaying]);
 
     useEffect(()=>{
-        if(isPlaying)
+        if(isPlaying){
             dispatch(fettchCurrentSongStatus());
-       
+        }
+        setPlayTime(0);
     },[songPlaying]);
+
+    useEffect(()=>{
+        const tempPlayTime = playTime;
+        if(playTime===10000 && songPlaying!==null){
+            dispatch(updateHistory(songPlaying.songId));
+        }
+
+        if(playTime===12000){
+            dispatch(fetchAllHistory());
+        }
+
+        if(playTime > 4000 && Number.isInteger(playTime/5000)){
+            // setCookies("playingSongStat",btoa(playingSongStat));
+            // console.log(atob((getCookieValue("playingSongStat"))));
+            setCookies("playingSongStat",JSON.stringify(playingSongStat));
+        }
+        setPlayTime(tempPlayTime+500);
+    },[playingSongStat])
 
 
     useEffect(()=>{
@@ -57,8 +80,10 @@ export const Player = () => {
        const trackLength = songPlaying.trackLength;
        if((trackLength - currentTime)<3){
             clearInterval(statClearIntrvl);
-            if(isRepeat){
-                setTimeout(playNextSong(NEXT),2000);
+            if(repeat===REPEAT_ALL){
+                setTimeout(playNextSong(NEXT),4000);
+            }else if(repeat===REPEAT_ONE){
+                setTimeout(playNextSong(CURRENT),4000);
             }else{
                 dispatch(setIsPlaying(false))
             }
@@ -72,70 +97,79 @@ export const Player = () => {
         dispatch(fettchCurrentSongStatus());
     }
 
-    
-
     const playPauseFunc = () => {
         if(isPlaying){
             setIsPlayingL(false)
         }else{
             setIsPlayingL(true);
+            dispatch(setIsPlaying(true));
         }
-        dispatch(playPause());
+        dispatch(playPause(songPlaying, playedFrom, currentVolume, currentTime));
     }
 
     const playNextSong = (action) => {
         if(songPlaying===null)return false;
         let library;
-        if(playedFrom===TRACK_LIST){
-            library = tracks;
-        }else if(playedFrom===ALBUM){
-            library = album;
-        }else if(playedFrom===ARTIST){
-            library = artistTracks;
-        }else{
-            library = tracks;
-        }
         let nextSong = {};
-        if(isShuffle){
-            const randomIndex = Math.floor(Math.random()*library.length);
-            nextSong = library[randomIndex];
+        if(action===CURRENT){
+            nextSong = songPlaying;
         }else{
-            const crrntindex = library.findIndex((track)=>track.songId===songPlaying.songId);
-            if(action===NEXT){
-                if(library[crrntindex+1]!==undefined){
-                    nextSong = library[crrntindex+1];
-                }else{
-                    nextSong = library[0];
-                }
+            if(playedFrom===TRACK_LIST){
+                library = tracks;
+            }else if(playedFrom===ALBUM){
+                library = albumTracks;
+            }else if(playedFrom===ARTIST){
+                library = artistTracks;
+            }else if(playedFrom===RECENT_PLAYS){
+                library = historyTracks;
             }else{
-                if(library[crrntindex-1]!==undefined){
-                    nextSong = library[crrntindex-1];
-                }else{
-                    nextSong = library[library.length-1];
+                library = tracks;
+            }
+            if(isShuffle){
+                const randomIndex = Math.floor(Math.random()*library.length);
+                nextSong = library[randomIndex];
+            }else{
+                const crrntindex = library.findIndex((track)=>track.songId===songPlaying.songId);
+                if(action===NEXT){
+                    if(library[crrntindex+1]!==undefined){
+                        nextSong = library[crrntindex+1];
+                    }else{
+                        nextSong = library[0];
+                    }
+                }else if(action===PREVIOUS){
+                    if(library[crrntindex-1]!==undefined){
+                        nextSong = library[crrntindex-1];
+                    }else{
+                        nextSong = library[library.length-1];
+                    }
                 }
             }
         }
         scrolltoId("track-"+nextSong.songId);
         dispatch(playASong(nextSong.songId, playedFrom, currentVolume));
-        dispatch(setIsPlaying(true))
+        dispatch(setIsPlaying(true));
     }
 
     const setSlctdPlayBackTime = (event) => {
+        
         if(!isPlaying || songPlaying===null)return;
-        const pbVal = event.target.value;
+        const pbVal = event;//event.target.value;
         const fPbVal = Math.floor(((songPlaying.trackLength*pbVal)/100)*1000);
         dispatch(setPlayBackLength(fPbVal))
     }
 
 
-    const setIsRepeatL = () => {
-        if(isRepeat){
-            dispatch(setIsRepeat(false))
-            setCookies("isRepeat", false);
-        }else {
-            dispatch(setIsRepeat(true))
-            setCookies("isRepeat", true);
+    const setRepeatL = () => {
+        let tempRepeat;
+        if(repeat===REPEAT_OFF){
+            tempRepeat = REPEAT_ALL;
+        }else if(repeat===REPEAT_ALL){
+            tempRepeat = REPEAT_ONE;
+        }else if(repeat===REPEAT_ONE){
+            tempRepeat = REPEAT_OFF;
         }
+        dispatch(setRepeat(tempRepeat))
+        setCookies("repeat", tempRepeat);
     }
 
     const setIsShuffleL = () => {
@@ -147,6 +181,20 @@ export const Player = () => {
             setCookies("isShuffle", true);
         }
     }
+    
+    useEffect(() => {
+        const handleEscape = (event) => {
+            if(event.code == "Space"){
+                playPauseFunc();
+            }
+        };
+
+        window.addEventListener('keyup', handleEscape);
+    
+        return () => {
+            window.removeEventListener('keyup', handleEscape);
+        };
+    }, []);
 
     return (
         <div className="player">
@@ -160,7 +208,7 @@ export const Player = () => {
                     </Link>
                     <div className="song-info-title">
                         <p onClick={()=>scrollToPlaying(isPlaying)} style={{cursor:'pointer'}}>{songPlaying!==null && songPlaying.title}</p>
-                        <p>{songPlaying!==null && <ArtistLink artist={songPlaying.artist} />}</p>
+                        <p style={{maxHeight: '3em',overflow: 'auto'}}>{songPlaying!==null && <ArtistLink artist={songPlaying.artist} />}</p>
                     </div>
                     
                 </div>
@@ -188,15 +236,19 @@ export const Player = () => {
                         </div>
                     </div>
                     <div className="repeat">
-                        <div className={isRepeat?"repeat-button btn-selected":"repeat-button"}>
-                            <TiArrowRepeat onClick={setIsRepeatL} />
+                        <div className={repeat===REPEAT_ONE || repeat===REPEAT_ALL?"repeat-button btn-selected":"repeat-button"}>
+                            {(repeat===REPEAT_OFF || repeat===REPEAT_ALL) && <TiArrowRepeat onClick={setRepeatL} />}
+                            {repeat===REPEAT_ONE && <TbRepeatOnce onClick={setRepeatL} />}
                         </div>
                     </div>
                 </div>
                 <div className="player-controls-status-bar">
                     <div className="play-progress-bar-div">
                         <span className="play-progress-bar-start-time">{getMins(currentTime)}</span>
-                        <input type="range" min="1" max="100"  className="play-progress-bar" id="play_progress_bar" value={currentPlayVal}  onChange={(event)=>setSlctdPlayBackTime(event)}></input>
+                        <input type="range" min="1" max="100"  className="play-progress-bar no-display" id="play_progress_bar" value={currentPlayVal}  onChange={(event)=>setSlctdPlayBackTime(event)}></input>
+                        <div className="play-progress-bar">
+                            <SliderRC value={currentPlayVal} onValChange={setSlctdPlayBackTime} step={0} />
+                        </div>
                         <span className="play-progress-bar-end-time">{songPlaying!==null ? getMins(songPlaying.trackLength):'0:00'}</span>
                     </div>
                 </div>

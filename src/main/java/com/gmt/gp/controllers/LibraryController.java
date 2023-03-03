@@ -5,46 +5,58 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gmt.gp.model.AlbumArtist;
+import com.gmt.gp.model.Album;
 import com.gmt.gp.model.Artist;
 import com.gmt.gp.model.GPResponse;
 import com.gmt.gp.model.Library;
+import com.gmt.gp.model.Message;
 import com.gmt.gp.services.LibraryService;
+import com.gmt.gp.services.MessageService;
+import com.gmt.gp.util.GP_CONSTANTS;
 
-@CrossOrigin(origins= {"http://localhost:3000","http://gplayer.test.com:3000"})
 @RequestMapping("/library")
 @RestController
 public class LibraryController {
-    
-    //private static String MUSIC_PATH1 = "E:\\Music\\myFav1";
-    //private static String MUSIC_PATH2 = "E:\\Music\\Kannada";
-    private static String MUSIC_PATH3 = "E:\\Music\\AAA_Updated";
 
-    List<File> tempFileList = new ArrayList<File>();
+    private static final Logger LOG = LoggerFactory.getLogger(LibraryService.class);
 
     @Autowired
     private LibraryService libraryService;
 
+    @Autowired
+    private MessageService messageService;
+
     @RequestMapping("/initLibraryBuild")
     public List<File> runBuild(){
+        final String methodName = "runBuild";
         List<File> fileList = new ArrayList<File>();
         
-        libraryService.truncateMyTable();
+        messageService.removeMessageType(GP_CONSTANTS.BUILD_STATUS);
+        messageService.removeMessageName(GP_CONSTANTS.LAST_PLAYED_SONG_ID);
+        messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.RUNNING);
 
-        List<String> mainFolderList = new ArrayList<String>();
-        //mainFolderList.add(MUSIC_PATH1);
-        //mainFolderList.add(MUSIC_PATH2);
-        mainFolderList.add(MUSIC_PATH3);
 
+        List<Message> mainFolderList = messageService.getAllMusicPaths();
+
+        LOG.info(methodName+" - Started searching for audio files in : "+mainFolderList);
         fileList = libraryService.getMusicFiles(mainFolderList);
+        LOG.info(methodName+" - Found "+fileList.size()+" audio files");
+        messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, "FILES_TO_READ", String.valueOf(fileList.size()));
+
+        libraryService.cleanAlbumImageDir();
+        LOG.info(methodName+" - Deleted all images from albums folder");
+        messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS_STEP, "Deleted all images from albums folder.");
+        
+        LOG.info(methodName+" - calling build library");
         libraryService.buildLibrary(fileList);
         return fileList;
     }
@@ -80,8 +92,8 @@ public class LibraryController {
     }
 
     @RequestMapping("/getAllAlbums")
-    public Map<String, List<Library>> getAllAlbums(){
-        return libraryService.getAllAlbums();
+    public Iterable<Album> getAllAlbums(){
+        return libraryService.getAllAlbumsFromDb();
     }
 
     @RequestMapping("/getAllAlbumDetails")
@@ -89,9 +101,14 @@ public class LibraryController {
         return libraryService.getAllAlbumdetails(null,null);
     }
 
+    @RequestMapping("/getAlbumByAlbumName/{albumName}")
+    public Album getAlbumByAlbumName(@PathVariable String albumName){
+        return libraryService.getAlbumByAlbumName(albumName);
+    }
+
     @RequestMapping("/getAllAlbumDetailsByAA/{albumArtist}")
-    public Map<String, Library> getAllAlbumDetailsByAA(@PathVariable String albumArtist){
-        return libraryService.getAllAlbumdetails("ALBUM_ARTIST",albumArtist);
+    public List<Album> getAllAlbumDetailsByAA(@PathVariable String albumArtist){
+        return libraryService.getAlbumListOfAA(albumArtist);
     }
 
     @RequestMapping("/getAlbumImgs")
@@ -99,9 +116,9 @@ public class LibraryController {
         return libraryService.getAlbumImgs();
     }
 
-    @RequestMapping("/getAllArtistDetails")
-    public List<String> getAllArtistDetails(){
-        return libraryService.getAllArtistDetails();
+    @RequestMapping("/getAllArtistDetails/{type}")
+    public List<Artist> getAllArtistDetails(@PathVariable String type){
+        return libraryService.getAllArtistDetails(type);
     }
 
     @RequestMapping("/getAllAlbumArtistDetails")
@@ -109,30 +126,14 @@ public class LibraryController {
         return libraryService.getAllAlbumArtistDetails();
     }
 
-    @RequestMapping("/readAndStoreArtistnames")
-    public Iterable<Artist> readAndStoreArtistnames(){
-        libraryService.readAndStoreAlbumArtistnames();
-        return libraryService.readAndStoreArtistnames();
-    }
-
-    @RequestMapping("/getAllArtistImgDetails")
-    public Iterable<Artist> getAllArtistImgDetails(){
-        return libraryService.getAllArtistImgDetails();
-    }
-
-    @RequestMapping("/getAllAlbumArtistImgDetails")
-    public Iterable<AlbumArtist> getAllAlbumArtistImgDetails(){
-        return libraryService.getAllAlbumArtistImgDetails();
+    @RequestMapping("/readAndStoreArtistnames/{artistType}")
+    public Iterable<Artist> readAndStoreArtistnames(@PathVariable String artistType){
+        return libraryService.setArtistLocalImgAvlStatusList(artistType, null);
     }
 
     @RequestMapping("/downloadArtistImgToDIr")
-    public Map<String, List<String>> downloadArtistImgToDIr(){
+    public Map<String, List<Artist>> downloadArtistImgToDIr(){
         return libraryService.downloadArtistImgToDIr();
-    }
-
-    @RequestMapping("/downloadAlbumArtistImgToDIr")
-    public Map<String, List<String>> downloadAlbumArtistImgToDIr(){
-        return libraryService.downloadAlbumArtistImgToDIr();
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/updateLyrics/{songId}")
@@ -140,8 +141,14 @@ public class LibraryController {
         return libraryService.updateLyrics(songId, lyrics);
     }
 
-    
+    @RequestMapping("/resizeArtistImgs")
+    public void resizeArtistImgs(){
+        libraryService.resizeArtistImgs();
+    }
 
-
+    @RequestMapping("/searchByKey/{searchKey}")
+    public Map<String, List<Object>> searchbyKey(@PathVariable String searchKey){
+        return libraryService.searchbyKey(searchKey);
+    }
 
 }

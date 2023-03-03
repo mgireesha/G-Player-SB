@@ -40,7 +40,7 @@ export const ArtistLink = ({artist}) => {
         <>
         {artists!==null && artists!==undefined && artists.map((artist,index)=>
             <>
-                {index===0?'':', '}<Link className="artist-link" to={`/music/artists/${artist}`}>{artist}</Link>
+                <span key={index+'deli'}>{index===0?'':', '}</span><Link className="artist-link" to={`/music/artists/${artist}`} key={index}>{artist}</Link>
             </>    
         )}
         </>
