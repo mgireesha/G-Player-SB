@@ -45,7 +45,8 @@ export const Home = () => {
 
     const fetchTracks = () => {
         let playedFromCookieValue = getCookieValue("playedFrom");
-        if(playedFromCookieValue!==undefined)playedFromCookieValue = JSON.parse(playedFromCookieValue);
+        if(playedFromCookieValue!==undefined){
+            playedFromCookieValue = JSON.parse(playedFromCookieValue);
         if(playedFromCookieValue.pfKey!==undefined){
             switch (playedFromCookieValue.pfKey) {
                 case ALBUM:
@@ -63,6 +64,7 @@ export const Home = () => {
             }
         }else{
             dispatch(fethAllSongs());
+        }
         }
     }
 

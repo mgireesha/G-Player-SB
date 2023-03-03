@@ -8,7 +8,7 @@ export const AlbumThumb = ({album}) => {
         <div className="album-thumb">
             <div className="album-thumb-img-div">
                 <Link to={`/music/albums/${album.albumName}`}>
-                    {album.albumImgAvl && <img src={"/images/albums/"+album.albumName+".jpg"} />}
+                    {album.albumImgAvl && <img src={"/gp_images/albums/"+album.albumName+".jpg"} />}
                     {!album.albumImgAvl && <img src={def_album_art} />}
                 </Link>
                 <Link to={`/music/albums/${album.album}`}>
