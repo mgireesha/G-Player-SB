@@ -38,7 +38,11 @@ database/
 ### React App ###
 src/g-player-react/node_modules/
 src/g-player-react/public/images/
+src/g-player-react/static/images/
+src/g-player-react/public/gp_images/
 
 ### Images
 src/main/resources/public/images/
+src/main/resources/static/images/
+src/main/resources/gp_react/gp_images/
 

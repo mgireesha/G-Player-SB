@@ -31,6 +31,15 @@ public class GP_CONSTANTS {
     public static final String THIS_MONTH_COUNT = "THIS_MONTH_COUNT";
     public static final String TRACK_LIST = "TRACK_LIST";
     public static final String TOTAL_TRACKS = "TOTAL_TRACKS";
-    
 
+    // URLs
+    public static final String WIKI_SUMMARY_URI = "https://en.wikipedia.org/api/rest_v1/page/summary/";
+
+    // GP Image Paths
+    public static final String GP_IMAGES_PATH = System.getProperty("user.home") + "\\G_Player\\images\\";
+
+    public static final String GP_ALBUM_IMAGES_PATH = System.getProperty("user.home") + "\\G_Player\\images\\albums\\";
+
+    public static final String GP_ARTIST_IMAGES_PATH = System.getProperty("user.home")
+            + "\\G_Player\\images\\artists\\";
 }

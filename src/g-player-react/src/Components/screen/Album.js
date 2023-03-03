@@ -28,7 +28,7 @@ export const Album = () => {
         <div className="album">
             {album["albumName"]!==undefined && <div className="album-img-div-container">
                 <div className="album-img-div">
-                    {album.albumImgAvl && <img src={"/images/albums/"+album.albumName+".jpg"} />}
+                    {album.albumImgAvl && <img src={"/gp_images/albums/"+album.albumName+".jpg"} />}
                     {!album.albumImgAvl && <img src={def_album_art} />}
                 </div>
                     <div className="album-details">

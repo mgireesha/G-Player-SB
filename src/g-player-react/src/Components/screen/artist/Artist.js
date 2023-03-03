@@ -133,7 +133,7 @@ export const Artist = () => {
         <div className="artist">
             <div className="artist-img-div-container">
                 <div className="artist-img-div">
-                    {artistObj.imgAvl  && <img src={"/images/artists/"+artistObj.artistName+".jpg"} />}
+                    {artistObj.imgAvl  && <img src={"/gp_images/artists/"+artistObj.artistName+".jpg"} />}
                     {!artistObj.imgAvl && artistWikiImg!==null && <img src={artistWikiImg} />}
                     {!artistObj.imgAvl && artistWikiImg===null && <img src={def_album_art} />}
                 </div>
