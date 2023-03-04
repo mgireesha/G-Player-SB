@@ -8,12 +8,12 @@ import { deleteMusicPathAPI, fetchAlbumAPI, fetchAlbumImgsAPI,
          fetchBuildStatusAPI, 
          fetchMostPlayedDataAPI, 
          fetchMusicpathAPI, 
-         fetchSongsByArtistAPI, getAllSongsAPI, initLibraryBuildAPI, saveMusicpathAPI, searchByKeyAPI, updateHistoryAPI 
+         fetchSongsByArtistAPI, getAllSongsAPI, initiateArtistImageDownload, initLibraryBuildAPI, saveMusicpathAPI, searchByKeyAPI, updateHistoryAPI 
     } from "../GPApis";
 import { deleteMusicPathSucc, fetchAlbumImgsScc, fetchAlbumlistOfAASucc, fetchAlbumSucc, 
         fetchAlbumTacksSucc, 
         fetchAllAlbumArtistsDtlsSucc, fetchAllAlbumsDtlsSucc, fetchAllAlbumsSucc, 
-        fetchAllArtistsDtlsSucc, fetchAllHistorySucc, fetchBuildStatusSucc, fetchMostPlayedDataSucc, fetchMusicPathSucc, fetchSongsByArtistSucc, fethAllSongsSucc, initLibraryBuildSucc, saveMusicPathSucc, searchByKeySucc, updateHistorySucc 
+        fetchAllArtistsDtlsSucc, fetchAllHistorySucc, fetchBuildStatusSucc, fetchMostPlayedDataSucc, fetchMusicPathSucc, fetchSongsByArtistSucc, fethAllSongsSucc, initiArtistImageDownloadSucc, initLibraryBuildSucc, saveMusicPathSucc, searchByKeySucc, updateHistorySucc 
     } from "./LibraryActions";
 import { FETCH_SONGS_START, HISTORY_FETCH_ALL_HISTORY_START, HISTORY_UPDATE_HISTORY_START, LIBRARY_DELETE_MUSIC_PATH_START, LIBRARY_FETCH_ALBUMS_DETAILS_START, LIBRARY_FETCH_ALBUMS_START, 
     LIBRARY_FETCH_ALBUM_ARTIST_LIST_START, 
@@ -22,6 +22,7 @@ import { FETCH_SONGS_START, HISTORY_FETCH_ALL_HISTORY_START, HISTORY_UPDATE_HIST
     LIBRARY_FETCH_MOST_PLAYED_DATA_START, 
     LIBRARY_FETCH_MUSIC_PATH_START, 
     LIBRARY_FETCH_SONGS_BY_ARTIST_START, 
+    LIBRARY_INIT_ARTIST_IMG_DOWNLOAD_START, 
     LIBRARY_INIT_BUILD_LIBRARY_START,
     LIBRARY_SAVE_MUSIC_PATH_START,
     LIBRARY_SEARCH_BY_KEY_START
@@ -296,6 +297,22 @@ export function* onFetchMostPlayedDataAsync(){
         const response = yield call(fetchMostPlayedDataAPI);
         if(response.status === 200){
             yield put(fetchMostPlayedDataSucc(response.data));
+        }
+    } catch (error) {
+        console.log(error);
+        handleAPIError(error);
+    }
+}
+
+export function* onInitArtistImgDownload(){
+    yield takeLatest(LIBRARY_INIT_ARTIST_IMG_DOWNLOAD_START, onInitArtistImgDownloadAsync);
+}
+
+export function* onInitArtistImgDownloadAsync(){
+    try {
+        const response = yield call(initiateArtistImageDownload);
+        if(response.status === 200){
+            yield put(initiArtistImageDownloadSucc(response.data));
         }
     } catch (error) {
         console.log(error);

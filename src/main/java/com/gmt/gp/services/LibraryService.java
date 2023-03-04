@@ -595,14 +595,17 @@ public class LibraryService {
         String localArtistPath = GP_CONSTANTS.GP_ARTIST_IMAGES_PATH;
         String wikiResp = "";
         JSONObject wikiRespJson = null;
-        try {
-            File localArtistPathFolder = new File(localArtistPath);
-            if (!localArtistPathFolder.exists()) {
-                localArtistPathFolder.mkdirs();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // try {
+        //     File localArtistPathFolder = new File(localArtistPath);
+        //     if (!localArtistPathFolder.exists()) {
+        //         localArtistPathFolder.mkdirs();
+        //     }
+        // } catch (Exception e) {
+        //     e.printStackTrace();
+        // }
+
+        boolean isDirectoryExists = checkAndCreateUserImageFolders();
+        if(!isDirectoryExists)return null;
         for (Artist artist : artistList) {
             localArtistImg = new File(localArtistPath + "\\" + artist.getArtistName() + ".jpg");
             if (!localArtistImg.exists()) {

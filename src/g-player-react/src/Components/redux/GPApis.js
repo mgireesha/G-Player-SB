@@ -79,6 +79,10 @@ export const fetchBuildStatusAPI = () => {
     return iAxios.get(`/message/getBuildStatus`).then(response => response);
 }
 
+export const initiateArtistImageDownload = () => {
+    return iAxios.get(`/library/downloadArtistImgToDIr`).then(response => response);
+}
+
 //Media
 export const playPauseAPI = () => {
     return iAxios.get('/media/playPause').then(response => response);

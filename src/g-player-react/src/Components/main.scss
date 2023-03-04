@@ -1085,12 +1085,14 @@ a.disabled-click{
 
     .body{
         padding: 2em;
-        padding-left: 10px;
+        padding-left: 4em;
         display: flex;
-        column-gap: 20px;
-        .library-build, .library-list{
+        column-gap: 5%;
+        row-gap: 2em;
+        flex-wrap: wrap;
+        .library-build, .library-list, .library-artist-download{
             height: auto;
-            width: 30em;
+            width: 45%;
             border: 1px solid grey;
             box-shadow: rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
             border-radius: 5px;
@@ -1208,6 +1210,10 @@ a.disabled-click{
                     }
                 }
             }
+        }
+
+        .library-artist-download{
+            height: 7em;
         }
     }
 }

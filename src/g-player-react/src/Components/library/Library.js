@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import {RiDeleteBinLine} from 'react-icons/ri';
 import { useDispatch, useSelector } from "react-redux";
-import { deleteMusicPath, fetchBuildStatus, fetchMusicPath, initLibraryBuild, saveMusicPath } from "../redux/library/LibraryActions";
-import { BUILD_STATUS, COMPLETED, MUSIC_PATH, RUNNING } from "../redux/GPActionTypes";
+import { deleteMusicPath, fetchBuildStatus, fetchMusicPath, initiArtistImageDownload, initLibraryBuild, saveMusicPath } from "../redux/library/LibraryActions";
+import { BUILD_STATUS, COMPLETED, GP_LIBRARY_DESCRIPTION, GP_LIBRARY_DESC_TEXT_1, MUSIC_PATH, RUNNING } from "../redux/GPActionTypes";
 import { LIBRARY_SAVE_MUSIC_PATH_SUCCESS } from "../redux/library/LibraryActionTypes";
 import loading_icon from '../images/Loading.gif';
 
@@ -91,11 +91,8 @@ export const Library = () => {
                 <div className="library-build">
                     <h4>Build Library</h4>
                     <div className="content">
-                        <p>Library is list of all songs available in the local machine. 
-                            Generate library every time there is a change in any songs
-                            (Selected folders in Library List).
-                        </p>
-                        <p>This might take from few seconds to few mins.</p>
+                        <p>{GP_LIBRARY_DESCRIPTION}</p>
+                        <p>{GP_LIBRARY_DESC_TEXT_1}</p>
                     </div>
                     <div className="status">
                         {bStatus!==null && buildStatusL!==null &&
@@ -131,11 +128,9 @@ export const Library = () => {
                 <div className="library-list">
                     <h4>Library List</h4>
                     <div className="content">
-                        <p>
-                            Paste all the music folders' full path.
-                        </p>
+                        <p>Add all the music folders' full path.</p>
                         <div className="input-container">
-                            <input id="music_path" />
+                            <input id="music_path" placeholder="Paste music path" />
                             <a className="library-btn" onClick={onSaveMusicPath}>Add</a>
                         </div>
                     </div>
@@ -144,6 +139,12 @@ export const Library = () => {
                             <label key={index}>{musicPath.value}<RiDeleteBinLine onClick={()=>dispatch(deleteMusicPath(musicPath))} /></label>
                         )}
                     </div>
+                </div>
+                <div className="library-artist-download">
+                        <label>Download Artist Images</label>
+                        <div className="btn-container">
+                            <a className="library-btn" onClick={()=>dispatch(initiArtistImageDownload())}>Initiate Download</a>
+                        </div>
                 </div>
             </div>
         </div>

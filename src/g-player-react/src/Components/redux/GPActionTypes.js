@@ -60,3 +60,8 @@ export const TRACKS_LABEL = 'Tracks';
 
 //URL
 export const WIKI_SUMMARY_URL = "https://en.wikipedia.org/api/rest_v1/page/summary/";
+
+
+/** Text */
+export const GP_LIBRARY_DESCRIPTION = "Library is list of all songs available in the local machine. Generate library every time there is a change in any songs (Selected folders in Library List).";
+export const GP_LIBRARY_DESC_TEXT_1 = "This might take from few seconds to few mins.";
