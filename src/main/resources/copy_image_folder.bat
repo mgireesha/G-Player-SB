@@ -1,1 +1,0 @@
-xcopy "C:\Users\Gireesh\G_Player\images" "D:\VS_Workspace\G-Player-SB\src\g-player-react\public\gp_images" /s /y
