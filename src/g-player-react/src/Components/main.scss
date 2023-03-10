@@ -45,7 +45,8 @@
     bottom: 0;
     display: flex;
     justify-content: center;
-    height: 6em;
+    // height: 6em;
+    height: 14vh;
     z-index: 6;
 
     .player-container{
@@ -356,7 +357,8 @@
     }
 
     .album-artist-album-list{
-        max-height: 18em;
+        // max-height: 18em;
+        max-height: 48vh;
     }
 
     .artists-list{
