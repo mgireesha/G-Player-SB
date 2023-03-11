@@ -19,44 +19,46 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DbUtil {
-	
+
 	public static Connection getConnection() throws DaoException {
 		Connection con = null;
-		//String whichDb = "cloudPostgress";
+		// String whichDb = "cloudPostgress";
 		String whichDb = "hsql";
-		if("hsql".equalsIgnoreCase(whichDb)) {
+		if ("hsql".equalsIgnoreCase(whichDb)) {
 			con = getHSQLConnection();
-		}else if("postgress".equalsIgnoreCase(whichDb)) {
+		} else if ("postgress".equalsIgnoreCase(whichDb)) {
 			con = getPostgreSQLConnection();
-		}else if("cloudPostgress".equalsIgnoreCase(whichDb)) {
+		} else if ("cloudPostgress".equalsIgnoreCase(whichDb)) {
 			con = getCloudPostgreSQLConnection();
 		}
-		
+
 		return con;
 	}
-	
+
 	public static Connection getConnection(String whichDb) throws DaoException {
 		Connection con = null;
-		if("hsql".equalsIgnoreCase(whichDb)) {
+		if ("hsql".equalsIgnoreCase(whichDb)) {
 			con = getHSQLConnection();
-		}else if("postgress".equalsIgnoreCase(whichDb)) {
+		} else if ("postgress".equalsIgnoreCase(whichDb)) {
 			con = getPostgreSQLConnection();
-		}else if("cloudPostgress".equalsIgnoreCase(whichDb)) {
+		} else if ("cloudPostgress".equalsIgnoreCase(whichDb)) {
 			con = getCloudPostgreSQLConnection();
 		}
-		
+
 		return con;
 	}
+
 	private static final String password = "";
+
 	public static Connection getHSQLConnection() throws DaoException {
 		try {
-			
-			//String driverClassName = "org.hsqldb.jdbc.jdbcDriver";
+
+			// String driverClassName = "org.hsqldb.jdbc.jdbcDriver";
 			String driverClassName = "org.hsqldb.jdbc.JDBCDriver";
-			String url = "jdbc:hsqldb:hsql://localhost:9001/g_player";
-			// String url = "jdbc:hsqldb:file:D:\\files\\data\\sampleDB";
+			// String url = "jdbc:hsqldb:hsql://localhost:9001/g_player";
+			String url = "jdbc:hsqldb:hsql://localhost:9001/g_db";
 			String username = "sa";
-			
+
 			Class.forName(driverClassName);
 			Connection con = DriverManager.getConnection(url, username,
 					password);
@@ -69,7 +71,7 @@ public class DbUtil {
 			throw new DaoException(e);
 		}
 	}
-	
+
 	public static Connection getPostgreSQLConnection() throws DaoException {
 		try {
 			String url = "jdbc:postgresql://localhost/postgres";
@@ -82,7 +84,7 @@ public class DbUtil {
 			throw new DaoException(e);
 		}
 	}
-	
+
 	public static Connection getCloudPostgreSQLConnection() throws DaoException {
 		try {
 			String url = "jdbc:postgresql://ec2-18-204-101-137.compute-1.amazonaws.com:5432/d389cucndbi4r0";
