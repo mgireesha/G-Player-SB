@@ -46,7 +46,7 @@ export function* onPlayASongAsync(payload){
             //console.log("btoa(data.library)",btoa(data.library));
             yield put(playASongSucc(data,payload.playedFrom,payload.currentVolume));
             //setCookies("songPlaying", btoa(JSON.stringify(data.library)));
-            //setCookies("playedFrom", payload.playedFrom);
+            setCookies("playedFrom", JSON.stringify(payload.playedFrom));
             
             //if(data.status==="UNKNOWN")fettchCurrentSongStatus();
         }
