@@ -32,8 +32,10 @@ export const RecentPlays = () => {
     
     return(
         <div className="recent-plays">
-            <div className="header">
-                <h1>Recently Played</h1>
+            <div className="header-container">
+                <div className="header">
+                    <h1>Recently Played</h1>
+                </div>
             </div>
             <div className="body">
                 {historyAlbums!==undefined && historyAlbums.length>0 &&

@@ -13,10 +13,12 @@ import { Music } from "./Music";
 export const Screen = () => {
     return(
         <div className="screen">
-            <div className="header">
-                <h1 style={{fontWeight:'500'}}><Link to='/music'>Music</Link></h1>
+            <div className="header-container">
+                <div className="header">
+                    <h1 style={{fontWeight:'500'}}><Link to='/music'>Music</Link></h1>
+                </div>
+                <GroupBand />
             </div>
-            <GroupBand />
             <Routes>
                 <Route path='/' element={<Music />} />
                 <Route path='tracks' element={<TrackList />} />
