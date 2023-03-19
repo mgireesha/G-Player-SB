@@ -28,7 +28,7 @@ export const Track = ({track, playedFrom, index, hideTrackNum}) => {
                 {track.title}
                 <span className="mobile-only-block track-title-artist"><ArtistLink artist={track.artist} /></span>
             </label>
-            <label className="mobile-only-block">{songPlaying!==null && track.songId===songPlaying.songId ? <FaPlay className="faplay song-playing"  />:''}</label>
+            <label className="mobile-only-block song-playing-icon-label">{songPlaying!==null && track.songId===songPlaying.songId ? <FaPlay className="faplay"  />:''}</label>
             <label onDoubleClick={()=>playSong(track.songId)}>
                 <ArtistLink artist={track.artist} />
             </label>

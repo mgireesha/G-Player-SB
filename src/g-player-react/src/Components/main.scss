@@ -1815,6 +1815,18 @@ a.disabled-click{
     }
 }
 
+@keyframes song-playing  {
+    0%{
+       font-size: 14px;
+    }
+    50%{
+        font-size: 20px;
+    }
+    100%{
+        font-size: 14px;
+    }
+}
+
 .mobile-only-block, .mobile-only-flex{
     display: none;
 }
@@ -1832,6 +1844,11 @@ a.disabled-click{
     .screen .music .artists-list, .screen .music .albums-list,
     .screen .music .album-artists-list{
         grid-template-columns: 1fr 1fr 1fr;
+        overflow-x: hidden;
+    }
+
+    .screen .music .statisticts{
+        height: auto;
     }
 
     .recent-plays .body .albums .album-group .album-list{
@@ -1968,7 +1985,7 @@ a.disabled-click{
 
         .lKey-line{
             margin-left: 5px;
-            max-width: 96vw;
+            max-width: 97vw;
         }
 
         .track-list {
@@ -1984,28 +2001,87 @@ a.disabled-click{
                 }
                 .track-title-artist{
                     font-size: 11px;
+                    margin-top: 5px;
                 }
             }
             .track.text-highlighted-y{
                 grid-template-columns: 6fr 1fr;
-                .faplay.song-playing{
-                    animation: song-playing 1.5s ease-in-out infinite;
-                }
-                @keyframes song-playing  {
-                    0%{
-                       font-size: 14px;
-                    }
-                    50%{
-                        font-size: 20px;
-                    }
-                    100%{
-                        font-size: 14px;
+                .song-playing-icon-label {
+                    text-align: center;
+                    .faplay{
+                        animation: song-playing 1.5s ease-in-out infinite;
                     }
                 }
                 label{
                     border-right: none;
                 }
             }
+        }
+        .album-list{
+            grid-template-columns: 1fr 1fr 1fr;
+            .album-lKey{
+                grid-column: span 3;
+            }
+            .album-thumb{
+                width: 6em;
+                .album-thumb-img-div img{
+                    width: 5em;
+                    height: 5em;
+                }
+                .album-thumb-details{
+                    width: 6em;
+                    word-break: break-all;
+                }
+            }
+        }
+        .album{
+            .album-img-div-container{
+                grid-template-columns: 2fr 4fr;
+                .album-img-div img{
+                    width: 6em;
+                    height: 6em;
+                }
+                .album-details{
+                    a{
+                        margin: 10px 0 5px 0;
+                    }
+                }
+                .album-lyrics{
+                    display: none;
+                }
+            }
+            .album-track-list{
+                max-height: calc(100vh - 20.5em);
+                .track {
+                    margin: 6px 2px;
+                    grid-template-columns: 1fr 12fr;
+                    label {
+                        display: none;
+                        pointer-events: none;
+                    }
+                    label:first-child, label:nth-child(2) {
+                        display: block;
+                        pointer-events: all;
+                    }
+                    .track-title-artist {
+                        font-size: 11px;
+                        margin-top: 5px;
+                    }
+                }
+                .track.text-highlighted-y{
+                    grid-template-columns: 1fr 12fr 2fr;
+                    .song-playing-icon-label {
+                        text-align: center;
+                        .faplay{
+                            animation: song-playing 1.5s ease-in-out infinite;
+                        }
+                    }
+                    label:nth-child(2){
+                        border-right: none;
+                    }
+                }
+            }
+
         }
     }
 
@@ -2048,6 +2124,9 @@ a.disabled-click{
 
     ::-webkit-scrollbar{
         width: 5px;
+    }
+    ::-webkit-scrollbar-track{
+        margin: 0;
     }
 
     .mobile-only-block{
