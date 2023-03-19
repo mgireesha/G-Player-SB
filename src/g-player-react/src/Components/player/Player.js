@@ -306,6 +306,14 @@ export const Player = () => {
                 <div className="other-actions">
                         <VolumeH />
                 </div>
+                <div className="mobile-only-block mobile-play-btn">
+                    <div className="play">
+                        <div className="play-button" onClick={playPauseFunc}>
+                            {!isPlayingL && <FaPlay className="faplay"  />}
+                            {isPlayingL && <FaPauseCircle className="FaPauseCircle" />}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );
