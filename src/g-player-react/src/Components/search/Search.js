@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { TRACK_LIST } from "../redux/GPActionTypes";
+import { Header } from "../header/Header";
+import { SEARCH_RESULTS_LABEL, TRACK_LIST } from "../redux/GPActionTypes";
 import { searchByKey } from "../redux/library/LibraryActions";
 import { AlbumThumb } from "../screen/AlbumThumb";
 import { AlbumArtistThumb } from "../screen/artist/AlbumArtistThumb";
@@ -20,9 +21,7 @@ export const Search = () => {
     },[searchKey])
     return(
         <div className="search">
-            <div className="header">
-                <h1 style={{fontWeight:500}}>Search Results</h1>
-            </div>
+            <Header headerLbl={SEARCH_RESULTS_LABEL} />
             <div className="body">
                 {searchResult!==undefined && Object.keys(searchResult).length>0 &&
                     <>

@@ -129,3 +129,23 @@ export const sortGroupByField = (entArr, field) => {
     });
 return entListObj;
 }
+
+export const showHideSideBar = () => {
+    if(!isMobile()){
+        return;
+    }
+    const sideBar = document.getElementById('sidebar');
+    if(sideBar.offsetWidth > 0){
+        sideBar.classList.remove('show-mobile-sidebar');
+        document.getElementById('MenuSideBarFold').style.display = 'none';
+    }else{
+        sideBar.classList.add('show-mobile-sidebar');
+        document.getElementById('MenuSideBarFold').style.display = 'block';
+    }
+}
+
+export const isMobile = () => {
+    return ( ( window.innerWidth <= 760 ) 
+    //&& ( window.innerHeight <= 600 ) 
+    );
+  }
