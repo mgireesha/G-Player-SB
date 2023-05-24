@@ -554,6 +554,9 @@
         .album-artist-img-div img{
             height: 10em;
             width: 10em;
+            border-radius: 15px;
+            border-bottom-left-radius: unset;
+            box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
         }
         .album-artist-img-div-container{
             display: grid;
@@ -1929,6 +1932,10 @@ a.disabled-click{
             }
         }
 
+        .search-row{
+            padding: 20px 0px;
+        }
+
         div{
             display: none;
         }
@@ -2136,6 +2143,62 @@ a.disabled-click{
                 }
             }
 
+        }
+        .album-artists-list{
+            grid-template-columns: 1fr 1fr 1fr;
+            .album-artists-lKey{
+                grid-column: span 3;
+            }
+            .album-artist-thumb-img-div img{
+                width: 5em;
+                height: 5em;
+            }
+            .album-artist-thumb-details{
+                width: 6em;
+            }
+        }
+        .album-artist{
+            .album-artist-img-div-container{
+                column-gap: 20px;
+                max-height: 10em;
+                .album-artist-details{
+                    .album-artist-wiki-summary{
+                        max-height: 7.5em;
+                        width: 100%;
+                    }
+                }
+            }
+            .album-artist-album-list{
+                grid-template-columns: 1fr 1fr 1fr;
+                padding: 10px 0;
+                .album-thumb{
+                    .album-thumb-img-div img{
+                        width: 5em;
+                        height: 5em;
+                    }
+                    .album-thumb-details{
+                        width: 6em;
+                        word-break: break-all;
+                    }
+                }
+            }
+        }
+        .artists-list{
+            grid-template-columns: 1fr 1fr 1fr;
+            .artists-lKey{
+                grid-column: span 3;
+            }
+            .artist-thumb{
+                width: 6em;
+                .artist-thumb-img-div img{
+                    width: 5em;
+                    height: 5em;
+                }
+                .artist-thumb-details{
+                    width: 6em;
+                    word-break: break-all;
+                }
+            }
         }
     }
 
