@@ -5,20 +5,16 @@ import { AlbumArtistList } from "./artist/AlbumArtistList";
 import { AlbumList } from "./AlbumList";
 import { Artist } from "./artist/Artist";
 import { ArtistsList } from "./artist/ArtistsList";
-import { GroupBand } from "./GroupBand";
 import { TrackList } from "./TrackList";
 import { AlbumArtist } from "./artist/AlbumArtist";
 import { Music } from "./Music";
+import { Header } from "../header/Header";
+import { MUSIC_LABEL } from "../redux/GPActionTypes";
 
 export const Screen = () => {
     return(
         <div className="screen">
-            <div className="header-container">
-                <div className="header">
-                    <h1 style={{fontWeight:'500'}}><Link to='/music'>Music</Link></h1>
-                </div>
-                <GroupBand />
-            </div>
+            <Header showGB={true} linkTO="/music" headerLbl={MUSIC_LABEL} />
             <Routes>
                 <Route path='/' element={<Music />} />
                 <Route path='tracks' element={<TrackList />} />

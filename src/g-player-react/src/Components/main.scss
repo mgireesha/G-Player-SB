@@ -34,7 +34,8 @@
     // background-color: #A5F1F6;
     background-color: #303030;
     width: 98vw;
-    height: 99.5vh;
+    height: 100%;
+    max-height: 100%;
     border-radius: 5px;
     display: flex;
     color: beige;
@@ -249,6 +250,11 @@
 
     .header-container{
         height: 6em;
+        .header{
+            h1{
+                font-weight: 500;
+            }
+        }
     }
     .header{
         // padding: 10px 0 0px 0;
@@ -548,6 +554,9 @@
         .album-artist-img-div img{
             height: 10em;
             width: 10em;
+            border-radius: 15px;
+            border-bottom-left-radius: unset;
+            box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
         }
         .album-artist-img-div-container{
             display: grid;
@@ -1881,10 +1890,62 @@ a.disabled-click{
         }
         .main-container{
             width: 100vw;
+            height: 95%;
+        }
+    }
+    .header-container{
+        .header{
+            display: flex;
+            align-items: end;
+            column-gap: 10px;
+            div{
+                svg{
+                    font-size: 30px;
+                }
+            }
         }
     }
     .sidebar{
-        display: none;
+        //display: none;
+        // display: block;
+        position: absolute;
+        z-index: 1000;
+        width: 0;
+        height: calc(100vh - 7.5em);
+        opacity: 1;
+        padding-top: 0;
+        transition: width 300ms ease-in-out;
+        
+        .row{
+            label{
+                font-size: 16px;
+            }
+        }
+
+        .row.ham-burger-hide-row{
+            padding: 5px 10px;
+            height: 30px;
+            svg{
+                font-size: 30px;
+                display: none;
+                float: right;
+            }
+        }
+
+        .search-row{
+            padding: 20px 0px;
+        }
+
+        div{
+            display: none;
+        }
+    }
+
+    .sidebar.show-mobile-sidebar{
+        width: 50%;
+        div{
+            display: block;
+        }
     }
 
     .screen{
@@ -2083,6 +2144,62 @@ a.disabled-click{
             }
 
         }
+        .album-artists-list{
+            grid-template-columns: 1fr 1fr 1fr;
+            .album-artists-lKey{
+                grid-column: span 3;
+            }
+            .album-artist-thumb-img-div img{
+                width: 5em;
+                height: 5em;
+            }
+            .album-artist-thumb-details{
+                width: 6em;
+            }
+        }
+        .album-artist{
+            .album-artist-img-div-container{
+                column-gap: 20px;
+                max-height: 10em;
+                .album-artist-details{
+                    .album-artist-wiki-summary{
+                        max-height: 7.5em;
+                        width: 100%;
+                    }
+                }
+            }
+            .album-artist-album-list{
+                grid-template-columns: 1fr 1fr 1fr;
+                padding: 10px 0;
+                .album-thumb{
+                    .album-thumb-img-div img{
+                        width: 5em;
+                        height: 5em;
+                    }
+                    .album-thumb-details{
+                        width: 6em;
+                        word-break: break-all;
+                    }
+                }
+            }
+        }
+        .artists-list{
+            grid-template-columns: 1fr 1fr 1fr;
+            .artists-lKey{
+                grid-column: span 3;
+            }
+            .artist-thumb{
+                width: 6em;
+                .artist-thumb-img-div img{
+                    width: 5em;
+                    height: 5em;
+                }
+                .artist-thumb-details{
+                    width: 6em;
+                    word-break: break-all;
+                }
+            }
+        }
     }
 
     .player{
@@ -2122,6 +2239,13 @@ a.disabled-click{
         }
     }
 
+    .spinner{
+        left: 20%;
+        top: 40%;
+        height: 200px;
+        width: 200px;
+    }
+
     ::-webkit-scrollbar{
         width: 5px;
     }
@@ -2130,7 +2254,7 @@ a.disabled-click{
     }
 
     .mobile-only-block{
-        display: block !important;
+        display: block;
     }
 
     .mobile-only-flex{
