@@ -21,13 +21,15 @@ export const HISTORY_COUNT_LABEL = 'Total Played';
 
 export const INIT = 'INIT';
 
-export const LIBRARY = 'LIBRARY'
+export const LIBRARY = 'LIBRARY';
+export const LIBRARY_LABEL = 'Library';
 export const LIBRARY_COUNT = 'LIBRARY_COUNT';
 export const LIBRARY_COUNT_LABEL = 'Never Played';
 export const LOADING = 'LOADING';
 
 export const MEDIA_PLAYER_NULL = 'MEDIA_PLAYER_NULL';
 export const MUSIC = 'MUSIC';
+export const MUSIC_LABEL = 'Music';
 export const MUSIC_PATH = 'MUSIC_PATH';
 
 export const NEXT = 'NEXT';
@@ -37,11 +39,13 @@ export const PREVIOUS = 'PREVIOUS';
 
 export const RECENT = 'RECENT';
 export const RECENT_PLAYS = 'RECENT_PLAYS';
+export const RECENT_PLAYS_LABEL = 'Recently Played';
 export const REPEAT_ALL = 'REPEAT_ALL';
 export const REPEAT_OFF = 'REPEAT_OFF';
 export const REPEAT_ONE = 'REPEAT_ONE';
 export const RUNNING = 'RUNNING';
 
+export const SEARCH_RESULTS_LABEL = 'Search Results';
 export const SORT_ARTIST = 'Artist';
 export const SORT_COUNT_ALBUMS = 'No of Albums';
 export const SORT_COUNT_TRACKS = 'No of Songs';

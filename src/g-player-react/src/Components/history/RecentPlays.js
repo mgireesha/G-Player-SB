@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RECENT_PLAYS } from "../redux/GPActionTypes";
+import { Header } from "../header/Header";
+import { RECENT_PLAYS, RECENT_PLAYS_LABEL } from "../redux/GPActionTypes";
 import { fetchAllHistory } from "../redux/library/LibraryActions";
 import { setPlayedFrom } from "../redux/player/PlayerActions";
 import { AlbumThumbsGrouped } from "../screen/album/AlbumThumbsGrouped";
@@ -32,11 +33,7 @@ export const RecentPlays = () => {
     
     return(
         <div className="recent-plays">
-            <div className="header-container">
-                <div className="header">
-                    <h1>Recently Played</h1>
-                </div>
-            </div>
+            <Header headerLbl={RECENT_PLAYS_LABEL} />
             <div className="body">
                 {historyAlbums!==undefined && historyAlbums.length>0 &&
                     <div className="albums">
