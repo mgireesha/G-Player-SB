@@ -60,11 +60,11 @@ export const initLibraryBuildAPI = () => {
 }
 
 export const searchByKeyAPI = (searchKey) => {
-    return iAxios.get(`/library/searchByKey/${searchKey}`).then(response => response);
+    return iAxios.get(`/library/search/key/${searchKey}`).then(response => response);
 }
 
 export const saveMusicpathAPI = (musicpath) => {
-    return iAxios.post(`/message/saveMusicPath`,musicpath).then(response => response);
+    return iAxios.post(`/message/save-music-path`,musicpath).then(response => response);
 }
 
 export const fetchMusicpathAPI = () => {
@@ -128,3 +128,19 @@ export const fetchMostPlayedDataAPI = () => {
     return iAxios.get(`/history/getMostPlayedData`).then(response => response);
 }
 //History End
+
+
+//Playlist - Start
+
+export const fetchPlaylistNamesAPI = () => {
+    return iAxios.get(`/playlist/names/PLAYLIST`).then(response => response);
+}
+
+export const fetchSongsInPlaylistAPI = (playlistName) => {
+    return iAxios.get(`/playlist/${playlistName}/songs`).then(response => response);
+}
+
+export const addToPlaylistAPI = (reqPLObj) => {
+    return iAxios.post(`/playlist/add-to-playlist/`,reqPLObj).then(response => response);
+}
+//Playlist - End

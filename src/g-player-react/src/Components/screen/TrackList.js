@@ -9,10 +9,13 @@ import { Spinner } from "./Spinner";
 import { Track } from "./Track";
 
 
-export const TrackList = () => {
+export const TrackList = ({rTracks}) => {
     
     const dispatch = useDispatch();
-    const tracks = useSelector(state => state.library.tracks);
+    let tracks = useSelector(state => state.library.tracks);
+    if(rTracks){
+        tracks = rTracks;
+    }
     const [trackList, setTrackList] = useState({});
     const isPlaying = useSelector(state => state.player.isPlaying);
     const [trackListKeys, setTrackListKeys] = useState([]);

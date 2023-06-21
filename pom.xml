@@ -65,6 +65,12 @@
     <version>2.11.0</version>
 </dependency>
 
+
+  <dependency>
+    <groupId>org.clojure</groupId>
+    <artifactId>clojure</artifactId>
+    <version>1.10.1</version>
+  </dependency>
 </dependencies>
 	<build>
 		<plugins>

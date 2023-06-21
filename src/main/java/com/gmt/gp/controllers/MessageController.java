@@ -18,7 +18,7 @@ import com.gmt.gp.services.MessageService;
 @RequestMapping("/message")
 @CrossOrigin
 public class MessageController {
-    
+
     private static final String FAILED = "FAILED";
 
     private static final String SUCCESS = "SUCCESS";
@@ -26,18 +26,33 @@ public class MessageController {
     @Autowired
     private MessageService messageService;
 
-    @RequestMapping(method = RequestMethod.POST , value = "/saveMusicPath")
-    public Message saveMusicPath(@RequestBody Message message){
+    @RequestMapping(method = RequestMethod.GET, value = "/{messageName}")
+    public Message getMessageByName(@PathVariable String messageName) {
+        return messageService.getMessageByName(messageName);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/type/{messageType}")
+    public List<Message> getMessageByType(@PathVariable String messageType) {
+        return messageService.getMessagesByType(messageType);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/save-message")
+    public Message saveMessage(@RequestBody Message message) {
+        return messageService.saveMaMessage(message);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/save-music-path")
+    public Message saveMusicPath(@RequestBody Message message) {
         return messageService.saveMusicPath(message);
     }
 
     @RequestMapping("/getAllMusicPaths")
-    public List<Message> getAllMusicPaths(){
+    public List<Message> getAllMusicPaths() {
         return messageService.getAllMusicPaths();
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/removeMusicPath/{messageId}")
-    public GPResponse removeMusicPath(@PathVariable String messageId){
+    public GPResponse removeMusicPath(@PathVariable String messageId) {
         GPResponse resp = new GPResponse(FAILED, null, null);
         try {
             messageService.removeMessageById(Long.parseLong(messageId));
@@ -50,7 +65,8 @@ public class MessageController {
     }
 
     @RequestMapping("/getBuildStatus")
-    public List<Message> getBuildStatus(){
+    public List<Message> getBuildStatus() {
         return messageService.getbuldStatus();
     }
+
 }

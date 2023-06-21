@@ -425,8 +425,12 @@ public class LibraryService {
         return libraryRepository.getAllLibraryIds();
     }
 
-    public Library getSongBySongId(int songId) {
+    public Library getSongBySongId(long songId) {
         return libraryRepository.getBySongId(songId);
+    }
+
+    public List<Library> getSongsBySongIds(List<Long> songIds) {
+        return libraryRepository.getSongsBySongIds(songIds);
     }
 
     public List<Library> getSongsByAlbum(String album) {
@@ -551,6 +555,10 @@ public class LibraryService {
         return albumRepository.getByAlbumName(albumName);
     }
 
+    public Album getAlbumByAlbumId(long albumId) {
+        return albumRepository.getByAlbumId(albumId);
+    }
+
     public List<Album> getAlbumListOfAA(String albumArtist) {
         return albumRepository.getByAlbumArtist(albumArtist);
     }
@@ -596,16 +604,17 @@ public class LibraryService {
         String wikiResp = "";
         JSONObject wikiRespJson = null;
         // try {
-        //     File localArtistPathFolder = new File(localArtistPath);
-        //     if (!localArtistPathFolder.exists()) {
-        //         localArtistPathFolder.mkdirs();
-        //     }
+        // File localArtistPathFolder = new File(localArtistPath);
+        // if (!localArtistPathFolder.exists()) {
+        // localArtistPathFolder.mkdirs();
+        // }
         // } catch (Exception e) {
-        //     e.printStackTrace();
+        // e.printStackTrace();
         // }
 
         boolean isDirectoryExists = checkAndCreateUserImageFolders();
-        if(!isDirectoryExists)return null;
+        if (!isDirectoryExists)
+            return null;
         for (Artist artist : artistList) {
             localArtistImg = new File(localArtistPath + "\\" + artist.getArtistName() + ".jpg");
             if (!localArtistImg.exists()) {

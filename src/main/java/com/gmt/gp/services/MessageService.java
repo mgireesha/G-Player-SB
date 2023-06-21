@@ -19,21 +19,25 @@ public class MessageService {
     @Autowired
     private MessageRepository messageRepository;
 
-    public Message saveMaMessage(Message message){
+    public Message saveMaMessage(Message message) {
         return messageRepository.save(message);
     }
 
-    public Message getMessageByName(String messageName){
+    public Message getMessageByName(String messageName) {
         try {
             return messageRepository.getByName(messageName);
         } catch (Exception e) {
-            if(e.getMessage().contains("query did not return a unique result")){
-                if(messageName.equals(GP_CONSTANTS.LAST_PLAYED_SONG_ID)){
+            if (e.getMessage().contains("query did not return a unique result")) {
+                if (messageName.equals(GP_CONSTANTS.LAST_PLAYED_SONG_ID)) {
                     removeMessageName(messageName);
                 }
             }
         }
         return null;
+    }
+
+    public List<Message> getMessagesByType(String messageType) {
+        return messageRepository.getByType(messageType);
     }
 
     public void removeMessageById(long messageId) {
@@ -42,12 +46,14 @@ public class MessageService {
 
     public void removeMessageType(String type) {
         List<Message> msgTypes = messageRepository.getByType(type);
-        for(Message msg : msgTypes)removeMessageById(msg.getMessageId());
+        for (Message msg : msgTypes)
+            removeMessageById(msg.getMessageId());
     }
 
     public void removeMessageName(String name) {
         Message msg = messageRepository.getByName(name);
-        if(msg!=null)removeMessageById(msg.getMessageId());
+        if (msg != null)
+            removeMessageById(msg.getMessageId());
     }
 
     // Music Path - start
@@ -59,19 +65,19 @@ public class MessageService {
         return messageRepository.save(message);
     }
     // Music Path - end
-    
+
     // Build status - start
     public void updateBuildStatus(String type, String name, String value) {
         Message message = messageRepository.getByName(name);
-        if(message==null){
+        if (message == null) {
             message = new Message(type, name, value);
-        }else{
+        } else {
             message.setValue(value);
         }
         messageRepository.save(message);
     }
 
-    public List<Message> getbuldStatus(){
+    public List<Message> getbuldStatus() {
         return messageRepository.getByType(BUILD_STATUS);
     }
     // Build status - end

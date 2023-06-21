@@ -33,13 +33,17 @@ export const MUSIC_LABEL = 'Music';
 export const MUSIC_PATH = 'MUSIC_PATH';
 
 export const NEXT = 'NEXT';
+export const NEW_PLAYLIST_BTN_LABEL = 'New Playlist';
 
+export const PLAYLISTS = 'PLAYLISTS';
+export const PLAYLISTS_LABEL = 'Playlists';
 export const POPULAR_COMPOSERS = 'Popular Composers';
 export const PREVIOUS = 'PREVIOUS';
 
 export const RECENT = 'RECENT';
 export const RECENT_PLAYS = 'RECENT_PLAYS';
-export const RECENT_PLAYS_LABEL = 'Recently Played';
+export const RECENT_PLAYS_LABEL = 'Recent Plays';
+export const RECENTLY_PLAYED_LABEL = 'Recently Played';
 export const REPEAT_ALL = 'REPEAT_ALL';
 export const REPEAT_OFF = 'REPEAT_OFF';
 export const REPEAT_ONE = 'REPEAT_ONE';
@@ -69,3 +73,5 @@ export const WIKI_SUMMARY_URL = "https://en.wikipedia.org/api/rest_v1/page/summa
 /** Text */
 export const GP_LIBRARY_DESCRIPTION = "Library is list of all songs available in the local machine. Generate library every time there is a change in any songs (Selected folders in Library List).";
 export const GP_LIBRARY_DESC_TEXT_1 = "This might take from few seconds to few mins.";
+
+export const GP_CONTEXT_MENU_ELEM_IDS = ['album_menu_btn_circle','context_menu', 'playlist_selector']
