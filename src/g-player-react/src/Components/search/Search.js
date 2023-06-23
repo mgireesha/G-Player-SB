@@ -7,7 +7,7 @@ import { searchByKey } from "../redux/library/LibraryActions";
 import { AlbumThumb } from "../screen/AlbumThumb";
 import { AlbumArtistThumb } from "../screen/artist/AlbumArtistThumb";
 import { ArtistThumb } from "../screen/artist/ArtistThumb";
-import { Track } from "../screen/Track";
+import { Track } from "../screen/track/Track";
 
 export const Search = () => {
     const dispatch = useDispatch();

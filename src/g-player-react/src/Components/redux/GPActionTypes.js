@@ -35,6 +35,7 @@ export const MUSIC_PATH = 'MUSIC_PATH';
 export const NEXT = 'NEXT';
 export const NEW_PLAYLIST_BTN_LABEL = 'New Playlist';
 
+export const PLAYLIST = 'PLAYLIST';
 export const PLAYLISTS = 'PLAYLISTS';
 export const PLAYLISTS_LABEL = 'Playlists';
 export const POPULAR_COMPOSERS = 'Popular Composers';

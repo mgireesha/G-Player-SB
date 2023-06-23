@@ -6,7 +6,7 @@ import { fetchAllHistory } from "../redux/library/LibraryActions";
 import { setPlayedFrom } from "../redux/player/PlayerActions";
 import { AlbumThumbsGrouped } from "../screen/album/AlbumThumbsGrouped";
 import { AlbumThumb } from "../screen/AlbumThumb";
-import { Track } from "../screen/Track";
+import { Track } from "../screen/track/Track";
 
 export const RecentPlays = () => {
     const dispatch = useDispatch();

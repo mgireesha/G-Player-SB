@@ -6,7 +6,7 @@ import { ALBUM } from "../redux/GPActionTypes";
 import { fetchAlbum, fetchAlbumTacks } from "../redux/library/LibraryActions";
 import { setPlayedFrom } from "../redux/player/PlayerActions";
 import { ShowLyrics } from "./ShowLyrics";
-import { Track } from "./Track";
+import { Track } from "./track/Track";
 
 export const Album = () => {
     const dispatch = useDispatch();

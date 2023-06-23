@@ -1,10 +1,10 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { ALBUM } from "../redux/GPActionTypes";
-import { playASong, playPause, setIsPlaying } from "../redux/player/PlayerActions";
-import { getMins } from "../utli";
-import { ArtistLink } from "./artist/ArtistLink";
+import { ALBUM } from "../../redux/GPActionTypes";
+import { playASong, playPause, setIsPlaying } from "../../redux/player/PlayerActions";
+import { getMins } from "../../utli";
+import { ArtistLink } from "../artist/ArtistLink";
 import { FaPlay } from "react-icons/fa";
 
 export const Track = ({track, playedFrom, index, hideTrackNum}) => {

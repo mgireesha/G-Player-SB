@@ -1,21 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { A_TO_Z, TRACK_LIST, SORT_YEAR, SORT_ARTIST, A_TO_Z_DESC } from "../redux/GPActionTypes";
-import { fethAllSongs } from "../redux/library/LibraryActions";
-import { setPlayedFrom } from "../redux/player/PlayerActions";
-import { scrollToPlaying, sortGroupByField } from "../utli";
-import { SortingContainer } from "./SortingContainer";
-import { Spinner } from "./Spinner";
+import { A_TO_Z, TRACK_LIST, SORT_YEAR, SORT_ARTIST, A_TO_Z_DESC } from "../../redux/GPActionTypes";
+import { fethAllSongs } from "../../redux/library/LibraryActions";
+import { setPlayedFrom } from "../../redux/player/PlayerActions";
+import { scrollToPlaying, sortGroupByField } from "../../utli";
+import { SortingContainer } from "../SortingContainer";
+import { Spinner } from "../Spinner";
 import { Track } from "./Track";
 
 
-export const TrackList = ({rTracks}) => {
-    
+export const TrackList = ({tracks, playedFrom}) => {
     const dispatch = useDispatch();
-    let tracks = useSelector(state => state.library.tracks);
-    if(rTracks){
-        tracks = rTracks;
-    }
     const [trackList, setTrackList] = useState({});
     const isPlaying = useSelector(state => state.player.isPlaying);
     const [trackListKeys, setTrackListKeys] = useState([]);
@@ -103,7 +98,7 @@ export const TrackList = ({rTracks}) => {
                     <>
                         <label id={"lKey" + lKey} className="track-lKey">{lKey}</label>
                         {trackList[lKey] !== undefined && trackList[lKey].length > 0 && trackList[lKey].map((track, trackIndex) =>
-                            <Track track={track} key={track.songId} playedFrom={{pfKey:TRACK_LIST}} index={index} hideTrackNum={true} />
+                            <Track track={track} key={track.songId} playedFrom={playedFrom} index={index} hideTrackNum={true} />
                         )}
                     </>
                 )}

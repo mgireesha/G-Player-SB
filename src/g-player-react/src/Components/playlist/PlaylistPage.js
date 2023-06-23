@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { fetchSongsInPlaylist } from "../redux/playlist/PlaylistActions";
-import { TrackList } from "../screen/TrackList";
+import { TrackList } from "../screen/track/TrackList";
+import { PLAYLIST } from "../redux/GPActionTypes";
 
 export const PlaylistPage = () => {
     const dispatch = useDispatch();
@@ -18,7 +19,7 @@ export const PlaylistPage = () => {
     return(
         <div className="playlist-page">
             <h1>{playlistName}</h1>
-            <TrackList rTracks={playlistSongs} />
+            <TrackList tracks={playlistSongs}  playedFrom={{pfKey:PLAYLIST, pfVal:playlistName}} />
         </div>
     );
 }
