@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import def_album_art from '../images/def_album_art.png';
 import { DELETE, DELETE_PLAYLIST_CONF_TEXT, DELETE_PLAYLIST_LABEL, PLAY_ALL_LABEL, REMOVE, TRACKS_LABEL } from "../redux/GPActionTypes";
 import { FaPlay } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -8,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCommonPopupObj } from "../redux/library/LibraryActions";
 import { deltePlaylist } from "../redux/playlist/PlaylistActions";
 import { PLAYLIST_DELETE_PLAYLIST_SUCCESS } from "../redux/playlist/PlaylistActionTypes";
+import { PlaylistImg } from "./PlaylistImg";
 
 export const PlaylistPageHeader = ({albumNames, songsCount, playAll}) => {
     const dispatch = useDispatch();
@@ -41,20 +41,7 @@ export const PlaylistPageHeader = ({albumNames, songsCount, playAll}) => {
 
     return(
         <div className="playlist-page-header">
-            <div className="playlist-img-container">
-                {albumNames.length > 0 &&
-                    <div className="playlist-img">
-                        {albumNames.map(albumName =>
-                            <img src={`/gp_images/albums/${albumName}.jpg`} />
-                        )}
-                    </div>
-                }
-                {albumNames.length === 0 &&
-                    <div className="playlist-no-img">
-                        <img src={def_album_art} />
-                    </div>
-                }
-            </div>
+            <PlaylistImg albumNames={albumNames} />
             <div className="playlist-details">
                 <div className="playlist-name">
                     <h2>{playlistName}</h2>

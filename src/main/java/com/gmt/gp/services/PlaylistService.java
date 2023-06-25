@@ -73,6 +73,10 @@ public class PlaylistService {
         return libraryService.getSongsBySongIds(songIds);
     }
 
+    public List<String> getAlbumNamesByPlaylistId(long playlistId) {
+        return playlistRepository.getAlbumNamesByPlaylistId(playlistId);
+    }
+
     public GPResponse deletePlaylist(long playlistId) {
         GPResponse resp = new GPResponse();
         List<PlaylistItems> playlistItems = playlistRepository.getByPlaylistId(playlistId);

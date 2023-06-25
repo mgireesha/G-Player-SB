@@ -5,9 +5,9 @@ export const fetchPlaylistNames = () => ({
     type: PLAYLIST_FETCH_PLAYLIST_NAMES_START
 })
 
-export const fethPLaylistNamesSucc = (playListNames) => ({
+export const fethPLaylistNamesSucc = (resp) => ({
     type:PLAYLIST_FETCH_PLAYLIST_NAMES_SUCCESS,
-    playListNames
+    resp
 })
 
 export const fetchSongsInPlaylist = (playListId) => ({
@@ -62,4 +62,9 @@ export const getUpdatedPlayListNames = (playListNames, playListName, action) => 
         return playListNames.filter((pl)=>{return pl.messageId !== parseInt(playListName)});
     }
     
+}
+
+export const getUpdatedPlayListAlbums = (playlistAlbums, playlistName, action) => {
+    playlistAlbums[playlistName.messageId] = [];
+    return playlistAlbums;
 }

@@ -14,5 +14,8 @@ public interface PlaylistRepository extends CrudRepository<PlaylistItems, Long> 
     @Query("SELECT p.songId FROM PlaylistItems p where p.playlistId =:playlistId")
     List<Long> getSongIdsInPlaylist(long playlistId);
 
+    @Query("SELECT distinct p.albumName FROM PlaylistItems p where p.playlistId =:playlistId")
+    List<String> getAlbumNamesByPlaylistId(long playlistId);
+
     List<PlaylistItems> getByPlaylistId(long playlistId);
 }

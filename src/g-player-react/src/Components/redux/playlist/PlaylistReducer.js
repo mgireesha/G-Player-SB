@@ -1,9 +1,10 @@
 import { ADD, INIT, LOADING, REMOVE, SUCCESS } from "../GPActionTypes";
 import { PLAYLIST_CREATE_PLAYLIST_START, PLAYLIST_CREATE_PLAYLIST_SUCCESS, PLAYLIST_DELETE_PLAYLIST_START, PLAYLIST_DELETE_PLAYLIST_SUCCESS, PLAYLIST_FETCH_PLAYLIST_NAMES_START, PLAYLIST_FETCH_PLAYLIST_NAMES_SUCCESS, PLAYLIST_FETCH_SONGS_IN_PLAYLIST_START, PLAYLIST_FETCH_SONGS_IN_PLAYLIST_SUCCESS, SET_SHOW_CREATE_PLAYLIST_POPUP } from "./PlaylistActionTypes";
-import { getUpdatedPlayListNames } from "./PlaylistActions";
+import { getUpdatedPlayListAlbums, getUpdatedPlayListNames } from "./PlaylistActions";
 
 export const initialState = {
     playListNames:[],
+    playlistAlbums:{},
     playlistSongs:[],
     showCreatePlaylistPopup: false,
     phase:INIT
@@ -19,7 +20,8 @@ const playlistReducer = (state = initialState, action) => {
         case PLAYLIST_FETCH_PLAYLIST_NAMES_SUCCESS:
             return{
                 ...state,
-                playListNames:action.playListNames,
+                playListNames:action.resp.PLAYLIST_NAMES,
+                playlistAlbums:action.resp.PLAYLIST_ALBUMS,
                 phase:SUCCESS
             }
         case PLAYLIST_FETCH_SONGS_IN_PLAYLIST_START:
@@ -42,6 +44,7 @@ const playlistReducer = (state = initialState, action) => {
             return{
                 ...state,
                 playListNames: getUpdatedPlayListNames([...state.playListNames], action.playlistName, ADD),
+                playlistAlbums: getUpdatedPlayListAlbums({...state.playlistAlbums}, action.playListName, ADD),
                 phase:PLAYLIST_CREATE_PLAYLIST_SUCCESS
             }
         case PLAYLIST_DELETE_PLAYLIST_START:

@@ -1,6 +1,8 @@
 package com.gmt.gp.controllers;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,8 +29,16 @@ public class PlaylistController {
     private MessageService messageService;
 
     @RequestMapping("/names/{messageType}")
-    public List<Message> getPlaylistNames(@PathVariable String messageType) {
-        return messageService.getMessagesByType(messageType);
+    public Map<String, Object> getPlaylistNames(@PathVariable String messageType) {
+        List<Message> plNames = messageService.getMessagesByType(messageType);
+        Map<Long, List<String>> plAlbums = new HashMap<Long, List<String>>();
+        Map<String, Object> resp = new HashMap<String, Object>();
+        resp.put("PLAYLIST_NAMES", plNames);
+        for (Message message : plNames) {
+            plAlbums.put(message.getMessageId(), playlistService.getAlbumNamesByPlaylistId(message.getMessageId()));
+        }
+        resp.put("PLAYLIST_ALBUMS", plAlbums);
+        return resp;
     }
 
     @RequestMapping("/create-playlist")

@@ -1127,11 +1127,11 @@
             .playlist-thumb-img-div{
                 position: relative;
                 img{
-                    height: 9em;
-                    width: 9em;
+                    //height: 9em;
+                    //width: 9em;
                     cursor: pointer;
-                    border-radius: 20px;
-                    border-bottom-left-radius: unset;
+                    //border-radius: 20px;
+                    //border-bottom-left-radius: unset;
                     box-shadow: rgb(0 0 0 / 40%) 0px 2px 4px, rgb(0 0 0 / 30%) 0px 7px 13px -3px, rgb(0 0 0 / 20%) 0px -3px 0px inset;
                 }
                 
@@ -1186,40 +1186,6 @@
             margin: 15px;
             background-color: #3a3a3a;
             border-radius: 5px;
-
-            .playlist-img-container{
-                width: 9em;
-                height: 9em;
-                .playlist-img{
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    
-                    img{
-                        height: 4.5em;
-                        width: 4.5em;
-                    }
-
-                    img:first-child{
-                        border-top-left-radius: 5px;
-                    }
-                    img:nth-child(2){
-                        border-top-right-radius: 5px;
-                    }
-                    img:nth-child(3){
-                        border-bottom-left-radius: 5px;
-                    }
-                    img:last-child{
-                        border-bottom-right-radius: 5px;
-                    }
-                }
-                .playlist-no-img{
-                    img{
-                        width: 9em;
-                        height: 9em;
-                        border-radius: 5px;
-                    }
-                }
-            }
 
             .playlist-details{
                 .playlist-name{
@@ -1279,6 +1245,40 @@
         }
         .track-list{
             max-height: calc(100vh - 12.5em - 10em);
+        }
+    }
+
+    .playlist-img-container{
+        width: 9em;
+        height: 9em;
+        .playlist-img{
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            
+            img{
+                height: 4.5em;
+                width: 4.5em;
+            }
+
+            img:first-child{
+                border-top-left-radius: 5px;
+            }
+            img:nth-child(2){
+                border-top-right-radius: 5px;
+            }
+            img:nth-child(3){
+                border-bottom-left-radius: 5px;
+            }
+            img:last-child{
+                border-bottom-right-radius: 5px;
+            }
+        }
+        .playlist-no-img{
+            img{
+                width: 9em;
+                height: 9em;
+                border-radius: 5px;
+            }
         }
     }
 }
