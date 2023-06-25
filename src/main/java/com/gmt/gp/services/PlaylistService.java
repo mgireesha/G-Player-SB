@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.gmt.gp.model.Album;
 import com.gmt.gp.model.GPResponse;
 import com.gmt.gp.model.Library;
-import com.gmt.gp.model.Playlist;
+import com.gmt.gp.model.PlaylistItems;
 import com.gmt.gp.repositories.PlaylistRepository;
 import com.gmt.gp.util.GP_CONSTANTS;
 import com.gmt.gp.util.GP_ERRORS;
@@ -23,14 +23,19 @@ public class PlaylistService {
     @Autowired
     private LibraryService libraryService;
 
-    public GPResponse addToPlaList(Playlist reqPlaylist) {
+    @Autowired
+    private MessageService messageService;
+
+    public GPResponse addToPlaList(PlaylistItems reqPlaylist) {
+        System.out.println("reqPlaylist: " + reqPlaylist);
         GPResponse resp = new GPResponse();
-        Playlist playlist = null;
-        List<Playlist> playlists = new ArrayList<Playlist>();
+        PlaylistItems playlist = null;
+        List<PlaylistItems> playlists = new ArrayList<PlaylistItems>();
         try {
             if (reqPlaylist.getSongId() != 0) {
-                playlist = new Playlist();
+                playlist = new PlaylistItems();
                 Library library = libraryService.getSongBySongId(reqPlaylist.getSongId());
+                playlist.setPlaylistId(reqPlaylist.getPlaylistId());
                 playlist.setPlaylist(reqPlaylist.getPlaylist());
                 playlist.setSongId(library.getSongId());
                 playlist.setSongPath(library.getSongPath());
@@ -42,12 +47,14 @@ public class PlaylistService {
                 Album album = libraryService.getAlbumByAlbumId(reqPlaylist.getAlbumId());
                 List<Library> songs = libraryService.getSongsByAlbum(album.getAlbumName());
                 for (Library library : songs) {
-                    playlist = new Playlist();
+                    playlist = new PlaylistItems();
+                    playlist.setPlaylistId(reqPlaylist.getPlaylistId());
                     playlist.setPlaylist(reqPlaylist.getPlaylist());
                     playlist.setSongId(library.getSongId());
                     playlist.setSongPath(library.getSongPath());
+                    playlist.setAlbumName(library.getAlbum());
                     playlists.add(playlist);
-                    playlists = (List<Playlist>) playlistRepository.saveAll(playlists);
+                    playlists = (List<PlaylistItems>) playlistRepository.saveAll(playlists);
                 }
                 resp.setPlaylists(playlists);
             } else {
@@ -61,9 +68,20 @@ public class PlaylistService {
         return resp;
     }
 
-    public List<Library> getSongsInPlaylist(String playlist) {
-        List<Long> songIds = playlistRepository.getBySongIdsInPlaylist(playlist);
+    public List<Library> getSongsInPlaylist(long playlistId) {
+        List<Long> songIds = playlistRepository.getSongIdsInPlaylist(playlistId);
         return libraryService.getSongsBySongIds(songIds);
+    }
+
+    public GPResponse deletePlaylist(long playlistId) {
+        GPResponse resp = new GPResponse();
+        List<PlaylistItems> playlistItems = playlistRepository.getByPlaylistId(playlistId);
+        if (playlistItems != null && !playlistItems.isEmpty()) {
+            playlistRepository.deleteAll(playlistItems);
+        }
+        messageService.removeMessageById(playlistId);
+        resp.setStatus(GP_CONSTANTS.SUCCESS);
+        return resp;
     }
 
 }

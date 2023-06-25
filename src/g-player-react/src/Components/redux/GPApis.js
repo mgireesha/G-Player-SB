@@ -136,11 +136,19 @@ export const fetchPlaylistNamesAPI = () => {
     return iAxios.get(`/playlist/names/PLAYLIST`).then(response => response);
 }
 
-export const fetchSongsInPlaylistAPI = (playlistName) => {
-    return iAxios.get(`/playlist/${playlistName}/songs`).then(response => response);
+export const fetchSongsInPlaylistAPI = (playListId) => {
+    return iAxios.get(`/playlist/${playListId}/songs`).then(response => response);
 }
 
 export const addToPlaylistAPI = (reqPLObj) => {
     return iAxios.post(`/playlist/add-to-playlist/`,reqPLObj).then(response => response);
+}
+
+export const createPlaylistAPI = (createPlaylistObj) => {
+    return iAxios.post(`/playlist/create-playlist`,createPlaylistObj).then(response => response);
+}
+
+export const deletePlaylistAPI = (playlistId) => {
+    return iAxios.delete(`/playlist/delete-playlist/${playlistId}`).then(response => response);
 }
 //Playlist - End

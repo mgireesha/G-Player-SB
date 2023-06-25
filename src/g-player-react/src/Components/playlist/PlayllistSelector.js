@@ -25,12 +25,14 @@ export const PlaylistSelector = () => {
         }
     },[contextObj]);
 
-    const onAddToPlaylist = (playlistName) => {
+    const onAddToPlaylist = (playlistId,playlistName) => {
         const reqPLObj = {
             playlist: playlistName,
+            playlistId: playlistId
         }
         if(contextObj.type === ALBUM){
             reqPLObj["albumId"] = contextObj.obj.albumId;
+            reqPLObj["albumName"] = contextObj.obj.album;
         }
         dispatch(addToPlaylist(reqPLObj));
     }
@@ -38,7 +40,7 @@ export const PlaylistSelector = () => {
     return(
         <div id="playlist_selector" className="playlist-selector" style={styles}>
             {playListNames && playListNames.map(playlistName =>
-                <div className="row" onClick={()=>onAddToPlaylist(playlistName.value)}>
+                <div className="row" onClick={()=>onAddToPlaylist(playlistName.messageId,playlistName.value)}>
                     <label>{playlistName.value}</label>
                 </div>
             )}

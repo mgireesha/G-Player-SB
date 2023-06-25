@@ -10,7 +10,6 @@ import { setContextObj, setShowContextMenu } from "../redux/library/LibraryActio
 export const AlbumThumb = ({album}) => {
     const dispatch = useDispatch();
     const showCOntextMenu = (event) => {
-        console.log(event.target.getBoundingClientRect());
         const position = event.target.getBoundingClientRect();
         const width = document.getElementsByClassName("album-thumb-img-div")[0].firstChild.firstChild.offsetWidth;
         position.width = width;

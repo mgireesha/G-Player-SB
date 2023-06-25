@@ -15,6 +15,8 @@ import { Playlist } from "./playlist/Playlist";
 import { fetchPlaylistNames } from "./redux/playlist/PlaylistActions";
 import { ContexMenu } from "./screen/ContextMenu";
 import { PlaylistSelector } from "./playlist/PlayllistSelector";
+import { CreatePlaylistPopup } from "./playlist/CreatePlaylistPopup";
+import { CommonPopup } from "./CommnPopup";
 
 export const Home = () => {
     const dispatch = useDispatch();
@@ -90,6 +92,8 @@ export const Home = () => {
             <Player />
             {showContextMenu && <ContexMenu />}
             {showPlaylistSelector && <PlaylistSelector />}
+            <CreatePlaylistPopup />
+            <CommonPopup />
         </div>
     );
 }

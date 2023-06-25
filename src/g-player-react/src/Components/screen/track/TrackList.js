@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { A_TO_Z, TRACK_LIST, SORT_YEAR, SORT_ARTIST, A_TO_Z_DESC } from "../../redux/GPActionTypes";
+import { A_TO_Z, SORT_YEAR, SORT_ARTIST, A_TO_Z_DESC, TRACK_LIST } from "../../redux/GPActionTypes";
 import { fethAllSongs } from "../../redux/library/LibraryActions";
-import { setPlayedFrom } from "../../redux/player/PlayerActions";
 import { scrollToPlaying, sortGroupByField } from "../../utli";
 import { SortingContainer } from "../SortingContainer";
 import { Spinner } from "../Spinner";
 import { Track } from "./Track";
 
 
-export const TrackList = ({tracks, playedFrom}) => {
+export const TrackList = ({tracks, trackListInp}) => {
     const dispatch = useDispatch();
     const [trackList, setTrackList] = useState({});
     const isPlaying = useSelector(state => state.player.isPlaying);
@@ -86,8 +85,8 @@ export const TrackList = ({tracks, playedFrom}) => {
 
     return(
         <>
-            <SortingContainer sortListKeys={trackListKeys} setSortBy={setSortBy} sortBy={sortBy} sortSelectors={[A_TO_Z,A_TO_Z_DESC, SORT_YEAR, SORT_ARTIST]} />
-            <div className="track-list">
+            {trackListInp.showSort &&<SortingContainer sortListKeys={trackListKeys} setSortBy={setSortBy} sortBy={sortBy} sortSelectors={[A_TO_Z,A_TO_Z_DESC, SORT_YEAR, SORT_ARTIST]} />}
+            <div className="track-list" id={TRACK_LIST}>
                 {/* {tracks!==undefined && tracks!==null &&
                             tracks.map((track,index) => 
                             track.title!==null && <Track track={track} key={track.songId} playedFrom={TRACK_LIST} index={index} />
@@ -96,9 +95,9 @@ export const TrackList = ({tracks, playedFrom}) => {
 
                 {trackListKeys !== undefined && trackListKeys.length > 0 && trackListKeys.map((lKey, index) =>
                     <>
-                        <label id={"lKey" + lKey} className="track-lKey">{lKey}</label>
+                        {trackListInp.showLKey && <label id={"lKey" + lKey} className="track-lKey">{lKey}</label>}
                         {trackList[lKey] !== undefined && trackList[lKey].length > 0 && trackList[lKey].map((track, trackIndex) =>
-                            <Track track={track} key={track.songId} playedFrom={playedFrom} index={index} hideTrackNum={true} />
+                            <Track track={track} key={track.songId} playedFrom={trackListInp.playedFrom} index={index} hideTrackNum={true} />
                         )}
                     </>
                 )}

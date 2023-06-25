@@ -7,8 +7,8 @@ public class GPResponse {
     private String error;
     private Library library;
     private GMedia gMedia;
-    private Playlist playlist;
-    private List<Playlist> playlists;
+    private PlaylistItems playlist;
+    private List<PlaylistItems> playlists;
 
     public String getStatus() {
         return status;
@@ -60,19 +60,19 @@ public class GPResponse {
         this.gMedia = gMedia;
     }
 
-    public Playlist getPlaylist() {
+    public PlaylistItems getPlaylist() {
         return playlist;
     }
 
-    public void setPlaylist(Playlist playlist) {
+    public void setPlaylist(PlaylistItems playlist) {
         this.playlist = playlist;
     }
 
-    public List<Playlist> getPlaylists() {
+    public List<PlaylistItems> getPlaylists() {
         return playlists;
     }
 
-    public void setPlaylists(List<Playlist> playlists) {
+    public void setPlaylists(List<PlaylistItems> playlists) {
         this.playlists = playlists;
     }
 

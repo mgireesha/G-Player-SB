@@ -1,5 +1,6 @@
 export const A_TO_Z = "A - Z Asc";
 export const A_TO_Z_DESC = "A - Z Desc";
+export const ADD = 'ADD';
 export const ALBUM = 'ALBUM';
 export const ALBUMS = 'ALBUMS';
 export const ALBUMS_LABEL = 'Albums';
@@ -11,7 +12,12 @@ export const ARTISTS = 'ARTISTS';
 export const BUILD_STATUS = 'BUILD_STATUS';
 
 export const COMPLETED = 'COMPLETED';
+export const CREATE_PLAYLIST_LABEL = 'Create Playlist';
 export const CURRENT = 'CURRENT';
+
+export const DELETE = "Delete";
+export const DELETE_PLAYLIST_LABEL = "Delete Playlist";
+export const DELETE_PLAYLIST_CONF_TEXT = "Are you sure to delete this playlist?";
 
 export const GENRE_COUNT = 'GENRE_COUNT';
 export const GENRES_COUNT_LABEL = 'Genres';
@@ -35,6 +41,7 @@ export const MUSIC_PATH = 'MUSIC_PATH';
 export const NEXT = 'NEXT';
 export const NEW_PLAYLIST_BTN_LABEL = 'New Playlist';
 
+export const PLAY_ALL_LABEL = 'Play all'; 
 export const PLAYLIST = 'PLAYLIST';
 export const PLAYLISTS = 'PLAYLISTS';
 export const PLAYLISTS_LABEL = 'Playlists';
@@ -45,6 +52,8 @@ export const RECENT = 'RECENT';
 export const RECENT_PLAYS = 'RECENT_PLAYS';
 export const RECENT_PLAYS_LABEL = 'Recent Plays';
 export const RECENTLY_PLAYED_LABEL = 'Recently Played';
+export const REMOVE = "REMOVE";
+export const REMOVE_LABEL = "Remove";
 export const REPEAT_ALL = 'REPEAT_ALL';
 export const REPEAT_OFF = 'REPEAT_OFF';
 export const REPEAT_ONE = 'REPEAT_ONE';

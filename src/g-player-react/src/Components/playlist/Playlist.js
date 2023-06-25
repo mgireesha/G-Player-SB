@@ -13,7 +13,7 @@ export const Playlist = () => {
             <Header linkTO="/playlist" headerLbl={PLAYLISTS_LABEL} />
             <Routes>
                 <Route path='/' element={<Playlists />} />
-                <Route path='/:playlistName' element={<PlaylistPage />} />
+                <Route path='/:playlistName/:playlistId' element={<PlaylistPage />} />
             </Routes>
         </div>
     );
