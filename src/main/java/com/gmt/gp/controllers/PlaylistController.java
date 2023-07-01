@@ -46,6 +46,11 @@ public class PlaylistController {
         return messageService.saveMaMessage(message);
     }
 
+    @RequestMapping(value = "/rename-playlist", method = RequestMethod.PUT)
+    public GPResponse renamePlaylist(@RequestBody Message reqMessage) {
+        return playlistService.renamePlaylist(reqMessage);
+    }
+
     @RequestMapping(value = "/delete-playlist/{playlistId}", method = RequestMethod.DELETE)
     public GPResponse deletePlaylist(@PathVariable String playlistId) {
         return playlistService.deletePlaylist(Long.parseLong(playlistId));

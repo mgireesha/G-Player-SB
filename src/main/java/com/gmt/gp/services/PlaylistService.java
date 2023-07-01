@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.gmt.gp.model.Album;
 import com.gmt.gp.model.GPResponse;
 import com.gmt.gp.model.Library;
+import com.gmt.gp.model.Message;
 import com.gmt.gp.model.PlaylistItems;
 import com.gmt.gp.repositories.PlaylistRepository;
 import com.gmt.gp.util.GP_CONSTANTS;
@@ -85,6 +86,27 @@ public class PlaylistService {
         }
         messageService.removeMessageById(playlistId);
         resp.setStatus(GP_CONSTANTS.SUCCESS);
+        return resp;
+    }
+
+    public GPResponse renamePlaylist(Message reqMessage) {
+        GPResponse resp = new GPResponse();
+        try {
+            Message playlistName = messageService.getMessageBYId(reqMessage.getMessageId());
+            playlistName.setValue(reqMessage.getValue());
+            playlistName = messageService.saveMaMessage(playlistName);
+            List<PlaylistItems> playlistItems = playlistRepository.getByPlaylistId(reqMessage.getMessageId());
+            for (PlaylistItems playlistItem : playlistItems) {
+                playlistItem.setPlaylist(reqMessage.getValue());
+            }
+            playlistRepository.saveAll(playlistItems);
+            resp.setMessage(playlistName);
+            resp.setStatus(GP_CONSTANTS.SUCCESS);
+        } catch (Exception e) {
+            resp.setStatus(GP_CONSTANTS.FAILED);
+            resp.setError(e.getMessage());
+            e.printStackTrace();
+        }
         return resp;
     }
 

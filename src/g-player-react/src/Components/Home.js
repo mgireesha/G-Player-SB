@@ -4,19 +4,18 @@ import { Sidebar } from "./Sidebar";
 import { Screen } from "./screen/Screen";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAlbumTacks, fetchAllAlbums, fetchAllHistory, fetchSongsByArtist, fethAllSongs } from "./redux/library/LibraryActions";
-import { fetchCurrentSontAndStatus, playASongSucc, setIsShuffle, setMediaVolume, setMediaVolumeSucc, setRepeat } from "./redux/player/PlayerActions";
+import { fetchCurrentSontAndStatus, playASongSucc, setIsShuffle, setMediaVolumeSucc, setRepeat } from "./redux/player/PlayerActions";
 import { getCookieDetails, getCookieValue } from "./utli";
-import { ALBUM, ARTIST, RECENT_PLAYS, TRACK_LIST } from "./redux/GPActionTypes";
+import { ALBUM, ARTIST, MAIN_CONTAINER, RECENT_PLAYS, TRACK_LIST } from "./redux/GPActionTypes";
 import { Route, Routes } from "react-router-dom";
 import { Library } from "./library/Library";
 import { Search } from "./search/Search";
 import { RecentPlays } from "./history/RecentPlays";
 import { Playlist } from "./playlist/Playlist";
 import { fetchPlaylistNames } from "./redux/playlist/PlaylistActions";
-import { ContexMenu } from "./screen/ContextMenu";
 import { PlaylistSelector } from "./playlist/PlayllistSelector";
-import { CreatePlaylistPopup } from "./playlist/CreatePlaylistPopup";
 import { CommonPopup } from "./CommnPopup";
+import { GPContexMenu } from "./screen/GPContextMenu";
 
 export const Home = () => {
     const dispatch = useDispatch();
@@ -79,7 +78,7 @@ export const Home = () => {
     }
 
     return(
-        <div className="main-container">
+        <div className="main-container" id={MAIN_CONTAINER}>
             <Sidebar />
             <Routes>
                 <Route path="/music/*" element={<Screen/>} />
@@ -90,9 +89,8 @@ export const Home = () => {
                 <Route path="/*" element={<Screen/>} />
             </Routes>
             <Player />
-            {showContextMenu && <ContexMenu />}
+            {showContextMenu && <GPContexMenu />}
             {showPlaylistSelector && <PlaylistSelector />}
-            <CreatePlaylistPopup />
             <CommonPopup />
         </div>
     );

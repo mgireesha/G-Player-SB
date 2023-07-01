@@ -1,7 +1,7 @@
 import { call, put, takeLatest } from "redux-saga/effects";
-import { addToPlaylistAPI, createPlaylistAPI, deletePlaylistAPI, fetchPlaylistNamesAPI, fetchSongsInPlaylistAPI } from "../GPApis";
-import { PLAYLIST_ADD_TO_PLAYLIST_START, PLAYLIST_CREATE_PLAYLIST_START, PLAYLIST_DELETE_PLAYLIST_START, PLAYLIST_FETCH_PLAYLIST_NAMES_START, PLAYLIST_FETCH_SONGS_IN_PLAYLIST_START } from "./PlaylistActionTypes";
-import { addToPlaylistSucc, createPlaylistSucc, deltePlaylistSucc, fetchSongsInPlaylistSucc, fethPLaylistNamesSucc } from "./PlaylistActions";
+import { addToPlaylistAPI, createPlaylistAPI, deletePlaylistAPI, fetchPlaylistNamesAPI, fetchSongsInPlaylistAPI, renamePlaylistAPI } from "../GPApis";
+import { PLAYLIST_ADD_TO_PLAYLIST_START, PLAYLIST_CREATE_PLAYLIST_START, PLAYLIST_DELETE_PLAYLIST_START, PLAYLIST_FETCH_PLAYLIST_NAMES_START, PLAYLIST_FETCH_SONGS_IN_PLAYLIST_START, PLAYLIST_RENAME_PLAYLIST_START } from "./PlaylistActionTypes";
+import { addToPlaylistSucc, createPlaylistSucc, deltePlaylistSucc, fetchSongsInPlaylistSucc, fethPLaylistNamesSucc, renamePlaylistSucc } from "./PlaylistActions";
 import { handleAPIError } from "../../utli";
 import { deleteMusicPathSucc } from "../library/LibraryActions";
 
@@ -86,6 +86,24 @@ export function* onDeletePlaylistAsnc(payload){
         const response = yield call(deletePlaylistAPI, payload.playlistId);
         if(response.status===200){
             yield put(deltePlaylistSucc(payload.playlistId));
+        }
+    } catch (error) {
+        console.log(error);
+        handleAPIError(error);
+    }
+
+}
+
+export function* onRenamePlaylist(){
+    yield takeLatest(PLAYLIST_RENAME_PLAYLIST_START, onRenamePlaylistAsnc);
+}
+
+export function* onRenamePlaylistAsnc(payload){
+    try {
+        const response = yield call(renamePlaylistAPI, payload.playlistName);
+        if(response.status===200){
+            const data = response.data;
+            yield put(renamePlaylistSucc(data.message));
         }
     } catch (error) {
         console.log(error);

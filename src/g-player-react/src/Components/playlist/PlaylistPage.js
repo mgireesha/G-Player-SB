@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector, useStore } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { fetchSongsInPlaylist } from "../redux/playlist/PlaylistActions";
+import { fetchPlaylistNames, fetchSongsInPlaylist } from "../redux/playlist/PlaylistActions";
 import { TrackList } from "../screen/track/TrackList";
 import { PLAYLIST, TRACK_LIST } from "../redux/GPActionTypes";
 import { PlaylistPageHeader } from "./PlaylistPageHeader";
@@ -15,8 +15,9 @@ export const PlaylistPage = () => {
     const [albumNames, setAlbumNames] = useState([]);
 
     useEffect(()=>{
+        dispatch(fetchPlaylistNames());
         dispatch(fetchSongsInPlaylist(playlistId));
-    },[playlistId]);
+    },[playlistId, playlistName]);
 
     const playAll = () => {
         const tracks = document.getElementById(TRACK_LIST);

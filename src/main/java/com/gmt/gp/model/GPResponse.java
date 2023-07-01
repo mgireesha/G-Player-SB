@@ -8,6 +8,7 @@ public class GPResponse {
     private Library library;
     private GMedia gMedia;
     private PlaylistItems playlist;
+    private Message message;
     private List<PlaylistItems> playlists;
 
     public String getStatus() {
@@ -74,6 +75,14 @@ public class GPResponse {
 
     public void setPlaylists(List<PlaylistItems> playlists) {
         this.playlists = playlists;
+    }
+
+    public Message getMessage() {
+        return message;
+    }
+
+    public void setMessage(Message message) {
+        this.message = message;
     }
 
 }

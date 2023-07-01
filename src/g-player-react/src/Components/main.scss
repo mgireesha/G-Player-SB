@@ -1088,7 +1088,7 @@
     .body{
         padding: 10px;
         height: calc(100vh - 3em - 7em);
-    overflow-y: auto;
+        overflow-y: auto;
 
         .create-playlist{
                 margin-left: 15px;
@@ -1202,11 +1202,12 @@
                         align-items: center;
                         column-gap: 5px;
                         border: none;
-                        padding: 10px;
+                        padding: 8px;
                         color: beige;
                         border-radius: 5px;
                         cursor: pointer;
-                        background-color: none;
+                        background-color: transparent;
+                        border: 1px solid lightgrey;
                     }
 
                     .play-all{
@@ -1227,8 +1228,6 @@
 
                     .delete-playlist{
                         button{
-                            background-color: transparent;
-                            border: 1px solid lightgrey;
                             padding: 8px;
 
                             svg{
@@ -1238,6 +1237,12 @@
 
                         button:hover{
                             background-color: rgb(146, 27, 27);
+                        }
+                    }
+
+                    .rename-playlist{
+                        button:hover{
+                            background-color: #17a2b8;
                         }
                     }
                 }
@@ -1251,6 +1256,8 @@
     .playlist-img-container{
         width: 9em;
         height: 9em;
+        border: 1px solid #494949;
+        border-radius: 5px;
         .playlist-img{
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -1910,22 +1917,57 @@ a.disabled-click{
     }
 }
 
-.context-menu{
+.gp-context-menu{
+    position: absolute;
+    width: 190px;
+    background-color:#2b2b2b;
+    border:1px solid grey;
+    border-radius:4px;
+    z-index:1001;
+    animation: gpContextSlideDown 300ms ease-in-out 1;
+    transition: all 300ms;
     .row{
-        padding: 3px;
+        height: 40px;
+        padding: 8px;
         cursor: pointer;
-
+        border-bottom:1px solid grey;
         label{
             cursor: pointer;
         }
 
-        label:hover{
+        svg.icon:hover + label, label:hover{
             font-size: 17px;
+        }
+
+        svg.icon{
+            float: right;
+            font-size: 22px;
+        }
+
+        label:hover + svg.icon{
+            font-size: 23px;
+        }
+    }
+
+    @keyframes gpContextSlideDown {
+        0%{
+            transform: translateY(-20%);
+        }
+
+        100%{
+            transform: translateY(0%);
         }
     }
 }
 
 .playlist-selector{
+    position: absolute;
+    background-color: #2b2b2b;
+    border: 1px solid grey;
+    border-radius: 4px;
+    z-index: 1000;
+    animation: gpContextSlideDown 300ms ease-in-out 1;
+    transition: all 300ms;
     .row {
         padding: 5px;
         padding-left: 10px;
@@ -1948,122 +1990,6 @@ a.disabled-click{
     background-color: #e1e1e11c;
     opacity: 0.5;
 }
-
-.create-playlist-popup{
-    position: absolute;
-    top: -15vh;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    justify-content: center;
-    align-items: center;
-    
-
-    .popup-container{
-        position: relative;
-        width: 40%;
-        border-radius: 10px;
-        z-index: 1002;
-        background-color: #fff;
-
-        .popup-header{
-            padding: 20px 25px;
-            border-bottom: 1px solid #dee2e6;
-            .label{
-                color: #393939;
-                font-weight: bold;
-                font-size: 16px;
-                
-            }
-            .close{
-                position: absolute;
-                right: 0.7em;
-                top: 15px;
-                height: 5px;
-                color: #000;
-                background: none;
-                border: none;
-                font-size: 26px;
-                cursor: pointer;    
-            }
-
-            .close:hover{
-                color: rgb(145, 18, 18);
-            }
-        }
-
-        .popup-body{
-            padding: 25px 25px 10px 25px;
-            .plalist-name{
-                width: 70%;
-                padding: 15px;
-                border-radius: 8px;
-                outline: none;
-                border: 1px solid lightgray;
-                font-size: 16px;
-            }
-        }
-
-        .popup-footer{
-            padding: 20px 25px;
-            .buttons{
-                float: right;
-                display: flex;
-                column-gap: 15px;
-                button{
-                    width: 7em;
-                    padding: 7px;
-                    border-radius: 4px;
-                    outline: none;
-                    border: none;
-                    cursor: pointer;
-                }
-
-                .popup-btn-primary{
-                    background: rgb(10, 113, 75);
-                    color: beige;
-                }
-
-                .popup-btn-secondary{
-                    background-color: #fff;
-                    color: #000;
-                    border: 1px solid grey;
-                }
-
-            }
-        }
-        animation: popupZoomIn 400ms ease-in-out 1;
-    }
-
-    @keyframes popupSlideIn{
-         0%{
-             transform: translateY(-100px);
-         }
-
-         80%{
-             transform: translateY(10px);
-         }
-    
-         100%{
-             transform: translateY(0);
-         }
-    }
-
-    @keyframes popupZoomIn{
-        0%{
-            transform: scale(0.1);
-        }
-
-        50%{
-            transform: scale(0.5);
-        }
-
-        50%{
-            transform: scale(1);
-        }
-    }
-}
-
 
 .common-popup{
     position: absolute;
@@ -2119,6 +2045,15 @@ a.disabled-click{
                 border: 1px solid lightgray;
                 font-size: 16px;
             }
+
+            input{
+                padding: 15px;
+                border: 1px solid lightgray;
+                outline: none;
+                border-radius: 8px;
+                width: 70%;
+                font-size: 16px;
+            }
         }
 
         .popup-footer{
@@ -2134,9 +2069,15 @@ a.disabled-click{
                     outline: none;
                     border: none;
                     cursor: pointer;
+                    background-color: transparent;
+                    color: #000;
                 }
 
                 .popup-btn-primary{
+                    border: 1px solid rgb(10, 113, 75);
+                }
+
+                .popup-btn-primary:hover{
                     background: rgb(10, 113, 75);
                     color: beige;
                 }
@@ -2152,14 +2093,20 @@ a.disabled-click{
                 }
 
                 .popup-btn-primary.remove{
-                    background-color: transparent;
-                    color: #000;
                     border: 1px solid rgb(208, 36, 36);
                 }
 
                 .popup-btn-primary.remove:hover{
                     background-color: rgb(146, 27, 27);
                     color: #fff;
+                }
+
+                .popup-btn-primary.rename{
+                    border: 1px solid #17a2b8;
+                }
+
+                .popup-btn-primary.rename:hover{
+                    background-color: #17a2b8;
                 }
 
             }

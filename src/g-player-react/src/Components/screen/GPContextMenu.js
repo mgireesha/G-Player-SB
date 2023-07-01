@@ -1,43 +1,35 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setIsClickedOnCM, setShowContextMenu, setShowPlaylistSelector } from "../redux/library/LibraryActions";
-import { GP_CONTEXT_MENU_ELEM_IDS } from "../redux/GPActionTypes";
+import { setShowContextMenu, setShowPlaylistSelector } from "../redux/library/LibraryActions";
+import { GP_CONTEXT_MENU, GP_CONTEXT_MENU_ELEM_IDS, MAIN_CONTAINER } from "../redux/GPActionTypes";
+import { MdKeyboardArrowRight } from 'react-icons/md';
+import { Link } from "react-router-dom";
 
-export const ContexMenu = () => {
+export const GPContexMenu = () => {
     const dispatch = useDispatch();
     const contextObj = useSelector(state => state.library.contextObj);
     const showContextMenu = useSelector(state => state.library.showContextMenu);
     const [styles, setStyles] = useState({display:'none'});
     useEffect(()=>{
         if(contextObj && contextObj.position){
-            console.log("contextObj",contextObj)
             const position = contextObj.position;
             const tempStyles = {
-                position: 'absolute',
-                left: parseInt(position.x)-6,
-                top: parseInt(position.y)+30,
-                width: parseInt(position.width),
-                backgroundColor:'#AB3C3C',
-                padding:5,
-                borderRadius:2,
-                zIndex:1000
+                left : parseInt(position.x)-6
+            }
+            console.log("contextObj",contextObj);
+            const mainContainerHeight = document.getElementById(MAIN_CONTAINER).clientHeight;
+            let gpCtxtMenuHeight = document.getElementById(GP_CONTEXT_MENU).clientHeight;
+            if(gpCtxtMenuHeight === undefined || gpCtxtMenuHeight === 0)gpCtxtMenuHeight = 160;
+            if((mainContainerHeight - position.top) > gpCtxtMenuHeight+ 40){
+                tempStyles.top = parseInt(position.y)+25;
+                
+            }else{
+                tempStyles.top = parseInt(position.y)-gpCtxtMenuHeight;
             }
             setStyles(tempStyles);
-            // setTimeout(() => {
-            //     dispatch(setIsClickedOnCM(true));
-            // }, 100);
         }
         
     },[contextObj]);
-
-    // const contextMenuElem = document.getElementById("context_menu");
-    // if(contextMenuElem){
-    //     contextMenuElem.addEventListener("click", function (event) {
-    //         console.log("event tarteg: ", event.target);
-    //     })
-    // }
-
-    
 
     useEffect(() => {
         const handleClick = (event) => {
@@ -59,17 +51,11 @@ export const ContexMenu = () => {
             if(!tempIsclickedOnCM){
                 dispatch(setShowPlaylistSelector(false));
             }
-            //dispatch(setIsClickedOnCM(tempIsclickedOnCM));
-            // if(showContextMenu && !tempIsclickedOnCM){
-            //     dispatch(setShowContextMenu(false));
-            // }
         };
         window.addEventListener('click', handleClick);
         return () => {
             window.removeEventListener('click', handleClick);
         };
-
-        
     }, []);
 
     useEffect(()=>{
@@ -88,11 +74,33 @@ export const ContexMenu = () => {
     const onSetShowPlaylistSelector = (showPlaylistSelector) => {
          dispatch(setShowPlaylistSelector(showPlaylistSelector));
      }
+
+     const closeCOntextMenu = () => {
+        dispatch(setShowContextMenu(false));
+        dispatch(setShowPlaylistSelector(false));
+    }
     
     return(
-        <div id="context_menu" className="context-menu" style={styles}>
+        <div id={GP_CONTEXT_MENU} className="gp-context-menu" style={styles}>
             <div className="row" onClick={()=>onSetShowPlaylistSelector(true)}>
                 <label>Add to playlist</label>
+                <MdKeyboardArrowRight className="icon" />
+            </div>
+            <div className="row">
+                <label><strike>Edit info</strike>&nbsp;<span style={{fontSize:10}}>Coming soon</span></label>
+                <MdKeyboardArrowRight className="icon" />
+            </div>
+            <div className="row">
+                <Link to={`/music/albums/${contextObj.obj.albumName}`} onClick={closeCOntextMenu}>
+                    <label>Album</label>
+                    <MdKeyboardArrowRight className="icon" />
+                </Link>
+            </div>
+            <div className="row">
+                <Link to={`/music/album_artists/${contextObj.obj.albumArtist}`} onClick={closeCOntextMenu}>
+                    <label>Artist</label>
+                    <MdKeyboardArrowRight className="icon" />
+                </Link>
             </div>
         </div>
     );

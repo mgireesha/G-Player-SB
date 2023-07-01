@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { DELETE, DELETE_PLAYLIST_CONF_TEXT, DELETE_PLAYLIST_LABEL, PLAY_ALL_LABEL, REMOVE, TRACKS_LABEL } from "../redux/GPActionTypes";
+import { DELETE, DELETE_PLAYLIST_CONF_TEXT, DELETE_PLAYLIST_LABEL, INPUT, PLAYLIST, PLAY_ALL_LABEL, REMOVE, RENAME, RENAME_LABEL, RENAME_PLAYLIST_INP, RENAME_PLAYLIST_LABEL, TEXT, TRACKS_LABEL } from "../redux/GPActionTypes";
 import { FaPlay } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { BiRename } from "react-icons/bi";
 import { useDispatch, useSelector } from "react-redux";
 import { setCommonPopupObj } from "../redux/library/LibraryActions";
-import { deltePlaylist } from "../redux/playlist/PlaylistActions";
-import { PLAYLIST_DELETE_PLAYLIST_SUCCESS } from "../redux/playlist/PlaylistActionTypes";
+import { deltePlaylist, renamePlaylist } from "../redux/playlist/PlaylistActions";
+import { PLAYLIST_DELETE_PLAYLIST_SUCCESS, PLAYLIST_RENAME_PLAYLIST_SUCCESS } from "../redux/playlist/PlaylistActionTypes";
 import { PlaylistImg } from "./PlaylistImg";
 
 export const PlaylistPageHeader = ({albumNames, songsCount, playAll}) => {
@@ -20,6 +21,7 @@ export const PlaylistPageHeader = ({albumNames, songsCount, playAll}) => {
             showPopup: true,
             title: DELETE_PLAYLIST_LABEL,
             content: DELETE_PLAYLIST_CONF_TEXT,
+            contentType: TEXT,
             primaryBtnAction: REMOVE,
             primaryBtnFun: onDeletePlaylist
 
@@ -27,15 +29,44 @@ export const PlaylistPageHeader = ({albumNames, songsCount, playAll}) => {
         dispatch(setCommonPopupObj(commonPopupObj));
     }
 
+    const showRenamePlaylistPopup = () => {
+        const commonPopupObj = {
+            showPopup: true,
+            title: RENAME_PLAYLIST_LABEL,
+            content: playlistName,
+            contentType: INPUT,
+            primaryBtnAction: RENAME,
+            elementId:RENAME_PLAYLIST_INP,
+            primaryBtnFun: onRenamePlaylist
+
+        }
+        dispatch(setCommonPopupObj(commonPopupObj));
+    }
+
     const onDeletePlaylist = () => {
-        console.log("playlistId",playlistId);
         dispatch(deltePlaylist(playlistId))
+    }
+
+    const onRenamePlaylist = () => {
+        const tempPlaylistName = {
+            messageId : playlistId,
+            value: document.getElementById(RENAME_PLAYLIST_INP).value,
+            name: PLAYLIST,
+            type: PLAYLIST
+
+        }
+        dispatch(renamePlaylist(tempPlaylistName))
     }
 
     useEffect(()=>{
         if(plPhase === PLAYLIST_DELETE_PLAYLIST_SUCCESS){
             dispatch(setCommonPopupObj({showPopup:false}));
             navigate("/playlist");
+        }
+        if(plPhase === PLAYLIST_RENAME_PLAYLIST_SUCCESS){
+            const playlistName = document.getElementById(RENAME_PLAYLIST_INP).value;
+            navigate(`/playlist/${playlistName}/${playlistId}`);
+            dispatch(setCommonPopupObj({showPopup:false}));
         }
     },[plPhase]);
 
@@ -53,6 +84,9 @@ export const PlaylistPageHeader = ({albumNames, songsCount, playAll}) => {
                     </div>
                     <div className="delete-playlist">
                         <button onClick={showDeletePlaylistPopup}><RiDeleteBin6Line />{DELETE}</button>
+                    </div>
+                    <div className="rename-playlist">
+                        <button onClick={showRenamePlaylistPopup}><BiRename />{RENAME_LABEL}</button>
                     </div>
                 </div>
             </div>

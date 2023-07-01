@@ -23,6 +23,10 @@ public class MessageService {
         return messageRepository.save(message);
     }
 
+    public Message getMessageBYId(long messageId) {
+        return messageRepository.getByMessageId(messageId);
+    }
+
     public Message getMessageByName(String messageName) {
         try {
             return messageRepository.getByName(messageName);
