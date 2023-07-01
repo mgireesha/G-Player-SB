@@ -1,6 +1,7 @@
 export const A_TO_Z = "A - Z Asc";
 export const A_TO_Z_DESC = "A - Z Desc";
 export const ADD = 'ADD';
+export const ADD_TO_NEW_PLAYLIST_LABEL = 'ADD_TO_NEW_PLAYLIST_LABEL';
 export const ALBUM = 'ALBUM';
 export const ALBUMS = 'ALBUMS';
 export const ALBUMS_LABEL = 'Albums';
@@ -53,6 +54,7 @@ export const PLAYLISTS = 'PLAYLISTS';
 export const PLAYLISTS_LABEL = 'Playlists';
 export const PLAYLIST_NAME = 'PLAYLIST_NAME';
 export const POPULAR_COMPOSERS = 'Popular Composers';
+export const POPUP_PRIMARY_BTN = 'POPUP_PRIMARY_BTN';
 export const PREVIOUS = 'PREVIOUS';
 
 export const RECENT = 'RECENT';

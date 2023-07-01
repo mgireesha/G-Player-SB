@@ -1,8 +1,9 @@
 import React from "react";
-import { CREATE, CREATE_PLAYLIST_LABEL, INPUT, NEW_PLAYLIST_BTN_LABEL, PLAYLIST_NAME } from "../redux/GPActionTypes";
+import { CREATE, CREATE_LABEL, CREATE_PLAYLIST_LABEL, INPUT, NEW_PLAYLIST_BTN_LABEL, PLAYLIST_NAME } from "../redux/GPActionTypes";
 import { useDispatch } from "react-redux";
 import { createPlaylist, setShowCreatePlaylistPopup } from "../redux/playlist/PlaylistActions";
 import { setCommonPopupObj } from "../redux/library/LibraryActions";
+import { getCreatePlaylistObj } from "./PlalistUtil";
 
 export const CreatePlayListBtn = () => {
     const dispatch = useDispatch();
@@ -14,6 +15,8 @@ export const CreatePlayListBtn = () => {
             contentType: INPUT,
             placeHolder:'Playlist Name',
             primaryBtnAction: CREATE,
+            primaryBtnLabel: CREATE_LABEL,
+            className: "create",
             elementId: PLAYLIST_NAME,
             primaryBtnFun: onCreatePlalist
 
@@ -22,18 +25,7 @@ export const CreatePlayListBtn = () => {
     }
 
     const onCreatePlalist = () => {
-		const playlistName = document.getElementById(PLAYLIST_NAME);
-		if(!playlistName || playlistName.value === ""){
-			if(playlistName)playlistName.style.border = '1px solid red';
-			return;
-		}
-		playlistName.style.border = '1px solid lightgrey';
-		const createPlaylistObj = {
-			"name":"PLAYLIST",
-			"value":playlistName.value,
-			"type":"PLAYLIST"
-			}
-		dispatch(createPlaylist(createPlaylistObj));
+		dispatch(createPlaylist(getCreatePlaylistObj()));
 	}
 
     return(

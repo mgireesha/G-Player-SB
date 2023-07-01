@@ -3,7 +3,6 @@ import { addToPlaylistAPI, createPlaylistAPI, deletePlaylistAPI, fetchPlaylistNa
 import { PLAYLIST_ADD_TO_PLAYLIST_START, PLAYLIST_CREATE_PLAYLIST_START, PLAYLIST_DELETE_PLAYLIST_START, PLAYLIST_FETCH_PLAYLIST_NAMES_START, PLAYLIST_FETCH_SONGS_IN_PLAYLIST_START, PLAYLIST_RENAME_PLAYLIST_START } from "./PlaylistActionTypes";
 import { addToPlaylistSucc, createPlaylistSucc, deltePlaylistSucc, fetchSongsInPlaylistSucc, fethPLaylistNamesSucc, renamePlaylistSucc } from "./PlaylistActions";
 import { handleAPIError } from "../../utli";
-import { deleteMusicPathSucc } from "../library/LibraryActions";
 
 export function* onFetchPlaylistNames(){
     yield takeLatest(PLAYLIST_FETCH_PLAYLIST_NAMES_START, onFetchPlaylistNamesAsnc);
@@ -65,10 +64,21 @@ export function* onCreatePlaylist(){
 
 export function* onCreatePlaylistAsnc(payload){
     try {
-        const response = yield call(createPlaylistAPI, payload.createPlaylistObj);
+        const response = yield call(createPlaylistAPI, payload.createPlaylistObj.payload);
         if(response.status===200){
             const data = response.data;
-            yield put(createPlaylistSucc(data));
+            const tempAddedNewPlaylistObj = {
+                isAddToNewPlaylist : false
+            }
+            if(payload.createPlaylistObj.addedNewPlaylistObj){
+                tempAddedNewPlaylistObj.playlistName = data;
+                tempAddedNewPlaylistObj.isAddToNewPlaylist = true
+            }
+            const resp = {
+                playlistName: data,
+                addedNewPlaylistObj: tempAddedNewPlaylistObj
+            }
+            yield put(createPlaylistSucc(resp));
         }
     } catch (error) {
         console.log(error);

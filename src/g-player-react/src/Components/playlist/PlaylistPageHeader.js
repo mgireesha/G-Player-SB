@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { DELETE, DELETE_PLAYLIST_CONF_TEXT, DELETE_PLAYLIST_LABEL, INPUT, PLAYLIST, PLAY_ALL_LABEL, REMOVE, RENAME, RENAME_LABEL, RENAME_PLAYLIST_INP, RENAME_PLAYLIST_LABEL, TEXT, TRACKS_LABEL } from "../redux/GPActionTypes";
+import { DELETE, DELETE_PLAYLIST_CONF_TEXT, DELETE_PLAYLIST_LABEL, INPUT, PLAYLIST, PLAY_ALL_LABEL, REMOVE, REMOVE_LABEL, RENAME, RENAME_LABEL, RENAME_PLAYLIST_INP, RENAME_PLAYLIST_LABEL, TEXT, TRACKS_LABEL } from "../redux/GPActionTypes";
 import { FaPlay } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { BiRename } from "react-icons/bi";
@@ -23,6 +23,8 @@ export const PlaylistPageHeader = ({albumNames, songsCount, playAll}) => {
             content: DELETE_PLAYLIST_CONF_TEXT,
             contentType: TEXT,
             primaryBtnAction: REMOVE,
+            primaryBtnLabel:REMOVE_LABEL,
+            className:"remove",
             primaryBtnFun: onDeletePlaylist
 
         }
@@ -36,6 +38,8 @@ export const PlaylistPageHeader = ({albumNames, songsCount, playAll}) => {
             content: playlistName,
             contentType: INPUT,
             primaryBtnAction: RENAME,
+            primaryBtnLabel:RENAME_LABEL,
+            className:"rename",
             elementId:RENAME_PLAYLIST_INP,
             primaryBtnFun: onRenamePlaylist
 

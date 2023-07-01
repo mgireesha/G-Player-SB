@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ALBUM, GP_CONTEXT_MENU, MAIN_CONTAINER, PLAYLIST_SELECTOR } from "../redux/GPActionTypes";
-import { addToPlaylist } from "../redux/playlist/PlaylistActions";
-import { PLAYLIST_ADD_TO_PLAYLIST_SUCCESS } from "../redux/playlist/PlaylistActionTypes";
-import { setShowContextMenu, setShowPlaylistSelector } from "../redux/library/LibraryActions";
+import { ADD_TO_NEW_PLAYLIST_LABEL, ALBUM, CREATE, CREATE_LABEL, GP_CONTEXT_MENU, INPUT, MAIN_CONTAINER, NEW_PLAYLIST_BTN_LABEL, PLAYLIST_NAME, PLAYLIST_SELECTOR } from "../redux/GPActionTypes";
+import { addToPlaylist, createPlaylist, setAddedNewPlaylistObj, setIsAddToNewPlaylist } from "../redux/playlist/PlaylistActions";
+import { PLAYLIST_ADD_TO_PLAYLIST_SUCCESS, PLAYLIST_CREATE_PLAYLIST_SUCCESS } from "../redux/playlist/PlaylistActionTypes";
+import { setCommonPopupObj, setShowContextMenu, setShowPlaylistSelector } from "../redux/library/LibraryActions";
+import { HiPlus } from 'react-icons/hi';
+import { getCreatePlaylistObj } from "./PlalistUtil";
 
 export const PlaylistSelector = () => {
     const dispatch = useDispatch();
@@ -56,12 +58,38 @@ export const PlaylistSelector = () => {
     useEffect(()=>{
         if(plPhase === PLAYLIST_ADD_TO_PLAYLIST_SUCCESS){
             dispatch(setShowPlaylistSelector(false));
-            dispatch(setShowContextMenu(false))
+            dispatch(setShowContextMenu(false));
         }
+        
     },[plPhase]);
+
+    const addToNewPlayist = () => {
+        const addToNewPLPopupObj = {
+            showPopup: true,
+            title: ADD_TO_NEW_PLAYLIST_LABEL,
+            content: "Untitled Playlist",
+            placeHolder:'New Playlist Name',
+            contentType: INPUT,
+            primaryBtnAction: CREATE,
+            primaryBtnLabel:CREATE_LABEL,
+            className:"create",
+            elementId:PLAYLIST_NAME,
+            primaryBtnFun: onAddToNewPlaylist
+        }
+        dispatch(setCommonPopupObj(addToNewPLPopupObj));
+    }
+
+    const onAddToNewPlaylist = () => {
+        const createPlaylistObj = getCreatePlaylistObj();
+        createPlaylistObj.addedNewPlaylistObj = {isAddToNewPlaylist: true};
+        dispatch(createPlaylist(createPlaylistObj));
+    }
 
     return(
         <div id={PLAYLIST_SELECTOR} className="playlist-selector" style={styles}>
+            <div className="row" style={{display:'flex'}} onClick={addToNewPlayist}>
+                <HiPlus style={{marginTop:4,marginRight:5}} /><label>{NEW_PLAYLIST_BTN_LABEL}</label>
+            </div>
             {playListNames && playListNames.map(playlistName =>
                 <div className="row" onClick={()=>onAddToPlaylist(playlistName.messageId,playlistName.value)}>
                     <label>{playlistName.value}</label>

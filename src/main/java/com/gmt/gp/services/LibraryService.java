@@ -226,7 +226,7 @@ public class LibraryService {
                                 }
                             }
                         } else {
-                            // Logic to include albums without image
+                            // Logic to include albums without image -- Think about something
                         }
                     }
 

@@ -6,6 +6,7 @@ export const initialState = {
     playListNames:[],
     playlistAlbums:{},
     playlistSongs:[],
+    addedNewPlaylistObj:{},
     phase:INIT
 }
 
@@ -47,8 +48,9 @@ const playlistReducer = (state = initialState, action) => {
         case PLAYLIST_CREATE_PLAYLIST_SUCCESS:
             return{
                 ...state,
-                playListNames: getUpdatedPlayListNames([...state.playListNames], action.playlistName, ADD),
-                playlistAlbums: getUpdatedPlayListAlbums({...state.playlistAlbums}, action.playlistName, ADD),
+                playListNames: getUpdatedPlayListNames([...state.playListNames], action.response.playlistName, ADD),
+                playlistAlbums: getUpdatedPlayListAlbums({...state.playlistAlbums}, action.response.playlistName, ADD),
+                addedNewPlaylistObj : action.response.addedNewPlaylistObj,
                 phase:PLAYLIST_CREATE_PLAYLIST_SUCCESS
             }
         case PLAYLIST_DELETE_PLAYLIST_START:
