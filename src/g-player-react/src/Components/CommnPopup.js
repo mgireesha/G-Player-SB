@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCommonPopupObj } from "./redux/library/LibraryActions";
-import { ALBUM, INPUT, POPUP_PRIMARY_BTN, TEXT } from "./redux/GPActionTypes";
+import { ALBUM, INPUT, POPUP_PRIMARY_BTN, TEXT, TRACK } from "./redux/GPActionTypes";
 import { PLAYLIST_ADD_TO_PLAYLIST_SUCCESS, PLAYLIST_CREATE_PLAYLIST_SUCCESS } from "./redux/playlist/PlaylistActionTypes";
 import { addToPlaylist, setAddedNewPlaylistObj } from "./redux/playlist/PlaylistActions";
 
@@ -41,6 +41,9 @@ export const CommonPopup = () => {
             }
             if(contextObj.type === ALBUM){
                 reqPLObj["albumId"] = contextObj.obj.albumId;
+                reqPLObj["albumName"] = contextObj.obj.album;
+            }else if(contextObj.type === TRACK){
+                reqPLObj["songId"] = contextObj.obj.songId;
                 reqPLObj["albumName"] = contextObj.obj.album;
             }
             dispatch(addToPlaylist(reqPLObj));

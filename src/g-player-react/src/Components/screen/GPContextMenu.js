@@ -26,6 +26,13 @@ export const GPContexMenu = () => {
             }else{
                 tempStyles.top = parseInt(position.y)-gpCtxtMenuHeight;
             }
+
+            const mainContainerWidth = document.getElementById(MAIN_CONTAINER).clientWidth;
+            let gpCtxtMenuWidth = document.getElementById(GP_CONTEXT_MENU).clientWidth;
+            if(gpCtxtMenuWidth === undefined || gpCtxtMenuWidth === 0)gpCtxtMenuWidth = 200;
+            if((mainContainerWidth - position.left) < gpCtxtMenuWidth+40){
+                tempStyles.left = parseInt(position.x)-190;
+            }
             setStyles(tempStyles);
         }
         
@@ -39,7 +46,7 @@ export const GPContexMenu = () => {
             let tempIsclickedOnCM = false;
             if(elem !== undefined && elem !== null){
                 for(let i = 0; i< itrCount;i++){
-                    if(elem && elem.id && emeIds.includes(elem.id)){
+                    if(elem && ((elem.id && emeIds.includes(elem.id)) || (elem.data_id && emeIds.includes(elem.data_id)))){
                         tempIsclickedOnCM = true;
                         break;
                     }else if(elem){
@@ -79,7 +86,7 @@ export const GPContexMenu = () => {
         dispatch(setShowContextMenu(false));
         dispatch(setShowPlaylistSelector(false));
     }
-    
+
     return(
         <div id={GP_CONTEXT_MENU} className="gp-context-menu" style={styles}>
             <div className="row" onClick={()=>onSetShowPlaylistSelector(true)}>

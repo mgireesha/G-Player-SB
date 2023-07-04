@@ -28,6 +28,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +38,7 @@ import com.gmt.gp.model.GPResponse;
 import com.gmt.gp.model.History;
 import com.gmt.gp.model.Library;
 import com.gmt.gp.model.Message;
+import com.gmt.gp.model.PlaylistItems;
 import com.gmt.gp.repositories.AlbumRepository;
 import com.gmt.gp.repositories.ArtistRepository;
 import com.gmt.gp.repositories.LibraryRepository;
@@ -56,6 +58,10 @@ public class LibraryService {
 
     @Autowired
     private MessageService messageService;
+
+    @Autowired
+    @Lazy
+    private PlaylistService playlistService;
 
     @Autowired
     private LibraryRepository libraryRepository;
@@ -335,6 +341,31 @@ public class LibraryService {
                 historyService.saveAll(historyListU);
                 endingTime = System.currentTimeMillis();
                 LOG.info(methodName + " - Time took to update history table : " + (endingTime - startingTime) + " ms, "
+                        + (endingTime - startingTime) / 1000 + " secs");
+
+                messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS_STEP,
+                        "Started updating playlists");
+                startingTime = System.currentTimeMillis();
+                List<PlaylistItems> playlists = playlistService.getAllPlaylistItems();
+                List<PlaylistItems> playlistsR = new ArrayList<PlaylistItems>();
+                List<PlaylistItems> playlistsU = new ArrayList<PlaylistItems>();
+                PlaylistItems playlistItem = null;
+                for (int i = 0; i < playlists.size(); i++) {
+                    playlistItem = playlists.get(i);
+                    library = getLibraryFromLibList(libList, playlistItem);
+                    if (library != null) {
+                        playlistItem.setSongId(library.getSongId());
+                        playlistItem.setSongPath(library.getSongPath());
+                        playlistsU.add(playlistItem);
+                    } else {
+                        playlistsR.add(playlistItem);
+                    }
+                }
+                playlistService.removeAll(playlistsR);
+                playlistService.saveAll(playlistsU);
+                endingTime = System.currentTimeMillis();
+                LOG.info(methodName + " - Time took to update playlistitems table : " + (endingTime - startingTime)
+                        + " ms, "
                         + (endingTime - startingTime) / 1000 + " secs");
             }
         } catch (Exception e) {
@@ -702,6 +733,11 @@ public class LibraryService {
     public Library getLibraryFromLibList(final List<Library> libList, History history) {
         return libList.stream().filter(o -> (o.getTitle().equalsIgnoreCase(history.getTitle())
                 && o.getAlbum().equalsIgnoreCase(history.getAlbum()))).findFirst().orElse(null);
+    }
+
+    public Library getLibraryFromLibList(final List<Library> libList, PlaylistItems playlistItem) {
+        return libList.stream().filter(o -> (o.getSongPath().equalsIgnoreCase(playlistItem.getSongPath())
+                && o.getAlbum().equalsIgnoreCase(playlistItem.getAlbumName()))).findFirst().orElse(null);
     }
 
     public Library getAAttrFromTag(Library song, boolean getAlbumImg, boolean getLyrics) {

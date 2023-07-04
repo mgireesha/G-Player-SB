@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { A_TO_Z, A_TO_Z_DESC, SORT_ARTIST, SORT_YEAR } from "../redux/GPActionTypes";
-import { fetchAllAlbums, setGroupband } from "../redux/library/LibraryActions";
-import { sortGroupByField } from "../utli";
+import { A_TO_Z, A_TO_Z_DESC, SORT_ARTIST, SORT_YEAR } from "../../redux/GPActionTypes";
+import { fetchAllAlbums, setGroupband } from "../../redux/library/LibraryActions";
+import { sortGroupByField } from "../../utli";
 import { AlbumThumb } from "./AlbumThumb";
-import { SortingContainer } from "./SortingContainer";
-import { Spinner } from "./Spinner";
+import { SortingContainer } from "../SortingContainer";
+import { Spinner } from "../Spinner";
 
 export const AlbumList = () => {
     const dispatch = useDispatch();

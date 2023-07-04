@@ -1,11 +1,13 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { ALBUM } from "../../redux/GPActionTypes";
+import { ALBUM, TRACK, TRACK_MENU_BTN_CIRCLE } from "../../redux/GPActionTypes";
 import { playASong, playPause, setIsPlaying } from "../../redux/player/PlayerActions";
 import { getMins } from "../../utli";
 import { ArtistLink } from "../artist/ArtistLink";
 import { FaPlay } from "react-icons/fa";
+import { setContextObj, setShowContextMenu } from "../../redux/library/LibraryActions";
+import { HiOutlineDotsVertical } from "react-icons/hi";
 
 export const Track = ({track, playedFrom, index, hideTrackNum}) => {
     const dispatch = useDispatch();
@@ -19,6 +21,17 @@ export const Track = ({track, playedFrom, index, hideTrackNum}) => {
             dispatch(setIsPlaying(true));
             dispatch(playASong(songId,playedFrom,currentVolume));
         }
+    }
+
+    const showCOntextMenu = (event) => {
+        const position = event.target.getBoundingClientRect();
+        const contextObj = {
+            position,
+            type: TRACK,
+            obj: track
+        }
+        dispatch(setContextObj(contextObj));
+        dispatch(setShowContextMenu(true));
     }
 
     return(
@@ -38,6 +51,15 @@ export const Track = ({track, playedFrom, index, hideTrackNum}) => {
             <label onDoubleClick={()=>playSong(track.songId)}>{track.year!==0?track.year:''}</label>
             <label onDoubleClick={()=>playSong(track.songId)}>{track.genre}</label>
             <label>{getMins(track.trackLength)}</label>
+            <label style={{position:'relative'}}>
+                <div className="track-menu-btn-div">
+                    <div id={TRACK_MENU_BTN_CIRCLE} className="track-menu-btn-circle" onClick={(event)=>showCOntextMenu(event)}>
+                        <div className="track-menu-btn">
+                            <HiOutlineDotsVertical  />
+                        </div>
+                    </div>
+                </div>
+            </label>
         </div>
     );
 }

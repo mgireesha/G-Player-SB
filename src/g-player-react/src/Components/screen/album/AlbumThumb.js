@@ -1,11 +1,11 @@
 import React from "react";
-import def_album_art from '../images/def_album_art.png';
+import def_album_art from '../../images/def_album_art.png';
 import {MdOpenInFull} from "react-icons/md";
 import { HiOutlineDotsHorizontal } from 'react-icons/hi';
 import { Link } from "react-router-dom";
-import { ALBUM } from "../redux/GPActionTypes";
+import { ALBUM } from "../../redux/GPActionTypes";
 import { useDispatch } from "react-redux";
-import { setContextObj, setShowContextMenu } from "../redux/library/LibraryActions";
+import { setContextObj, setShowContextMenu } from "../../redux/library/LibraryActions";
 
 export const AlbumThumb = ({album}) => {
     const dispatch = useDispatch();

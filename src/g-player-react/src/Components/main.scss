@@ -541,7 +541,7 @@
             .track{
                 min-height: 3em;
                 display: grid;
-                grid-template-columns: 1fr 5fr 4fr 5fr 1fr 2fr 1fr;
+                grid-template-columns: 1fr 5fr 4fr 5fr 1fr 2fr 1fr 1fr;
                 align-items: center;
                 background-color: #3a3a3a;
                 margin: 3px 2px;
@@ -904,7 +904,7 @@
     .track{
         min-height: 3em;
         display: grid;
-        grid-template-columns: 1fr 5fr 4fr 5fr 1fr 2fr 1fr;
+        grid-template-columns: 1fr 5fr 4fr 5fr 1fr 2fr 1fr 1fr;
         align-items: center;
         background-color: #3a3a3a;
         margin: 3px 2px;
@@ -1016,7 +1016,7 @@
             min-height: 3em;
             display: grid;
             //grid-template-columns: 1fr 5fr 4fr 5fr 1fr 2fr 1fr;
-            grid-template-columns:5fr 4fr 5fr 1fr 2fr 1fr;
+            grid-template-columns:5fr 4fr 5fr 1fr 2fr 1fr 1fr;
             align-items: center;
             background-color: #3a3a3a;
             margin: 3px 2px;
@@ -1723,7 +1723,7 @@ a.disabled-click{
             .track{
                 min-height: 3em;
                 display: grid;
-                grid-template-columns: 1fr 5fr 4fr 5fr 1fr 2fr 1fr;
+                grid-template-columns: 1fr 5fr 4fr 5fr 1fr 2fr 1fr 1fr;
                 align-items: center;
                 background-color: #3a3a3a;
                 margin: 3px 2px;
@@ -1881,7 +1881,7 @@ a.disabled-click{
             max-height: unset;
             .track{
                 //grid-template-columns: 1fr 5fr 4fr 5fr 1fr 2fr 1fr; // when tracknumber/serial number shown
-                grid-template-columns: 5fr 4fr 5fr 1fr 2fr 1fr; // when tracknumber/serial number hidden
+                grid-template-columns: 5fr 4fr 5fr 1fr 2fr 1fr 1fr; // when tracknumber/serial number hidden
             }
         }
     }
@@ -1914,6 +1914,32 @@ a.disabled-click{
 
     .filter-close-icon:hover{
         color: #616060;
+    }
+}
+
+.track-menu-btn-div{
+    .track-menu-btn-circle{
+        position: absolute;
+        top: -15px;
+        left: 15px;
+        //background-color: rgb(83, 83, 83);
+        border-radius: 50%;
+        cursor: pointer;
+        
+        height: 30px;
+        width: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        svg{
+            margin-top: 5px;
+        }
+    }
+
+    .track-menu-btn-circle:hover{
+        border: 1px solid lightgrey;
+        background-color: #000;
     }
 }
 

@@ -27,6 +27,18 @@ public class PlaylistService {
     @Autowired
     private MessageService messageService;
 
+    public List<PlaylistItems> getAllPlaylistItems() {
+        return (List<PlaylistItems>) playlistRepository.findAll();
+    }
+
+    public void removeAll(List<PlaylistItems> playlistsR) {
+        playlistRepository.deleteAll(playlistsR);
+    }
+
+    public void saveAll(List<PlaylistItems> playlistsU) {
+        playlistRepository.saveAll(playlistsU);
+    }
+
     public GPResponse addToPlaList(PlaylistItems reqPlaylist) {
         System.out.println("reqPlaylist: " + reqPlaylist);
         GPResponse resp = new GPResponse();
@@ -40,6 +52,7 @@ public class PlaylistService {
                 playlist.setPlaylist(reqPlaylist.getPlaylist());
                 playlist.setSongId(library.getSongId());
                 playlist.setSongPath(library.getSongPath());
+                playlist.setAlbumName(library.getAlbum());
                 playlist = playlistRepository.save(playlist);
                 playlists.add(playlist);
                 resp.setStatus(GP_CONSTANTS.SUCCESS);
@@ -54,6 +67,7 @@ public class PlaylistService {
                     playlist.setSongId(library.getSongId());
                     playlist.setSongPath(library.getSongPath());
                     playlist.setAlbumName(library.getAlbum());
+                    playlist.setAlbumId(reqPlaylist.getAlbumId());
                     playlists.add(playlist);
                     playlists = (List<PlaylistItems>) playlistRepository.saveAll(playlists);
                 }

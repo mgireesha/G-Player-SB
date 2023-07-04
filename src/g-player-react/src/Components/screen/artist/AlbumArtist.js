@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { fetchAlbumlistOfAA, fetchAllAlbumArtistsDtls } from "../../redux/library/LibraryActions";
 import { scrollToPlaying } from "../../utli";
-import { AlbumThumb } from "../AlbumThumb";
+import { AlbumThumb } from "../album/AlbumThumb";
 import { ALBUM_ARTIST } from "../../redux/GPActionTypes";
 import def_album_art from '../../images/def_album_art.png';
 

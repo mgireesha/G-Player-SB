@@ -1,12 +1,11 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import def_album_art from '../images/def_album_art.png';
-import { ALBUM } from "../redux/GPActionTypes";
-import { fetchAlbum, fetchAlbumTacks } from "../redux/library/LibraryActions";
-import { setPlayedFrom } from "../redux/player/PlayerActions";
-import { ShowLyrics } from "./ShowLyrics";
-import { Track } from "./track/Track";
+import def_album_art from '../../images/def_album_art.png';
+import { ALBUM } from ".././../redux/GPActionTypes";
+import { ShowLyrics } from "../lyrics/ShowLyrics";
+import { Track } from "../track/Track";
+import { fetchAlbum, fetchAlbumTacks } from "../../redux/library/LibraryActions";
 
 export const Album = () => {
     const dispatch = useDispatch();

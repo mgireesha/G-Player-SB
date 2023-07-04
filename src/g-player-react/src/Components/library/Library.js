@@ -75,10 +75,10 @@ export const Library = () => {
                 if(bStatus===RUNNING){
                     setIsBuildInit(false);
                 }
-                setStatClearIntrvl(setInterval( dispatch(fetchBuildStatus()), 1000));
+                setStatClearIntrvl(setInterval( dispatch(fetchBuildStatus()), 2000));
             }else{
                 if(bStatus===COMPLETED)setIsFetchBStat(false);
-                setStatClearIntrvl(setInterval( dispatch(fetchBuildStatus()), 1000));
+                setStatClearIntrvl(setInterval( dispatch(fetchBuildStatus()), 2000));
             }  
         }
     },[buildStatus, bStatus, isFetchBStat, isBuildInit])

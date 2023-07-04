@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ADD_TO_NEW_PLAYLIST_LABEL, ALBUM, CREATE, CREATE_LABEL, GP_CONTEXT_MENU, INPUT, MAIN_CONTAINER, NEW_PLAYLIST_BTN_LABEL, PLAYLIST_NAME, PLAYLIST_SELECTOR } from "../redux/GPActionTypes";
+import { ADD_TO_NEW_PLAYLIST_LABEL, ALBUM, CREATE, CREATE_LABEL, GP_CONTEXT_MENU, INPUT, MAIN_CONTAINER, NEW_PLAYLIST_BTN_LABEL, PLAYLIST_NAME, PLAYLIST_SELECTOR, TRACK } from "../redux/GPActionTypes";
 import { addToPlaylist, createPlaylist, setAddedNewPlaylistObj, setIsAddToNewPlaylist } from "../redux/playlist/PlaylistActions";
 import { PLAYLIST_ADD_TO_PLAYLIST_SUCCESS, PLAYLIST_CREATE_PLAYLIST_SUCCESS } from "../redux/playlist/PlaylistActionTypes";
 import { setCommonPopupObj, setShowContextMenu, setShowPlaylistSelector } from "../redux/library/LibraryActions";
@@ -19,7 +19,7 @@ export const PlaylistSelector = () => {
             const position = contextObj.position;
             const tempStyles = {
                 left: parseInt(position.x)+185,
-                width: parseInt(position.width),
+                width: 150,
             }
             const mainContainerHeight = document.getElementById(MAIN_CONTAINER).clientHeight;
             let gpCtxtMenuHeight = document.getElementById(GP_CONTEXT_MENU).clientHeight;
@@ -36,7 +36,7 @@ export const PlaylistSelector = () => {
             let gpCtxtMenuWidth = document.getElementById(GP_CONTEXT_MENU).clientWidth;
             if(gpCtxtMenuWidth === undefined || gpCtxtMenuWidth === 0)gpCtxtMenuWidth = 200;
             if((mainContainerWidth - position.left) < gpCtxtMenuWidth+40){
-                tempStyles.left = parseInt(position.x)-151;
+                tempStyles.left = parseInt(position.x)-gpCtxtMenuWidth-154;
             }
             
             setStyles(tempStyles);
@@ -50,6 +50,9 @@ export const PlaylistSelector = () => {
         }
         if(contextObj.type === ALBUM){
             reqPLObj["albumId"] = contextObj.obj.albumId;
+            reqPLObj["albumName"] = contextObj.obj.album;
+        }else if(contextObj.type === TRACK){
+            reqPLObj["songId"] = contextObj.obj.songId;
             reqPLObj["albumName"] = contextObj.obj.album;
         }
         dispatch(addToPlaylist(reqPLObj));
