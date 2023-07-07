@@ -5,7 +5,7 @@ import java.time.LocalDate;
 public class SQL_QUERIES {
 
     public static String getAlbumsGroupedFromHistoryJDBCQuery(int rowCount, String orderBy) {
-        return "select "
+        String query = "select "
                 + "his.album, his.count, his.last_played_time, alb.album_artist, alb.year, alb.genre, alb.is_album_img_avl "
                 + "from "
                 + "(select album, sum(count) as count, max(last_played_time) as last_played_time from history group by album) his "
@@ -14,8 +14,14 @@ public class SQL_QUERIES {
                 + "on "
                 + "alb.album_name=his.album "
                 + "order by "
-                + "his." + orderBy + " desc "
-                + "fetch first " + rowCount + " rows only;";
+                + "his." + orderBy + " desc ";
+        if (rowCount != 0) {
+            query += "fetch first " + rowCount + " rows only;";
+        }
+        if (!query.contains(";")) {
+            query += ";";
+        }
+        return query;
     }
 
     public static String getTopArtistsFromHistoryJDBCQuery() {

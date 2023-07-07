@@ -16,7 +16,6 @@ export const GPContexMenu = () => {
             const tempStyles = {
                 left : parseInt(position.x)-6
             }
-            console.log("contextObj",contextObj);
             const mainContainerHeight = document.getElementById(MAIN_CONTAINER).clientHeight;
             let gpCtxtMenuHeight = document.getElementById(GP_CONTEXT_MENU).clientHeight;
             if(gpCtxtMenuHeight === undefined || gpCtxtMenuHeight === 0)gpCtxtMenuHeight = 160;

@@ -9,8 +9,8 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.gmt</groupId>
-	<artifactId>gmt-gp</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>g-player</artifactId>
+	<version>1.0.0</version>
 	<name>G-Player-SB</name>
 	<description>G-Player-SB</description>
 	<properties>

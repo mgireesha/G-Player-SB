@@ -30,6 +30,9 @@ public class PlaylistService {
     @Autowired
     private MessageService messageService;
 
+    @Autowired
+    private HistoryService historyService;
+
     public List<PlaylistItems> getAllPlaylistItems() {
         return (List<PlaylistItems>) playlistRepository.findAll();
     }
@@ -154,11 +157,41 @@ public class PlaylistService {
     public Map<String, Object> getPlaylistNames(String messageType) {
         List<Message> plNames = messageService.getMessagesByType(messageType);
         Map<Long, List<String>> plAlbums = new HashMap<Long, List<String>>();
+        List<String> plAlbumList = null;
+        List<String> tempPlAlbumList = new ArrayList<String>();
+        String albumName = null;
+        List<Map<String, Object>> hisAlbumList = null;
         Map<String, Object> resp = new HashMap<String, Object>();
         Map<Long, Integer> playlistSongsCount = new HashMap<Long, Integer>();
         resp.put(GP_CONSTANTS.PLAYLIST_NAMES, plNames);
         for (Message message : plNames) {
-            plAlbums.put(message.getMessageId(), getAlbumNamesByPlaylistId(message.getMessageId()));
+            tempPlAlbumList = getAlbumNamesByPlaylistId(message.getMessageId());
+            hisAlbumList = historyService.getAlbumsGroupedFromHistoryJDBC(0, "count");
+            int counter = 0;
+            plAlbumList = new ArrayList<String>();
+
+            for (int i = 0; i < hisAlbumList.size(); i++) {
+                albumName = (String) hisAlbumList.get(i).get("albumName");
+                if (tempPlAlbumList.contains(albumName)) {
+                    counter++;
+                    plAlbumList.add(albumName);
+                }
+                if (counter == 3) {
+                    counter = 0;
+                    break;
+                }
+            }
+            if (plAlbumList.size() < 4 && tempPlAlbumList.size() >= 4) {
+                for (String albumName1 : tempPlAlbumList) {
+                    if (!plAlbumList.contains(albumName1)) {
+                        plAlbumList.add(albumName1);
+                        if (plAlbumList.size() == 4) {
+                            break;
+                        }
+                    }
+                }
+            }
+            plAlbums.put(message.getMessageId(), plAlbumList);
             playlistSongsCount.put(message.getMessageId(), getSongsInPlaylist(message.getMessageId()).size());
         }
         resp.put(GP_CONSTANTS.PLAYLIST_ALBUMS, plAlbums);

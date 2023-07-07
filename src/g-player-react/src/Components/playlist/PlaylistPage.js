@@ -13,7 +13,7 @@ export const PlaylistPage = () => {
     const { playlistName, playlistId } = useParams();
 
     const playlistSongs = useSelector(state => state.playlist.playlistSongs);
-    const [albumNames, setAlbumNames] = useState([]);
+    const playlistAlbums = useSelector(state => state.playlist.playlistAlbums);
     const [trackListInp, setTrackListInp] = useState({});
 
     useEffect(()=>{
@@ -71,23 +71,9 @@ export const PlaylistPage = () => {
         }
     }
 
-
-    useEffect(()=>{
-        if(playlistSongs && playlistSongs.length > 0){
-            const albums = playlistSongs.filter((song, index)=>playlistSongs.findIndex((iSong)=>iSong.album === song.album)=== index);
-            const tempAlbumNames = albums.map((album)=>album.album);
-            if(tempAlbumNames.length > 4){
-                tempAlbumNames.length = 4;
-            }
-            setAlbumNames(tempAlbumNames);
-        }else{
-            setAlbumNames([]);
-        }
-    },[playlistSongs]);
-
     return(
         <div className="playlist-page">
-            <PlaylistPageHeader albumNames={albumNames} songsCount={playlistSongs.length} playAll={playAll} />
+            <PlaylistPageHeader albumNames={playlistAlbums[playlistId]} songsCount={playlistSongs.length} playAll={playAll} />
             {playlistSongs.length > 0 && trackListInp.playedFrom &&
                 <TrackList tracks={playlistSongs} trackListInp={trackListInp} />
             }

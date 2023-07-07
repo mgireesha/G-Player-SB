@@ -193,7 +193,6 @@ export const Player = () => {
         if (action === CURRENT) {
             nextSong = songPlaying.songId;
         } else {
-            console.log("pTrackList", pTrackList);
             if (pTrackList.length > 0) {
                 library = pTrackList;
             } else {
