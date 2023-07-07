@@ -33,7 +33,7 @@ build/
 .vscode/
 
 # database
-src/main/resources/database/
+database/
 
 ### React App ###
 src/g-player-react/node_modules/

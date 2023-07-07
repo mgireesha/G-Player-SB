@@ -11,8 +11,22 @@ public class Artist {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long artistId;
     private String artistName;
+    private String type;
+    private boolean isImgAvl;
+    private int count;
 
-    
+    public String getType() {
+        return type;
+    }
+    public void setType(String type) {
+        this.type = type;
+    }
+    public boolean isImgAvl() {
+        return isImgAvl;
+    }
+    public void setImgAvl(boolean isImgAvl) {
+        this.isImgAvl = isImgAvl;
+    }
     public Artist() {
     }
     public long getArtistId() {
@@ -27,5 +41,18 @@ public class Artist {
     public void setArtistName(String artistName) {
         this.artistName = artistName;
     }
+    public int getCount() {
+        return count;
+    }
+    public void setCount(int count) {
+        this.count = count;
+    }
+    @Override
+    public String toString() {
+        return "Artist [artistId=" + artistId + ", artistName=" + artistName + ", type=" + type + ", isImgAvl="
+                + isImgAvl + ", count=" + count + "]";
+    }
+
+    
     
 }

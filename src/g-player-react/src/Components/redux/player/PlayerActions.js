@@ -11,8 +11,12 @@ export const setIsPlaying = (isPlaying) => ({
     isPlaying
 })
 
-export const playPause = () => ({
-    type: PLAYER_PLAY_PAUSE_START
+export const playPause = (songPlaying, playedFrom, currentVolume, currentPlayTime) => ({
+    type: PLAYER_PLAY_PAUSE_START,
+    songPlaying,
+    playedFrom,
+    currentVolume,
+    currentPlayTime
 })
 
 export const playPauseSucc = (response) => ({
@@ -20,11 +24,12 @@ export const playPauseSucc = (response) => ({
     response
 })
 
-export const playASong = (songId, playedFrom, currentVolume) => ({
+export const playASong = (songId, playedFrom, currentVolume, currentPlayTime) => ({
     type: PLAYER_PLAY_A_SONG_START,
     songId,
     playedFrom,
-    currentVolume
+    currentVolume,
+    currentPlayTime
 })
 
 export const playASongSucc = (response,playedFrom) => ({
@@ -77,9 +82,9 @@ export const fetchCurrentSontAndStatusSucc = (response) => ({
     response
 })
 
-export const setIsRepeat = (isRepeat) => ({
+export const setRepeat = (repeat) => ({
     type: SET_PLAYER_ISREPEAT,
-    isRepeat
+    repeat
 })
 
 export const setIsShuffle = (isShuffle) => ({
