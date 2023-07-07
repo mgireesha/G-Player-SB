@@ -1,7 +1,6 @@
 import React from "react";
 import { CreatePlayListBtn } from "./CreatePlayListBtn";
 import { Link } from "react-router-dom";
-import def_album_art from '../images/def_album_art.png';
 import { useSelector } from "react-redux";
 import { PlaylistImg } from "./PlaylistImg";
 

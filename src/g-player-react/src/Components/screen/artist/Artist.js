@@ -108,7 +108,6 @@ export const Artist = () => {
                 data = null;
             }
         }
-        console.log("data", data);
         setArtistWiki(data);
         if(data["thumbnail"]!==undefined){
             setArtistWikiImg(data.thumbnail.source);

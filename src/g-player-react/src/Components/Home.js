@@ -21,7 +21,6 @@ export const Home = () => {
     const dispatch = useDispatch();
     const showContextMenu = useSelector(state => state.library.showContextMenu);
     const showPlaylistSelector = useSelector(state => state.library.showPlaylistSelector);
-    console.log("showContextMenu",showContextMenu)
     useEffect(()=>{
         dispatch(fetchPlaylistNames());
         //dispatch(fetchAlbumImgs());
