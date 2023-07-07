@@ -8,17 +8,16 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.gmt.gp.model.Library;
 
-public interface LibraryRepository extends CrudRepository<Library, Long>{
-    
+public interface LibraryRepository extends CrudRepository<Library, Long> {
 
     @Modifying
-    @Query(value = "truncate table library",nativeQuery = true)
+    @Query(value = "truncate table library", nativeQuery = true)
     void truncateMyTable();
 
-    Library getBySongId(int songId);
+    Library getBySongId(long songId);
 
     Library getBySongPath(String songPath);
-    
+
     List<Library> getByAlbum(String album);
 
     List<Library> getByYear(int year);
@@ -45,5 +44,8 @@ public interface LibraryRepository extends CrudRepository<Library, Long>{
 
     @Query("SELECT l.songId from Library as l order by l.title asc")
     List<Long> getAllLibraryIds();
+
+    @Query("Select l from Library l where l.songId in (:songsId) order by l.title")
+    List<Library> getSongsBySongIds(List<Long> songsId);
 
 }

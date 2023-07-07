@@ -5,8 +5,8 @@ import { RECENT_PLAYS, RECENT_PLAYS_LABEL } from "../redux/GPActionTypes";
 import { fetchAllHistory } from "../redux/library/LibraryActions";
 import { setPlayedFrom } from "../redux/player/PlayerActions";
 import { AlbumThumbsGrouped } from "../screen/album/AlbumThumbsGrouped";
-import { AlbumThumb } from "../screen/AlbumThumb";
-import { Track } from "../screen/Track";
+import { Track } from "../screen/track/Track";
+import { AlbumThumb } from "../screen/album/AlbumThumb";
 
 export const RecentPlays = () => {
     const dispatch = useDispatch();

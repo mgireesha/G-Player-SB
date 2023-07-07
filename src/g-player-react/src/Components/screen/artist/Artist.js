@@ -4,7 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import { ARTIST, WIKI_SUMMARY_URL } from "../../redux/GPActionTypes";
 import { fetchAllArtistsDtls, fetchSongsByArtist } from "../../redux/library/LibraryActions";
 import { setPlayedFrom } from "../../redux/player/PlayerActions";
-import { Track } from "../Track";
+import { Track } from "../track/Track";
 import def_album_art from '../../images/def_album_art.png';
 import { scrolltoId } from "../..//utli";
 import { FilterComp } from "../../FilterComp";

@@ -4,10 +4,10 @@ import { useParams } from "react-router-dom";
 import { Header } from "../header/Header";
 import { SEARCH_RESULTS_LABEL, TRACK_LIST } from "../redux/GPActionTypes";
 import { searchByKey } from "../redux/library/LibraryActions";
-import { AlbumThumb } from "../screen/AlbumThumb";
 import { AlbumArtistThumb } from "../screen/artist/AlbumArtistThumb";
 import { ArtistThumb } from "../screen/artist/ArtistThumb";
-import { Track } from "../screen/Track";
+import { Track } from "../screen/track/Track";
+import { AlbumThumb } from "../screen/album/AlbumThumb";
 
 export const Search = () => {
     const dispatch = useDispatch();

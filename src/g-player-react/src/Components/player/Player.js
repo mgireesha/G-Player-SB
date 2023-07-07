@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fettchCurrentSongStatus, playASong, playPause, setIsPlaying, setIsShuffle, setPlayBackLength, setRepeat } from "../redux/player/PlayerActions";
 import { getMins, scrolltoId, scrollToPlaying, setCookies } from "../utli";
 import { VolumeH } from "./VolumeH";
-import { ALBUM, ARTIST, CURRENT, NEXT, PREVIOUS, RECENT_PLAYS, REPEAT_ALL, REPEAT_OFF, REPEAT_ONE, TRACK_LIST } from "../redux/GPActionTypes";
+import { ALBUM, ARTIST, CURRENT, NEXT, PLAYLIST, PREVIOUS, RECENT_PLAYS, REPEAT_ALL, REPEAT_OFF, REPEAT_ONE, TRACK_LIST } from "../redux/GPActionTypes";
 import { Link } from "react-router-dom";
 import { ArtistLink } from "../screen/artist/ArtistLink";
 import { fetchAllHistory, updateHistory } from "../redux/library/LibraryActions";
@@ -29,6 +29,7 @@ export const Player = () => {
     const albumTracks = useSelector(state => state.library.albumTracks);
     const artistTracks = useSelector(state => state.library.artistTracks);
     const historyTracks = useSelector(state => state.library.history.songs);
+    const playlistSongs = useSelector(state => state.playlist.playlistSongs);
     const currentVolume = useSelector(state => state.player.currentVolume);
     const [statClearIntrvl, setStatClearIntrvl] = useState(0);
     const [currentPlayVal, setCurrentplayVal] = useState(0);
@@ -136,6 +137,11 @@ export const Player = () => {
             case RECENT_PLAYS:
                 if(historyTracks!==undefined && historyTracks.length>0){
                     library = historyTracks.map((track) => { return track.songId});
+                }
+                break;
+            case PLAYLIST:
+                if(playlistSongs!==undefined && playlistSongs.length>0){
+                    library = playlistSongs.map((track) => { return track.songId});
                 }
                 break;
             default:

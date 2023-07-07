@@ -20,7 +20,7 @@ import { FETCH_SONGS_START, FETCH_SONGS_SUCCESS,
         LIBRARY_FETCH_MOST_PLAYED_DATA_SUCCESS, 
         LIBRARY_FETCH_MUSIC_PATH_START, 
         LIBRARY_FETCH_MUSIC_PATH_SUCCESS, 
-        LIBRARY_FETCH_SONGS_BY_ARTIST_START, LIBRARY_FETCH_SONGS_BY_ARTIST_SUCCESS, LIBRARY_INIT_ARTIST_IMG_DOWNLOAD_START, LIBRARY_INIT_ARTIST_IMG_DOWNLOAD_SUCCESS, LIBRARY_INIT_BUILD_LIBRARY_START, LIBRARY_INIT_BUILD_LIBRARY_SUCESS, LIBRARY_SAVE_MUSIC_PATH_START, LIBRARY_SAVE_MUSIC_PATH_SUCCESS, LIBRARY_SEARCH_BY_KEY_START, LIBRARY_SEARCH_BY_KEY_SUCCESS, SET_GROUP_BAND 
+        LIBRARY_FETCH_SONGS_BY_ARTIST_START, LIBRARY_FETCH_SONGS_BY_ARTIST_SUCCESS, LIBRARY_INIT_ARTIST_IMG_DOWNLOAD_START, LIBRARY_INIT_ARTIST_IMG_DOWNLOAD_SUCCESS, LIBRARY_INIT_BUILD_LIBRARY_START, LIBRARY_INIT_BUILD_LIBRARY_SUCESS, LIBRARY_SAVE_MUSIC_PATH_START, LIBRARY_SAVE_MUSIC_PATH_SUCCESS, LIBRARY_SEARCH_BY_KEY_START, LIBRARY_SEARCH_BY_KEY_SUCCESS, SET_COMMON_POPUP_OBJ, SET_CONTEXT_OBJECT, SET_CURRENT_PAGE, SET_GROUP_BAND, SET_IS_CLICKED_ON_CONTEXT_MENU, SET_SHOW_CONTEXT_MENU, SET_SHOW_PLAY_LIST_SELECTOR 
     } from "./LibraryActionTypes";
 
 export const fethAllSongs = () => ({
@@ -225,6 +225,36 @@ export const updateHistorySucc = (response) => ({
 })
 
 //History End
+
+export const setShowContextMenu = (showContextMenu) => ({
+    type: SET_SHOW_CONTEXT_MENU,
+    showContextMenu
+})
+
+export const setIsClickedOnCM = (isclickedOnCM) => ({
+    type: SET_IS_CLICKED_ON_CONTEXT_MENU,
+    isclickedOnCM
+})
+
+export const setContextObj = (contextObj) => ({
+    type: SET_CONTEXT_OBJECT,
+    contextObj
+})
+
+export const setCommonPopupObj = (commonPopupObj) => ({
+    type: SET_COMMON_POPUP_OBJ,
+    commonPopupObj
+})
+
+export const setShowPlaylistSelector = (showPlaylistSelector) => ({
+    type: SET_SHOW_PLAY_LIST_SELECTOR,
+    showPlaylistSelector
+})
+
+export const setCurrentPage = (currentPage) => ({
+    type: SET_CURRENT_PAGE,
+    currentPage
+})
 
 export const filterMusicPath = (response, musicPath,musicPaths) => {
     if(response.status===SUCCESS){

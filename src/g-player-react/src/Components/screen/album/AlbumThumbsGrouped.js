@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { AlbumThumb } from "../AlbumThumb";
 import def_album_art from '../../images/def_album_art.png';
 
 export const AlbumThumbsGrouped = ({albums}) => {

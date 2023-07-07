@@ -40,10 +40,10 @@ public class HistoryService {
     private MessageService messageService;
 
     public void updateHistory(Library song) {
-        History history =  historyRepository.getBySongId(song.getSongId());
-        if(history!=null){
-            history.setCount(history.getCount()+1);
-        }else{
+        History history = historyRepository.getBySongId(song.getSongId());
+        if (history != null) {
+            history.setCount(history.getCount() + 1);
+        } else {
             history = new History(song);
             history.setCount(1);
         }
@@ -51,7 +51,7 @@ public class HistoryService {
         historyRepository.save(history);
     }
 
-    public List<History> getAllHistory(){
+    public List<History> getAllHistory() {
         return (List<History>) historyRepository.findAll();
     }
 
@@ -62,7 +62,7 @@ public class HistoryService {
         return allHistory;
     }
 
-    public List<Map<String, Object>> getAlbumsGroupedFromHistoryJDBC(int rowCount, String orderBy){
+    public List<Map<String, Object>> getAlbumsGroupedFromHistoryJDBC(int rowCount, String orderBy) {
         Map<String, Object> album = null;
         List<Map<String, Object>> albumArr = new ArrayList<Map<String, Object>>();
         Connection con = null;
@@ -71,7 +71,7 @@ public class HistoryService {
             con = DbUtil.getConnection();
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
-            while(rs.next()){
+            while (rs.next()) {
                 album = new HashMap<String, Object>();
                 album.put("albumName", rs.getString("ALBUM"));
                 album.put("albumArtist", rs.getString("ALBUM_ARTIST"));
@@ -95,8 +95,8 @@ public class HistoryService {
     public void saveAll(List<History> historyListU) {
         historyRepository.saveAll(historyListU);
     }
-    
-    public Map<String, Object> getMostPlayedData(){
+
+    public Map<String, Object> getMostPlayedData() {
         Map<String, Object> finalRes = new HashMap<String, Object>();
         LocalDate today = LocalDate.now();
         LocalDate lastMonth = today.minusMonths(1);
@@ -107,13 +107,14 @@ public class HistoryService {
         for (Map.Entry<String, Integer> l : list) {
             counter++;
             pData.add(libraryService.getByArtistNameAndType(l.getKey().trim(), GP_CONSTANTS.ARTIST));
-            if(counter==5)break;
+            if (counter == 5)
+                break;
         }
         finalRes.put(GP_CONSTANTS.ARTISTS, pData);
         pData = new ArrayList<Object>();
-        
+
         hisCount = executeMostPlayedHisQuery(SQL_QUERIES.getTopAlbumArtistFromHistoryJDBCQuery());
-        for(String albumArtistName : hisCount.keySet()){
+        for (String albumArtistName : hisCount.keySet()) {
             pData.add(libraryService.getByArtistNameAndType(albumArtistName, GP_CONSTANTS.ALBUM_ARTIST));
         }
         finalRes.put(GP_CONSTANTS.ALBUM_ARTISTS, pData);
@@ -125,7 +126,7 @@ public class HistoryService {
 
         finalRes.putAll(executeJDBCQuerySingleRow(SQL_QUERIES.getHisLibCountJDBCQuery()));
 
-        finalRes.putAll(executeJDBCQuerySingleRow(SQL_QUERIES.getThismountPlayedCountJDBCQuery(lastMonth)));
+        finalRes.putAll(executeJDBCQuerySingleRow(SQL_QUERIES.getThismonthPlayedCountJDBCQuery(lastMonth)));
 
         finalRes.putAll(executeJDBCQuerySingleRow(SQL_QUERIES.getTotalTimePlayed(lastMonth)));
 
@@ -135,19 +136,20 @@ public class HistoryService {
     private int getAllGenreCount() {
         int genreCount = 0;
         Message message = messageService.getMessageByName(GP_CONSTANTS.GENRE_COUNT);
-        if(message!=null){
+        if (message != null) {
             genreCount = Integer.parseInt(message.getValue());
-        }else{
+        } else {
             Map<String, Object> genreCountList = executeJDBCQuerySingleRow(SQL_QUERIES.getGenreCountJDBCQuery());
-            if(genreCountList.get(GP_CONSTANTS.GENRE_COUNT)!=null){
+            if (genreCountList.get(GP_CONSTANTS.GENRE_COUNT) != null) {
                 genreCount = Integer.parseInt((String) genreCountList.get(GP_CONSTANTS.GENRE_COUNT));
-                messageService.saveMaMessage(new Message(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.GENRE_COUNT, String.valueOf(genreCount)));
+                messageService.saveMaMessage(
+                        new Message(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.GENRE_COUNT, String.valueOf(genreCount)));
             }
         }
         return genreCount;
     }
 
-    private Map<String, Integer> executeMostPlayedHisQuery(String query){
+    private Map<String, Integer> executeMostPlayedHisQuery(String query) {
         Connection con = null;
         Statement stmt = null;
         ResultSet rs = null;
@@ -156,22 +158,22 @@ public class HistoryService {
             con = DbUtil.getConnection();
             stmt = con.createStatement();
             rs = stmt.executeQuery(query);
-            while(rs.next()){
+            while (rs.next()) {
                 hisRes.put(rs.getString(1), rs.getInt(2));
             }
         } catch (Exception e) {
-           e.printStackTrace();
-        } finally{
+            e.printStackTrace();
+        } finally {
             try {
                 DbUtil.closeResources(con, stmt, rs);
             } catch (DaoException e) {
                 e.printStackTrace();
             }
         }
-    return hisRes;
+        return hisRes;
     }
 
-    public Map<String, Object> executeJDBCQuerySingleRow(String query){
+    public Map<String, Object> executeJDBCQuerySingleRow(String query) {
         Connection con = null;
         Statement stmt = null;
         ResultSet rs = null;
@@ -181,20 +183,20 @@ public class HistoryService {
             stmt = con.createStatement();
             rs = stmt.executeQuery(query);
             ResultSetMetaData rsMetData = rs.getMetaData();
-            while(rs.next()){
-                for(int i=0; i<rsMetData.getColumnCount();i++){
-                    objMap.put(rsMetData.getColumnLabel(i+1), rs.getString(i+1));
+            while (rs.next()) {
+                for (int i = 0; i < rsMetData.getColumnCount(); i++) {
+                    objMap.put(rsMetData.getColumnLabel(i + 1), rs.getString(i + 1));
                 }
             }
         } catch (Exception e) {
-           e.printStackTrace();
-        } finally{
+            e.printStackTrace();
+        } finally {
             try {
                 DbUtil.closeResources(con, stmt, rs);
             } catch (DaoException e) {
                 e.printStackTrace();
             }
         }
-    return objMap;
+        return objMap;
     }
 }

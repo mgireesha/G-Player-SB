@@ -2,7 +2,7 @@ import React from "react";
 import { A_TO_Z, A_TO_Z_DESC, SORT_ARTIST, SORT_COUNT_ALBUMS, SORT_COUNT_TRACKS, SORT_YEAR } from "../redux/GPActionTypes";
 import { scrolltoId } from "../utli";
 
-export const SortingContainer = ({sortBy, setSortBy, sortListKeys, sortSelectors}) => {
+export const SortingContainer = ({sortBy, setSortBy, sortListKeys, sortSelectors, showLKey}) => {
     return(
         <>
             <div className="order-container">
@@ -16,11 +16,11 @@ export const SortingContainer = ({sortBy, setSortBy, sortListKeys, sortSelectors
                     {sortSelectors.includes(SORT_COUNT_TRACKS) && <option value={SORT_COUNT_TRACKS} selected={sortBy===SORT_COUNT_TRACKS?true:false}>{SORT_COUNT_TRACKS}</option>}
                 </select>
             </div>
-            <div className="lKey-line">
+            {showLKey && <div className="lKey-line">
                 {sortBy!==SORT_ARTIST && sortListKeys !== undefined && sortListKeys.length > 0 && sortListKeys.map((lKey, index) =>
                     <span onClick={() => scrolltoId("lKey" + lKey)} className={lKey.length>8?sortBy+"_25":sortBy+"_10"}>{lKey}</span>
                 )}
-            </div>
+            </div>}
         </>
     );
 }

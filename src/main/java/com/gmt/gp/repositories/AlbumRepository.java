@@ -8,20 +8,20 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.gmt.gp.model.Album;
 
-public interface AlbumRepository extends CrudRepository<Album, Long>{
+public interface AlbumRepository extends CrudRepository<Album, Long> {
 
     @Modifying
-    @Query(value = "truncate table album",nativeQuery = true)
+    @Query(value = "truncate table album", nativeQuery = true)
     void truncateMyTable();
-    
+
     Iterable<Album> findAllByOrderByAlbumNameAsc();
 
-    Album getByAlbumId(Long id);
+    Album getByAlbumId(long id);
 
     Album getByAlbumName(String albumName);
 
     List<Album> getByAlbumArtist(String albumArtist);
 
     List<Object> getByAlbumNameContainsIgnoreCase(String searchKey);
-    
+
 }

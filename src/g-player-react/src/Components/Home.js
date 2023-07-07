@@ -2,26 +2,35 @@ import React, { useEffect } from "react";
 import { Player } from "./player/Player";
 import { Sidebar } from "./Sidebar";
 import { Screen } from "./screen/Screen";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchAlbumTacks, fetchAllAlbums, fetchAllHistory, fetchSongsByArtist, fethAllSongs } from "./redux/library/LibraryActions";
-import { fetchCurrentSontAndStatus, playASongSucc, setIsShuffle, setMediaVolume, setMediaVolumeSucc, setRepeat } from "./redux/player/PlayerActions";
+import { fetchCurrentSontAndStatus, playASongSucc, setIsShuffle, setMediaVolumeSucc, setRepeat } from "./redux/player/PlayerActions";
 import { getCookieDetails, getCookieValue } from "./utli";
-import { ALBUM, ARTIST, RECENT_PLAYS, TRACK_LIST } from "./redux/GPActionTypes";
+import { ALBUM, ARTIST, MAIN_CONTAINER, RECENT_PLAYS, TRACK_LIST } from "./redux/GPActionTypes";
 import { Route, Routes } from "react-router-dom";
 import { Library } from "./library/Library";
 import { Search } from "./search/Search";
 import { RecentPlays } from "./history/RecentPlays";
+import { Playlist } from "./playlist/Playlist";
+import { fetchPlaylistNames } from "./redux/playlist/PlaylistActions";
+import { PlaylistSelector } from "./playlist/PlayllistSelector";
+import { CommonPopup } from "./CommnPopup";
+import { GPContexMenu } from "./screen/GPContextMenu";
 
 export const Home = () => {
     const dispatch = useDispatch();
+    const showContextMenu = useSelector(state => state.library.showContextMenu);
+    const showPlaylistSelector = useSelector(state => state.library.showPlaylistSelector);
+    console.log("showContextMenu",showContextMenu)
     useEffect(()=>{
-        
+        dispatch(fetchPlaylistNames());
         //dispatch(fetchAlbumImgs());
         //dispatch(fetchAllAlbumsDtls());
         dispatch(fetchAllAlbums());
         //dispatch(fetchCurrentSontAndStatus());
         getSetCookieDetails();
         fetchTracks();
+        
     },[]);
 
     const getSetCookieDetails = () =>{
@@ -69,16 +78,20 @@ export const Home = () => {
     }
 
     return(
-        <div className="main-container">
+        <div className="main-container" id={MAIN_CONTAINER}>
             <Sidebar />
             <Routes>
                 <Route path="/music/*" element={<Screen/>} />
                 <Route path="/search/:searchKey" element={<Search/>} />
                 <Route path="/recent" element={<RecentPlays />} />
                 <Route path="/library/*" element={<Library/>} />
+                <Route path="/playlist/*" element={<Playlist/>} />
                 <Route path="/*" element={<Screen/>} />
             </Routes>
             <Player />
+            {showContextMenu && <GPContexMenu />}
+            {showPlaylistSelector && <PlaylistSelector />}
+            <CommonPopup />
         </div>
     );
 }

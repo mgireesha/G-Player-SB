@@ -1,15 +1,15 @@
 import React from "react";
-import { Link, Route, Routes } from "react-router-dom";
-import { Album } from "./Album";
+import { Route, Routes } from "react-router-dom";
 import { AlbumArtistList } from "./artist/AlbumArtistList";
-import { AlbumList } from "./AlbumList";
+import { AlbumList } from "./album/AlbumList";
 import { Artist } from "./artist/Artist";
 import { ArtistsList } from "./artist/ArtistsList";
-import { TrackList } from "./TrackList";
 import { AlbumArtist } from "./artist/AlbumArtist";
 import { Music } from "./Music";
 import { Header } from "../header/Header";
 import { MUSIC_LABEL } from "../redux/GPActionTypes";
+import { Tracks } from "./track/Tracks";
+import { Album } from "./album/Album";
 
 export const Screen = () => {
     return(
@@ -17,8 +17,7 @@ export const Screen = () => {
             <Header showGB={true} linkTO="/music" headerLbl={MUSIC_LABEL} />
             <Routes>
                 <Route path='/' element={<Music />} />
-                <Route path='tracks' element={<TrackList />} />
-                <Route path='tracks' element={<TrackList />} />
+                <Route path='tracks' element={<Tracks />} />
                 <Route path='albums/:albumName' element={<Album />} />
                 <Route path='albums' element={<AlbumList />} />
                 <Route path='artists/:artist' element={<Artist />} />

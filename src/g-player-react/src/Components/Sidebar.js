@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import {IoIosMusicalNotes} from 'react-icons/io';
-import {IoTimeOutline} from 'react-icons/io5';
-import {MdLibraryMusic} from 'react-icons/md';
+import { IoIosMusicalNotes } from 'react-icons/io';
+import { IoTimeOutline } from 'react-icons/io5';
+import { MdLibraryMusic } from 'react-icons/md';
 import { AiOutlineMenuFold } from 'react-icons/ai';
+import { HiPlusSmall } from 'react-icons/hi2';
+import { TbPlaylist } from 'react-icons/tb';
 import { Link, useLocation } from "react-router-dom";
-import { LIBRARY, MUSIC, RECENT } from "./redux/GPActionTypes";
+import { LIBRARY, LIBRARY_LABEL, MUSIC, MUSIC_LABEL, PLAYLISTS, PLAYLISTS_LABEL, RECENT, RECENT_PLAYS_LABEL } from "./redux/GPActionTypes";
 import { SearchInput } from "./search/SearchInput";
 import { showHideSideBar } from "./utli";
 
@@ -14,12 +16,14 @@ export const Sidebar = () => {
     useEffect(()=>{
         let uri = locationL.pathname;
         if(uri!==null && uri!==''){
-            if(uri.startsWith("/music")){
-                setSelectedRow(MUSIC);
-            }else if(uri.startsWith("/recent")){
+            if(uri.startsWith("/recent")){
                 setSelectedRow(RECENT);
             }else if(uri.startsWith("/library")){
                 setSelectedRow(LIBRARY);
+            }else if(uri.startsWith("/playlist")){
+                setSelectedRow(PLAYLISTS);
+            }else {
+                setSelectedRow(MUSIC);
             }
         }
     },[locationL]);
@@ -33,17 +37,25 @@ export const Sidebar = () => {
             </div>
             <div className={selectedRow===MUSIC?"row sidebar-slected-row":"row"}>
                 <Link to='/music' onClick={showHideSideBar}>
-                    <label><span><IoIosMusicalNotes className="icon" /></span><span>Music</span></label>
+                    <label><span><IoIosMusicalNotes className="icon" /></span><span>{MUSIC_LABEL}</span></label>
                 </Link>
+            </div>
+            <div className={selectedRow===PLAYLISTS?"row sidebar-slected-row":"row"}>
+                <div className="playlist-link">
+                    <Link to='/playlist' onClick={showHideSideBar}>
+                        <label><span><TbPlaylist className="icon" /></span><span>{PLAYLISTS_LABEL}</span></label>
+                    </Link>
+                    
+                </div>
             </div>
             <div className={selectedRow===RECENT?"row sidebar-slected-row":"row"}>
                 <Link to='/recent' onClick={showHideSideBar}>
-                    <label><span><IoTimeOutline className="icon" /></span><span>Recent Plays</span></label>
+                    <label><span><IoTimeOutline className="icon" /></span><span>{RECENT_PLAYS_LABEL}</span></label>
                 </Link>
             </div>
             <div className={selectedRow===LIBRARY?"row sidebar-slected-row":"row"}>
                 <Link to='/library' onClick={showHideSideBar}>
-                    <label><span><MdLibraryMusic className="icon" /></span><span>Library</span></label>
+                    <label><span><MdLibraryMusic className="icon" /></span><span>{LIBRARY_LABEL}</span></label>
                 </Link>
             </div>
         </div>
