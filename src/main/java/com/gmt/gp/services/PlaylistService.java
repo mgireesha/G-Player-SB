@@ -1,7 +1,10 @@
 package com.gmt.gp.services;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -85,7 +88,13 @@ public class PlaylistService {
 
     public List<Library> getSongsInPlaylist(long playlistId) {
         List<Long> songIds = playlistRepository.getSongIdsInPlaylist(playlistId);
-        return libraryService.getSongsBySongIds(songIds);
+        List<Library> songs = libraryService.findAllByIds(songIds);
+        List<Library> songsInPlaylist = new ArrayList<Library>();
+        for (long songId : songIds) {
+            songsInPlaylist.add(songs.stream().filter(o -> (o.getSongId() == songId)).findFirst().orElse(null));
+        }
+        Collections.sort(songsInPlaylist, (o1, o2) -> (o1.getTitle().compareTo(o2.getTitle())));
+        return songsInPlaylist;
     }
 
     public List<String> getAlbumNamesByPlaylistId(long playlistId) {
@@ -124,4 +133,36 @@ public class PlaylistService {
         return resp;
     }
 
+    public GPResponse removeFromPlaylist(long playlistId, long songId) {
+        GPResponse resp = new GPResponse();
+        try {
+            System.out.println("playlistId: " + playlistId + ",  songId: " + songId);
+            List<PlaylistItems> playlistItems = playlistRepository.getByPlaylistIdAndSongId(playlistId, songId);
+            if (playlistItems != null && playlistItems.size() > 0) {
+                PlaylistItems playlistItem = playlistItems.get(0);
+                playlistRepository.delete(playlistItem);
+                resp.setPlaylist(playlistItem);
+                resp.setStatus(GP_CONSTANTS.SUCCESS);
+            }
+        } catch (Exception e) {
+            resp.setError(e.getMessage());
+            resp.setStatus(GP_CONSTANTS.FAILED);
+        }
+        return resp;
+    }
+
+    public Map<String, Object> getPlaylistNames(String messageType) {
+        List<Message> plNames = messageService.getMessagesByType(messageType);
+        Map<Long, List<String>> plAlbums = new HashMap<Long, List<String>>();
+        Map<String, Object> resp = new HashMap<String, Object>();
+        Map<Long, Integer> playlistSongsCount = new HashMap<Long, Integer>();
+        resp.put(GP_CONSTANTS.PLAYLIST_NAMES, plNames);
+        for (Message message : plNames) {
+            plAlbums.put(message.getMessageId(), getAlbumNamesByPlaylistId(message.getMessageId()));
+            playlistSongsCount.put(message.getMessageId(), getSongsInPlaylist(message.getMessageId()).size());
+        }
+        resp.put(GP_CONSTANTS.PLAYLIST_ALBUMS, plAlbums);
+        resp.put(GP_CONSTANTS.PLAYLIST_SONGS_COUNT, playlistSongsCount);
+        return resp;
+    }
 }

@@ -1,5 +1,5 @@
 import { ADD, RENAME } from "../GPActionTypes"
-import { PLAYLIST_ADD_TO_PLAYLIST_START, PLAYLIST_ADD_TO_PLAYLIST_SUCCESS, PLAYLIST_CREATE_PLAYLIST_START, PLAYLIST_CREATE_PLAYLIST_SUCCESS, PLAYLIST_DELETE_PLAYLIST_START, PLAYLIST_DELETE_PLAYLIST_SUCCESS, PLAYLIST_FETCH_PLAYLIST_NAMES_START, PLAYLIST_FETCH_PLAYLIST_NAMES_SUCCESS, PLAYLIST_FETCH_SONGS_IN_PLAYLIST_START, PLAYLIST_FETCH_SONGS_IN_PLAYLIST_SUCCESS, PLAYLIST_RENAME_PLAYLIST_START, PLAYLIST_RENAME_PLAYLIST_SUCCESS, SET_ADDED_NEW_PLAYLIST_OBJ, SET_ADD_TO_NEW_PLAYLIST_OBJ, SET_IS_ADD_TO_NEW_PLAYLIST, SET_SHOW_CREATE_PLAYLIST_POPUP } from "./PlaylistActionTypes"
+import { PLAYLIST_ADD_TO_PLAYLIST_START, PLAYLIST_ADD_TO_PLAYLIST_SUCCESS, PLAYLIST_CREATE_PLAYLIST_START, PLAYLIST_CREATE_PLAYLIST_SUCCESS, PLAYLIST_DELETE_PLAYLIST_START, PLAYLIST_DELETE_PLAYLIST_SUCCESS, PLAYLIST_FETCH_PLAYLIST_NAMES_START, PLAYLIST_FETCH_PLAYLIST_NAMES_SUCCESS, PLAYLIST_FETCH_SONGS_IN_PLAYLIST_START, PLAYLIST_FETCH_SONGS_IN_PLAYLIST_SUCCESS, PLAYLIST_REMOVE_FROM_PLAYLIST_START, PLAYLIST_REMOVE_FROM_PLAYLIST_SUCCESS, PLAYLIST_RENAME_PLAYLIST_START, PLAYLIST_RENAME_PLAYLIST_SUCCESS, SET_ADDED_NEW_PLAYLIST_OBJ, SET_ADD_TO_NEW_PLAYLIST_OBJ, SET_IS_ADD_TO_NEW_PLAYLIST, SET_SHOW_CREATE_PLAYLIST_POPUP } from "./PlaylistActionTypes"
 
 export const fetchPlaylistNames = () => ({
     type: PLAYLIST_FETCH_PLAYLIST_NAMES_START
@@ -25,14 +25,25 @@ export const addToPlaylist = (reqPLObj) => ({
     reqPLObj
 })
 
+export const addToPlaylistSucc = (playlists) => ({
+    type:PLAYLIST_ADD_TO_PLAYLIST_SUCCESS,
+    playlists
+})
+
 export const setAddedNewPlaylistObj = (addedNewPlaylistObj) => ({
     type: SET_ADDED_NEW_PLAYLIST_OBJ,
     addedNewPlaylistObj
 })
 
-export const addToPlaylistSucc = (playlists) => ({
-    type:PLAYLIST_ADD_TO_PLAYLIST_SUCCESS,
-    playlists
+export const removeFromPlaylist = (playListId, songId) => ({
+    type: PLAYLIST_REMOVE_FROM_PLAYLIST_START,
+    playListId,
+    songId
+})
+
+export const removeFromPlaylistSucc = (playlistItem) => ({
+    type:PLAYLIST_REMOVE_FROM_PLAYLIST_SUCCESS,
+    playlistItem
 })
 
 export const createPlaylist = (createPlaylistObj) => ({
@@ -84,4 +95,15 @@ export const getUpdatedPlayListNames = (playListNames, playListName, action) => 
 export const getUpdatedPlayListAlbums = (playlistAlbums, playlistName, action) => {
     playlistAlbums[playlistName.messageId] = [];
     return playlistAlbums;
+}
+
+export const removeRemovedSongFromPlaylist = (playlistSongs, playlistItem) => {
+    for (let i = 0; i < playlistSongs.length; i++) {
+        const element = playlistSongs[i];
+        if(element.songId === playlistItem.songId){
+            playlistSongs.splice(i, 1);
+            break;
+        }
+    }
+    return playlistSongs;
 }

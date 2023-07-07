@@ -144,6 +144,10 @@ export const addToPlaylistAPI = (reqPLObj) => {
     return iAxios.post(`/playlist/add-to-playlist/`,reqPLObj).then(response => response);
 }
 
+export const removeFromPlaylistAPI = (playlistId, songId) => {
+    return iAxios.delete(`/playlist/remove-from-playlist/${playlistId}/${songId}`).then(response => response);
+}
+
 export const createPlaylistAPI = (createPlaylistObj) => {
     return iAxios.post(`/playlist/create-playlist`,createPlaylistObj).then(response => response);
 }

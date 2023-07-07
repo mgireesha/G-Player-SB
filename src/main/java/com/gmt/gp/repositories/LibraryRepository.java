@@ -45,7 +45,7 @@ public interface LibraryRepository extends CrudRepository<Library, Long> {
     @Query("SELECT l.songId from Library as l order by l.title asc")
     List<Long> getAllLibraryIds();
 
-    @Query("Select l from Library l where l.songId in (:songsId)")
+    @Query("Select l from Library l where l.songId in (:songsId) order by l.title")
     List<Library> getSongsBySongIds(List<Long> songsId);
 
 }

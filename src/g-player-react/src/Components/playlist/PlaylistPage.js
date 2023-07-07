@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector, useStore } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import { fetchPlaylistNames, fetchSongsInPlaylist } from "../redux/playlist/PlaylistActions";
 import { TrackList } from "../screen/track/TrackList";
-import { PLAYLIST, TRACK_LIST } from "../redux/GPActionTypes";
+import { CURRENT_PAGE, PLAYLIST, TRACK_LIST } from "../redux/GPActionTypes";
 import { PlaylistPageHeader } from "./PlaylistPageHeader";
-import { PLAYLIST_DELETE_PLAYLIST_SUCCESS } from "../redux/playlist/PlaylistActionTypes";
+import { setCookies } from "../utli";
+import { setCurrentPage } from "../redux/library/LibraryActions";
 
 export const PlaylistPage = () => {
     const dispatch = useDispatch();
@@ -13,16 +14,60 @@ export const PlaylistPage = () => {
 
     const playlistSongs = useSelector(state => state.playlist.playlistSongs);
     const [albumNames, setAlbumNames] = useState([]);
+    const [trackListInp, setTrackListInp] = useState({});
 
     useEffect(()=>{
         dispatch(fetchPlaylistNames());
         dispatch(fetchSongsInPlaylist(playlistId));
+
+        if(playlistId && playlistName){
+            const currentPage = {
+                id: playlistId,
+                name: playlistName,
+                type: PLAYLIST
+            }
+            dispatch(setCurrentPage(currentPage));
+            setCookies(CURRENT_PAGE, JSON.stringify(currentPage));
+        }
+
     },[playlistId, playlistName]);
+
+    useEffect(()=>{
+        const tempTrackListInp = {
+            playedFrom:{
+                pfKey:PLAYLIST, 
+                pfVal:playlistName
+            },
+            showSort: false,
+            showLKey: false,
+        }
+
+        if(playlistSongs){
+            if(playlistSongs.length > 6){
+                tempTrackListInp.showSort = true;
+                tempTrackListInp.traskListStyle = {
+                    maxHeight : 'calc(100vh - 24.2em)'
+                }
+            }
+            if(playlistSongs.length > 20){
+                tempTrackListInp.showLKey = true;
+                tempTrackListInp.lKeyStyle = {
+                    position:'absolute', 
+                    visibility:'hidden'
+                }
+                tempTrackListInp.traskListStyle = {
+                    maxHeight : 'calc(100vh - 26.8em)'
+                }
+            }
+        }
+
+        setTrackListInp(tempTrackListInp);
+    },[playlistSongs]);
 
     const playAll = () => {
         const tracks = document.getElementById(TRACK_LIST);
         if(tracks && tracks.childElementCount > 0){
-            tracks.children[0].children[0].click()
+            tracks.getElementsByClassName("track")[0].children[0].click()
         }
     }
 
@@ -43,7 +88,9 @@ export const PlaylistPage = () => {
     return(
         <div className="playlist-page">
             <PlaylistPageHeader albumNames={albumNames} songsCount={playlistSongs.length} playAll={playAll} />
-            {playlistSongs.length > 0 && <TrackList tracks={playlistSongs} trackListInp={{showSort:false, showLKey:false, playedFrom:{pfKey:PLAYLIST, pfVal:playlistName}}} />}
+            {playlistSongs.length > 0 && trackListInp.playedFrom &&
+                <TrackList tracks={playlistSongs} trackListInp={trackListInp} />
+            }
         </div>
     );
 }

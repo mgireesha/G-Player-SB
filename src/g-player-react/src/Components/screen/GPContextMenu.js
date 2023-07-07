@@ -109,6 +109,16 @@ export const GPContexMenu = () => {
                     <MdKeyboardArrowRight className="icon" />
                 </Link>
             </div>
+            {contextObj && contextObj.options && contextObj.options.length > 0 && contextObj.options.map(option =>
+                <>
+                    <div className="row" onClick={option.callBackFunc}>
+                            <label>{option.label}</label>
+                            <MdKeyboardArrowRight className="icon" />
+                    </div>
+                </>
+            )
+                
+            }
         </div>
     );
 }

@@ -518,6 +518,10 @@ public class LibraryService {
         return resultSongsByArtist;
     }
 
+    List<Library> findAllByIds(List<Long> songIds) {
+        return (List<Library>) libraryRepository.findAllById(songIds);
+    }
+
     /**
      * Customized code for ; and &
      **/

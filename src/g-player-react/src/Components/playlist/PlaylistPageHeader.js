@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { DELETE, DELETE_PLAYLIST_CONF_TEXT, DELETE_PLAYLIST_LABEL, INPUT, PLAYLIST, PLAY_ALL_LABEL, REMOVE, REMOVE_LABEL, RENAME, RENAME_LABEL, RENAME_PLAYLIST_INP, RENAME_PLAYLIST_LABEL, TEXT, TRACKS_LABEL } from "../redux/GPActionTypes";
+import { COMMON_POPUP_ERROR_MSG, DELETE, DELETE_PLAYLIST_CONF_TEXT, DELETE_PLAYLIST_LABEL, INPUT, PLAYLIST, PLAY_ALL_LABEL, REMOVE, REMOVE_LABEL, RENAME, RENAME_LABEL, RENAME_PLAYLIST_INP, RENAME_PLAYLIST_LABEL, TEXT, TRACKS_LABEL } from "../redux/GPActionTypes";
 import { FaPlay } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { BiRename } from "react-icons/bi";
@@ -52,14 +52,25 @@ export const PlaylistPageHeader = ({albumNames, songsCount, playAll}) => {
     }
 
     const onRenamePlaylist = () => {
-        const tempPlaylistName = {
-            messageId : playlistId,
-            value: document.getElementById(RENAME_PLAYLIST_INP).value,
-            name: PLAYLIST,
-            type: PLAYLIST
-
+        const renameInp = document.getElementById(RENAME_PLAYLIST_INP);
+        if(renameInp){
+            if(renameInp.value !== playlistName){
+                const tempPlaylistName = {
+                    messageId : playlistId,
+                    value: document.getElementById(RENAME_PLAYLIST_INP).value,
+                    name: PLAYLIST,
+                    type: PLAYLIST
+        
+                }
+                dispatch(renamePlaylist(tempPlaylistName));
+            }else{
+                const errMsg = document.getElementById(COMMON_POPUP_ERROR_MSG);
+                if(errMsg){
+                    errMsg.innerHTML = "Please provide name different than current one.";
+                }
+            }
+            
         }
-        dispatch(renamePlaylist(tempPlaylistName))
     }
 
     useEffect(()=>{

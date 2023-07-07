@@ -1,8 +1,9 @@
 import { call, put, takeLatest } from "redux-saga/effects";
-import { addToPlaylistAPI, createPlaylistAPI, deletePlaylistAPI, fetchPlaylistNamesAPI, fetchSongsInPlaylistAPI, renamePlaylistAPI } from "../GPApis";
-import { PLAYLIST_ADD_TO_PLAYLIST_START, PLAYLIST_CREATE_PLAYLIST_START, PLAYLIST_DELETE_PLAYLIST_START, PLAYLIST_FETCH_PLAYLIST_NAMES_START, PLAYLIST_FETCH_SONGS_IN_PLAYLIST_START, PLAYLIST_RENAME_PLAYLIST_START } from "./PlaylistActionTypes";
-import { addToPlaylistSucc, createPlaylistSucc, deltePlaylistSucc, fetchSongsInPlaylistSucc, fethPLaylistNamesSucc, renamePlaylistSucc } from "./PlaylistActions";
+import { addToPlaylistAPI, createPlaylistAPI, deletePlaylistAPI, fetchPlaylistNamesAPI, fetchSongsInPlaylistAPI, removeFromPlaylistAPI, renamePlaylistAPI } from "../GPApis";
+import { PLAYLIST_ADD_TO_PLAYLIST_START, PLAYLIST_CREATE_PLAYLIST_START, PLAYLIST_DELETE_PLAYLIST_START, PLAYLIST_FETCH_PLAYLIST_NAMES_START, PLAYLIST_FETCH_SONGS_IN_PLAYLIST_START, PLAYLIST_REMOVE_FROM_PLAYLIST_START, PLAYLIST_RENAME_PLAYLIST_START } from "./PlaylistActionTypes";
+import { addToPlaylistSucc, createPlaylistSucc, deltePlaylistSucc, fetchSongsInPlaylistSucc, fethPLaylistNamesSucc, removeFromPlaylistSucc, renamePlaylistSucc } from "./PlaylistActions";
 import { handleAPIError } from "../../utli";
+import { setShowContextMenu } from "../library/LibraryActions";
 
 export function* onFetchPlaylistNames(){
     yield takeLatest(PLAYLIST_FETCH_PLAYLIST_NAMES_START, onFetchPlaylistNamesAsnc);
@@ -50,6 +51,25 @@ export function* onAddToPlaylistAsnc(payload){
         if(response.status===200){
             const data = response.data;
             yield put(addToPlaylistSucc(data));
+        }
+    } catch (error) {
+        console.log(error);
+        handleAPIError(error);
+    }
+
+}
+
+export function* onRemoveFromPlaylist(){
+    yield takeLatest(PLAYLIST_REMOVE_FROM_PLAYLIST_START, onRemoveFromPlaylistAsnc);
+}
+
+export function* onRemoveFromPlaylistAsnc(payload){
+    try {
+        const response = yield call(removeFromPlaylistAPI, payload.playListId, payload.songId);
+        if(response.status===200){
+            const data = response.data;
+            yield put(setShowContextMenu(false));
+            yield put(removeFromPlaylistSucc(data.playlist));
         }
     } catch (error) {
         console.log(error);

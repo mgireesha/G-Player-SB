@@ -12,11 +12,13 @@ export const ARTISTS = 'ARTISTS';
 
 export const BUILD_STATUS = 'BUILD_STATUS';
 
+export const COMMON_POPUP_ERROR_MSG = 'COMMON_POPUP_ERROR_MSG';
 export const COMPLETED = 'COMPLETED';
 export const CREATE = 'CREATE';
 export const CREATE_LABEL = 'Create';
 export const CREATE_PLAYLIST_LABEL = 'Create Playlist';
 export const CURRENT = 'CURRENT';
+export const CURRENT_PAGE = 'CURRENT_PAGE';
 
 export const DELETE = "Delete";
 export const DELETE_PLAYLIST_LABEL = "Delete Playlist";
@@ -47,12 +49,15 @@ export const MUSIC_PATH = 'MUSIC_PATH';
 export const NEXT = 'NEXT';
 export const NEW_PLAYLIST_BTN_LABEL = 'New Playlist';
 
+export const PLAYLIST_ALBUMS = 'PLAYLIST_ALBUMS';
 export const PLAY_ALL_LABEL = 'Play all'; 
 export const PLAYLIST = 'PLAYLIST';
 export const PLAYLIST_SELECTOR = 'PLAYLIST_SELECTOR';
 export const PLAYLISTS = 'PLAYLISTS';
 export const PLAYLISTS_LABEL = 'Playlists';
 export const PLAYLIST_NAME = 'PLAYLIST_NAME';
+export const PLAYLIST_NAMES = 'PLAYLIST_NAMES';
+export const PLAYLIST_SONGS_COUNT = 'PLAYLIST_SONGS_COUNT';
 export const POPULAR_COMPOSERS = 'Popular Composers';
 export const POPUP_PRIMARY_BTN = 'POPUP_PRIMARY_BTN';
 export const PREVIOUS = 'PREVIOUS';

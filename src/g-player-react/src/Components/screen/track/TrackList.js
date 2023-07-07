@@ -85,8 +85,8 @@ export const TrackList = ({tracks, trackListInp}) => {
 
     return(
         <>
-            {trackListInp.showSort &&<SortingContainer sortListKeys={trackListKeys} setSortBy={setSortBy} sortBy={sortBy} sortSelectors={[A_TO_Z,A_TO_Z_DESC, SORT_YEAR, SORT_ARTIST]} />}
-            <div className="track-list" id={TRACK_LIST}>
+            {trackListInp.showSort &&<SortingContainer sortListKeys={trackListKeys} setSortBy={setSortBy} sortBy={sortBy} showLKey={trackListInp.showLKey} sortSelectors={[A_TO_Z,A_TO_Z_DESC, SORT_YEAR, SORT_ARTIST]} />}
+            <div className="track-list" id={TRACK_LIST} style={trackListInp.traskListStyle?trackListInp.traskListStyle:{}}>
                 {/* {tracks!==undefined && tracks!==null &&
                             tracks.map((track,index) => 
                             track.title!==null && <Track track={track} key={track.songId} playedFrom={TRACK_LIST} index={index} />
@@ -95,7 +95,7 @@ export const TrackList = ({tracks, trackListInp}) => {
 
                 {trackListKeys !== undefined && trackListKeys.length > 0 && trackListKeys.map((lKey, index) =>
                     <>
-                        {trackListInp.showLKey && <label id={"lKey" + lKey} className="track-lKey">{lKey}</label>}
+                        {trackListInp.showLKey && <label id={"lKey" + lKey} className="track-lKey" style={trackListInp.lKeyStyle?trackListInp.lKeyStyle:{}}>{lKey}</label>}
                         {trackList[lKey] !== undefined && trackList[lKey].length > 0 && trackList[lKey].map((track, trackIndex) =>
                             <Track track={track} key={track.songId} playedFrom={trackListInp.playedFrom} index={index} hideTrackNum={true} />
                         )}

@@ -8,6 +8,7 @@ import { PlaylistImg } from "./PlaylistImg";
 export const Playlists = () => {
     const playListNames = useSelector(state => state.playlist.playListNames);
     const playlistAlbums = useSelector(state => state.playlist.playlistAlbums);
+    const playlistSongsCount = useSelector(state => state.playlist.playlistSongsCount);
     return(
         <div className="playlists">
             <div className="body">
@@ -21,7 +22,10 @@ export const Playlists = () => {
                                 </div>
                             </Link>
                             <div class="playlist-thumb-details">
-                                <label><Link to={`/playlist/${plName.value}/${plName.messageId}`}>{plName.value}</Link></label>
+                                <Link to={`/playlist/${plName.value}/${plName.messageId}`}>
+                                    <label>{plName.value}</label><br />
+                                    <label>{playlistSongsCount[plName.messageId]} songs</label>
+                                </Link>
                             </div>
                         </div>
                     )

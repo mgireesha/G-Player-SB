@@ -1,19 +1,21 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { ALBUM, TRACK, TRACK_MENU_BTN_CIRCLE } from "../../redux/GPActionTypes";
+import { ALBUM, CURRENT_PAGE, PLAYLIST, REMOVE_LABEL, TRACK, TRACK_MENU_BTN_CIRCLE } from "../../redux/GPActionTypes";
 import { playASong, playPause, setIsPlaying } from "../../redux/player/PlayerActions";
-import { getMins } from "../../utli";
+import { getCookieValue, getMins } from "../../utli";
 import { ArtistLink } from "../artist/ArtistLink";
 import { FaPlay } from "react-icons/fa";
 import { setContextObj, setShowContextMenu } from "../../redux/library/LibraryActions";
 import { HiOutlineDotsVertical } from "react-icons/hi";
+import { removeFromPlaylist } from "../../redux/playlist/PlaylistActions";
 
 export const Track = ({track, playedFrom, index, hideTrackNum}) => {
     const dispatch = useDispatch();
     const songPlaying = useSelector(state => state.player.songPlaying);
     const currentVolume = useSelector(state => state.player.currentVolume);
-    //const isPlaying = useSelector(state => state.player.isPlaying);
+    const currentPage = useSelector(state => state.library.currentPage);
+
     const playSong = async(songId) => {
         if(songPlaying!==null && songId===songPlaying.songId){
             dispatch(playPause(songPlaying, playedFrom, currentVolume));
@@ -25,13 +27,30 @@ export const Track = ({track, playedFrom, index, hideTrackNum}) => {
 
     const showCOntextMenu = (event) => {
         const position = event.target.getBoundingClientRect();
+        const options = [];
+        if(playedFrom.pfKey === PLAYLIST){
+            options.push({label:REMOVE_LABEL, callBackFunc: removeTrackFromPlaylist});
+        }
         const contextObj = {
             position,
             type: TRACK,
-            obj: track
+            obj: track,
+            options
         }
         dispatch(setContextObj(contextObj));
         dispatch(setShowContextMenu(true));
+    }
+
+    const removeTrackFromPlaylist = () => {
+        let tempCurrentObject = currentPage;
+        if(!tempCurrentObject){
+            tempCurrentObject = getCookieValue(CURRENT_PAGE);
+        }
+        if(tempCurrentObject && tempCurrentObject.type === PLAYLIST){
+            dispatch(removeFromPlaylist(tempCurrentObject.id, track.songId));
+        }else{
+            alert("Error")
+        }
     }
 
     return(

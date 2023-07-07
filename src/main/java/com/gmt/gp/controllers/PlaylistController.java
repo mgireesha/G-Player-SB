@@ -1,6 +1,5 @@
 package com.gmt.gp.controllers;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,15 +29,7 @@ public class PlaylistController {
 
     @RequestMapping("/names/{messageType}")
     public Map<String, Object> getPlaylistNames(@PathVariable String messageType) {
-        List<Message> plNames = messageService.getMessagesByType(messageType);
-        Map<Long, List<String>> plAlbums = new HashMap<Long, List<String>>();
-        Map<String, Object> resp = new HashMap<String, Object>();
-        resp.put("PLAYLIST_NAMES", plNames);
-        for (Message message : plNames) {
-            plAlbums.put(message.getMessageId(), playlistService.getAlbumNamesByPlaylistId(message.getMessageId()));
-        }
-        resp.put("PLAYLIST_ALBUMS", plAlbums);
-        return resp;
+        return playlistService.getPlaylistNames(messageType);
     }
 
     @RequestMapping("/create-playlist")
@@ -64,6 +55,11 @@ public class PlaylistController {
     @RequestMapping("/add-to-playlist/")
     public GPResponse addToPlaList(@RequestBody PlaylistItems reqPlaylist) {
         return playlistService.addToPlaList(reqPlaylist);
+    }
+
+    @RequestMapping(value = "/remove-from-playlist/{playlistId}/{songId}", method = RequestMethod.DELETE)
+    public GPResponse removeFromPlaylist(@PathVariable String playlistId, @PathVariable String songId) {
+        return playlistService.removeFromPlaylist(Long.parseLong(playlistId), Long.parseLong(songId));
     }
 
 }

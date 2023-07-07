@@ -27,6 +27,10 @@ public class GP_CONSTANTS {
 
     public static final String MEDIA_PLAYER_NULL = "MEDIA_PLAYER_NULL";
 
+    public static final String PLAYLIST_ALBUMS = "PLAYLIST_ALBUMS";
+    public static final String PLAYLIST_NAMES = "PLAYLIST_NAMES";
+    public static final String PLAYLIST_SONGS_COUNT = "PLAYLIST_SONGS_COUNT";
+
     public static final String RUNNING = "RUNNING";
 
     public static final String SUCCESS = "SUCCESS";
