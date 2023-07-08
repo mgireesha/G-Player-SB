@@ -2139,7 +2139,7 @@ a.disabled-click{
 
             }
         }
-        animation: popupZoomIn 400ms ease-in-out 1;
+        animation: popupZoomIn 250ms ease-in-out 1;
     }
 
     @keyframes popupSlideIn{
@@ -2161,12 +2161,38 @@ a.disabled-click{
             transform: scale(0.1);
         }
 
-        50%{
-            transform: scale(0.5);
+        100%{
+            transform: scale(1);
+        }
+    }
+}
+
+.status-message{
+    position: fixed;
+    min-height: 3em;
+    width: 31em;
+    background: #000;
+    right: 1em;
+    bottom: 6em;
+    z-index: 10;
+    border-radius: 2px;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: statusMessageSlideIn 400ms ease-in-out 1;
+
+    .close{
+        cursor: pointer;
+    }
+
+    @keyframes statusMessageSlideIn{
+        0%{
+            transform: translateX(31em);
         }
 
-        50%{
-            transform: scale(1);
+        100%{
+            transform: translateX(0);
         }
     }
 }
