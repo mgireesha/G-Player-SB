@@ -3,12 +3,17 @@ export const A_TO_Z_DESC = "A - Z Desc";
 export const ADD = 'ADD';
 export const ADD_TO_NEW_PLAYLIST_LABEL = 'ADD_TO_NEW_PLAYLIST_LABEL';
 export const ALBUM = 'ALBUM';
+export const ALBUM_LABEL = 'Album';
 export const ALBUMS = 'ALBUMS';
 export const ALBUMS_LABEL = 'Albums';
 export const ALBUM_ARTIST = 'ALBUM_ARTIST';
+export const ALBUM_ARTIST_LABEL = 'Album Artist';
 export const ALBUM_ARTISTS = 'ALBUM_ARTISTS';
+export const ALBUM_ARTISTS_LABEL = 'Album Artists';
 export const ARTIST = 'ARTIST';
+export const ARTIST_LABEL = 'Artist';
 export const ARTISTS = 'ARTISTS';
+export const ARTISTS_LABEL = 'Artists';
 
 export const BUILD_STATUS = 'BUILD_STATUS';
 
@@ -24,8 +29,13 @@ export const DELETE = "Delete";
 export const DELETE_PLAYLIST_LABEL = "Delete Playlist";
 export const DELETE_PLAYLIST_CONF_TEXT = "Are you sure to delete this playlist?";
 
+export const GENRE = 'GENRE';
+export const GENRE_ALBUMS = 'GENRE_ALBUMS';
+export const GENRES = 'GENRES';
+export const GENRES_LABEL = 'Genres';
 export const GENRE_COUNT = 'GENRE_COUNT';
 export const GENRES_COUNT_LABEL = 'Genres';
+export const GENRE_SONG_COUNT = 'GENRE_SONG_COUNT';
 export const GP_CONTEXT_MENU = 'GP_CONTEXT_MENU';
 
 export const HISTORY_COUNT = 'HISTORY_COUNT';

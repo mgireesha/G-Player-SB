@@ -10,6 +10,8 @@ import { Header } from "../header/Header";
 import { MUSIC_LABEL } from "../redux/GPActionTypes";
 import { Tracks } from "./track/Tracks";
 import { Album } from "./album/Album";
+import { Genres } from "./genre/Genres";
+import { GenrePage } from "./genre/GenrePage";
 
 export const Screen = () => {
     return(
@@ -24,6 +26,8 @@ export const Screen = () => {
                 <Route path='artists' element={<ArtistsList />} />
                 <Route path='album_artists/:albumArtist' element={<AlbumArtist />} />
                 <Route path='album_artists' element={<AlbumArtistList />} />
+                <Route path='genres/:genre' element={<GenrePage />} />
+                <Route path='genres' element={<Genres />} />
             </Routes>
         </div>
     );

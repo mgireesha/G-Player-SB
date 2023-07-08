@@ -6,22 +6,25 @@ import { deleteMusicPathAPI, fetchAlbumAPI, fetchAlbumImgsAPI,
          fetchAllAlbumDtlsAPI, fetchAllAlbumsAPI, fetchAllArtistsDtlsAPI, 
          fetchAllHistoryAPI, 
          fetchBuildStatusAPI, 
+         fetchGenreDetailsAPI, 
          fetchMostPlayedDataAPI, 
          fetchMusicpathAPI, 
-         fetchSongsByArtistAPI, getAllSongsAPI, initiateArtistImageDownload, initLibraryBuildAPI, saveMusicpathAPI, searchByKeyAPI, updateHistoryAPI 
+         fetchSongsByArtistAPI, fetchSongsByGenreAPI, getAllSongsAPI, initiateArtistImageDownload, initLibraryBuildAPI, saveMusicpathAPI, searchByKeyAPI, updateHistoryAPI 
     } from "../GPApis";
 import { deleteMusicPathSucc, fetchAlbumImgsScc, fetchAlbumlistOfAASucc, fetchAlbumSucc, 
         fetchAlbumTacksSucc, 
         fetchAllAlbumArtistsDtlsSucc, fetchAllAlbumsDtlsSucc, fetchAllAlbumsSucc, 
-        fetchAllArtistsDtlsSucc, fetchAllHistorySucc, fetchBuildStatusSucc, fetchMostPlayedDataSucc, fetchMusicPathSucc, fetchSongsByArtistSucc, fethAllSongsSucc, initiArtistImageDownloadSucc, initLibraryBuildSucc, saveMusicPathSucc, searchByKeySucc, updateHistorySucc 
+        fetchAllArtistsDtlsSucc, fetchAllHistorySucc, fetchBuildStatusSucc, fetchGenreDetailsSucc, fetchMostPlayedDataSucc, fetchMusicPathSucc, fetchSongsByArtistSucc, fetchAllSongsSucc, initiArtistImageDownloadSucc, initLibraryBuildSucc, saveMusicPathSucc, searchByKeySucc, updateHistorySucc, fetchSongsByGenreSucc 
     } from "./LibraryActions";
 import { FETCH_SONGS_START, HISTORY_FETCH_ALL_HISTORY_START, HISTORY_UPDATE_HISTORY_START, LIBRARY_DELETE_MUSIC_PATH_START, LIBRARY_FETCH_ALBUMS_DETAILS_START, LIBRARY_FETCH_ALBUMS_START, 
     LIBRARY_FETCH_ALBUM_ARTIST_LIST_START, 
     LIBRARY_FETCH_ALBUM_IMGS_START, LIBRARY_FETCH_ALBUM_LIST_OF_AA_START, LIBRARY_FETCH_ALBUM_START, LIBRARY_FETCH_ALBUM_TRACKS_START, LIBRARY_FETCH_ARTIST_LIST_START, 
     LIBRARY_FETCH_BUILD_STATUS_START, 
+    LIBRARY_FETCH_GENRE_DETAILS_START, 
     LIBRARY_FETCH_MOST_PLAYED_DATA_START, 
     LIBRARY_FETCH_MUSIC_PATH_START, 
     LIBRARY_FETCH_SONGS_BY_ARTIST_START, 
+    LIBRARY_FETCH_SONGS_BY_GENRE_START, 
     LIBRARY_INIT_ARTIST_IMG_DOWNLOAD_START, 
     LIBRARY_INIT_BUILD_LIBRARY_START,
     LIBRARY_SAVE_MUSIC_PATH_START,
@@ -37,7 +40,7 @@ export function* onFetchAllSongsAsnc(){
         const response = yield call(getAllSongsAPI);
         if(response.status===200){
             const data = response.data;
-            yield put(fethAllSongsSucc(data));
+            yield put(fetchAllSongsSucc(data));
         }
     } catch (error) {
         console.log(error);
@@ -190,6 +193,39 @@ export function* onFetchAlbumListOfAAAsync(payload){
     }
 }
 
+//Genre - Start
+export function* onFetchGenreDetails(){
+    yield takeLatest(LIBRARY_FETCH_GENRE_DETAILS_START, onFetchGenreDetailsAsync);
+}
+
+export function* onFetchGenreDetailsAsync(){
+    try {
+        const response = yield call(fetchGenreDetailsAPI);
+        if(response.status === 200){
+            yield put(fetchGenreDetailsSucc(response.data));
+        }
+    } catch (error) {
+        console.log(error);
+        handleAPIError(error);
+    }
+}
+
+export function* onFetchSongsByGenre(){
+    yield takeLatest(LIBRARY_FETCH_SONGS_BY_GENRE_START, onFetchSongsByGenreAsync);
+}
+
+export function* onFetchSongsByGenreAsync(payload){
+    try {
+        const response = yield call(fetchSongsByGenreAPI, payload.genre);
+        if(response.status === 200){
+            yield put(fetchSongsByGenreSucc(response.data));
+        }
+    } catch (error) {
+        console.log(error);
+        handleAPIError(error);
+    }
+}
+//Genre - End
 
 //Side bar library
 export function* onInitLibraryBuild(){

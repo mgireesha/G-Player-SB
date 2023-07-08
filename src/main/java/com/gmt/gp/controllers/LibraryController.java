@@ -161,4 +161,9 @@ public class LibraryController {
         return libraryService.searchbyKey(searchKey);
     }
 
+    @RequestMapping("/genre-details")
+    public Map<String, Object> getGenreDetails() {
+        return libraryService.getGenreDetails();
+    }
+
 }

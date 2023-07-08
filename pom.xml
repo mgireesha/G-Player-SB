@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.gmt</groupId>
 	<artifactId>g-player</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 	<name>G-Player-SB</name>
 	<description>G-Player-SB</description>
 	<properties>
