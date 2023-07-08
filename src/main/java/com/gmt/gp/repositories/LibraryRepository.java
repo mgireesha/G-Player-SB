@@ -24,6 +24,12 @@ public interface LibraryRepository extends CrudRepository<Library, Long> {
 
     List<Library> getByGenre(String genre);
 
+    @Query("select count(*) as count, lib.genre as genre from Library lib group by lib.genre order by count desc")
+    List<String> getGenresGroupByGenre();
+
+    @Query("select distinct l.album from Library l where l.genre = :genre")
+    List<String> getAlbumListByGenre(String genre);
+
     List<Library> getByAlbumArtistOrderByYearAsc(String albumArtist);
 
     List<Library> findAllByOrderByTitleAsc();

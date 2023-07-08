@@ -3,7 +3,7 @@ import { Player } from "./player/Player";
 import { Sidebar } from "./Sidebar";
 import { Screen } from "./screen/Screen";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAlbumTacks, fetchAllAlbums, fetchAllHistory, fetchSongsByArtist, fethAllSongs } from "./redux/library/LibraryActions";
+import { fetchAlbumTacks, fetchAllAlbums, fetchAllHistory, fetchAllSongs, fetchSongsByArtist } from "./redux/library/LibraryActions";
 import { fetchCurrentSontAndStatus, playASongSucc, setIsShuffle, setMediaVolumeSucc, setRepeat } from "./redux/player/PlayerActions";
 import { getCookieDetails, getCookieValue } from "./utli";
 import { ALBUM, ARTIST, MAIN_CONTAINER, RECENT_PLAYS, TRACK_LIST } from "./redux/GPActionTypes";
@@ -68,11 +68,11 @@ export const Home = () => {
                     dispatch(fetchAllHistory());
                     break;
                 default:
-                    dispatch(fethAllSongs());
+                    dispatch(fetchAllSongs());
                     break;
             }
         }else{
-            dispatch(fethAllSongs());
+            dispatch(fetchAllSongs());
         }
         }
     }

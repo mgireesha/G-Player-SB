@@ -54,6 +54,14 @@ export const updateLyricsAPI = (songId, lyrics) => {
     return iAxios.put(`/library/updateLyrics/${songId}`,lyrics).then(response => response);
 }
 
+export const fetchGenreDetailsAPI = () => {
+    return iAxios.get(`/library/genre-details`).then(response => response);
+}
+
+export const fetchSongsByGenreAPI = (genre) => {
+    return iAxios.get(`/library/getByGenre/${genre}`).then(response => response);
+}
+
 //Sidebar library
 export const initLibraryBuildAPI = () => {
     return iAxios.get(`/library/initLibraryBuild`).then(response => response);

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { A_TO_Z, SORT_YEAR, SORT_ARTIST, A_TO_Z_DESC, TRACK_LIST } from "../../redux/GPActionTypes";
-import { fethAllSongs } from "../../redux/library/LibraryActions";
+import { fetchAllSongs } from "../../redux/library/LibraryActions";
 import { scrollToPlaying, sortGroupByField } from "../../utli";
 import { SortingContainer } from "../SortingContainer";
 import { Spinner } from "../Spinner";
@@ -17,7 +17,7 @@ export const TrackList = ({tracks, trackListInp}) => {
     useEffect(()=>{
         //dispatch(setGroupband("tracks"));
         //dispatch(setPlayedFrom({pfKey:TRACK_LIST}));
-        dispatch(fethAllSongs());
+        dispatch(fetchAllSongs());
     },[]);
 
     useEffect(()=>{
@@ -31,7 +31,10 @@ export const TrackList = ({tracks, trackListInp}) => {
             }
 
             setTrackListKeys(tempTrakListKeys);
-            scrollToPlaying(isPlaying);
+            if(trackListInp.playedFrom.pfKey !== TRACK_LIST){
+                scrollToPlaying(isPlaying);
+            }
+            
         }
     },[trackList])
 

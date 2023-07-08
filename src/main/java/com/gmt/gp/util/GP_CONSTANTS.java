@@ -16,11 +16,16 @@ public class GP_CONSTANTS {
 
     public static final String COMPLETED = "COMPLETED";
 
+    public static final String ERROR = "ERROR";
+
     public static final String FAILED = "FAILED";
     public static final String FILES_READ_TIME = "FILES_READ_TIME";
     public static final String FILES_TO_READ = "FILES_TO_READ";
 
+    public static final String GENRE_ALBUMS = "GENRE_ALBUMS";
     public static final String GENRE_COUNT = "GENRE_COUNT";
+    public static final String GENRE_SONG_COUNT = "GENRE_SONG_COUNT";
+    public static final String GENRES = "GENRES";
 
     public static final String LAST_PLAYED_SONG_ID = "LAST_PLAYED_SONG_ID";
     public static final String LIBRARY = "LIBRARY";
@@ -33,11 +38,14 @@ public class GP_CONSTANTS {
 
     public static final String RUNNING = "RUNNING";
 
+    public static final String STATUS = "STATUS";
     public static final String SUCCESS = "SUCCESS";
 
     public static final String THIS_MONTH_COUNT = "THIS_MONTH_COUNT";
     public static final String TRACK_LIST = "TRACK_LIST";
     public static final String TOTAL_TRACKS = "TOTAL_TRACKS";
+
+    public static final int GROUPED_ALBUM_COUNT_4 = 4;
 
     // URLs
     public static final String WIKI_SUMMARY_URI = "https://en.wikipedia.org/api/rest_v1/page/summary/";
@@ -49,4 +57,5 @@ public class GP_CONSTANTS {
 
     public static final String GP_ARTIST_IMAGES_PATH = System.getProperty("user.home")
             + "\\G_Player\\images\\artists\\";
+
 }

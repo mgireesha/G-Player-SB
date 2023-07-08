@@ -84,8 +84,7 @@ public class LibraryService {
     static FileFilter mp3filter = new FileFilter() {
         @Override
         public boolean accept(File file) {
-            if (file.getName().endsWith(".mp3")
-                    || file.getName().endsWith(".m4a")) {
+            if (file.getName().endsWith(".mp3") || file.getName().endsWith(".m4a")) {
                 return true;
             }
             return false;
@@ -1020,5 +1019,61 @@ public class LibraryService {
         return albums;
     }
     // Deprecated methods - end
+
+    public Map<String, Object> getGenreDetails() {
+        Map<String, Object> genreDetails = new HashMap<String, Object>();
+        List<String> genres = new ArrayList<String>();
+        Map<String, Integer> genreSongCount = new HashMap<String, Integer>();
+        Map<String, List<String>> genreAlbums = new HashMap<String, List<String>>();
+        List<String> albums = null;
+        List<String> albumListByGenre = null;
+        String[] resLineArr = null;
+        try {
+            List<Map<String, Object>> mostPlayedAlbums = historyService.getAlbumsGroupedFromHistoryJDBC(0, "count");
+            List<String> tempGenres = libraryRepository.getGenresGroupByGenre();
+            for (String resLine : tempGenres) {
+                resLineArr = resLine.split(",", 2);
+                genres.add(resLineArr[1]);
+                genreSongCount.put(resLineArr[1], Integer.parseInt(resLineArr[0]));
+
+                albumListByGenre = libraryRepository.getAlbumListByGenre(resLineArr[1]);
+                albums = new ArrayList<String>();
+                if (albumListByGenre.size() <= GP_CONSTANTS.GROUPED_ALBUM_COUNT_4) {
+                    albums.addAll(albumListByGenre);
+                } else {
+                    for (Map<String, Object> mAlbum : mostPlayedAlbums) {
+                        if (albumListByGenre.contains(mAlbum.get("albumName"))
+                                && !albums.contains(mAlbum.get("albumName"))) {
+                            albums.add((String) mAlbum.get("albumName"));
+                            if (albums.size() == GP_CONSTANTS.GROUPED_ALBUM_COUNT_4) {
+                                break;
+                            }
+                        }
+                    }
+
+                    if (albums.size() < GP_CONSTANTS.GROUPED_ALBUM_COUNT_4
+                            && albumListByGenre.size() >= GP_CONSTANTS.GROUPED_ALBUM_COUNT_4) {
+                        for (String albumName : albumListByGenre) {
+                            if (!albums.contains(albumName)) {
+                                albums.add(albumName);
+                                if (albums.size() == GP_CONSTANTS.GROUPED_ALBUM_COUNT_4) {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                genreAlbums.put(resLineArr[1], albums);
+            }
+            genreDetails.put(GP_CONSTANTS.GENRES, genres);
+            genreDetails.put(GP_CONSTANTS.GENRE_SONG_COUNT, genreSongCount);
+            genreDetails.put(GP_CONSTANTS.GENRE_ALBUMS, genreAlbums);
+        } catch (Exception e) {
+            e.printStackTrace();
+            genreDetails.put(GP_CONSTANTS.ERROR, Arrays.asList(e.getMessage()));
+        }
+
+        return genreDetails;
+    }
 
 }
