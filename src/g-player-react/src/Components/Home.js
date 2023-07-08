@@ -16,6 +16,7 @@ import { fetchPlaylistNames } from "./redux/playlist/PlaylistActions";
 import { PlaylistSelector } from "./playlist/PlayllistSelector";
 import { CommonPopup } from "./CommnPopup";
 import { GPContexMenu } from "./screen/GPContextMenu";
+import { StatusMessage } from "./screen/StatusMessage";
 
 export const Home = () => {
     const dispatch = useDispatch();
@@ -91,6 +92,7 @@ export const Home = () => {
             {showContextMenu && <GPContexMenu />}
             {showPlaylistSelector && <PlaylistSelector />}
             <CommonPopup />
+            <StatusMessage />
         </div>
     );
 }

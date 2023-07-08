@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ADD_TO_NEW_PLAYLIST_LABEL, ALBUM, CREATE, CREATE_LABEL, GP_CONTEXT_MENU, INPUT, MAIN_CONTAINER, NEW_PLAYLIST_BTN_LABEL, PLAYLIST_NAME, PLAYLIST_SELECTOR, TRACK } from "../redux/GPActionTypes";
-import { addToPlaylist, createPlaylist, setAddedNewPlaylistObj, setIsAddToNewPlaylist } from "../redux/playlist/PlaylistActions";
-import { PLAYLIST_ADD_TO_PLAYLIST_SUCCESS, PLAYLIST_CREATE_PLAYLIST_SUCCESS } from "../redux/playlist/PlaylistActionTypes";
+import { addToPlaylist, createPlaylist } from "../redux/playlist/PlaylistActions";
+import { PLAYLIST_ADD_TO_PLAYLIST_SUCCESS } from "../redux/playlist/PlaylistActionTypes";
 import { setCommonPopupObj, setShowContextMenu, setShowPlaylistSelector } from "../redux/library/LibraryActions";
 import { HiPlus } from 'react-icons/hi';
 import { getCreatePlaylistObj } from "./PlalistUtil";
@@ -59,6 +59,7 @@ export const PlaylistSelector = () => {
     }
 
     useEffect(()=>{
+        
         if(plPhase === PLAYLIST_ADD_TO_PLAYLIST_SUCCESS){
             dispatch(setShowPlaylistSelector(false));
             dispatch(setShowContextMenu(false));

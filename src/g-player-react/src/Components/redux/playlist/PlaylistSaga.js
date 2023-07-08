@@ -3,7 +3,7 @@ import { addToPlaylistAPI, createPlaylistAPI, deletePlaylistAPI, fetchPlaylistNa
 import { PLAYLIST_ADD_TO_PLAYLIST_START, PLAYLIST_CREATE_PLAYLIST_START, PLAYLIST_DELETE_PLAYLIST_START, PLAYLIST_FETCH_PLAYLIST_NAMES_START, PLAYLIST_FETCH_SONGS_IN_PLAYLIST_START, PLAYLIST_REMOVE_FROM_PLAYLIST_START, PLAYLIST_RENAME_PLAYLIST_START } from "./PlaylistActionTypes";
 import { addToPlaylistSucc, createPlaylistSucc, deltePlaylistSucc, fetchSongsInPlaylistSucc, fethPLaylistNamesSucc, removeFromPlaylistSucc, renamePlaylistSucc } from "./PlaylistActions";
 import { handleAPIError } from "../../utli";
-import { setShowContextMenu } from "../library/LibraryActions";
+import { setShowContextMenu, setStatusMessage } from "../library/LibraryActions";
 
 export function* onFetchPlaylistNames(){
     yield takeLatest(PLAYLIST_FETCH_PLAYLIST_NAMES_START, onFetchPlaylistNamesAsnc);
@@ -50,6 +50,15 @@ export function* onAddToPlaylistAsnc(payload){
         const response = yield call(addToPlaylistAPI, payload.reqPLObj);
         if(response.status===200){
             const data = response.data;
+            let addedSongsCount = data.playlists.length;
+            const playlistItem = data.playlists[0];
+            let successMessage = "Added "+addedSongsCount+" tracks to "+playlistItem.playlist+" playlist!";
+            if(addedSongsCount === 1){
+                const songPath = playlistItem.songPath;
+                addedSongsCount = songPath.substring(songPath.lastIndexOf("\\")+1, songPath.indexOf("."));
+                successMessage = "Added "+addedSongsCount+" to "+playlistItem.playlist+" playlist!";
+            }
+            yield put(setStatusMessage(successMessage));
             yield put(addToPlaylistSucc(data));
         }
     } catch (error) {
