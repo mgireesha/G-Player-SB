@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import def_album_art from '../../images/def_album_art.png';
 import { ALBUM } from ".././../redux/GPActionTypes";
-import { ShowLyrics } from "../lyrics/ShowLyrics";
+import { Lyrics } from "../lyrics/Lyrics";
 import { Track } from "../track/Track";
 import { fetchAlbum, fetchAlbumTacks } from "../../redux/library/LibraryActions";
 
@@ -38,7 +38,7 @@ export const Album = () => {
                         <label>{album.year} - {album.genre}</label>
                     </div>
                 <div className="album-lyrics">
-                    <ShowLyrics />
+                    <Lyrics />
                 </div>
             </div>}
             <div className="album-track-list">
