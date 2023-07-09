@@ -36,7 +36,8 @@ export const PlaylistPage = () => {
         const tempTrackListInp = {
             playedFrom:{
                 pfKey:PLAYLIST, 
-                pfVal:playlistName
+                pfVal:playlistId,
+                pfField:{name:playlistName}
             },
             showSort: false,
             showLKey: false,

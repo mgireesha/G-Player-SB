@@ -6,6 +6,7 @@ import { GENRE, PLAY_ALL_LABEL, TRACKS_LABEL, TRACK_LIST } from "../../redux/GPA
 import { fetchGenreDetails, fetchSongsByGenre } from "../../redux/library/LibraryActions";
 import { TrackList } from "../track/TrackList";
 import { FaPlay } from "react-icons/fa";
+import { Lyrics } from "../lyrics/Lyrics";
 
 export const GenrePage = () => {
     const {genre} = useParams();
@@ -90,6 +91,9 @@ export const GenrePage = () => {
                             <button onClick={playAll} ><FaPlay className="faplay"  />{PLAY_ALL_LABEL}</button>
                         </div>
                     </div>
+                </div>
+                <div className="genre-lyrics">
+                    <Lyrics />
                 </div>
             </div>
             {genreSongList.length > 0 && trackListInp.playedFrom &&
