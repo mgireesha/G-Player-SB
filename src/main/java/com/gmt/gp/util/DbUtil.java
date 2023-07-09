@@ -56,7 +56,7 @@ public class DbUtil {
 			// String driverClassName = "org.hsqldb.jdbc.jdbcDriver";
 			String driverClassName = "org.hsqldb.jdbc.JDBCDriver";
 			// String url = "jdbc:hsqldb:hsql://localhost:9001/g_player";
-			String url = "jdbc:hsqldb:hsql://localhost:9001/g_db";
+			String url = "jdbc:hsqldb:hsql://localhost:9001/" + GP_CONSTANTS.GP_DB_ALIAS;
 			String username = "sa";
 
 			Class.forName(driverClassName);

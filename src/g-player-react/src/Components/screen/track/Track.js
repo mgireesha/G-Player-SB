@@ -69,7 +69,7 @@ export const Track = ({track, playedFrom, index, hideTrackNum}) => {
             <Link to={`/music/albums/${track.album}`}>{track.album}</Link>
             </label>
             <label onDoubleClick={()=>playSong(track.songId)}>{track.year!==0?track.year:''}</label>
-            <label onDoubleClick={()=>playSong(track.songId)}>{track.genre}</label>
+            <Link to={`/music/genres/${track.genre}`} onDoubleClick={()=>playSong(track.songId)}>{track.genre}</Link>
             <label>{getMins(track.trackLength)}</label>
             <label style={{position:'relative'}}>
                 <div className="track-menu-btn-div">

@@ -149,3 +149,20 @@ export const isMobile = () => {
     //&& ( window.innerHeight <= 600 ) 
     );
   }
+
+export const checkIfActionAllowed = (emeIds, event) => {
+    const itrCount = 12;
+    let elem = event.target;
+    let tempIsclickedOnCM = false;
+    if(elem !== undefined && elem !== null){
+        for(let i = 0; i< itrCount;i++){
+            if(elem && ((elem.id && emeIds.includes(elem.id)) || (elem.data_id && emeIds.includes(elem.data_id)))){
+                tempIsclickedOnCM = true;
+                break;
+            }else if(elem){
+                elem = elem.parentElement;
+            }
+        }
+    }
+    return tempIsclickedOnCM;
+}
