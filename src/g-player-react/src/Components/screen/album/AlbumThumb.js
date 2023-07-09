@@ -1,11 +1,11 @@
 import React from "react";
 import def_album_art from '../../images/def_album_art.png';
 import {MdOpenInFull} from "react-icons/md";
-import { HiOutlineDotsHorizontal } from 'react-icons/hi';
 import { Link } from "react-router-dom";
-import { ALBUM } from "../../redux/GPActionTypes";
+import { ALBUM, ARTIST } from "../../redux/GPActionTypes";
 import { useDispatch } from "react-redux";
 import { setContextObj, setShowContextMenu } from "../../redux/library/LibraryActions";
+import { ThumbnailActionBtn } from "../../ThumbnailActionBtn";
 
 export const AlbumThumb = ({album}) => {
     const dispatch = useDispatch();
@@ -16,7 +16,8 @@ export const AlbumThumb = ({album}) => {
         const contextObj = {
             position,
             type: ALBUM,
-            obj: album
+            obj: album,
+            rowList: []
         }
         dispatch(setContextObj(contextObj));
         dispatch(setShowContextMenu(true));
@@ -33,14 +34,7 @@ export const AlbumThumb = ({album}) => {
                         <MdOpenInFull />
                     </div>
                 </Link>
-                <div className="album-menu-btn-div">
-                    <div id="album_menu_btn_circle" className="album-menu-btn-circle" onClick={(event)=>showCOntextMenu(event)}>
-                        <div className="album-menu-btn">
-                            <HiOutlineDotsHorizontal  />
-                        </div>
-                    </div>
-                </div>
-                
+                <ThumbnailActionBtn rowList={[ALBUM,ARTIST]} type={ALBUM} obj={album} />
             </div>
             <div className="album-thumb-details">
             <label>

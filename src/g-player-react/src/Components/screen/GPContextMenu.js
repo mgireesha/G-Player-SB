@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setShowContextMenu, setShowPlaylistSelector } from "../redux/library/LibraryActions";
-import { GP_CONTEXT_MENU, GP_CONTEXT_MENU_ELEM_IDS, MAIN_CONTAINER } from "../redux/GPActionTypes";
+import { ALBUM, ARTIST, GP_CONTEXT_MENU, GP_CONTEXT_MENU_ELEM_IDS, MAIN_CONTAINER } from "../redux/GPActionTypes";
 import { MdKeyboardArrowRight } from 'react-icons/md';
 import { Link } from "react-router-dom";
 
@@ -10,6 +10,7 @@ export const GPContexMenu = () => {
     const contextObj = useSelector(state => state.library.contextObj);
     const showContextMenu = useSelector(state => state.library.showContextMenu);
     const [styles, setStyles] = useState({display:'none'});
+    const gpCtxtMenuElem = document.getElementById(GP_CONTEXT_MENU);
     useEffect(()=>{
         if(contextObj && contextObj.position){
             const position = contextObj.position;
@@ -23,7 +24,8 @@ export const GPContexMenu = () => {
                 tempStyles.top = parseInt(position.y)+25;
                 
             }else{
-                tempStyles.top = parseInt(position.y)-gpCtxtMenuHeight;
+                tempStyles.top = parseInt(position.y);//-gpCtxtMenuHeight;
+                tempStyles.showTop = true;
             }
 
             const mainContainerWidth = document.getElementById(MAIN_CONTAINER).clientWidth;
@@ -36,6 +38,14 @@ export const GPContexMenu = () => {
         }
         
     },[contextObj]);
+
+    useEffect(()=>{
+        if(gpCtxtMenuElem && styles.showTop){
+            const tempStyles = {...styles};
+            tempStyles.top = tempStyles.top - gpCtxtMenuElem.clientHeight;
+            setStyles(tempStyles);
+        }
+    },[gpCtxtMenuElem]);
 
     useEffect(() => {
         const handleClick = (event) => {
@@ -92,28 +102,34 @@ export const GPContexMenu = () => {
                 <label>Add to playlist</label>
                 <MdKeyboardArrowRight className="icon" />
             </div>
-            <div className="row">
-                <label><strike>Edit info</strike>&nbsp;<span style={{fontSize:10}}>Coming soon</span></label>
-                <MdKeyboardArrowRight className="icon" />
-            </div>
-            <div className="row">
+            {contextObj.rowList.includes(ALBUM) && <div className="row">
                 <Link to={`/music/albums/${contextObj.obj.albumName}`} onClick={closeCOntextMenu}>
                     <label>Album</label>
                     <MdKeyboardArrowRight className="icon" />
                 </Link>
-            </div>
-            <div className="row">
+            </div>}
+            {contextObj.rowList.includes(ARTIST) && <div className="row">
                 <Link to={`/music/album_artists/${contextObj.obj.albumArtist}`} onClick={closeCOntextMenu}>
                     <label>Artist</label>
                     <MdKeyboardArrowRight className="icon" />
                 </Link>
-            </div>
+            </div>}
             {contextObj && contextObj.options && contextObj.options.length > 0 && contextObj.options.map(option =>
                 <>
-                    <div className="row" onClick={option.callBackFunc}>
+                    {option.link &&
+                        <Link to={option.link}>
+                            <div className="row" onClick={closeCOntextMenu}>
+                                <label>{option.label}</label>
+                                <MdKeyboardArrowRight className="icon" />
+                            </div>
+                        </Link>
+                    }
+                    {!option.link &&
+                        <div className="row" onClick={option.callBackFunc}>
                             <label>{option.label}</label>
                             <MdKeyboardArrowRight className="icon" />
-                    </div>
+                        </div>
+                    }
                 </>
             )
                 

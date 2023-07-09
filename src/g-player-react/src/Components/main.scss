@@ -330,32 +330,6 @@
                 border-bottom-left-radius: unset;
                 box-shadow: rgb(0 0 0 / 40%) 0px 2px 4px, rgb(0 0 0 / 30%) 0px 7px 13px -3px, rgb(0 0 0 / 20%) 0px -3px 0px inset;
             }
-            
-            .album-menu-btn-div{
-                .album-menu-btn-circle{
-                    position: absolute;
-                    bottom: 4px;
-                    left: 0;
-                    //background-color: rgb(83, 83, 83);
-                    border-radius: 50%;
-                    cursor: pointer;
-                    border: 1px solid lightgrey;
-                    height: 30px;
-                    width: 30px;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-
-                    svg{
-                        margin-top: 5px;
-                    }
-                }
-
-                .album-menu-btn-circle:hover{
-                    border: 1px solid white;
-                    background-color: #000;
-                }
-            }
         }
 
         .album-thumb-img-div-link{
@@ -727,6 +701,37 @@
                     }
                 }
             }
+
+            .genre-details{
+                .genre-name{
+                    padding: 5px;
+                }
+                .genre-actions{
+                    display: flex;
+                    align-items: center;
+                    column-gap: 10px;
+                    margin-top: 30px;
+
+                    button{
+                        display: flex;
+                        align-items: center;
+                        column-gap: 5px;
+                        border: none;
+                        padding: 8px;
+                        color: beige;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        background-color: transparent;
+                        border: 1px solid lightgrey;
+                    }
+
+                    .play-all{
+                        button{
+                            background-color: #560C53;
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -783,8 +788,8 @@
             padding: 10px;
             text-align: center;
     
-            .album-artist-thumb{
-                width: 10em;
+            .album-thumb{
+                width: 13em;
             }
     
             .album-thumb-img-div{
@@ -796,26 +801,15 @@
                     border-radius: 50%;
                     box-shadow: rgb(0 0 0 / 40%) 0px 2px 4px, rgb(0 0 0 / 30%) 0px 7px 13px -3px, rgb(0 0 0 / 20%) 0px -3px 0px inset;
                 }
+
+                .thumb-action-btn-div .thumb-action-btn-circle{
+                    bottom: 4px;
+                    left: 43%;
+                }
             }
     
             .album-thumb-img-div-link{
-                position: absolute;
-                height: 9em;
-                width: 9em;
-                top: 0;
-                align-items: center;
-                display: flex;
-                justify-content: center;
                 display: none;
-                background-color: #eaf0f0;
-                opacity: 0.2;
-                color: #093fa3;
-                cursor: pointer;
-    
-                svg{
-                    font-size: 2em;
-                    font-weight: 900;
-                }
             }
     
             .album-thumb-img-div a:hover + .album-thumb-img-div-link{
@@ -823,7 +817,6 @@
             }
     
             .album-thumb-details{
-                padding-right: 5px;
                 width: 13em;
                 display: flex;
                 flex-direction: column;
@@ -849,6 +842,10 @@
             padding: 10px;
             justify-content: center;
             text-align: center;
+
+            .album-artist-thumb{
+                width: 13em;
+            }
     
             .album-artist-thumb-img-div{
                 position: relative;
@@ -2054,6 +2051,26 @@ a.disabled-click{
 
     .track-menu-btn-circle:hover{
         border: 1px solid lightgrey;
+        background-color: #000;
+    }
+}
+
+.thumb-action-btn-div{
+    .thumb-action-btn-circle{
+        position: absolute;
+        bottom: 0px;
+        left: 0;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 1px solid lightgrey;
+        height: 30px;
+        width: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .thumb-action-btn-circle:hover{
+        border: 1px solid white;
         background-color: #000;
     }
 }

@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { GroupedThumbImg4 } from "../../GroupedThumbImg4";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { GENRE, TRACKS_LABEL } from "../../redux/GPActionTypes";
-import { fetchSongsByGenre } from "../../redux/library/LibraryActions";
+import { GENRE, PLAY_ALL_LABEL, TRACKS_LABEL, TRACK_LIST } from "../../redux/GPActionTypes";
+import { fetchGenreDetails, fetchSongsByGenre } from "../../redux/library/LibraryActions";
 import { TrackList } from "../track/TrackList";
+import { FaPlay } from "react-icons/fa";
 
 export const GenrePage = () => {
     const {genre} = useParams();
@@ -15,21 +16,20 @@ export const GenrePage = () => {
     const genreSongList = useSelector(state => state.library.genreSongList);
 
     const [genreAlbums, setGenreAlbums] = useState({});
-    const [genres, setGenres] = useState([]);
     const [genreSongCount, setGenreSongCount] = useState({});
     const [trackListInp, setTrackListInp] = useState({});
 
     useEffect(()=>{
         dispatch(fetchSongsByGenre(genre));
+        if(!genreDetails || (genreDetails && !genreDetails.GENRE_SONG_COUNT)){
+            dispatch(fetchGenreDetails());
+        }
     },[genre]);
 
     useEffect(()=>{
         if(genreDetails){
             if(genreDetails.GENRE_ALBUMS){
                 setGenreAlbums(genreDetails.GENRE_ALBUMS);
-            }
-            if(genreDetails.GENRES){
-                setGenres(genreDetails.GENRES);
             }
             if(genreDetails.GENRE_SONG_COUNT){
                 setGenreSongCount(genreDetails.GENRE_SONG_COUNT);
@@ -69,6 +69,13 @@ export const GenrePage = () => {
         setTrackListInp(tempTrackListInp);
     },[genreSongList]);
 
+    const playAll = () => {
+        const tracks = document.getElementById(TRACK_LIST);
+        if(tracks && tracks.childElementCount > 0){
+            tracks.getElementsByClassName("track")[0].children[0].click()
+        }
+    }
+
     return(
         <div className="genre-page">
             <div className="genre-page-header">
@@ -77,6 +84,11 @@ export const GenrePage = () => {
                     <div className="genre-name">
                         <h2>{genre}</h2>
                         <label>{genreSongCount[genre]}&nbsp;{TRACKS_LABEL}</label>
+                    </div>
+                    <div className="genre-actions">
+                        <div className="play-all">
+                            <button onClick={playAll} ><FaPlay className="faplay"  />{PLAY_ALL_LABEL}</button>
+                        </div>
                     </div>
                 </div>
             </div>

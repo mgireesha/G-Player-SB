@@ -46,7 +46,6 @@ public class PlaylistService {
     }
 
     public GPResponse addToPlaList(PlaylistItems reqPlaylist) {
-        System.out.println("reqPlaylist: " + reqPlaylist);
         GPResponse resp = new GPResponse();
         PlaylistItems playlist = null;
         List<PlaylistItems> playlists = new ArrayList<PlaylistItems>();

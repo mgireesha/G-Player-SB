@@ -73,6 +73,7 @@ public class HistoryService {
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next()) {
                 album = new HashMap<String, Object>();
+                album.put("albumId", rs.getString("ALBUM_ID"));
                 album.put("albumName", rs.getString("ALBUM"));
                 album.put("albumArtist", rs.getString("ALBUM_ARTIST"));
                 album.put("year", rs.getInt("YEAR"));

@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchGenreDetails } from "../../redux/library/LibraryActions";
 import { Link } from "react-router-dom";
 import { GroupedThumbImg4 } from "../../GroupedThumbImg4";
-import { TRACKS_LABEL } from "../../redux/GPActionTypes";
+import { GENRE_LABEL, TRACKS_LABEL } from "../../redux/GPActionTypes";
+import { ThumbnailActionBtn } from "../../ThumbnailActionBtn";
 
 export const Genres = () => {
     const dispatch = useDispatch();
@@ -15,7 +16,9 @@ export const Genres = () => {
     const [genreSongCount, setGenreSongCount] = useState({});
 
     useEffect(()=>{
-        dispatch(fetchGenreDetails());
+        if(!genreDetails || (genreDetails && !genreDetails.GENRE_SONG_COUNT)){
+            dispatch(fetchGenreDetails());
+        }
     },[]);
 
     useEffect(()=>{
@@ -41,6 +44,7 @@ export const Genres = () => {
                             <Link to={`/music/genres/${genre}`}>
                                 <GroupedThumbImg4 albumNames={genreAlbums[genre]} classPrefix="genre" />
                             </Link>
+                            <ThumbnailActionBtn rowList={[]} options={[{label:GENRE_LABEL, link: `/music/genres/${genre}`}]} />
                         </div>
                         <div className="genre-thumb-details">
                             <Link to={`/music/genres/${genre}`}>
