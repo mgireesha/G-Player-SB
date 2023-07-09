@@ -4,6 +4,7 @@ import { setShowContextMenu, setShowPlaylistSelector } from "../redux/library/Li
 import { ALBUM, ARTIST, GP_CONTEXT_MENU, GP_CONTEXT_MENU_ELEM_IDS, MAIN_CONTAINER } from "../redux/GPActionTypes";
 import { MdKeyboardArrowRight } from 'react-icons/md';
 import { Link } from "react-router-dom";
+import { checkIfActionAllowed } from "../utli";
 
 export const GPContexMenu = () => {
     const dispatch = useDispatch();
@@ -49,23 +50,10 @@ export const GPContexMenu = () => {
 
     useEffect(() => {
         const handleClick = (event) => {
-            const itrCount = 12;
-            const emeIds = GP_CONTEXT_MENU_ELEM_IDS;
-            let elem = event.target;
-            let tempIsclickedOnCM = false;
-            if(elem !== undefined && elem !== null){
-                for(let i = 0; i< itrCount;i++){
-                    if(elem && ((elem.id && emeIds.includes(elem.id)) || (elem.data_id && emeIds.includes(elem.data_id)))){
-                        tempIsclickedOnCM = true;
-                        break;
-                    }else if(elem){
-                        elem = elem.parentElement;
-                    }
-                }
-            }
-            dispatch(setShowContextMenu(tempIsclickedOnCM));
-            if(!tempIsclickedOnCM){
+            //dispatch(setShowContextMenu(tempIsclickedOnCM));
+            if(!checkIfActionAllowed(GP_CONTEXT_MENU_ELEM_IDS, event)){
                 dispatch(setShowPlaylistSelector(false));
+                dispatch(setShowContextMenu(false));
             }
         };
         window.addEventListener('click', handleClick);
@@ -76,9 +64,11 @@ export const GPContexMenu = () => {
 
     useEffect(()=>{
         if(showContextMenu){
-            const handleScroll = () => {
-                dispatch(setShowContextMenu(false));
-                dispatch(setShowPlaylistSelector(false));
+            const handleScroll = (event) => {
+                if(!checkIfActionAllowed(GP_CONTEXT_MENU_ELEM_IDS, event)){
+                    dispatch(setShowContextMenu(false));
+                    dispatch(setShowPlaylistSelector(false));
+                }
             }
             document.addEventListener('scroll', handleScroll, true);
             return () => {

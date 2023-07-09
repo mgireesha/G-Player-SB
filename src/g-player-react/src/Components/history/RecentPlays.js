@@ -14,10 +14,6 @@ export const RecentPlays = () => {
     const historyAlbums = useSelector(state => state.library.history.albums);
     const [hisAlbumsGrpd_6, setHisAlbumsGrpd_6] = useState([]);
     const [hisAlbumsArr, setHisAlbumsArr] = useState([]);
-    
-    useEffect(()=>{
-        dispatch(setPlayedFrom({pfKey:RECENT_PLAYS}));
-    },[])
 
     useEffect(()=>{
         dispatch(fetchAllHistory());

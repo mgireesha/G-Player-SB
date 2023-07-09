@@ -24,6 +24,7 @@ import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.datatype.Artwork;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -268,7 +269,7 @@ public class LibraryService {
                 artist.setType(GP_CONSTANTS.ARTIST);
                 artist.setImgAvl(false);
                 artist.setCount(artCount);
-                artist.setImgAvl(setArtistLocalImgAvlStatus(artist.getArtistName()));
+                artist.setImgAvl(isLocalImgAvailable(artist.getArtistName(), GP_CONSTANTS.GP_ARTIST_IMAGES_PATH));
                 artistList.add(artist);
             }
             artistCount = artistList.size(); // Reading artist count before inserting album artist into same list
@@ -282,7 +283,8 @@ public class LibraryService {
                 albumArtist.setType(GP_CONSTANTS.ALBUM_ARTIST);
                 albumArtist.setImgAvl(false);
                 albumArtist.setCount(artCount);
-                albumArtist.setImgAvl(setArtistLocalImgAvlStatus(albumArtist.getArtistName()));
+                albumArtist.setImgAvl(
+                        isLocalImgAvailable(albumArtist.getArtistName(), GP_CONSTANTS.GP_ARTIST_IMAGES_PATH));
                 artistList.add(albumArtist);
             }
             endingTime = System.currentTimeMillis();
@@ -629,6 +631,11 @@ public class LibraryService {
     }
 
     public Map<String, List<Artist>> downloadArtistImgToDIr() {
+        String METHOD_NAME = "downloadArtistImgToDIr";
+        LOG.info(METHOD_NAME + " - Download started");
+        messageService.updateBuildStatus(GP_CONSTANTS.ARTIST_IMG_DOWNLOAD_STATUS,
+                GP_CONSTANTS.ARTIST_IMG_DOWNLOAD_STATUS,
+                GP_CONSTANTS.RUNNING);
         Map<String, List<Artist>> artists = new HashMap<String, List<Artist>>();
         Iterable<Artist> artistList = artistRepository.findAll();
         List<Artist> downloadedArtists = new ArrayList<Artist>();
@@ -637,48 +644,63 @@ public class LibraryService {
         String localArtistPath = GP_CONSTANTS.GP_ARTIST_IMAGES_PATH;
         String wikiResp = "";
         JSONObject wikiRespJson = null;
-        // try {
-        // File localArtistPathFolder = new File(localArtistPath);
-        // if (!localArtistPathFolder.exists()) {
-        // localArtistPathFolder.mkdirs();
-        // }
-        // } catch (Exception e) {
-        // e.printStackTrace();
-        // }
-
         boolean isDirectoryExists = checkAndCreateUserImageFolders();
         if (!isDirectoryExists)
             return null;
+        boolean isRestExchangeFailed = false;
         for (Artist artist : artistList) {
+            isRestExchangeFailed = false;
             localArtistImg = new File(localArtistPath + "\\" + artist.getArtistName() + ".jpg");
             if (!localArtistImg.exists()) {
                 wikiResp = GPUtil.restExchange(GP_CONSTANTS.WIKI_SUMMARY_URI + artist.getArtistName());
                 try {
-                    wikiRespJson = new JSONObject(wikiResp);
-                    if (wikiRespJson.getString("title").contains("Not found")
+                    if (wikiResp.equalsIgnoreCase(GP_CONSTANTS.NOT_FOUND)) {
+                        isRestExchangeFailed = true;
+                    } else {
+                        isRestExchangeFailed = false;
+                        wikiRespJson = new JSONObject(wikiResp);
+                    }
+
+                    if (isRestExchangeFailed || wikiRespJson.getString("title").contains("Not found")
                             || wikiRespJson.getString("extract").contains("may refer to")) {
                         wikiResp = GPUtil
                                 .restExchange(GP_CONSTANTS.WIKI_SUMMARY_URI + artist.getArtistName() + "_(singer)");
-                        wikiRespJson = new JSONObject(wikiResp);
-                        if (wikiRespJson.getString("title").contains("Not found")) {
-                            wikiResp = GPUtil
-                                    .restExchange(GP_CONSTANTS.WIKI_SUMMARY_URI + artist.getArtistName() + "_(actor)");
+                        if (wikiResp.equalsIgnoreCase(GP_CONSTANTS.NOT_FOUND)) {
+                            isRestExchangeFailed = true;
+                        } else {
+                            isRestExchangeFailed = false;
                             wikiRespJson = new JSONObject(wikiResp);
                         }
+                        if (isRestExchangeFailed || wikiRespJson.getString("title").contains("Not found")) {
+                            wikiResp = GPUtil
+                                    .restExchange(GP_CONSTANTS.WIKI_SUMMARY_URI + artist.getArtistName() + "_(actor)");
+                            if (wikiResp.equalsIgnoreCase(GP_CONSTANTS.NOT_FOUND)) {
+                                isRestExchangeFailed = true;
+                            } else {
+                                isRestExchangeFailed = false;
+                                wikiRespJson = new JSONObject(wikiResp);
+                            }
+                        }
                     }
-                    if (wikiRespJson.getJSONObject("thumbnail") != null &&
-                            (wikiRespJson.getString("extract").contains("singer")
-                                    || wikiRespJson.getString("extract").contains("actor")
-                                    || wikiRespJson.getString("extract").contains("actress")
-                                    || wikiRespJson.getString("extract").contains("composer")
-                                    || wikiRespJson.getString("extract").contains("musician")
-                                    || wikiRespJson.getString("extract").contains("director"))) {
+                    try {
+                        if (!isRestExchangeFailed && wikiRespJson.getJSONObject("thumbnail") != null &&
+                                (wikiRespJson.getString("extract").contains("singer")
+                                        || wikiRespJson.getString("extract").contains("actor")
+                                        || wikiRespJson.getString("extract").contains("actress")
+                                        || wikiRespJson.getString("extract").contains("composer")
+                                        || wikiRespJson.getString("extract").contains("musician")
+                                        || wikiRespJson.getString("extract").contains("director"))) {
 
-                        System.out.println(
-                                "wikiRespJson: " + wikiRespJson.getJSONObject("thumbnail").getString("source"));
-                        FileUtils.copyURLToFile(new URL(wikiRespJson.getJSONObject("thumbnail").getString("source")),
-                                localArtistImg);
-                        downloadedArtists.add(artist);
+                            FileUtils.copyURLToFile(
+                                    new URL(wikiRespJson.getJSONObject("thumbnail").getString("source")),
+                                    localArtistImg);
+                            artist.setImgAvl(true);
+                            downloadedArtists.add(artist);
+                        }
+                    } catch (JSONException e) {
+                        LOG.error("For artist: " + artist.getArtistName()
+                                + ", Failed while fetching thimbnainf from wiki response "
+                                + e.getMessage());
                     }
                 } catch (Exception e) {
                     failedArtists.add(artist);
@@ -686,8 +708,12 @@ public class LibraryService {
                 }
             }
         }
+        artistRepository.saveAll(downloadedArtists);
         artists.put("downloadedArtists: ", downloadedArtists);
         artists.put("failedArtists: ", failedArtists);
+        messageService.updateBuildStatus(GP_CONSTANTS.ARTIST_IMG_DOWNLOAD_STATUS,
+                GP_CONSTANTS.ARTIST_IMG_DOWNLOAD_STATUS,
+                GP_CONSTANTS.COMPLETED);
         return artists;
     }
     // artistRepository - end
@@ -889,8 +915,8 @@ public class LibraryService {
         return artistList1;
     }
 
-    public boolean setArtistLocalImgAvlStatus(String artistName) {
-        File artistImgFIle = new File(GP_CONSTANTS.GP_ARTIST_IMAGES_PATH + artistName + ".jpg");
+    public boolean isLocalImgAvailable(String fileName, String path) {
+        File artistImgFIle = new File(path + fileName + ".jpg");
         return artistImgFIle.exists();
     }
 

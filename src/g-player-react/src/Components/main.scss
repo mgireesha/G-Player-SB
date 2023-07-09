@@ -2126,6 +2126,9 @@ a.disabled-click{
     z-index: 1000;
     animation: gpContextSlideDown 300ms ease-in-out 1;
     transition: all 300ms;
+    max-height: 160px;
+    overflow-y: auto;
+    overflow-x: hidden;
     .row {
         padding: 5px;
         padding-left: 10px;
@@ -2136,6 +2139,15 @@ a.disabled-click{
             cursor: pointer;
         }
     }
+    
+}
+
+.playlist-selector::-webkit-scrollbar{
+    width: 5px;
+}
+
+.playlist-selector::-webkit-scrollbar-track{
+    margin: 3px 0;
 }
 
 .disable-div{

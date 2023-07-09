@@ -116,4 +116,4 @@ export const WIKI_SUMMARY_URL = "https://en.wikipedia.org/api/rest_v1/page/summa
 export const GP_LIBRARY_DESCRIPTION = "Library is list of all songs available in the local machine. Generate library every time there is a change in any songs (Selected folders in Library List).";
 export const GP_LIBRARY_DESC_TEXT_1 = "This might take from few seconds to few mins.";
 
-export const GP_CONTEXT_MENU_ELEM_IDS = ['album_menu_btn_circle',TRACK_MENU_BTN_CIRCLE,GP_CONTEXT_MENU, PLAYLIST_SELECTOR, THUMBNAIL_ACTION_BTN_CIRCLE]
+export const GP_CONTEXT_MENU_ELEM_IDS = [TRACK_MENU_BTN_CIRCLE,GP_CONTEXT_MENU, PLAYLIST_SELECTOR, THUMBNAIL_ACTION_BTN_CIRCLE]

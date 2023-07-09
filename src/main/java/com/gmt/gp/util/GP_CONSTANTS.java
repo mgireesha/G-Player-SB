@@ -8,6 +8,7 @@ public class GP_CONSTANTS {
     public static final String ALBUM_COUNT = "ALBUM_COUNT";
     public static final String ALBUMS = "ALBUMS";
     public static final String ARTIST = "ARTIST";
+    public static final String ARTIST_IMG_DOWNLOAD_STATUS = "ARTIST_IMG_DOWNLOAD_STATUS";
     public static final String ARTISTS = "ARTISTS";
     public static final String ARTIST_COUNT = "ARTIST_COUNT";
 
@@ -32,6 +33,8 @@ public class GP_CONSTANTS {
 
     public static final String MEDIA_PLAYER_NULL = "MEDIA_PLAYER_NULL";
 
+    public static final String NOT_FOUND = "NOT_FOUND";
+
     public static final String PLAYLIST_ALBUMS = "PLAYLIST_ALBUMS";
     public static final String PLAYLIST_NAMES = "PLAYLIST_NAMES";
     public static final String PLAYLIST_SONGS_COUNT = "PLAYLIST_SONGS_COUNT";
@@ -45,7 +48,11 @@ public class GP_CONSTANTS {
     public static final String TRACK_LIST = "TRACK_LIST";
     public static final String TOTAL_TRACKS = "TOTAL_TRACKS";
 
+    // Contant values
     public static final int GROUPED_ALBUM_COUNT_4 = 4;
+
+    // public static final String GP_DB_ALIAS = "g_player";
+    public static final String GP_DB_ALIAS = "g_db";
 
     // URLs
     public static final String WIKI_SUMMARY_URI = "https://en.wikipedia.org/api/rest_v1/page/summary/";
