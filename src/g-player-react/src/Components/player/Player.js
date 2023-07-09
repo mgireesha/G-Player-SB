@@ -155,8 +155,6 @@ export const Player = () => {
                 break;
         }
 
-        if(library.length === 0)library = tracks;
-
         if(isShuffle && library.length>0){
             library = getShuffledTrackList(library);
         }

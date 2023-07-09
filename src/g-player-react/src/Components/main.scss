@@ -732,11 +732,6 @@
                     }
                 }
             }
-
-            .genre-lyrics{
-                margin-left: auto;
-                width: 50%;
-            }
         }
     }
 
@@ -898,13 +893,8 @@
 .album-img-div-container{
     display: grid;
     //grid-template-columns: 3fr 3fr 8fr;
-    grid-template-columns: 7fr 10fr 20fr;
+    grid-template-columns: 7fr 11fr 18fr;
 
-    .album-lyrics{
-        margin-left: auto;
-        width: 100%;
-        padding-right: 10px;
-    }
     .album-details{
         display: flex;
         flex-direction: column;
@@ -919,6 +909,99 @@
             font-size: 14px;
             margin-bottom: 3px;
         }
+    }
+
+    .album-lyrics{
+        max-height: 12em;
+        overflow-y: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        row-gap: 5px;
+        margin-right: 1.5em;
+        background: #253434;
+        box-shadow: rgb(0 0 0 / 25%) 0px 54px 55px, rgb(0 0 0 / 12%) 0px -12px 30px, rgb(0 0 0 / 12%) 0px 4px 6px, rgb(0 0 0 / 17%) 0px 12px 13px, rgb(0 0 0 / 9%) 0px -3px 5px;
+        position: relative;
+
+        .show-lyrics-btn-container{
+            position: absolute;
+            bottom: 0;
+            left: 3.5%;
+            width: 90%;
+            height: 20%;
+        }
+
+        .lyrics-written-by-div{
+            position: absolute;
+            width: 40%;
+            bottom: 10px;
+            right: 10px;
+            text-align: right;
+
+            span{
+                font-size: 14px;
+            }
+        }
+
+        .lyrics-btn{
+            color: beige;
+            cursor: pointer;
+            padding: 7px 15px;
+            border-radius: 8px;
+            margin: 5px;
+            box-shadow: rgb(50 50 93 / 25%) 0px 2px 5px -1px, rgb(0 0 0 / 30%) 0px 1px 3px -1px;
+            font-size: 14px;
+        }
+
+        .lyrics-btn-add, .lyrics-btn-edit{
+            background-color: #0e684b;
+        }
+
+        .lyrics-btn-cancel{
+            background-color: #666464;
+        }
+
+        .lyrics-btn-cancel:hover{
+            background-color: #777676;
+            ;
+            padding: 7.3px 15.3px;
+        }
+
+        .lyrics-btn-add:hover, .lyrics-btn-edit:hover{
+            background-color: #117e5b;
+            padding: 7.3px 15.3px;
+        }
+
+        #new_lyrics_ta{
+            margin-bottom: 10%;
+            margin-top: 10px;
+            border-radius: 5px;
+            background-color: #565454;
+            color: beige;
+            resize: none;
+        }
+
+        .show-lyrics-song-title{
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 5px 10px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+
+            svg{
+                font-size: 14px;
+                padding-top: 2px;
+                margin-right: 4px;
+                color: #AB3C3C;
+                box-shadow: rgb(0 0 0 / 35%) 0px 5px 15px;
+            }
+        }
+
+
     }
 }
 
@@ -1077,7 +1160,7 @@
 }
 
 .album{
-    padding: 10px 15px;    
+    padding: 10px 0 0 15px;    
 
     .album-img-div img{
         height: 12em;
@@ -1276,11 +1359,6 @@
                     }
                 }
             }
-
-            .playlist-lyrics{
-                margin-left: auto;
-                width: 50%;
-            }
         }
         .track-list{
             max-height: calc(100vh - 12.5em - 10em);
@@ -1379,102 +1457,6 @@ a.disabled-click{
 
     
     
-}
-
-.lyrics{
-    margin-left: auto;
-    max-height: 12em;
-    min-height: 12em;
-    width: 100%;
-    overflow-y: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    row-gap: 5px;
-    margin-right: 1.5em;
-    background: #253434;
-    box-shadow: rgb(0 0 0 / 25%) 0px 54px 55px, rgb(0 0 0 / 12%) 0px -12px 30px, rgb(0 0 0 / 12%) 0px 4px 6px, rgb(0 0 0 / 17%) 0px 12px 13px, rgb(0 0 0 / 9%) 0px -3px 5px;
-    position: relative;
-
-    .show-lyrics-btn-container{
-        position: absolute;
-        bottom: 0;
-        left: 3.5%;
-        width: 90%;
-        height: 20%;
-    }
-
-    .lyrics-written-by-div{
-        position: absolute;
-        width: 40%;
-        bottom: 10px;
-        right: 10px;
-        text-align: right;
-
-        span{
-            font-size: 14px;
-        }
-    }
-
-    .lyrics-btn{
-        color: beige;
-        cursor: pointer;
-        padding: 7px 15px;
-        border-radius: 8px;
-        margin: 5px;
-        box-shadow: rgb(50 50 93 / 25%) 0px 2px 5px -1px, rgb(0 0 0 / 30%) 0px 1px 3px -1px;
-        font-size: 14px;
-    }
-
-    .lyrics-btn-add, .lyrics-btn-edit{
-        background-color: #0e684b;
-    }
-
-    .lyrics-btn-cancel{
-        background-color: #666464;
-    }
-
-    .lyrics-btn-cancel:hover{
-        background-color: #777676;
-        ;
-        padding: 7.3px 15.3px;
-    }
-
-    .lyrics-btn-add:hover, .lyrics-btn-edit:hover{
-        background-color: #117e5b;
-        padding: 7.3px 15.3px;
-    }
-
-    #new_lyrics_ta{
-        margin-bottom: 10%;
-        margin-top: 10px;
-        border-radius: 5px;
-        background-color: #565454;
-        color: beige;
-        resize: none;
-    }
-
-    .show-lyrics-song-title{
-        position: absolute;
-        top: 0;
-        left: 0;
-        padding: 5px 10px;
-        font-size: 14px;
-        display: flex;
-        align-items: center;
-        cursor: pointer;
-
-        svg{
-            font-size: 14px;
-            padding-top: 2px;
-            margin-right: 4px;
-            color: #AB3C3C;
-            box-shadow: rgb(0 0 0 / 35%) 0px 5px 15px;
-        }
-    }
-
-
 }
 
 .library {
