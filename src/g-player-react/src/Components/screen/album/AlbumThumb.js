@@ -3,25 +3,9 @@ import def_album_art from '../../images/def_album_art.png';
 import {MdOpenInFull} from "react-icons/md";
 import { Link } from "react-router-dom";
 import { ALBUM, ARTIST } from "../../redux/GPActionTypes";
-import { useDispatch } from "react-redux";
-import { setContextObj, setShowContextMenu } from "../../redux/library/LibraryActions";
 import { ThumbnailActionBtn } from "../../ThumbnailActionBtn";
 
 export const AlbumThumb = ({album}) => {
-    const dispatch = useDispatch();
-    const showCOntextMenu = (event) => {
-        const position = event.target.getBoundingClientRect();
-        const width = document.getElementsByClassName("album-thumb-img-div")[0].firstChild.firstChild.offsetWidth;
-        position.width = width;
-        const contextObj = {
-            position,
-            type: ALBUM,
-            obj: album,
-            rowList: []
-        }
-        dispatch(setContextObj(contextObj));
-        dispatch(setShowContextMenu(true));
-    }
     return(
         <div className="album-thumb">
             <div className="album-thumb-img-div">
