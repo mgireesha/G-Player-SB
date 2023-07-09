@@ -3,16 +3,16 @@ import { Player } from "./player/Player";
 import { Sidebar } from "./Sidebar";
 import { Screen } from "./screen/Screen";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAlbumTacks, fetchAllAlbums, fetchAllHistory, fetchAllSongs, fetchSongsByArtist, fetchSongsByGenre } from "./redux/library/LibraryActions";
+import { fetchAlbumTacks, fetchAllAlbums, fetchAllHistory, fetchAllSongs, fetchSongsByArtist } from "./redux/library/LibraryActions";
 import { fetchCurrentSontAndStatus, playASongSucc, setIsShuffle, setMediaVolumeSucc, setRepeat } from "./redux/player/PlayerActions";
 import { getCookieDetails, getCookieValue } from "./utli";
-import { ALBUM, ARTIST, GENRE, MAIN_CONTAINER, PLAYLIST, RECENT_PLAYS, TRACK_LIST } from "./redux/GPActionTypes";
+import { ALBUM, ARTIST, MAIN_CONTAINER, RECENT_PLAYS, TRACK_LIST } from "./redux/GPActionTypes";
 import { Route, Routes } from "react-router-dom";
 import { Library } from "./library/Library";
 import { Search } from "./search/Search";
 import { RecentPlays } from "./history/RecentPlays";
 import { Playlist } from "./playlist/Playlist";
-import { fetchPlaylistNames, fetchSongsInPlaylist } from "./redux/playlist/PlaylistActions";
+import { fetchPlaylistNames } from "./redux/playlist/PlaylistActions";
 import { PlaylistSelector } from "./playlist/PlayllistSelector";
 import { CommonPopup } from "./CommnPopup";
 import { GPContexMenu } from "./screen/GPContextMenu";
@@ -66,12 +66,6 @@ export const Home = () => {
                     break;
                 case RECENT_PLAYS:
                     dispatch(fetchAllHistory());
-                    break;
-                case PLAYLIST:
-                    dispatch(fetchSongsInPlaylist(playedFromCookieValue.pfVal));
-                    break;
-                case GENRE:
-                    dispatch(fetchSongsByGenre(playedFromCookieValue.pfVal));
                     break;
                 default:
                     dispatch(fetchAllSongs());

@@ -9,7 +9,6 @@ import { setCommonPopupObj } from "../redux/library/LibraryActions";
 import { deltePlaylist, renamePlaylist } from "../redux/playlist/PlaylistActions";
 import { PLAYLIST_DELETE_PLAYLIST_SUCCESS, PLAYLIST_RENAME_PLAYLIST_SUCCESS } from "../redux/playlist/PlaylistActionTypes";
 import { PlaylistImg } from "./PlaylistImg";
-import { Lyrics } from "../screen/lyrics/Lyrics";
 
 export const PlaylistPageHeader = ({albumNames, songsCount, playAll}) => {
     const dispatch = useDispatch();
@@ -105,9 +104,6 @@ export const PlaylistPageHeader = ({albumNames, songsCount, playAll}) => {
                         <button onClick={showRenamePlaylistPopup}><BiRename />{RENAME_LABEL}</button>
                     </div>
                 </div>
-            </div>
-            <div className="playlist-lyrics">
-                <Lyrics />
             </div>
         </div>
     );

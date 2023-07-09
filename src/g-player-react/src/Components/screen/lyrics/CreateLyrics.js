@@ -76,7 +76,7 @@ export const CreateLyrics = ({onSetIsreateLyricsStarted, newLyrics}) => {
         if(songPlaying.trackLength!==undefined){
             lyrics = lyrics+"[au:"+getMins0(songPlaying.trackLength)+"]\n"
         }
-        lyrics = lyrics+"[by:g_player]\n"
+        lyrics = lyrics+"[by:giri_empty]\n"
         Object.keys(tempLyricsP).forEach((time) => {
             lyrics = lyrics+"["+time+":00]"+tempLyricsP[time]+"\n"
         });
