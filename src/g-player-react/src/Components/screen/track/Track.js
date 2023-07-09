@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { ALBUM, CURRENT_PAGE, PLAYLIST, REMOVE_LABEL, TRACK, TRACK_MENU_BTN_CIRCLE } from "../../redux/GPActionTypes";
+import { ALBUM, ARTIST, CURRENT_PAGE, PLAYLIST, REMOVE_LABEL, TRACK, TRACK_MENU_BTN_CIRCLE } from "../../redux/GPActionTypes";
 import { playASong, playPause, setIsPlaying } from "../../redux/player/PlayerActions";
 import { getCookieValue, getMins } from "../../utli";
 import { ArtistLink } from "../artist/ArtistLink";
@@ -35,7 +35,8 @@ export const Track = ({track, playedFrom, index, hideTrackNum}) => {
             position,
             type: TRACK,
             obj: track,
-            options
+            options,
+            rowList:[ALBUM, ARTIST]
         }
         dispatch(setContextObj(contextObj));
         dispatch(setShowContextMenu(true));

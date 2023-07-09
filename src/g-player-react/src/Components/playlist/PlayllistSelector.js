@@ -50,7 +50,7 @@ export const PlaylistSelector = () => {
         }
         if(contextObj.type === ALBUM){
             reqPLObj["albumId"] = contextObj.obj.albumId;
-            reqPLObj["albumName"] = contextObj.obj.album;
+            reqPLObj["albumName"] = contextObj.obj.albumName;
         }else if(contextObj.type === TRACK){
             reqPLObj["songId"] = contextObj.obj.songId;
             reqPLObj["albumName"] = contextObj.obj.album;
