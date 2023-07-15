@@ -103,7 +103,7 @@ export function* onFetchAlbumTracks(){
 
 export function* onFetchAlbumTracksAsync(payload){
     try {
-        const response = yield call(fetchAlbumtracksAPI,payload.albumName);
+        const response = yield call(fetchAlbumtracksAPI,payload.albumName, payload.genre);
         if(response.status === 200){
             yield put(fetchAlbumTacksSucc(response.data));
         }

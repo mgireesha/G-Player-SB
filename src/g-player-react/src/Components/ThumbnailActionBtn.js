@@ -1,5 +1,5 @@
 import React from "react";
-import { GENRE, THUMBNAIL_ACTION_BTN_CIRCLE } from "./redux/GPActionTypes";
+import { THUMBNAIL_ACTION_BTN_CIRCLE } from "./redux/GPActionTypes";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { setContextObj, setShowContextMenu } from "./redux/library/LibraryActions";
 import { useDispatch } from "react-redux";

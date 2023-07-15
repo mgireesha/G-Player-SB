@@ -81,6 +81,11 @@ public class LibraryController {
         return libraryService.getSongsByAlbum(album);
     }
 
+    @RequestMapping("/getByAlbum/{album}/{genre}")
+    public List<Library> getSongsByAlbumAndGenre(@PathVariable String album, @PathVariable String genre) {
+        return libraryService.getSongsByAlbumAndGenre(album, genre);
+    }
+
     @RequestMapping("/getByYear/{year}")
     public List<Library> getSongsByYear(@PathVariable int year) {
         return libraryService.getSongsByYear(year);

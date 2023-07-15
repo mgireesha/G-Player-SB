@@ -3,6 +3,10 @@
     margin: 0;
 }
 
+body{
+    overflow: hidden;
+}
+
 .app-container{
     background-color: black;
     height: 100vh;
@@ -328,6 +332,8 @@
                 cursor: pointer;
                 border-radius: 20px;
                 border-bottom-left-radius: unset;
+                position: relative;
+                //z-index: 1;
                 box-shadow: rgb(0 0 0 / 40%) 0px 2px 4px, rgb(0 0 0 / 30%) 0px 7px 13px -3px, rgb(0 0 0 / 20%) 0px -3px 0px inset;
             }
         }
@@ -811,6 +817,14 @@
                     bottom: 4px;
                     left: 43%;
                 }
+                .genre-type-btn{
+                    left: 5em;
+                    border-radius: 13px;
+                }
+                .genre-gp-selector{
+                    top: 3em;
+                    left: 2em;
+                }
             }
     
             .album-thumb-img-div-link{
@@ -902,7 +916,7 @@
 
     .album-lyrics{
         margin-left: auto;
-        width: 100%;
+        width: 90%;
         padding-right: 10px;
     }
     .album-details{
@@ -918,6 +932,41 @@
         label{
             font-size: 14px;
             margin-bottom: 3px;
+        }
+
+        .album-multi-genre-select{
+            margin-top: auto;
+            margin-bottom: 15px;
+
+            a{
+                background-color: transparent;
+                border: 1px solid gray;
+                outline: none;
+                padding: 3px 10px 6px 10px;
+                color: beige;
+                cursor: pointer;
+                margin: 0 1px;
+                font-weight: bold;
+            }
+
+            a.selected{
+                //background-color: #17a2b8;
+                background-color: #560C53;
+                //color: #000;
+            }
+
+            a:first-of-type{
+                border-top-left-radius: 5px;
+            }
+
+            a:last-of-type{
+                border-top-right-radius: 5px;
+            }
+
+            a:hover{
+                color: #dfbd16;
+                //font-weight: 400;
+            }
         }
     }
 }
@@ -1084,6 +1133,97 @@
         width: 12em;
         box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
     }
+}
+
+.genre-type-btn{
+    position: absolute;
+    width: 3em;
+    height: 9em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    z-index: 10;
+    left: 6em;
+    top: 0;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    cursor: pointer;
+
+    svg{
+        font-size: 30px;
+        color: transparent;
+    }
+
+    svg:hover{
+        color: inherit;
+    }
+}
+
+.genre-type-btn:hover{
+    background-color: #505050ad;
+
+    svg{
+        color: inherit;
+    }
+}
+
+.genre-gp-selector{
+    position: absolute;
+    background-color: #2b2b2b;
+    border: 1px solid grey;
+    border-radius: 4px;
+    z-index: 1000;
+    animation: gpSelectorSlideRight 250ms ease-in-out 1;
+    transition: all 300ms;
+    max-height: 160px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 9em;
+    top: 1em;
+    left: 0em;
+    z-index: 11;
+    .row{
+        padding: 4px;
+        padding-left: 10px;
+        cursor: pointer;
+        border-bottom: 1px solid grey;
+
+        label{
+            cursor: pointer;
+        }
+
+        .icon{
+            float: right;
+            font-size: 22px;
+        }
+    }
+
+    .row.gp-link-h:hover{
+        font-weight: bold;
+    }
+
+    @keyframes gpSelectorSlideRight {
+        // 0%{
+        //     transform: translateX(50%);
+        // }
+
+        // 100%{
+        //     transform: translateX(0);
+        // }
+
+        0%{
+            transform: translateX(50%) scaleX(0);
+        }
+
+        100%{
+            transform: translateX(0) scaleX(1);
+        }
+    }
+}
+
+.gp-link-h:hover{
+    color: #dfbd16;
 }
 
 .track, .artist-details label{
@@ -2692,6 +2832,8 @@ a.disabled-click{
                     .album-thumb-img-div img{
                         width: 5em;
                         height: 5em;
+
+                        
                     }
                     .album-thumb-details{
                         max-width: 6em;

@@ -154,6 +154,7 @@ public class LibraryService {
         byte[] albumImg = null;
         List<Artist> artistList = new ArrayList<Artist>();
         List<Library> libList = new ArrayList<Library>();
+        List<Album> tempAlbumList = new ArrayList<Album>();
         List<Album> albumList = new ArrayList<Album>();
         Map<String, Integer> artistArtCount = new HashMap<String, Integer>();
         Map<String, Integer> albumArtistArtCount = new HashMap<String, Integer>();
@@ -163,6 +164,9 @@ public class LibraryService {
         int fileListCounter = 0;
         boolean stepSuccess = true;
         long startingTime = System.currentTimeMillis();
+        boolean isAlbumAdded = false;
+        Map<String, List<String>> albumGenreMap = new HashMap<String, List<String>>();
+        List<String> genreList = null;
 
         LOG.info(methodName + " - Started reading audiofiles using jaudiotagger, files to read: " + fileList.size());
         messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS_STEP,
@@ -173,6 +177,7 @@ public class LibraryService {
         try { // label for try block : main_try_for_method_buildLibrary
             for (int i = 0; i < fileList.size(); i++) {
                 fileListCounter++;
+                isAlbumAdded = false;
                 try { // label for try block : file_list_for_loop
                     try { // label for try block : jaudiotagger_read
                         audioF = AudioFileIO.read(fileList.get(i));
@@ -210,7 +215,20 @@ public class LibraryService {
                         e.printStackTrace();
                     }
 
-                    if (!containsName(albumList, library.getAlbum())) {
+                    isAlbumAdded = isContainsCurrentAlbum(tempAlbumList, library.getAlbum(), library.getGenre());
+                    if (!isAlbumAdded) {
+                        if (albumGenreMap.containsKey(library.getAlbum())) {
+                            genreList = albumGenreMap.get(library.getAlbum());
+                            genreList.add(library.getGenre());
+                            albumGenreMap.put(library.getAlbum(), genreList);
+                        } else {
+                            genreList = new ArrayList<String>();
+                            genreList.add(library.getGenre());
+                            albumGenreMap.put(library.getAlbum(), genreList);
+                        }
+                    }
+
+                    if (!isAlbumAdded) {
                         albumImg = getAlbumImgBinFromTag(tag);
                         if (albumImg != null) {
                             album = new Album();
@@ -222,7 +240,7 @@ public class LibraryService {
                             album.setTotaltracks(library.getTotaltracks());
                             album.setYear(library.getYear());
                             album = writeByteArrayToImgFile(album, albumImg);
-                            albumList.add(album);
+                            tempAlbumList.add(album);
                             if (album.getAlbumArtist() != null) {
                                 artistName = album.getAlbumArtist().trim();
                                 if (albumArtistArtCount.get(artistName) != null) {
@@ -306,11 +324,28 @@ public class LibraryService {
                         "Exception while trucating tables");
             }
 
+            System.out.println("albumGenreMap: " + albumGenreMap);
+
             if (stepSuccess) {
                 startingTime = System.currentTimeMillis();
                 messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS_STEP,
                         "Saving library, album and artists list");
                 libList = (List<Library>) libraryRepository.saveAll(libList);
+
+                for (Album tempAlbum : tempAlbumList) {
+                    genreList = albumGenreMap.get(tempAlbum.getAlbumName());
+                    if (!isContainsCurrentAlbum(albumList, tempAlbum.getAlbumName(), null)) {
+                        if (genreList.size() > 1) {
+                            tempAlbum.setGenreType(GP_CONSTANTS.MULTI_GENRE);
+                            tempAlbum.setGenres(String.join(",", genreList));
+                        } else {
+                            tempAlbum.setGenreType(GP_CONSTANTS.SINGLE_GENRE);
+                        }
+                        albumList.add(tempAlbum);
+                    }
+
+                }
+
                 albumRepository.saveAll(albumList);
                 artistRepository.saveAll(artistList);
                 endingTime = System.currentTimeMillis();
@@ -467,6 +502,10 @@ public class LibraryService {
 
     public List<Library> getSongsByAlbum(String album) {
         return libraryRepository.getByAlbum(album);
+    }
+
+    public List<Library> getSongsByAlbumAndGenre(String album, String genre) {
+        return libraryRepository.getByAlbumAndGenre(album, genre);
     }
 
     public List<Library> getSongsByYear(int year) {
@@ -755,8 +794,14 @@ public class LibraryService {
     // Multiple repositories - end
 
     // Utility methods - Start
-    public boolean containsName(final List<Album> list, final String name) {
-        return list.stream().filter(o -> o.getAlbumName().equals(name)).findFirst().isPresent();
+    public boolean isContainsCurrentAlbum(final List<Album> list, final String name, final String genre) {
+        if (genre == null) {
+            return list.stream().filter(o -> o.getAlbumName().equals(name)).findFirst().isPresent();
+        } else {
+            return list.stream().filter(o -> o.getAlbumName().equals(name) && o.getGenre().equalsIgnoreCase(genre))
+                    .findFirst().isPresent();
+        }
+
     }
 
     public Library getLibraryFromLibList(final List<Library> libList, History history) {

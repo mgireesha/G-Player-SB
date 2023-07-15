@@ -32,12 +32,14 @@ export const DELETE_PLAYLIST_CONF_TEXT = "Are you sure to delete this playlist?"
 export const GENRE = 'GENRE';
 export const GENRE_ALBUMS = 'GENRE_ALBUMS';
 export const GENRE_LABEL = 'Genre';
+export const GENRE_TYPE_BTN = 'GENRE_TYPE_BTN';
 export const GENRES = 'GENRES';
 export const GENRES_LABEL = 'Genres';
 export const GENRE_COUNT = 'GENRE_COUNT';
 export const GENRES_COUNT_LABEL = 'Genres';
 export const GENRE_SONG_COUNT = 'GENRE_SONG_COUNT';
 export const GP_CONTEXT_MENU = 'GP_CONTEXT_MENU';
+export const GP_SELECTOR = 'GP_SELECTOR';
 
 export const HISTORY_COUNT = 'HISTORY_COUNT';
 export const HISTORY_COUNT_LABEL = 'Total Played';
@@ -53,6 +55,7 @@ export const LOADING = 'LOADING';
 
 export const MAIN_CONTAINER = "MAIN_CONTAINER";
 export const MEDIA_PLAYER_NULL = 'MEDIA_PLAYER_NULL';
+export const MULTI_GENRE = 'MULTI_GENRE';
 export const MUSIC = 'MUSIC';
 export const MUSIC_LABEL = 'Music';
 export const MUSIC_PATH = 'MUSIC_PATH';
@@ -116,4 +119,6 @@ export const WIKI_SUMMARY_URL = "https://en.wikipedia.org/api/rest_v1/page/summa
 export const GP_LIBRARY_DESCRIPTION = "Library is list of all songs available in the local machine. Generate library every time there is a change in any songs (Selected folders in Library List).";
 export const GP_LIBRARY_DESC_TEXT_1 = "This might take from few seconds to few mins.";
 
-export const GP_CONTEXT_MENU_ELEM_IDS = [TRACK_MENU_BTN_CIRCLE,GP_CONTEXT_MENU, PLAYLIST_SELECTOR, THUMBNAIL_ACTION_BTN_CIRCLE]
+export const GP_CONTEXT_MENU_ELEM_IDS = [TRACK_MENU_BTN_CIRCLE,GP_CONTEXT_MENU, PLAYLIST_SELECTOR, THUMBNAIL_ACTION_BTN_CIRCLE];
+
+export const GP_SELECTOR_ELEM_IDS = [GENRE_TYPE_BTN, GP_SELECTOR];

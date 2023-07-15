@@ -168,24 +168,27 @@ public class PlaylistService {
             hisAlbumList = historyService.getAlbumsGroupedFromHistoryJDBC(0, "count");
             int counter = 0;
             plAlbumList = new ArrayList<String>();
-
-            for (int i = 0; i < hisAlbumList.size(); i++) {
-                albumName = (String) hisAlbumList.get(i).get("albumName");
-                if (tempPlAlbumList.contains(albumName)) {
-                    counter++;
-                    plAlbumList.add(albumName);
+            if (tempPlAlbumList.size() <= GP_CONSTANTS.GROUPED_ALBUM_COUNT_4) {
+                plAlbumList.addAll(tempPlAlbumList);
+            } else {
+                for (int i = 0; i < hisAlbumList.size(); i++) {
+                    albumName = (String) hisAlbumList.get(i).get("albumName");
+                    if (tempPlAlbumList.contains(albumName)) {
+                        counter++;
+                        plAlbumList.add(albumName);
+                    }
+                    if (counter == 3) {
+                        counter = 0;
+                        break;
+                    }
                 }
-                if (counter == 3) {
-                    counter = 0;
-                    break;
-                }
-            }
-            if (plAlbumList.size() < 4 && tempPlAlbumList.size() >= 4) {
-                for (String albumName1 : tempPlAlbumList) {
-                    if (!plAlbumList.contains(albumName1)) {
-                        plAlbumList.add(albumName1);
-                        if (plAlbumList.size() == 4) {
-                            break;
+                if (plAlbumList.size() < 4 && tempPlAlbumList.size() >= 4) {
+                    for (String albumName1 : tempPlAlbumList) {
+                        if (!plAlbumList.contains(albumName1)) {
+                            plAlbumList.add(albumName1);
+                            if (plAlbumList.size() == 4) {
+                                break;
+                            }
                         }
                     }
                 }
