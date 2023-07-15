@@ -26,12 +26,14 @@ public class GP_CONSTANTS {
     public static final String GENRE_ALBUMS = "GENRE_ALBUMS";
     public static final String GENRE_COUNT = "GENRE_COUNT";
     public static final String GENRE_SONG_COUNT = "GENRE_SONG_COUNT";
+    public static final String GENRE_TYPE = "GENRE_TYPE";
     public static final String GENRES = "GENRES";
 
     public static final String LAST_PLAYED_SONG_ID = "LAST_PLAYED_SONG_ID";
     public static final String LIBRARY = "LIBRARY";
 
     public static final String MEDIA_PLAYER_NULL = "MEDIA_PLAYER_NULL";
+    public static final String MULTI_GENRE = "MULTI_GENRE";
 
     public static final String NOT_FOUND = "NOT_FOUND";
 
@@ -41,6 +43,7 @@ public class GP_CONSTANTS {
 
     public static final String RUNNING = "RUNNING";
 
+    public static final String SINGLE_GENRE = "SINGLE_GENRE";
     public static final String STATUS = "STATUS";
     public static final String SUCCESS = "SUCCESS";
 

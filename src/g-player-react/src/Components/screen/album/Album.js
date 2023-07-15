@@ -2,23 +2,23 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import def_album_art from '../../images/def_album_art.png';
-import { ALBUM } from ".././../redux/GPActionTypes";
+import { ALBUM, MULTI_GENRE, TRACKS_LABEL } from ".././../redux/GPActionTypes";
 import { Lyrics } from "../lyrics/Lyrics";
 import { Track } from "../track/Track";
 import { fetchAlbum, fetchAlbumTacks } from "../../redux/library/LibraryActions";
 
 export const Album = () => {
     const dispatch = useDispatch();
-    const { albumName } = useParams();
+    const { albumName, genre } = useParams();
     const album = useSelector(state => state.library.album);
     let albumTracks = useSelector(state => state.library.albumTracks);
     if(albumTracks.length>0){
         albumTracks = albumTracks.sort((a,b) => a.trackNumber - b.trackNumber);
     }
     useEffect(()=>{
-        dispatch(fetchAlbumTacks(albumName));
+        dispatch(fetchAlbumTacks(albumName, genre));
         dispatch(fetchAlbum(albumName));
-    },[albumName]);
+    },[albumName, genre]);
     useEffect(()=>{
         //dispatch(setGroupband("albums"));
         //dispatch(setPlayedFrom({pfKey:ALBUM, pfVal:albumName}));
@@ -35,7 +35,19 @@ export const Album = () => {
                         <Link to={`/music/album_artists/${album.albumArtist}`} >
                             <label style={{cursor:'pointer'}}>{album.albumArtist}</label>
                         </Link>
-                        <label>{album.year} - {album.genre}</label>
+                        {album.genreType !== MULTI_GENRE &&<label>{album.year} - {album.genre}</label>}
+                        {albumTracks && <label>{albumTracks.length}&nbsp;{TRACKS_LABEL}</label> }
+                        {album.genreType === MULTI_GENRE &&
+                            <>
+                                <label>{album.year} - {genre?genre:"All"}</label>
+                                <div className="album-multi-genre-select">
+                                    <Link className={!genre?"selected":""} to={`/music/albums/${album.albumName}`}>All</Link>
+                                    {album.genres.split(",").map(gnre=>
+                                        <Link className={genre === gnre ? "selected":""} to={`/music/albums/${album.albumName}/${gnre}`}>{gnre}</Link>
+                                    )}
+                                </div>
+                            </>
+                        }
                     </div>
                 <div className="album-lyrics">
                     <Lyrics />

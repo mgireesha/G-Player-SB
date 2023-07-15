@@ -80,6 +80,8 @@ public class HistoryService {
                 album.put("genre", rs.getString("GENRE"));
                 album.put("albumImgAvl", rs.getString("IS_ALBUM_IMG_AVL"));
                 album.put("lastPlayedTime", rs.getTimestamp("LAST_PLAYED_TIME"));
+                album.put("genreType", rs.getString("GENRE_TYPE"));
+                album.put("genres", rs.getString("GENRES"));
                 album.put("count", rs.getInt("COUNT"));
                 albumArr.add(album);
             }
