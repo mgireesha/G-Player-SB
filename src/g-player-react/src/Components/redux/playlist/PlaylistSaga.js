@@ -1,9 +1,9 @@
 import { call, put, takeLatest } from "redux-saga/effects";
-import { addToPlaylistAPI, createPlaylistAPI, deletePlaylistAPI, fetchPlaylistNamesAPI, fetchSongsInPlaylistAPI, removeFromPlaylistAPI, renamePlaylistAPI } from "../GPApis";
-import { PLAYLIST_ADD_TO_PLAYLIST_START, PLAYLIST_CREATE_PLAYLIST_START, PLAYLIST_DELETE_PLAYLIST_START, PLAYLIST_FETCH_PLAYLIST_NAMES_START, PLAYLIST_FETCH_SONGS_IN_PLAYLIST_START, PLAYLIST_REMOVE_FROM_PLAYLIST_START, PLAYLIST_RENAME_PLAYLIST_START } from "./PlaylistActionTypes";
-import { addToPlaylistSucc, createPlaylistSucc, deltePlaylistSucc, fetchSongsInPlaylistSucc, fethPLaylistNamesSucc, removeFromPlaylistSucc, renamePlaylistSucc } from "./PlaylistActions";
+import { addToPlaylistAPI, createPlaylistAPI, deletePlaylistAPI, exportPlaylistsAPI, fetchPlaylistNamesAPI, fetchSongsInPlaylistAPI, removeFromPlaylistAPI, renamePlaylistAPI } from "../GPApis";
+import { PLAYLIST_ADD_TO_PLAYLIST_START, PLAYLIST_CREATE_PLAYLIST_START, PLAYLIST_DELETE_PLAYLIST_START, PLAYLIST_EXPORT_PLAYLISTS_START, PLAYLIST_FETCH_PLAYLIST_NAMES_START, PLAYLIST_FETCH_SONGS_IN_PLAYLIST_START, PLAYLIST_REMOVE_FROM_PLAYLIST_START, PLAYLIST_RENAME_PLAYLIST_START } from "./PlaylistActionTypes";
+import { addToPlaylistSucc, createPlaylistSucc, deltePlaylistSucc, exportPlaylistsSucc, fetchSongsInPlaylistSucc, fethPLaylistNamesSucc, removeFromPlaylistSucc, renamePlaylistSucc } from "./PlaylistActions";
 import { handleAPIError } from "../../utli";
-import { setShowContextMenu, setStatusMessage } from "../library/LibraryActions";
+import { setCommonPopupObj, setShowContextMenu, setStatusMessage } from "../library/LibraryActions";
 
 export function* onFetchPlaylistNames(){
     yield takeLatest(PLAYLIST_FETCH_PLAYLIST_NAMES_START, onFetchPlaylistNamesAsnc);
@@ -143,6 +143,27 @@ export function* onRenamePlaylistAsnc(payload){
         if(response.status===200){
             const data = response.data;
             yield put(renamePlaylistSucc(data.message));
+        }
+    } catch (error) {
+        console.log(error);
+        handleAPIError(error);
+    }
+
+}
+
+export function* onExportPlaylists(){
+    yield takeLatest(PLAYLIST_EXPORT_PLAYLISTS_START, onExportPlaylistsAsnc);
+}
+
+export function* onExportPlaylistsAsnc(){
+    try {
+        const response = yield call(exportPlaylistsAPI);
+        if(response.status===200){
+            const data = response.data;
+            const message = Object.keys(data.response).length+' Playlists are exported to "'+data.status1+'" path.';
+            yield put(setStatusMessage(message));
+            yield put(setCommonPopupObj({showPopup:false}))
+            //yield put(exportPlaylistsSucc());
         }
     } catch (error) {
         console.log(error);

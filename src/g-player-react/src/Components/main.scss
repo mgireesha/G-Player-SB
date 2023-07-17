@@ -1257,28 +1257,33 @@ body{
         height: calc(100vh - 3em - 7em);
         overflow-y: auto;
 
-        .create-playlist{
+        .playlists-action{
+            display: flex;
+
+            .create-playlist, .import-export-playlist{
                 margin-left: 15px;
-            .create-playlist-btn{
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 10px;
-                width: 8em;
-                border-radius: 5px;
-                cursor: pointer;
-                /* "to left" / "to right" - affects initial color */
-                background: linear-gradient(to left, #AB3C3C 50%, #2B3A69 50%) right;
-                background-size: 200%;
-                transition: all 250ms ease-out;
-                svg{
-                    padding-top: 2px;
+                .create-playlist-btn, .import-export-playlist-btn{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 10px;
+                    width: 8em;
+                    border-radius: 5px;
                     cursor: pointer;
+                    /* "to left" / "to right" - affects initial color */
+                    background: linear-gradient(to left, #AB3C3C 50%, #2B3A69 50%) right;
+                    background-size: 200%;
+                    transition: all 250ms ease-out;
+                    svg{
+                        padding-top: 2px;
+                        cursor: pointer;
+                    }
+                }
+                .create-playlist-btn:hover, .import-export-playlist-btn:hover{
+                    background-position: left;
                 }
             }
-            .create-playlist-btn:hover{
-                background-position: left;
-            }
+
         }
 
         .playlist-list{
@@ -1460,6 +1465,26 @@ body{
                 height: 9em;
                 border-radius: 5px;
             }
+        }
+    }
+}
+
+.import-export-playlist-popup-btns{
+    .export-playlist{
+        .export-playlist-btn{
+            width: 7em;
+            padding: 7px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            background-color: transparent;
+            color: #000;
+            border: 1px solid rgb(10, 113, 75);
+        }
+
+        .export-playlist-btn:hover{
+            background-color: rgb(10, 113, 75);
+            color: beige;
         }
     }
 }

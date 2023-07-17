@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
 
 @Entity
 public class Library {
@@ -28,6 +29,17 @@ public class Library {
     private String albumArt;
     @Column(columnDefinition = "VARCHAR(10000)")
     private String lyrics;
+
+    @Transient
+    private long playlistItemId;
+
+    public long getPlaylistItemId() {
+        return playlistItemId;
+    }
+
+    public void setPlaylistItemId(long playlistItemId) {
+        this.playlistItemId = playlistItemId;
+    }
 
     public void setTrackLength(long trackLength) {
         this.trackLength = trackLength;

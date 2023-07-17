@@ -68,4 +68,6 @@ public class GP_CONSTANTS {
     public static final String GP_ARTIST_IMAGES_PATH = System.getProperty("user.home")
             + "\\G_Player\\images\\artists\\";
 
+    public static final String GP_PLAYLIST_PATH = System.getProperty("user.home") + "\\G_Player\\playlists\\";
+
 }

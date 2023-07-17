@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCommonPopupObj } from "./redux/library/LibraryActions";
-import { ALBUM, COMMON_POPUP_ERROR_MSG, INPUT, POPUP_PRIMARY_BTN, TEXT, TRACK } from "./redux/GPActionTypes";
+import { ALBUM, COMMON_POPUP_ERROR_MSG, COMPONENT, INPUT, POPUP_PRIMARY_BTN, TEXT, TRACK } from "./redux/GPActionTypes";
 import { PLAYLIST_ADD_TO_PLAYLIST_SUCCESS, PLAYLIST_CREATE_PLAYLIST_SUCCESS } from "./redux/playlist/PlaylistActionTypes";
 import { addToPlaylist, setAddedNewPlaylistObj } from "./redux/playlist/PlaylistActions";
 
@@ -85,6 +85,9 @@ export const CommonPopup = () => {
                         }
                         {commonPopupObj.contentType === INPUT &&
                             <input type="text" defaultValue={commonPopupObj.content} id={commonPopupObj.elementId ? commonPopupObj.elementId:'COMMON_POPUP_INP_ID_1'} placeholder={commonPopupObj.placeHolder?commonPopupObj.placeHolder:''} />
+                        }
+                        {commonPopupObj.contentType === COMPONENT && 
+                            <commonPopupObj.component />
                         }
                         <p id={COMMON_POPUP_ERROR_MSG} style={{color:'red',paddingTop:10}}></p>
                     </div>

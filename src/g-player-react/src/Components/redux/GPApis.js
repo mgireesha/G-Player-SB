@@ -171,4 +171,8 @@ export const deletePlaylistAPI = (playlistId) => {
 export const renamePlaylistAPI = (playlistName) => {
     return iAxios.put(`/playlist/rename-playlist`,playlistName).then(response => response);
 }
+
+export const exportPlaylistsAPI = () => {
+    return iAxios.put(`/playlist/export`).then(response => response);
+}
 //Playlist - End

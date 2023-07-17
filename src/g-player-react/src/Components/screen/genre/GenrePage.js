@@ -52,7 +52,7 @@ export const GenrePage = () => {
             if(genreSongList.length > 6){
                 tempTrackListInp.showSort = true;
                 tempTrackListInp.traskListStyle = {
-                    maxHeight : 'calc(100vh - 26.3em)'
+                    maxHeight : 'calc(100vh - 29em)'
                 }
             }
             if(genreSongList.length > 20){
@@ -62,7 +62,7 @@ export const GenrePage = () => {
                     visibility:'hidden'
                 }
                 tempTrackListInp.traskListStyle = {
-                    maxHeight : 'calc(100vh - 28.8em)'
+                    maxHeight : 'calc(100vh - 31em)'
                 }
             }
         }

@@ -1,5 +1,8 @@
 package com.gmt.gp.services;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -15,6 +18,7 @@ import com.gmt.gp.model.Library;
 import com.gmt.gp.model.Message;
 import com.gmt.gp.model.PlaylistItems;
 import com.gmt.gp.repositories.PlaylistRepository;
+import com.gmt.gp.util.GPUtil;
 import com.gmt.gp.util.GP_CONSTANTS;
 import com.gmt.gp.util.GP_ERRORS;
 
@@ -96,6 +100,7 @@ public class PlaylistService {
             songsInPlaylist.add(songs.stream().filter(o -> (o.getSongId() == songId)).findFirst().orElse(null));
         }
         Collections.sort(songsInPlaylist, (o1, o2) -> (o1.getTitle().compareTo(o2.getTitle())));
+
         return songsInPlaylist;
     }
 
@@ -198,6 +203,49 @@ public class PlaylistService {
         }
         resp.put(GP_CONSTANTS.PLAYLIST_ALBUMS, plAlbums);
         resp.put(GP_CONSTANTS.PLAYLIST_SONGS_COUNT, playlistSongsCount);
+        return resp;
+    }
+
+    public GPResponse exportPlaylists() {
+        GPResponse resp = new GPResponse();
+        Map<String, List<PlaylistItems>> plItemsMap = new HashMap<String, List<PlaylistItems>>();
+        List<PlaylistItems> plItems = getAllPlaylistItems();
+        List<PlaylistItems> tempPlItems = null;
+        String plItemIdentifier = null;
+        for (PlaylistItems plItem : plItems) {
+            plItemIdentifier = plItem.getPlaylistId() + plItem.getPlaylist();
+            if (plItemsMap.containsKey(plItemIdentifier)) {
+                tempPlItems = plItemsMap.get(plItemIdentifier);
+                tempPlItems.add(plItem);
+            } else {
+                tempPlItems = new ArrayList<PlaylistItems>();
+                tempPlItems.add(plItem);
+            }
+            plItemsMap.put(plItemIdentifier, tempPlItems);
+        }
+        resp.setResponse(plItemsMap);
+        resp.setStatus1(GP_CONSTANTS.GP_PLAYLIST_PATH);
+        FileWriter fileWriter = null;
+        File file = null;
+        boolean isDirExists = GPUtil
+                .checkAndCreateFolders(GP_CONSTANTS.GP_PLAYLIST_PATH);
+        for (String plItemsMapKey : plItemsMap.keySet()) {
+            tempPlItems = plItemsMap.get(plItemsMapKey);
+            try {
+                if (isDirExists && tempPlItems.size() > 0) {
+                    file = new File(GP_CONSTANTS.GP_PLAYLIST_PATH + tempPlItems.get(0).getPlaylist() + ".csv");
+
+                    fileWriter = new FileWriter(file);
+                    for (PlaylistItems plItem : tempPlItems) {
+                        fileWriter.append(plItem.getSongPath()).append(System.lineSeparator());
+                    }
+                    fileWriter.close();
+                    fileWriter.flush();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         return resp;
     }
 }

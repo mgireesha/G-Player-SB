@@ -324,8 +324,6 @@ public class LibraryService {
                         "Exception while trucating tables");
             }
 
-            System.out.println("albumGenreMap: " + albumGenreMap);
-
             if (stepSuccess) {
                 startingTime = System.currentTimeMillis();
                 messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS_STEP,
@@ -905,20 +903,13 @@ public class LibraryService {
     public boolean checkAndCreateUserImageFolders() {
         boolean isDirExits = false;
         try {
-            File albumImagesFolder = new File(GP_CONSTANTS.GP_ALBUM_IMAGES_PATH);
-            File artistIMagesFolder = new File(GP_CONSTANTS.GP_ARTIST_IMAGES_PATH);
-            if (!albumImagesFolder.exists()) {
-                isDirExits = albumImagesFolder.mkdirs();
-            } else {
-                isDirExits = true;
+            isDirExits = GPUtil.checkAndCreateFolders(GP_CONSTANTS.GP_ALBUM_IMAGES_PATH);
+            if (!isDirExits) {
+                return false;// handle exception, send exception back to user
             }
-            if (isDirExits) {
-                isDirExits = false;
-                if (!artistIMagesFolder.exists()) {
-                    isDirExits = artistIMagesFolder.mkdirs();
-                } else {
-                    isDirExits = true;
-                }
+            isDirExits = GPUtil.checkAndCreateFolders(GP_CONSTANTS.GP_ARTIST_IMAGES_PATH);
+            if (!isDirExits) {
+                return false;// handle exception, send exception back to user
             }
         } catch (Exception e) {
             e.printStackTrace();
