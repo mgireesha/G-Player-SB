@@ -14,7 +14,10 @@ export const GenrePage = () => {
     const dispatch = useDispatch();
     
     const genreDetails = useSelector(state => state.library.genreDetails);
-    const genreSongList = useSelector(state => state.library.genreSongList);
+    let genreSongList = useSelector(state => state.library.genreSongList);
+    if(genreSongList.length>0){
+        genreSongList = genreSongList.sort((a,b)=>{return a.title>b.title?1:-1});
+    }
 
     const [genreAlbums, setGenreAlbums] = useState({});
     const [genreSongCount, setGenreSongCount] = useState({});
@@ -62,7 +65,7 @@ export const GenrePage = () => {
                     visibility:'hidden'
                 }
                 tempTrackListInp.traskListStyle = {
-                    maxHeight : 'calc(100vh - 28.8em)'
+                    maxHeight : 'calc(100vh - 31.8em)'
                 }
             }
         }

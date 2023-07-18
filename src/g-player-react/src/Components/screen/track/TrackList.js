@@ -6,14 +6,19 @@ import { scrollToPlaying, sortGroupByField } from "../../utli";
 import { SortingContainer } from "../SortingContainer";
 import { Spinner } from "../Spinner";
 import { Track } from "./Track";
+import {ViewportList} from "react-viewport-list";
+import { useRef } from "react";
 
 
 export const TrackList = ({tracks, trackListInp}) => {
     const dispatch = useDispatch();
+    const ref = useRef(null);
     const [trackList, setTrackList] = useState({});
     const isPlaying = useSelector(state => state.player.isPlaying);
     const [trackListKeys, setTrackListKeys] = useState([]);
     const [sortBy, setSortBy] = useState(A_TO_Z);
+    const [trackIndex, setTrackIndex] = useState({});
+
     useEffect(()=>{
         //dispatch(setGroupband("tracks"));
         //dispatch(setPlayedFrom({pfKey:TRACK_LIST}));
@@ -35,6 +40,16 @@ export const TrackList = ({tracks, trackListInp}) => {
                 scrollToPlaying(isPlaying);
             }
             
+            const tempTrackIndex = {};
+            let list = [];
+            tempTrakListKeys.forEach(tlk =>{
+                list = trackList[tlk];
+                list.forEach(tr =>{
+                    tempTrackIndex[tr.songId] = Object.keys(tempTrackIndex).length;
+                })
+            })
+            setTrackIndex(tempTrackIndex);
+            console.log("tempTrackIndex",tempTrackIndex)
         }
     },[trackList])
 
@@ -88,22 +103,20 @@ export const TrackList = ({tracks, trackListInp}) => {
 
     return(
         <>
-            {trackListInp.showSort &&<SortingContainer sortListKeys={trackListKeys} setSortBy={setSortBy} sortBy={sortBy} showLKey={trackListInp.showLKey} sortSelectors={[A_TO_Z,A_TO_Z_DESC, SORT_YEAR, SORT_ARTIST]} />}
-            <div className="track-list" id={TRACK_LIST} style={trackListInp.traskListStyle?trackListInp.traskListStyle:{}}>
-                {/* {tracks!==undefined && tracks!==null &&
-                            tracks.map((track,index) => 
-                            track.title!==null && <Track track={track} key={track.songId} playedFrom={TRACK_LIST} index={index} />
-                            )
-                        } */}
-
-                {trackListKeys !== undefined && trackListKeys.length > 0 && trackListKeys.map((lKey, index) =>
+            {trackListInp.showSort &&<SortingContainer sortListKeys={trackListKeys} setSortBy={setSortBy} sortBy={sortBy} showLKey={trackListInp.showLKey} sortSelectors={trackListInp.sortSelectors?trackListInp.sortSelectors:[A_TO_Z,A_TO_Z_DESC, SORT_YEAR, SORT_ARTIST]} />}
+            <div className="track-list scroll-container" id={TRACK_LIST} style={trackListInp.traskListStyle?trackListInp.traskListStyle:{}} ref={ref}>
+                 {trackListKeys !== undefined && trackListKeys.length > 0 && trackListKeys.map((lKey, index) =>
                     <>
                         {trackListInp.showLKey && <label id={"lKey" + lKey} className="track-lKey" style={trackListInp.lKeyStyle?trackListInp.lKeyStyle:{}}>{lKey}</label>}
-                        {trackList[lKey] !== undefined && trackList[lKey].length > 0 && trackList[lKey].map((track, trackIndex) =>
-                            <Track track={track} key={track.songId} playedFrom={trackListInp.playedFrom} index={index} hideTrackNum={true} />
-                        )}
+                        {trackList[lKey] !== undefined && trackList[lKey].length > 0 && Object.keys(trackIndex).length > 0 &&
+                            <ViewportList viewportRef={ref} items={trackList[lKey]} itemMinSize={tracks ? tracks.length:50} margin={8}>
+                                {(track) => (
+                                    <Track track={track} key={track.songId} playedFrom={trackListInp.playedFrom} index={trackIndex[track.songId]} hideTrackNum={trackListInp.hideTrackNum} />
+                                )}
+                            </ViewportList>
+                        }
                     </>
-                )}
+                )} 
             </div>
             <Spinner />
         </>

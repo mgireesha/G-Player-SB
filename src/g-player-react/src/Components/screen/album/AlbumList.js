@@ -55,19 +55,21 @@ export const AlbumList = () => {
 
     return(
         <>
-            <SortingContainer sortListKeys={albumListKeys} setSortBy={setSortBy} sortBy={sortBy} sortSelectors={[A_TO_Z,A_TO_Z_DESC,SORT_YEAR,SORT_ARTIST]} />
-            <div className="album-list">
-            {/* {albums!==null && albums.length>0 && albums.map((album, index) =>
-                <AlbumThumb album={album} key={index} />
-            )} */}
-            {albumListKeys !== undefined && albumListKeys.length > 0 && albumListKeys.map((lKey, index) =>
-                    <>
-                        <label id={"lKey" + lKey} className="album-lKey">{lKey}</label>
-                        {albumList[lKey] !== undefined && albumList[lKey].length > 0 && albumList[lKey].map((album, albumIndex) =>
-                            <AlbumThumb album={album} key={albumIndex} />
-                        )}
-                    </>
-            )}
+            <div className="album-list-container">
+                <SortingContainer sortListKeys={albumListKeys} setSortBy={setSortBy} sortBy={sortBy} sortSelectors={[A_TO_Z,A_TO_Z_DESC,SORT_YEAR,SORT_ARTIST]} />
+                <div className="album-list">
+                {/* {albums!==null && albums.length>0 && albums.map((album, index) =>
+                    <AlbumThumb album={album} key={index} />
+                )} */}
+                {albumListKeys !== undefined && albumListKeys.length > 0 && albumListKeys.map((lKey, index) =>
+                        <>
+                            <label id={"lKey" + lKey} className="album-lKey">{lKey}</label>
+                            {albumList[lKey] !== undefined && albumList[lKey].length > 0 && albumList[lKey].map((album, albumIndex) =>
+                                <AlbumThumb album={album} key={albumIndex} />
+                            )}
+                        </>
+                )}
+                </div> 
             </div>
             <Spinner />
         </>
