@@ -251,6 +251,7 @@ body{
     height: calc(100vh - 6em);
     text-align: left;
     display: block;
+    padding: 0 15px;
 
     .header-container{
         height: 6em;
@@ -262,11 +263,11 @@ body{
     }
     .header{
         // padding: 10px 0 0px 0;
-        margin-left: 10px;
+        //margin-left: 10px;
     }
 
     .group-band{
-        margin: 5px 10px;
+        margin: 5px 0px;
         border-bottom: 1px solid grey;
         display: flex;
         //grid-template-columns: 2fr 2fr 5fr 2fr 24fr;
@@ -294,6 +295,10 @@ body{
         }
     }
 
+    .album-list-container{
+        padding: 0 10px;
+    }
+
     .album-list, .album-artist-album-list{
         max-height: calc(100vh - 16em);
     }
@@ -310,7 +315,7 @@ body{
         z-index: 1;
         position: relative;
         background: #303030;
-        padding: 10px;
+        padding: 10px 0;
 
         .album-lKey{
             padding: 5px;
@@ -390,7 +395,7 @@ body{
         max-height: calc(100vh - 15em);
         overflow-y: auto;
         overflow-x: hidden;
-        padding: 10px;
+        padding: 10px 5px;
 
         .artists-lKey{
             padding: 5px;
@@ -436,7 +441,7 @@ body{
         max-height: calc(100vh - 15em);
         overflow-y: auto;
         overflow-x: hidden;
-        padding: 10px;
+        padding: 15px 0;
 
         .album-artists-lKey{
             padding: 5px;
@@ -471,7 +476,12 @@ body{
     }
 
     .artist{
-        padding: 10px 0 0 15px;    
+
+        .spinner{
+            display: none;
+        }
+
+        padding: 10px 0 0 5px;    
 
         .artist-img-div img{
             height: 10em;
@@ -513,10 +523,10 @@ body{
         }
         
         .artist-track-list{
-            max-height: calc(100vh - 25.5em);
+            //max-height: calc(100vh - 25.5em);
             overflow-y: auto;
             padding: 10px 10px 0 0px;
-            overflow-x: hidden;
+            overflow: hidden;
         
             .track{
                 min-height: 3em;
@@ -556,7 +566,7 @@ body{
     }
 
     .album-artist{
-        padding: 10px 0 0 15px;    
+        padding: 10px 0 0 5px;    
 
         .album-artist-img-div img{
             height: 10em;
@@ -605,7 +615,7 @@ body{
             max-height: calc(100vh - 11.5em);
             overflow-y: auto;
             overflow-x: hidden;
-            padding: 10px;
+            padding: 10px 5px;
             .genre-thumb{
                 width: 10em;
 
@@ -667,7 +677,7 @@ body{
             display: flex;
             column-gap: 20px;
             padding: 15px;
-            margin: 15px;
+            margin: 15px 0;
             background-color: #3a3a3a;
             border-radius: 5px;
 
@@ -750,7 +760,7 @@ body{
         height: calc(100vh - 6em - 7em);
         overflow-y: auto;
         h3{
-            padding: 10px 0 10px 15px;
+            padding: 10px;
         }
         .artists-list{
             display: grid;
@@ -758,7 +768,7 @@ body{
             grid-row-gap: 15px;
             overflow-y: auto;
             overflow-x: hidden;
-            padding: 10px;
+            padding: 10px 0;
             text-align: center;
             
     
@@ -796,7 +806,7 @@ body{
             z-index: 1;
             position: relative;
             background: #303030;
-            padding: 10px;
+            padding: 10px 0;
             text-align: center;
     
             .album-thumb{
@@ -858,7 +868,7 @@ body{
             grid-row-gap: 15px;
             overflow-y: auto;
             overflow-x: hidden;
-            padding: 10px;
+            padding: 10px 0;
             justify-content: center;
             text-align: center;
 
@@ -879,7 +889,7 @@ body{
     
             .album-artist-thumb-details{
                 width: 13em;
-                max-width: 11em;
+                max-width: 13em;
                 display: flex;
                 flex-direction: column;
 
@@ -893,7 +903,7 @@ body{
             height: 24em;
             width: 95%;
             margin: 20px;
-            padding: 10px;
+            padding: 10px 0;
             box-shadow: rgba(0, 0, 0, 0.4) 0px 30px 90px;
             border-radius: 5px;
 
@@ -1018,7 +1028,7 @@ body{
 }
 
 .order-container{
-    margin-left: 15px;
+    //margin-left: 15px;
     select.sortby{
         margin-left: 10px;
         padding: 3px;
@@ -1046,7 +1056,7 @@ body{
     flex-direction: row;
     column-gap: 0.2em;
     padding: 10px 0 10px 0px;
-    margin-left: 10px;
+    //margin-left: 10px;
     max-width: 76vw;
     overflow-x: auto;
     overflow-y: hidden;
@@ -1055,7 +1065,7 @@ body{
         color: #dfbd16;
         font-weight: 500;
         cursor: pointer;
-        padding: 0 0.5em;
+        padding-right: 1em;
         transition: all 300ms;
     }
 
@@ -1075,7 +1085,7 @@ body{
 .track-list{
         max-height: calc(100vh - 16em);
         overflow-y: auto;
-        padding: 10px 0 0 10px;
+        //padding: 10px 0 0 10px;
         overflow-x: hidden;
         background: #303030;
         z-index: 6;
@@ -1092,7 +1102,7 @@ body{
             min-height: 3em;
             display: grid;
             //grid-template-columns: 1fr 5fr 4fr 5fr 1fr 2fr 1fr;
-            grid-template-columns:5fr 4fr 5fr 1fr 2fr 1fr 1fr;
+            grid-template-columns:1fr 5fr 4fr 5fr 1fr 2fr 1fr 1fr;
             align-items: center;
             background-color: #3a3a3a;
             margin: 3px 2px;
@@ -1126,7 +1136,7 @@ body{
 }
 
 .album{
-    padding: 10px 15px;    
+    padding: 10px 5px;    
 
     .album-img-div img{
         height: 12em;
@@ -1353,11 +1363,12 @@ body{
     }
 
     .playlist-page{
+        padding: 0 15px 15px 15px;
         .playlist-page-header{
             display: flex;
             column-gap: 20px;
             padding: 15px;
-            margin: 15px;
+            margin: 15px 0;
             background-color: #3a3a3a;
             border-radius: 5px;
 
@@ -2056,11 +2067,12 @@ a.disabled-click{
 .recent-plays{
     width: 78vw;
     height: calc(100vh - 6em);
+    padding: 15px;
 
     .header-container{
-        height: 5em;
+        height: 4em;
         .header{
-            margin-left: 10px;
+            //margin-left: 10px;
             border-bottom: 1px solid grey;
             padding-bottom: 10px;
         }

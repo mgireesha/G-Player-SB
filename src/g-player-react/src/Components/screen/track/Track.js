@@ -27,6 +27,7 @@ export const Track = ({track, playedFrom, index, hideTrackNum}) => {
 
     const showCOntextMenu = (event) => {
         const position = event.target.getBoundingClientRect();
+        event.preventDefault();
         const options = [];
         if(playedFrom.pfKey === PLAYLIST){
             options.push({label:REMOVE_LABEL, callBackFunc: removeTrackFromPlaylist});
@@ -55,7 +56,7 @@ export const Track = ({track, playedFrom, index, hideTrackNum}) => {
     }
 
     return(
-        <div className={songPlaying!==null && track.songId===songPlaying.songId?"track text-highlighted-y":"track"} id={"track-"+track.songId}>
+        <div className={songPlaying!==null && track.songId===songPlaying.songId?"track text-highlighted-y":"track"} id={"track-"+track.songId} onContextMenu={(event)=>showCOntextMenu(event)}>
             {!hideTrackNum && <label style={{paddingLeft:'5'}}>{playedFrom.pfKey===ALBUM && track.trackNumber!==undefined && track.trackNumber!==0?track.trackNumber:index+1}</label>}
             <label onClick={()=>playSong(track.songId)} style={{cursor:'pointer'}}>
                 {track.title}

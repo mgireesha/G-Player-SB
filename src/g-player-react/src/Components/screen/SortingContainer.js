@@ -11,7 +11,7 @@ export const SortingContainer = ({sortBy, setSortBy, sortListKeys, sortSelectors
                     {sortSelectors.includes(A_TO_Z) && <option value={A_TO_Z} selected={sortBy===A_TO_Z?true:false}>{A_TO_Z}</option>}
                     {sortSelectors.includes(A_TO_Z_DESC) && <option value={A_TO_Z_DESC} selected={sortBy===A_TO_Z_DESC?true:false}>{A_TO_Z_DESC}</option>}
                     {sortSelectors.includes(SORT_YEAR) && <option value={SORT_YEAR} selected={sortBy===SORT_YEAR?true:false}>{SORT_YEAR}</option>}
-                    {sortSelectors.includes(SORT_YEAR) && <option value={SORT_ARTIST} selected={sortBy===SORT_ARTIST?true:false}>{SORT_ARTIST}</option>}
+                    {sortSelectors.includes(SORT_ARTIST) && <option value={SORT_ARTIST} selected={sortBy===SORT_ARTIST?true:false}>{SORT_ARTIST}</option>}
                     {sortSelectors.includes(SORT_COUNT_ALBUMS) && <option value={SORT_COUNT_ALBUMS} selected={sortBy===SORT_COUNT_ALBUMS?true:false}>{SORT_COUNT_ALBUMS}</option>}
                     {sortSelectors.includes(SORT_COUNT_TRACKS) && <option value={SORT_COUNT_TRACKS} selected={sortBy===SORT_COUNT_TRACKS?true:false}>{SORT_COUNT_TRACKS}</option>}
                 </select>

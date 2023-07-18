@@ -1,5 +1,4 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import { Header } from "../header/Header";
 import { PLAYLISTS_LABEL } from "../redux/GPActionTypes";
 import { Route, Routes } from "react-router-dom";
