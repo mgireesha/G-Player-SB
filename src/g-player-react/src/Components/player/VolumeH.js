@@ -14,8 +14,10 @@ export const VolumeH = () => {
     const [isMute,setIsMute] = useState(false);
 
     useEffect(() => {
-        const handleEscape = (event) => {
-            if(event.code === "KeyM"){
+        const handleMute = (e) => {
+            var key = e.which || e.keyCode; // keyCode detection
+            var ctrl = e.ctrlKey ? e.ctrlKey : ((key === 17) ? true : false); // ctrl detection
+            if ( key == 77 && ctrl ) {
                 if(isMute){
                     muteMedia(false);
                 }else{
@@ -23,9 +25,9 @@ export const VolumeH = () => {
                 }
             }
         };
-        window.addEventListener('keyup', handleEscape);
+        window.addEventListener('keydown', handleMute);
         return () => {
-            window.removeEventListener('keyup', handleEscape);
+            window.removeEventListener('keydown', handleMute);
         };
     }, [isMute]);
 
@@ -62,8 +64,8 @@ export const VolumeH = () => {
     return(
         <div className="volume-h-div">
             <div className="volume-h-speaker-img">
-                {!isMute && <HiOutlineSpeakerWave className="volume-h-speaker-img" onClick={()=>muteMedia(true)} />}
-                {isMute && <HiOutlineSpeakerXMark className="volume-h-speaker-img" onClick={()=>muteMedia(false)} />}
+                {!isMute && <HiOutlineSpeakerWave className="volume-h-speaker-img" onClick={()=>muteMedia(true)} title="Shortcut: Cntrl + M to mute" />}
+                {isMute && <HiOutlineSpeakerXMark className="volume-h-speaker-img" onClick={()=>muteMedia(false)} title="Shortcut: Cntrl + M to unmute" />}
             </div>
             <input type="range" min="0" max="100"  className="volume_progress_bar no-display" id="volume_progress_bar" value={currentVolume*100} onChange={(event)=>updateMediaVolume(event)}></input>
             <div className="volume_progress_bar"><SliderRC value={currentVolume*100} onValChange={updateMediaVolume} step={5} /></div>

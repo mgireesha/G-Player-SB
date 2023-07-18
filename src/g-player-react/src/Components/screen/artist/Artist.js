@@ -1,22 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import { ARTIST, WIKI_SUMMARY_URL } from "../../redux/GPActionTypes";
+import { ARTIST, A_TO_Z, A_TO_Z_DESC, SORT_YEAR, WIKI_SUMMARY_URL } from "../../redux/GPActionTypes";
 import { fetchAllArtistsDtls, fetchSongsByArtist } from "../../redux/library/LibraryActions";
-import { setPlayedFrom } from "../../redux/player/PlayerActions";
-import { Track } from "../track/Track";
-import def_album_art from '../../images/def_album_art.png';
 import { scrolltoId } from "../..//utli";
 import { FilterComp } from "../../FilterComp";
+import { TrackList } from "../track/TrackList";
+import def_album_art from '../../images/def_album_art.png';
 
 export const Artist = () => {
     const dispatch = useDispatch();
     const { artist } = useParams();
     const artistsDetails = useSelector(state => state.library.artistsDetails);
-    //const artistObj = artistsDetails.find(artistObj => artistObj.artistName===artist);
     let artistTracks = useSelector(state => state.library.artistTracks);
     if(artistTracks.length>0){
-        artistTracks = artistTracks.sort((a,b)=>{return a.year>b.year?-1:1});
+        artistTracks = artistTracks.sort((a,b)=>{return a.title>b.title?1:-1});
     }
     const songPlaying = useSelector(state => state.player.songPlaying);
     const playedFrom = useSelector(state => state.player.playedFrom);
@@ -26,6 +24,8 @@ export const Artist = () => {
     const [artistObj, setArtistObj] = useState({});
     const [artistTracksL, setArtistTracksL] = useState([]);
     const [filterTxt, setFilterTxt] = useState(null);
+    const [trackListInp, setTrackListInp] = useState(null);
+    
     useEffect(()=>{
         setArtistWikiImg(null);
         setArtistWiki({});
@@ -73,11 +73,38 @@ export const Artist = () => {
     }
 
     useEffect(()=>{
-        //dispatch(setGroupband("artists"));
-        //dispatch(setPlayedFrom(ARTIST));
-        //dispatch(setPlayedFrom({pfKey:ARTIST, pfVal:artist}));
-        //scrollToPlaying();
-    },[]);
+        const tempTrackListInp = {
+            playedFrom:{
+                pfKey:ARTIST, 
+                pfVal:artist,
+            },
+            showSort: false,
+            showLKey: false,
+            sortSelectors:[A_TO_Z,A_TO_Z_DESC,SORT_YEAR]
+        }
+
+        if(artistTracksL){
+            if(artistTracksL.length > 6){
+                tempTrackListInp.showSort = true;
+                tempTrackListInp.traskListStyle = {
+                    maxHeight : 'calc(100vh - 24.2em)'
+                }
+            }
+            if(artistTracksL.length > 20){
+                tempTrackListInp.showLKey = true;
+                tempTrackListInp.lKeyStyle = {
+                    position:'absolute', 
+                    visibility:'hidden'
+                }
+                tempTrackListInp.traskListStyle = {
+                    maxHeight : 'calc(100vh - 30.2em)'
+                }
+            }
+        }
+
+        setTrackListInp(tempTrackListInp);
+    },[artistTracksL]);
+
     const fetchArtistDetailsfromWiki =async(artist) => {
         let searchedSingerActor = false;
         let data = await callWikiAPI(`${WIKI_SUMMARY_URL}${artist}`);
@@ -154,11 +181,10 @@ export const Artist = () => {
             <div style={{width:'100%'}}>
                 <FilterComp onSetFilterTxt={onSetFilterTxt} />
             </div>
-            
             <div className="artist-track-list">
-                {artistTracksL!==null && artistTracksL!==undefined && artistTracksL.map((track, index)=>
-                    track.title!==null && <Track track={track} key={track.songId} playedFrom={{pfKey:ARTIST, pfVal:artist}} index={index} />
-                )}
+                {artistTracksL.length > 0 && trackListInp.playedFrom &&
+                    <TrackList tracks={artistTracksL} trackListInp={trackListInp} />
+                }
             </div>
         </div>
     );
