@@ -17,8 +17,10 @@ export const ARTISTS_LABEL = 'Artists';
 
 export const BUILD_STATUS = 'BUILD_STATUS';
 
+export const COMING_SOON_LABEL = 'Coming soon';
 export const COMMON_POPUP_ERROR_MSG = 'COMMON_POPUP_ERROR_MSG';
 export const COMPLETED = 'COMPLETED';
+export const COMPONENT = 'COMPONENT';
 export const CREATE = 'CREATE';
 export const CREATE_LABEL = 'Create';
 export const CREATE_PLAYLIST_LABEL = 'Create Playlist';
@@ -28,6 +30,8 @@ export const CURRENT_PAGE = 'CURRENT_PAGE';
 export const DELETE = "Delete";
 export const DELETE_PLAYLIST_LABEL = "Delete Playlist";
 export const DELETE_PLAYLIST_CONF_TEXT = "Are you sure to delete this playlist?";
+
+export const EXPORT_LABEL = 'Export';
 
 export const GENRE = 'GENRE';
 export const GENRE_ALBUMS = 'GENRE_ALBUMS';
@@ -44,6 +48,10 @@ export const GP_SELECTOR = 'GP_SELECTOR';
 export const HISTORY_COUNT = 'HISTORY_COUNT';
 export const HISTORY_COUNT_LABEL = 'Total Played';
 
+export const IMPORT_EXPORT_BTN_LABEL = 'Import/Export';
+export const IMPORT_EXPORT_PLAYLIST_LABEL = 'Import/Export Playlists';
+export const IMPORT_LABEL = 'Import';
+export const IMPORT_PLAYLISTS_LABEL = "Import Playlists";
 export const INIT = 'INIT';
 export const INPUT = 'INPUT';
 
@@ -109,6 +117,7 @@ export const TIME_PLAYED_THIS_MONTH = 'TIME_PLAYED_THIS_MONTH';
 export const TIME_PLAYED_THIS_MONTH_LABEL = 'Time Played This Month';
 export const TRACK = 'TRACK';
 export const TRACK_LIST = 'TRACK_LIST';
+export const TRACKS= 'TRACKS';
 export const TRACKS_LABEL = 'Tracks';
 export const TRACK_MENU_BTN_CIRCLE = 'TRACK_MENU_BTN_CIRCLE';
 

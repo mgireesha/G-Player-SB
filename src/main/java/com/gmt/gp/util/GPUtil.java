@@ -1,5 +1,6 @@
 package com.gmt.gp.util;
 
+import java.io.File;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -109,5 +110,20 @@ public class GPUtil {
             }
         }
         return respBody;
+    }
+
+    public static boolean checkAndCreateFolders(String path) {
+        boolean isDirExits = false;
+        try {
+            File folderPath = new File(path);
+            if (!folderPath.exists()) {
+                isDirExits = folderPath.mkdirs();
+            } else {
+                isDirExits = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return isDirExits;
     }
 }

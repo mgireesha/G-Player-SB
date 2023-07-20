@@ -14,4 +14,6 @@ public interface MessageRepository extends CrudRepository<Message, Long> {
 
     Message getByName(String name);
 
+    Message getByValue(String value);
+
 }

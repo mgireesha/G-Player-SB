@@ -3,6 +3,7 @@ import { CreatePlayListBtn } from "./CreatePlayListBtn";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { PlaylistImg } from "./PlaylistImg";
+import { ImportExportPlaylistBtn } from "./ImportExportPlaylistBtn";
 
 export const Playlists = () => {
     const playListNames = useSelector(state => state.playlist.playListNames);
@@ -11,7 +12,10 @@ export const Playlists = () => {
     return(
         <div className="playlists">
             <div className="body">
-                <CreatePlayListBtn />
+                <div className="playlists-action">
+                    <CreatePlayListBtn />
+                    <ImportExportPlaylistBtn />
+                </div>
                 <div className="playlist-list">
                     {playListNames !== undefined && playListNames.length > 0 && playListNames.map((plName)=>
                         <div className="plalist-thumb">

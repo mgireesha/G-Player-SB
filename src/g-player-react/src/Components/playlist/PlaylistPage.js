@@ -57,7 +57,7 @@ export const PlaylistPage = () => {
                     visibility:'hidden'
                 }
                 tempTrackListInp.traskListStyle = {
-                    maxHeight : 'calc(100vh - 26.8em)'
+                    maxHeight : 'calc(100vh - 30.8em)'
                 }
             }
         }

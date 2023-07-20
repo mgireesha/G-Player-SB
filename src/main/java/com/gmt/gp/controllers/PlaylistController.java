@@ -62,4 +62,14 @@ public class PlaylistController {
         return playlistService.removeFromPlaylist(Long.parseLong(playlistId), Long.parseLong(songId));
     }
 
+    @RequestMapping("/export")
+    public GPResponse exportPlaylists() {
+        return playlistService.exportPlaylists();
+    }
+
+    @RequestMapping(value = "/import", method = RequestMethod.POST)
+    public GPResponse importPlaylists(@RequestBody String payload) {
+        return playlistService.importPlaylists(payload);
+    }
+
 }

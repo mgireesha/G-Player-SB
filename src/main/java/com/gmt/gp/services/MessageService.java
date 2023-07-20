@@ -44,6 +44,10 @@ public class MessageService {
         return messageRepository.getByType(messageType);
     }
 
+    public Message getMessageByValue(String messageValue) {
+        return messageRepository.getByValue(messageValue);
+    }
+
     public void removeMessageById(long messageId) {
         messageRepository.deleteById(messageId);
     }

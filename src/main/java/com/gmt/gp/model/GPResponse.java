@@ -10,6 +10,8 @@ public class GPResponse {
     private PlaylistItems playlist;
     private Message message;
     private List<PlaylistItems> playlists;
+    private Object response;
+    private String status1;
 
     public String getStatus() {
         return status;
@@ -83,6 +85,22 @@ public class GPResponse {
 
     public void setMessage(Message message) {
         this.message = message;
+    }
+
+    public Object getResponse() {
+        return response;
+    }
+
+    public void setResponse(Object response) {
+        this.response = response;
+    }
+
+    public String getStatus1() {
+        return status1;
+    }
+
+    public void setStatus1(String status1) {
+        this.status1 = status1;
     }
 
 }

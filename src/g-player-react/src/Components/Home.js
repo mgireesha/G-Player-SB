@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAlbumTacks, fetchAllAlbums, fetchAllHistory, fetchAllSongs, fetchSongsByArtist, fetchSongsByGenre } from "./redux/library/LibraryActions";
 import { fetchCurrentSontAndStatus, playASongSucc, setIsShuffle, setMediaVolumeSucc, setRepeat } from "./redux/player/PlayerActions";
 import { getCookieDetails, getCookieValue } from "./utli";
-import { ALBUM, ARTIST, GENRE, MAIN_CONTAINER, PLAYLIST, RECENT_PLAYS, TRACK_LIST } from "./redux/GPActionTypes";
+import { ALBUM, ARTIST, CURRENT_PAGE, GENRE, MAIN_CONTAINER, PLAYLIST, RECENT_PLAYS, TRACK_LIST } from "./redux/GPActionTypes";
 import { Route, Routes } from "react-router-dom";
 import { Library } from "./library/Library";
 import { Search } from "./search/Search";
@@ -54,32 +54,37 @@ export const Home = () => {
 
     const fetchTracks = () => {
         let playedFromCookieValue = getCookieValue("playedFrom");
-        if(playedFromCookieValue!==undefined){
+        if(playedFromCookieValue){
             playedFromCookieValue = JSON.parse(playedFromCookieValue);
-        if(playedFromCookieValue.pfKey!==undefined){
-            switch (playedFromCookieValue.pfKey) {
-                case ALBUM:
-                    dispatch(fetchAlbumTacks(playedFromCookieValue.pfVal));
-                    break;
-                case ARTIST:
-                    dispatch(fetchSongsByArtist(playedFromCookieValue.pfVal));
-                    break;
-                case RECENT_PLAYS:
-                    dispatch(fetchAllHistory());
-                    break;
-                case PLAYLIST:
-                    dispatch(fetchSongsInPlaylist(playedFromCookieValue.pfVal));
-                    break;
-                case GENRE:
-                    dispatch(fetchSongsByGenre(playedFromCookieValue.pfVal));
-                    break;
-                default:
-                    dispatch(fetchAllSongs());
-                    break;
+            let currentPage = getCookieValue(CURRENT_PAGE);
+            if(currentPage)currentPage = JSON.parse(currentPage);
+            if(playedFromCookieValue.pfKey!==undefined){
+                if(playedFromCookieValue.pfKey === currentPage.type){
+                    return false;
+                }
+                switch (playedFromCookieValue.pfKey) {
+                    case ALBUM:
+                        dispatch(fetchAlbumTacks(playedFromCookieValue.pfVal));
+                        break;
+                    case ARTIST:
+                        dispatch(fetchSongsByArtist(playedFromCookieValue.pfVal));
+                        break;
+                    case RECENT_PLAYS:
+                        dispatch(fetchAllHistory());
+                        break;
+                    case PLAYLIST:
+                        dispatch(fetchSongsInPlaylist(playedFromCookieValue.pfVal));
+                        break;
+                    case GENRE:
+                        dispatch(fetchSongsByGenre(playedFromCookieValue.pfVal));
+                        break;
+                    default:
+                        dispatch(fetchAllSongs());
+                        break;
+                }
+            }else{
+                dispatch(fetchAllSongs());
             }
-        }else{
-            dispatch(fetchAllSongs());
-        }
         }
     }
 

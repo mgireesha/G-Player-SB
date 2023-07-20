@@ -2,10 +2,11 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import def_album_art from '../../images/def_album_art.png';
-import { ALBUM, MULTI_GENRE, TRACKS_LABEL } from ".././../redux/GPActionTypes";
+import { ALBUM, CURRENT_PAGE, MULTI_GENRE, TRACKS_LABEL } from ".././../redux/GPActionTypes";
 import { Lyrics } from "../lyrics/Lyrics";
 import { Track } from "../track/Track";
 import { fetchAlbum, fetchAlbumTacks } from "../../redux/library/LibraryActions";
+import { setCookies } from "../../utli";
 
 export const Album = () => {
     const dispatch = useDispatch();
@@ -18,11 +19,9 @@ export const Album = () => {
     useEffect(()=>{
         dispatch(fetchAlbumTacks(albumName, genre));
         dispatch(fetchAlbum(albumName));
+        setCookies(CURRENT_PAGE, JSON.stringify({type:ALBUM}));
     },[albumName, genre]);
-    useEffect(()=>{
-        //dispatch(setGroupband("albums"));
-        //dispatch(setPlayedFrom({pfKey:ALBUM, pfVal:albumName}));
-    },[]);
+
     return(
         <div className="album">
             {album["albumName"]!==undefined && <div className="album-img-div-container">

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import { ARTIST, A_TO_Z, A_TO_Z_DESC, SORT_YEAR, WIKI_SUMMARY_URL } from "../../redux/GPActionTypes";
+import { ARTIST, A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, SORT_YEAR, WIKI_SUMMARY_URL } from "../../redux/GPActionTypes";
 import { fetchAllArtistsDtls, fetchSongsByArtist } from "../../redux/library/LibraryActions";
-import { scrolltoId } from "../..//utli";
+import { scrolltoId, setCookies } from "../..//utli";
 import { FilterComp } from "../../FilterComp";
 import { TrackList } from "../track/TrackList";
 import def_album_art from '../../images/def_album_art.png';
@@ -31,6 +31,7 @@ export const Artist = () => {
         setArtistWiki({});
         dispatch(fetchSongsByArtist(artist));
         fetchArtistDetailsfromWiki(artist);
+        setCookies(CURRENT_PAGE, JSON.stringify({type:ARTIST}));
     },[artist]);
 
     useEffect(()=>{

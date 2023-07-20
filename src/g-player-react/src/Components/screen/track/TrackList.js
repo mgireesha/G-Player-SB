@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { A_TO_Z, SORT_YEAR, SORT_ARTIST, A_TO_Z_DESC, TRACK_LIST } from "../../redux/GPActionTypes";
-import { fetchAllSongs } from "../../redux/library/LibraryActions";
 import { scrollToPlaying, sortGroupByField } from "../../utli";
 import { SortingContainer } from "../SortingContainer";
-import { Spinner } from "../Spinner";
+import { Spinner } from "../../utilities/Spinner";
 import { Track } from "./Track";
 import {ViewportList} from "react-viewport-list";
 import { useRef } from "react";
@@ -18,12 +17,6 @@ export const TrackList = ({tracks, trackListInp}) => {
     const [trackListKeys, setTrackListKeys] = useState([]);
     const [sortBy, setSortBy] = useState(A_TO_Z);
     const [trackIndex, setTrackIndex] = useState({});
-
-    useEffect(()=>{
-        //dispatch(setGroupband("tracks"));
-        //dispatch(setPlayedFrom({pfKey:TRACK_LIST}));
-        dispatch(fetchAllSongs());
-    },[]);
 
     useEffect(()=>{
         if(Object.keys(trackList).length>0){
@@ -49,7 +42,6 @@ export const TrackList = ({tracks, trackListInp}) => {
                 })
             })
             setTrackIndex(tempTrackIndex);
-            console.log("tempTrackIndex",tempTrackIndex)
         }
     },[trackList])
 
