@@ -261,10 +261,10 @@ body{
             }
         }
     }
-    .header{
-        // padding: 10px 0 0px 0;
-        //margin-left: 10px;
-    }
+    // .header{
+    //     // padding: 10px 0 0px 0;
+    //     //margin-left: 10px;
+    // }
 
     .group-band{
         margin: 5px 0px;
@@ -1481,21 +1481,43 @@ body{
 }
 
 .import-export-playlist-popup-btns{
-    .export-playlist{
-        .export-playlist-btn{
+    display: flex;
+    column-gap: 20px;
+
+    .import-options{
+        display: flex;
+        column-gap: 8em;
+        input[type="file"]{
+            width: 0;
+        }
+
+        input[type="file"]::before{
+            content: "";
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 1.5em;
             width: 7em;
             padding: 7px;
             border-radius: 4px;
-            border: none;
+            border: 1px solid rgb(10, 113, 75);
             cursor: pointer;
             background-color: transparent;
             color: #000;
-            border: 1px solid rgb(10, 113, 75);
         }
 
-        .export-playlist-btn:hover{
+        input[type="file"]:hover::before {
             background-color: rgb(10, 113, 75);
             color: beige;
+        }
+
+        input[type="file"].csv::before{
+            content: "Import CSV";
+        }
+
+        input[type="file"].m3u::before{
+            content: "Import m3u";
         }
     }
 }
@@ -2411,7 +2433,7 @@ a.disabled-click{
                 font-size: 16px;
             }
 
-            input{
+            input.input{
                 padding: 15px;
                 border: 1px solid lightgray;
                 outline: none;
@@ -2534,6 +2556,33 @@ a.disabled-click{
     }
 }
 
+
+//GLobal components styling - start
+
+//buttons
+.g-btn.md{
+    width: 7em;
+    padding: 7px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+    color: #000;
+    
+}
+
+.g-btn.md.success{
+    border: 1px solid rgb(10, 113, 75);
+}
+
+.g-btn.md.success:hover{
+    background-color: rgb(10, 113, 75);
+    color: beige;
+}
+
+//GLobal components styling - end
+
+
 /*Custom Scrollbar*/
 /* width */
 ::-webkit-scrollbar {
@@ -2563,21 +2612,33 @@ a.disabled-click{
 
 
 
-
-  .spinner{
-    width: 300px;
-    height: 300px;
+.spinner{
+    position: fixed;
+    top: 35%;
+    left: 45%;
+    opacity: 0.3;
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 300px;
+    height: 300px;
     font-size: 2rem;
     overflow: hidden;
-    position: relative;
 	animation: text_color 2s ease-in-out infinite;
-    position: fixed;
-    left: 45%;
-    top: 35%;
-    opacity: 0.3;
+}
+
+.spinner.sm{
+    left: unset;
+    top: unset;
+    height: 2.5em;
+    width: 2.5em;
+    opacity: 0.5;
+    position: relative;
+}
+
+.spinner .text.sm{
+    font-size: 14px;
+    counter-reset: grey;
 }
 
 .spinner-sector{
@@ -2590,20 +2651,24 @@ a.disabled-click{
     animation: rotate var(--duration) var(--timing) infinite;
 }
 
+.spinner-sector.sm{
+    border: 8px solid transparent;
+}
+
 .spinner-sector-red{
-    border-top-color: lightcoral;
+    border-top-color: lightcoral !important;
     --duration:1.5s;
     --timing:ease-in-out;
 }
 
 .spinner-sector-blue{
-    border-left-color: lightblue;
+    border-left-color: lightblue !important;
     --duration:2s;
     --timing:ease-in;
 }
 
 .spinner-sector-green{
-    border-right-color: lightgreen;
+    border-right-color: lightgreen !important;
     --duration:2.5s;
     --timing:ease-out;
 }
@@ -2707,6 +2772,19 @@ a.disabled-click{
 
 .mobile-only-block, .mobile-only-flex{
     display: none;
+}
+
+.flex-align-center{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-align-center-100{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
 }
 
 

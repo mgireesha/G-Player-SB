@@ -175,4 +175,8 @@ export const renamePlaylistAPI = (playlistName) => {
 export const exportPlaylistsAPI = () => {
     return iAxios.put(`/playlist/export`).then(response => response);
 }
+
+export const importPlaylistsAPI = (payload) => {
+    return iAxios.post(`/playlist/import`, JSON.stringify(payload)).then(response => response);
+}
 //Playlist - End

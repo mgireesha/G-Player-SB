@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Header } from "../header/Header";
-import { RECENT_PLAYS, RECENT_PLAYS_LABEL } from "../redux/GPActionTypes";
+import { CURRENT_PAGE, RECENT_PLAYS, RECENT_PLAYS_LABEL } from "../redux/GPActionTypes";
 import { fetchAllHistory } from "../redux/library/LibraryActions";
 import { setPlayedFrom } from "../redux/player/PlayerActions";
 import { AlbumThumbsGrouped } from "../screen/album/AlbumThumbsGrouped";
 import { Track } from "../screen/track/Track";
 import { AlbumThumb } from "../screen/album/AlbumThumb";
+import { setCookies } from "../utli";
 
 export const RecentPlays = () => {
     const dispatch = useDispatch();
@@ -17,6 +18,7 @@ export const RecentPlays = () => {
 
     useEffect(()=>{
         dispatch(fetchAllHistory());
+        setCookies(CURRENT_PAGE, JSON.stringify({type:RECENT_PLAYS}));
     },[])
 
     useEffect(()=>{

@@ -26,7 +26,7 @@ export const AlbumArtistList = () => {
             if(sortBy===SORT_COUNT_ALBUMS){
                 let tempAlbumArtistsDetails = [...albumArtistsDetailsFS];
                 tempAlbumArtistsDetails = tempAlbumArtistsDetails.sort((a, b)=>a.count > b.count?-1:1);
-                tempAlbumArtistsDetails = tempAlbumArtistsDetails.sort((a, b)=>b.imgAvl?1:-1);
+                //tempAlbumArtistsDetails = tempAlbumArtistsDetails.sort((a, b)=>b.imgAvl?1:-1);
                 setAlbumArtistsDetails(tempAlbumArtistsDetails);
             }
         }

@@ -5,7 +5,7 @@ import { fetchAllAlbums } from "../../redux/library/LibraryActions";
 import { sortGroupByField } from "../../utli";
 import { AlbumThumb } from "./AlbumThumb";
 import { SortingContainer } from "../SortingContainer";
-import { Spinner } from "../Spinner";
+import { Spinner } from "../../utilities/Spinner";
 
 export const AlbumList = () => {
     const dispatch = useDispatch();

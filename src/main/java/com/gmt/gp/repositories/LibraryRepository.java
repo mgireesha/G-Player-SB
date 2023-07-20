@@ -56,4 +56,7 @@ public interface LibraryRepository extends CrudRepository<Library, Long> {
 
     List<Library> getByAlbumAndGenre(String album, String genre);
 
+    @Query("Select l from Library l where l.songPath in (:songPathList)")
+    List<Library> getSongsBySongPath(List<String> songPathList);
+
 }

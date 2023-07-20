@@ -13,7 +13,7 @@ export const ImportExportPlaylistBtn = () => {
         title: IMPORT_EXPORT_PLAYLIST_LABEL,
         contentType: COMPONENT,
         component: ImportExportPlaylistPopupBtns,
-        className: "no-display",
+        primaryClassName: "no-display",
 
     }
     dispatch(setCommonPopupObj(commonPopupObj));

@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import { GroupedThumbImg4 } from "../../GroupedThumbImg4";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { GENRE, PLAY_ALL_LABEL, TRACKS_LABEL, TRACK_LIST } from "../../redux/GPActionTypes";
+import { CURRENT_PAGE, GENRE, PLAY_ALL_LABEL, TRACKS_LABEL, TRACK_LIST } from "../../redux/GPActionTypes";
 import { fetchGenreDetails, fetchSongsByGenre } from "../../redux/library/LibraryActions";
 import { TrackList } from "../track/TrackList";
 import { FaPlay } from "react-icons/fa";
 import { Lyrics } from "../lyrics/Lyrics";
+import { setCookies } from "../../utli";
 
 export const GenrePage = () => {
     const {genre} = useParams();
@@ -28,6 +29,7 @@ export const GenrePage = () => {
         if(!genreDetails || (genreDetails && !genreDetails.GENRE_SONG_COUNT)){
             dispatch(fetchGenreDetails());
         }
+        setCookies(CURRENT_PAGE, JSON.stringify({type:GENRE}));
     },[genre]);
 
     useEffect(()=>{

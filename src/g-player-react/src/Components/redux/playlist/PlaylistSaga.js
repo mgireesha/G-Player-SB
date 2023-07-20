@@ -1,9 +1,10 @@
 import { call, put, takeLatest } from "redux-saga/effects";
-import { addToPlaylistAPI, createPlaylistAPI, deletePlaylistAPI, exportPlaylistsAPI, fetchPlaylistNamesAPI, fetchSongsInPlaylistAPI, removeFromPlaylistAPI, renamePlaylistAPI } from "../GPApis";
-import { PLAYLIST_ADD_TO_PLAYLIST_START, PLAYLIST_CREATE_PLAYLIST_START, PLAYLIST_DELETE_PLAYLIST_START, PLAYLIST_EXPORT_PLAYLISTS_START, PLAYLIST_FETCH_PLAYLIST_NAMES_START, PLAYLIST_FETCH_SONGS_IN_PLAYLIST_START, PLAYLIST_REMOVE_FROM_PLAYLIST_START, PLAYLIST_RENAME_PLAYLIST_START } from "./PlaylistActionTypes";
-import { addToPlaylistSucc, createPlaylistSucc, deltePlaylistSucc, exportPlaylistsSucc, fetchSongsInPlaylistSucc, fethPLaylistNamesSucc, removeFromPlaylistSucc, renamePlaylistSucc } from "./PlaylistActions";
+import { addToPlaylistAPI, createPlaylistAPI, deletePlaylistAPI, exportPlaylistsAPI, fetchPlaylistNamesAPI, fetchSongsInPlaylistAPI, importPlaylistsAPI, removeFromPlaylistAPI, renamePlaylistAPI } from "../GPApis";
+import { PLAYLIST_ADD_TO_PLAYLIST_START, PLAYLIST_CREATE_PLAYLIST_START, PLAYLIST_DELETE_PLAYLIST_START, PLAYLIST_EXPORT_PLAYLISTS_START, PLAYLIST_FETCH_PLAYLIST_NAMES_START, PLAYLIST_FETCH_SONGS_IN_PLAYLIST_START, PLAYLIST_IMPORT_PLAYLISTS_START, PLAYLIST_REMOVE_FROM_PLAYLIST_START, PLAYLIST_RENAME_PLAYLIST_START } from "./PlaylistActionTypes";
+import { addToPlaylistSucc, createPlaylistSucc, deltePlaylistSucc, exportPlaylistsSucc, fetchSongsInPlaylistSucc, fethPLaylistNamesSucc, importPlaylistsSucc, removeFromPlaylistSucc, renamePlaylistSucc } from "./PlaylistActions";
 import { handleAPIError } from "../../utli";
 import { setCommonPopupObj, setShowContextMenu, setStatusMessage } from "../library/LibraryActions";
+import { PLAYLIST_NAMES } from "../GPActionTypes";
 
 export function* onFetchPlaylistNames(){
     yield takeLatest(PLAYLIST_FETCH_PLAYLIST_NAMES_START, onFetchPlaylistNamesAsnc);
@@ -164,6 +165,28 @@ export function* onExportPlaylistsAsnc(){
             yield put(setStatusMessage(message));
             yield put(setCommonPopupObj({showPopup:false}))
             //yield put(exportPlaylistsSucc());
+        }
+    } catch (error) {
+        console.log(error);
+        handleAPIError(error);
+    }
+
+}
+
+export function* onImportPlaylists(){
+    yield takeLatest(PLAYLIST_IMPORT_PLAYLISTS_START, onImportPlaylistsAsnc);
+}
+
+export function* onImportPlaylistsAsnc(payload){
+    try {
+        const response = yield call(importPlaylistsAPI, payload.payload);
+        if(response.status===200){
+            const data = response.data;
+            yield put(fethPLaylistNamesSucc(data.response));
+            const message = data.status1+' Playlist/s are successfully imported!';
+            yield put(setStatusMessage(message));
+            yield put(setCommonPopupObj({showPopup:false}));
+            yield put(importPlaylistsSucc());
         }
     } catch (error) {
         console.log(error);

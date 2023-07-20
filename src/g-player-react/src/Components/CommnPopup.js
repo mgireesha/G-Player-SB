@@ -84,7 +84,7 @@ export const CommonPopup = () => {
                             commonPopupObj.content
                         }
                         {commonPopupObj.contentType === INPUT &&
-                            <input type="text" defaultValue={commonPopupObj.content} id={commonPopupObj.elementId ? commonPopupObj.elementId:'COMMON_POPUP_INP_ID_1'} placeholder={commonPopupObj.placeHolder?commonPopupObj.placeHolder:''} />
+                            <input type="text" className="input" defaultValue={commonPopupObj.content} id={commonPopupObj.elementId ? commonPopupObj.elementId:'COMMON_POPUP_INP_ID_1'} placeholder={commonPopupObj.placeHolder?commonPopupObj.placeHolder:''} />
                         }
                         {commonPopupObj.contentType === COMPONENT && 
                             <commonPopupObj.component />
@@ -94,8 +94,8 @@ export const CommonPopup = () => {
                     <div className="popup-footer">
                         <div className='buttons'>
                             <button type="button" className="popup-btn-secondary" onClick={closePopup}>Cancel</button>
-                            <button type="button" className={`popup-btn-primary ${commonPopupObj.className}`} 
-                                onClick={commonPopupObj.primaryBtnFun}
+                            <button type="button" className={`popup-btn-primary ${commonPopupObj.className} ${commonPopupObj.primaryClassName}`} 
+                                onClick={commonPopupObj.dispatchPayload ? ()=>dispatch(commonPopupObj.primaryBtnFun(commonPopupObj.payload)) : commonPopupObj.primaryBtnFun}
                                 id={POPUP_PRIMARY_BTN}
                                 >
                                     {commonPopupObj.primaryBtnLabel?commonPopupObj.primaryBtnLabel:"Go"}

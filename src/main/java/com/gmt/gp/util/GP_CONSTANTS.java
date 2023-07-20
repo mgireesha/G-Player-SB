@@ -37,6 +37,7 @@ public class GP_CONSTANTS {
 
     public static final String NOT_FOUND = "NOT_FOUND";
 
+    public static final String PLAYLIST = "PLAYLIST";
     public static final String PLAYLIST_ALBUMS = "PLAYLIST_ALBUMS";
     public static final String PLAYLIST_NAMES = "PLAYLIST_NAMES";
     public static final String PLAYLIST_SONGS_COUNT = "PLAYLIST_SONGS_COUNT";
@@ -54,9 +55,6 @@ public class GP_CONSTANTS {
     // Contant values
     public static final int GROUPED_ALBUM_COUNT_4 = 4;
 
-    // public static final String GP_DB_ALIAS = "g_player";
-    public static final String GP_DB_ALIAS = "g_db";
-
     // URLs
     public static final String WIKI_SUMMARY_URI = "https://en.wikipedia.org/api/rest_v1/page/summary/";
 
@@ -69,5 +67,9 @@ public class GP_CONSTANTS {
             + "\\G_Player\\images\\artists\\";
 
     public static final String GP_PLAYLIST_PATH = System.getProperty("user.home") + "\\G_Player\\playlists\\";
+
+    // databes db alias
+    // public static final String GP_DB_ALIAS = "g_player";
+    public static final String GP_DB_ALIAS = "g_db";
 
 }

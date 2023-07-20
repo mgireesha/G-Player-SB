@@ -518,6 +518,10 @@ public class LibraryService {
         return libraryRepository.getBySongPath(songPath);
     }
 
+    public List<Library> getSongsBySongPath(List<String> songPathList) {
+        return libraryRepository.getSongsBySongPath(songPathList);
+    }
+
     public List<Library> getSongsByAlbumArtist(String albumArtist) {
         return libraryRepository.getByAlbumArtistOrderByAlbum(albumArtist);
     }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
-import { ALBUMS, ALBUMS_LABEL, ALBUM_ARTISTS, ALBUM_ARTISTS_LABEL, ARTISTS, ARTISTS_LABEL, GENRES, GENRES_LABEL, TRACKS_LABEL, TRACK_LIST } from "../redux/GPActionTypes";
+import { ALBUMS, ALBUMS_LABEL, ALBUM_ARTISTS, ALBUM_ARTISTS_LABEL, ARTISTS, ARTISTS_LABEL, GENRES, GENRES_LABEL, TRACKS_LABEL, TRACKS } from "../redux/GPActionTypes";
 
 export const GroupBand = () => {
     const groupBand = useSelector(state => state.library.groupBand);
@@ -11,7 +11,7 @@ export const GroupBand = () => {
         let uri = locationL.pathname;
         if(uri!==null && uri!==''){
             if(uri.startsWith("/music/tracks")){
-                setSelectedBand(TRACK_LIST);
+                setSelectedBand(TRACKS);
             }else if(uri.startsWith("/music/albums")){
                 setSelectedBand(ALBUMS);
             }else if(uri.startsWith("/music/album_artists")){
@@ -27,7 +27,7 @@ export const GroupBand = () => {
     },[locationL]);
     return(
         <div className="group-band">
-            <div className={selectedBand===TRACK_LIST?"traks-band group-band-highlight":"traks-band"}>
+            <div className={selectedBand===TRACKS?"traks-band group-band-highlight":"traks-band"}>
                 <Link to="/music/tracks"><h3>{TRACKS_LABEL}</h3></Link>
             </div>
             <div className={selectedBand===ALBUMS?"albums-band group-band-highlight":"albums-band"}>
