@@ -3,8 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchGenreDetails } from "../../redux/library/LibraryActions";
 import { Link } from "react-router-dom";
 import { GroupedThumbImg4 } from "../../GroupedThumbImg4";
-import { GENRE_LABEL, TRACKS_LABEL } from "../../redux/GPActionTypes";
+import { CURRENT_PAGE, GENRES, GENRE_LABEL, TRACKS_LABEL } from "../../redux/GPActionTypes";
 import { ThumbnailActionBtn } from "../../ThumbnailActionBtn";
+import { setCookies } from "../../utli";
 
 export const Genres = () => {
     const dispatch = useDispatch();
@@ -19,6 +20,7 @@ export const Genres = () => {
         if(!genreDetails || (genreDetails && !genreDetails.GENRE_SONG_COUNT)){
             dispatch(fetchGenreDetails());
         }
+        setCookies(CURRENT_PAGE, JSON.stringify({type:GENRES}));
     },[]);
 
     useEffect(()=>{

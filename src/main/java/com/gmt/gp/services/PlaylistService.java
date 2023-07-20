@@ -58,13 +58,9 @@ public class PlaylistService {
         List<PlaylistItems> playlists = new ArrayList<PlaylistItems>();
         try {
             if (reqPlaylist.getSongId() != 0) {
-                playlistItem = new PlaylistItems();
                 Library library = libraryService.getSongBySongId(reqPlaylist.getSongId());
-                playlistItem.setPlaylistId(reqPlaylist.getPlaylistId());
-                playlistItem.setPlaylist(reqPlaylist.getPlaylist());
-                playlistItem.setSongId(library.getSongId());
-                playlistItem.setSongPath(library.getSongPath());
-                playlistItem.setAlbumName(library.getAlbum());
+                playlistItem = createPlaylistItemBySong(library, reqPlaylist);
+                playlistItem.setSongId(reqPlaylist.getSongId());
                 playlistItem = playlistRepository.save(playlistItem);
                 playlists.add(playlistItem);
                 resp.setStatus(GP_CONSTANTS.SUCCESS);
@@ -73,12 +69,7 @@ public class PlaylistService {
                 Album album = libraryService.getAlbumByAlbumId(reqPlaylist.getAlbumId());
                 List<Library> songs = libraryService.getSongsByAlbum(album.getAlbumName());
                 for (Library library : songs) {
-                    playlistItem = new PlaylistItems();
-                    playlistItem.setPlaylistId(reqPlaylist.getPlaylistId());
-                    playlistItem.setPlaylist(reqPlaylist.getPlaylist());
-                    playlistItem.setSongId(library.getSongId());
-                    playlistItem.setSongPath(library.getSongPath());
-                    playlistItem.setAlbumName(library.getAlbum());
+                    playlistItem = createPlaylistItemBySong(library, reqPlaylist);
                     playlistItem.setAlbumId(reqPlaylist.getAlbumId());
                     playlists.add(playlistItem);
                     playlists = (List<PlaylistItems>) playlistRepository.saveAll(playlists);
@@ -287,6 +278,11 @@ public class PlaylistService {
         playlistItem.setSongPath(song.getSongPath());
         playlistItem.setAlbumName(song.getAlbum());
         return playlistItem;
+    }
+
+    private PlaylistItems createPlaylistItemBySong(Library library, PlaylistItems reqPlaylist) {
+        return createPlaylistItemBySong(library,
+                new Message(reqPlaylist.getPlaylistId(), null, null, reqPlaylist.getPlaylist()));
     }
 
     private Iterable<PlaylistItems> addSongsToPlaylist(List<Library> songs, Message playlistName) {

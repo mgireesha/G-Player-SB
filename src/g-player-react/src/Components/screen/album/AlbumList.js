@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { A_TO_Z, A_TO_Z_DESC, SORT_ARTIST, SORT_YEAR } from "../../redux/GPActionTypes";
+import { A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, SOME_PAGE, SORT_ARTIST, SORT_YEAR } from "../../redux/GPActionTypes";
 import { fetchAllAlbums } from "../../redux/library/LibraryActions";
-import { sortGroupByField } from "../../utli";
+import { setCookies, sortGroupByField } from "../../utli";
 import { AlbumThumb } from "./AlbumThumb";
 import { SortingContainer } from "../SortingContainer";
 import { Spinner } from "../../utilities/Spinner";
@@ -24,8 +24,7 @@ export const AlbumList = () => {
      },[albums]);
 
     useEffect(()=>{
-        //dispatch(setGroupband("albums"));
-
+        setCookies(CURRENT_PAGE, JSON.stringify({type:SOME_PAGE}));
     },[]);
 
     useEffect(()=>{

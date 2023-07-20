@@ -33,13 +33,17 @@ export const Lyrics = () => {
     
     useEffect(()=>{
         if(lyricsObj!==null && lyricsObj!==undefined){
-            const currentTime = Math.floor(parseInt(playingSongStat.currentTime)/1000);
-            const tempLine = lyricsObj[getMins0(currentTime).toString()];
-            if(tempLine!==null && tempLine!==undefined && tempLine!==""){
-                setLinePlaying(tempLine);
-                const lineIndex = lyricsObjKeys.findIndex(key => key===getMins0(currentTime).toString());
-                setNextLine(lyricsObj[lyricsObjKeys[lineIndex+1]]);
-                setPreviousLine(lyricsObj[lyricsObjKeys[lineIndex-1]]);
+            try {
+                const currentTime = Math.floor(parseInt(playingSongStat.currentTime)/1000);
+                const tempLine = lyricsObj[getMins0(currentTime).toString()];
+                if(tempLine!==null && tempLine!==undefined && tempLine!==""){
+                    setLinePlaying(tempLine);
+                    const lineIndex = lyricsObjKeys.findIndex(key => key===getMins0(currentTime).toString());
+                    setNextLine(lyricsObj[lyricsObjKeys[lineIndex+1]]);
+                    setPreviousLine(lyricsObj[lyricsObjKeys[lineIndex-1]]);
+                }
+            } catch (error) {
+                console.log("Error in lyrics component: ",error);
             }
         }
     },[playingSongStat]);

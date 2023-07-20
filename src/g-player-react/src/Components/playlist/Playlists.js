@@ -1,14 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { CreatePlayListBtn } from "./CreatePlayListBtn";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { PlaylistImg } from "./PlaylistImg";
 import { ImportExportPlaylistBtn } from "./ImportExportPlaylistBtn";
+import { CURRENT_PAGE, PLAYLISTS } from "../redux/GPActionTypes";
+import { setCookies } from "../utli";
 
 export const Playlists = () => {
     const playListNames = useSelector(state => state.playlist.playListNames);
     const playlistAlbums = useSelector(state => state.playlist.playlistAlbums);
     const playlistSongsCount = useSelector(state => state.playlist.playlistSongsCount);
+
+    useEffect(()=>{
+        setCookies(CURRENT_PAGE, JSON.stringify({type:PLAYLISTS}));
+    },[])
+
     return(
         <div className="playlists">
             <div className="body">

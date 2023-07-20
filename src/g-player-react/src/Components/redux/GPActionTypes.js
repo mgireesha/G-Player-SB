@@ -100,6 +100,7 @@ export const REPEAT_ONE = 'REPEAT_ONE';
 export const RUNNING = 'RUNNING';
 
 export const SEARCH_RESULTS_LABEL = 'Search Results';
+export const SOME_PAGE = 'SOME_PAGE';
 export const SORT_ARTIST = 'Artist';
 export const SORT_COUNT_ALBUMS = 'No of Albums';
 export const SORT_COUNT_TRACKS = 'No of Songs';
