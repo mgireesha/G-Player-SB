@@ -2,12 +2,13 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { Header } from "../header/Header";
-import { SEARCH_RESULTS_LABEL, TRACK_LIST } from "../redux/GPActionTypes";
+import { CURRENT_PAGE, SEARCH_RESULTS_LABEL, SOME_PAGE, TRACK_LIST } from "../redux/GPActionTypes";
 import { searchByKey } from "../redux/library/LibraryActions";
 import { AlbumArtistThumb } from "../screen/artist/AlbumArtistThumb";
 import { ArtistThumb } from "../screen/artist/ArtistThumb";
 import { Track } from "../screen/track/Track";
 import { AlbumThumb } from "../screen/album/AlbumThumb";
+import { setCookies } from "../utli";
 
 export const Search = () => {
     const dispatch = useDispatch();
@@ -18,6 +19,7 @@ export const Search = () => {
         if(searchKey!==null && searchKey!==undefined){
             dispatch(searchByKey(searchKey));
         }
+        setCookies(CURRENT_PAGE, JSON.stringify({type:SOME_PAGE}));
     },[searchKey])
     return(
         <div className="search">

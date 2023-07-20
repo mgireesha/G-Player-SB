@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ARTIST, A_TO_Z, A_TO_Z_DESC, SORT_COUNT_TRACKS } from "../../redux/GPActionTypes";
+import { ARTIST, ARTISTS, A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, SORT_COUNT_TRACKS } from "../../redux/GPActionTypes";
 import { fetchAllArtistsDtls } from "../../redux/library/LibraryActions";
-import { sortGroupByField } from "../../utli";
+import { setCookies, sortGroupByField } from "../../utli";
 import { SortingContainer } from "../SortingContainer";
 import { ArtistThumb } from "./ArtistThumb";
 
@@ -16,8 +16,7 @@ export const ArtistsList = () => {
     
     useEffect(()=>{
         dispatch(fetchAllArtistsDtls(ARTIST));
-        //(setGroupband("artists"));
-        //dispatch(setPlayedFrom(ARTISTS));
+        setCookies(CURRENT_PAGE, JSON.stringify({type:ARTISTS}));
     },[]);
 
     useEffect(()=>{

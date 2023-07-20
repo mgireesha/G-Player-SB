@@ -34,11 +34,11 @@ export const Album = () => {
                         <Link to={`/music/album_artists/${album.albumArtist}`} >
                             <label style={{cursor:'pointer'}}>{album.albumArtist}</label>
                         </Link>
-                        {album.genreType !== MULTI_GENRE &&<label>{album.year} - {album.genre}</label>}
+                        {album.genreType !== MULTI_GENRE &&<label>{album.year} - <Link to={`/music/genres/${album.genre}`}>{album.genre}</Link></label>}
                         {albumTracks && <label>{albumTracks.length}&nbsp;{TRACKS_LABEL}</label> }
                         {album.genreType === MULTI_GENRE &&
                             <>
-                                <label>{album.year} - {genre?genre:"All"}</label>
+                                <label>{album.year} - {genre?<Link to={`/music/genres/${album.genre}`}>{genre}</Link>:"All"}</label>
                                 <div className="album-multi-genre-select">
                                     <Link className={!genre?"selected":""} to={`/music/albums/${album.albumName}`}>All</Link>
                                     {album.genres.split(",").map(gnre=>

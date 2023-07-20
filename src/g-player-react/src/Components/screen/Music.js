@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { ALBUMS_LABEL, GENRES_COUNT_LABEL, GENRE_COUNT, HISTORY_COUNT, HISTORY_COUNT_LABEL, LIBRARY_COUNT, LIBRARY_COUNT_LABEL, POPULAR_COMPOSERS, THIS_MONTH_COUNT, THIS_MONTH_COUNT_LABEL, TIME_PLAYED_THIS_MONTH, TIME_PLAYED_THIS_MONTH_LABEL, TOTAL_TIME_PLAYED, TOTAL_TIME_PLAYED_LABEL, TRACKS_LABEL } from "../redux/GPActionTypes";
+import { ALBUMS_LABEL, CURRENT_PAGE, GENRES_COUNT_LABEL, GENRE_COUNT, HISTORY_COUNT, HISTORY_COUNT_LABEL, LIBRARY_COUNT, LIBRARY_COUNT_LABEL, MUSIC, POPULAR_COMPOSERS, THIS_MONTH_COUNT, THIS_MONTH_COUNT_LABEL, TIME_PLAYED_THIS_MONTH, TIME_PLAYED_THIS_MONTH_LABEL, TOTAL_TIME_PLAYED, TOTAL_TIME_PLAYED_LABEL, TRACKS_LABEL } from "../redux/GPActionTypes";
 import { fetchBuildStatus, fetchMostPlayedData } from "../redux/library/LibraryActions";
 import { AlbumThumb } from "./album/AlbumThumb";
 import { AlbumArtistThumb } from "./artist/AlbumArtistThumb";
 import { ArtistThumb } from "./artist/ArtistThumb";
+import { setCookies } from "../utli";
 export const Music = () => {
     const dispatch = useDispatch();
     const mostPlayedData = useSelector(state => state.library.mostPlayedData);
@@ -18,6 +19,7 @@ export const Music = () => {
     useEffect(()=>{
         dispatch(fetchMostPlayedData());
         dispatch(fetchBuildStatus());
+        setCookies(CURRENT_PAGE, JSON.stringify({type:MUSIC}));
     },[]);
 
     useEffect(()=>{

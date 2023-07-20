@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import {RiDeleteBinLine} from 'react-icons/ri';
 import { useDispatch, useSelector } from "react-redux";
 import { deleteMusicPath, fetchBuildStatus, fetchMusicPath, initiArtistImageDownload, initLibraryBuild, saveMusicPath } from "../redux/library/LibraryActions";
-import { BUILD_STATUS, COMPLETED, GP_LIBRARY_DESCRIPTION, GP_LIBRARY_DESC_TEXT_1, LIBRARY_LABEL, MUSIC_PATH, RUNNING } from "../redux/GPActionTypes";
+import { BUILD_STATUS, COMPLETED, CURRENT_PAGE, GP_LIBRARY_DESCRIPTION, GP_LIBRARY_DESC_TEXT_1, LIBRARY, LIBRARY_LABEL, MUSIC_PATH, RUNNING } from "../redux/GPActionTypes";
 import { LIBRARY_SAVE_MUSIC_PATH_SUCCESS } from "../redux/library/LibraryActionTypes";
 import loading_icon from '../images/Loading.gif';
 import { Header } from "../header/Header";
+import { setCookies } from "../utli";
 
 export const Library = () => {
     const dispatch = useDispatch();
@@ -47,6 +48,7 @@ export const Library = () => {
     useEffect(()=>{
         dispatch(fetchMusicPath());
         dispatch(fetchBuildStatus());
+        setCookies(CURRENT_PAGE, JSON.stringify({type:LIBRARY}));
     },[])
 
     useEffect(()=>{
