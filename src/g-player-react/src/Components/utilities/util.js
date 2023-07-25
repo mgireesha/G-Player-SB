@@ -1,3 +1,5 @@
+import { WIKI_SUMMARY_URL } from "../redux/GPActionTypes";
+
 export const getMins = (seconds) =>{
     
     if(seconds==='' || seconds===undefined || seconds===null || seconds===0){
@@ -170,8 +172,34 @@ export const checkIfActionAllowed = (emeIds, event) => {
     return tempIsclickedOnCM;
 }
 
-export const callWikiAPI = async(wikiURL) => {
-    const response = await fetch(wikiURL);
+export const callGetAPI = async(URL) => {
+    const response = await fetch(URL);
     const data = await response.json();
     return data;
 }
+
+export const fetchArtistDetailsfromWiki = async(artist) => {
+        let searchedSingerActor = false;
+        let data = await callGetAPI(`${WIKI_SUMMARY_URL}${artist}`);
+        if(data.title.includes("Not Found") || data.title.includes("doesn't exist") || data.extract.includes("may refer to")){
+            data = await callGetAPI(`${WIKI_SUMMARY_URL}${artist}_(singer)`);
+            if(data.title.includes("Not Found") || data.title.includes("doesn't exist")){
+                data = await callGetAPI(`${WIKI_SUMMARY_URL}${artist}_(actor)`);
+                searchedSingerActor = true;
+            }
+        }
+        if(!(data.extract.includes("singer") || data.extract.includes("director")
+                        || data.extract.includes("actress") || data.extract.includes("actor")
+                        || data.extract.includes("composer") || data.extract.includes("musician")
+                        )){
+            if(!searchedSingerActor){
+                data = await callGetAPI(`${WIKI_SUMMARY_URL}${artist}_(singer)`);
+                if(data.title.includes("Not Found") || data.title.includes("doesn't exist")){
+                    data = await callGetAPI(`${WIKI_SUMMARY_URL}${artist}_(actor)`);
+                }
+            }else{
+                data = null;
+            }
+        }
+        return data;
+    }

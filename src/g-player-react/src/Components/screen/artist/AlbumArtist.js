@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { fetchAlbumlistOfAA, fetchAllAlbumArtistsDtls } from "../../redux/library/LibraryActions";
-import { callWikiAPI, scrollToPlaying } from "../../utilities/util";
+import { callWikiAPI, fetchArtistDetailsfromWiki, scrollToPlaying } from "../../utilities/util";
 import { AlbumThumb } from "../album/AlbumThumb";
 import { ALBUM_ARTIST, MULTI_GENRE, WIKI_SUMMARY_URL } from "../../redux/GPActionTypes";
 import def_album_art from '../../images/def_album_art.png';
@@ -26,7 +26,7 @@ export const AlbumArtist = () => {
         setArtistWikiImg(null);
         setArtistWiki({});
         dispatch(fetchAlbumlistOfAA(albumArtist));
-        fetchArtistDetailsfromWiki(albumArtist);
+        fetchWikiData(albumArtist);
     },[albumArtist]);
 
     useEffect(()=>{
@@ -51,34 +51,14 @@ export const AlbumArtist = () => {
         }
     },[albumArtist, albumArtistsDetails]);
 
-    const fetchArtistDetailsfromWiki =async(albumArtist) => {
-        let searchedSingerActor = false;
-        let data = await callWikiAPI(`${WIKI_SUMMARY_URL}${albumArtist}`);
-        if(data.title.includes("Not Found") || data.title.includes("doesn't exist") || data.extract.includes("may refer to")){
-            data = await callWikiAPI(`${WIKI_SUMMARY_URL}${albumArtist}_(singer)`);
-            if(data.title.includes("Not Found") || data.title.includes("doesn't exist")){
-                data = await callWikiAPI(`${WIKI_SUMMARY_URL}${albumArtist}_(actor)`);
-                searchedSingerActor = true;
-            }
-        }
-        if(!(data.extract.includes("singer") || data.extract.includes("director")
-                        || data.extract.includes("actress") || data.extract.includes("actor")
-                        || data.extract.includes("composer") || data.extract.includes("musician")
-                        )){
-            if(!searchedSingerActor){
-                data = await callWikiAPI(`${WIKI_SUMMARY_URL}${albumArtist}_(singer)`);
-                if(data.title.includes("Not Found") || data.title.includes("doesn't exist")){
-                    data = await callWikiAPI(`${WIKI_SUMMARY_URL}${albumArtist}_(actor)`);
-                }
-            }else{
-                data = null;
-            }
-        }
-        setArtistWiki(data);
-        if(data["thumbnail"]!==undefined){
-            setArtistWikiImg(data.thumbnail.source);
+    const fetchWikiData = async (artist) => {
+        const wikiData = await fetchArtistDetailsfromWiki(artist);
+        setArtistWiki(wikiData);
+        if(wikiData.thumbnail){
+            setArtistWikiImg(wikiData.thumbnail.source);
         }
     }
+
     return(
         <div className="album-artist">
             <div className="album-artist-img-div-container">
