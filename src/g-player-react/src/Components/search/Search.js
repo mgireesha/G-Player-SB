@@ -8,7 +8,7 @@ import { AlbumArtistThumb } from "../screen/artist/AlbumArtistThumb";
 import { ArtistThumb } from "../screen/artist/ArtistThumb";
 import { Track } from "../screen/track/Track";
 import { AlbumThumb } from "../screen/album/AlbumThumb";
-import { setCookies } from "../utli";
+import { setCookies } from "../utilities/util";
 
 export const Search = () => {
     const dispatch = useDispatch();

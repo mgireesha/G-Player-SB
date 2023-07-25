@@ -115,6 +115,8 @@ export const sortGroupByField = (entArr, field) => {
                 if (!isNaN(ind)) {
                     ind = '#';
                 }
+            }else if(field === 'lyricsAvl'){
+                ind = ent.lyricsAvl ? 'Tracks with lyrics' : 'No Lyrics'
             }else{
                 ind = ent[field];
             }
@@ -127,6 +129,7 @@ export const sortGroupByField = (entArr, field) => {
             }
         }
     });
+    console.log(entListObj)
 return entListObj;
 }
 
@@ -165,4 +168,10 @@ export const checkIfActionAllowed = (emeIds, event) => {
         }
     }
     return tempIsclickedOnCM;
+}
+
+export const callWikiAPI = async(wikiURL) => {
+    const response = await fetch(wikiURL);
+    const data = await response.json();
+    return data;
 }

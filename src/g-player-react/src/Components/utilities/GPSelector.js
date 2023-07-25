@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { GP_SELECTOR, GP_SELECTOR_ELEM_IDS } from "../redux/GPActionTypes";
-import { checkIfActionAllowed } from "../utli";
+import { checkIfActionAllowed } from "./util";
 import { MdKeyboardArrowRight } from "react-icons/md";
 
 export const GPSelector = ({classPrefix, options, showGpSelector, onSetShowGpSelector}) => {

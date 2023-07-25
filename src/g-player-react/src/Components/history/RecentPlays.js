@@ -3,11 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { Header } from "../header/Header";
 import { CURRENT_PAGE, RECENT_PLAYS, RECENT_PLAYS_LABEL } from "../redux/GPActionTypes";
 import { fetchAllHistory } from "../redux/library/LibraryActions";
-import { setPlayedFrom } from "../redux/player/PlayerActions";
 import { AlbumThumbsGrouped } from "../screen/album/AlbumThumbsGrouped";
 import { Track } from "../screen/track/Track";
 import { AlbumThumb } from "../screen/album/AlbumThumb";
-import { setCookies } from "../utli";
+import { setCookies } from "../utilities/util";
+import { TrackList } from "../screen/track/TrackList";
 
 export const RecentPlays = () => {
     const dispatch = useDispatch();
@@ -15,6 +15,7 @@ export const RecentPlays = () => {
     const historyAlbums = useSelector(state => state.library.history.albums);
     const [hisAlbumsGrpd_6, setHisAlbumsGrpd_6] = useState([]);
     const [hisAlbumsArr, setHisAlbumsArr] = useState([]);
+    const [trackListInp, setTrackListInp] = useState({});
 
     useEffect(()=>{
         dispatch(fetchAllHistory());
@@ -28,6 +29,21 @@ export const RecentPlays = () => {
             setHisAlbumsArr(historyAlbums.splice(0, 6));
         }
     },[historyAlbums])
+
+    useEffect(()=>{
+        const tempTrackListInp = {
+            playedFrom:{
+                pfKey:RECENT_PLAYS, 
+            },
+            showSort: false,
+            showLKey: false,
+            traskListStyle:{
+                maxHeight:'unset',
+                overflow:'hidden'
+            }
+        }
+        setTrackListInp(tempTrackListInp);
+    },[]);
     
     return(
         <div className="recent-plays">
@@ -58,12 +74,13 @@ export const RecentPlays = () => {
                         </div>
                     </div>
                 } */}
-                <div className="track-list">
+                {/* <div className="track-list">
                     <h3>Tracks</h3>
                     {historyTracks!==undefined && historyTracks.length>0 && historyTracks.map((track, index)=>
                         <Track track={track} key={index} playedFrom={{pfKey:RECENT_PLAYS}} index={index} hideTrackNum={true} />
                     )}
-                </div>
+                </div> */}
+                {historyTracks && trackListInp && <TrackList trackListInp={trackListInp} tracks={historyTracks} />}
             </div>
         </div>
     );

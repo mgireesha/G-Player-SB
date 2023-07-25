@@ -6,7 +6,7 @@ import { fetchBuildStatus, fetchMostPlayedData } from "../redux/library/LibraryA
 import { AlbumThumb } from "./album/AlbumThumb";
 import { AlbumArtistThumb } from "./artist/AlbumArtistThumb";
 import { ArtistThumb } from "./artist/ArtistThumb";
-import { setCookies } from "../utli";
+import { setCookies } from "../utilities/util";
 export const Music = () => {
     const dispatch = useDispatch();
     const mostPlayedData = useSelector(state => state.library.mostPlayedData);

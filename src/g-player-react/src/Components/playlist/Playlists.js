@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { PlaylistImg } from "./PlaylistImg";
 import { ImportExportPlaylistBtn } from "./ImportExportPlaylistBtn";
 import { CURRENT_PAGE, PLAYLISTS } from "../redux/GPActionTypes";
-import { setCookies } from "../utli";
+import { setCookies } from "../utilities/util";
 
 export const Playlists = () => {
     const playListNames = useSelector(state => state.playlist.playListNames);

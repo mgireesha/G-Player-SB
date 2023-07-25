@@ -21,6 +21,7 @@ public class Library {
     private int year;
     private String composer;
     private String lyricist;
+    private boolean isLyricsAvl;
     private int trackNumber;
     private int totaltracks;
     private String label;
@@ -179,6 +180,14 @@ public class Library {
                 + ", lyricist=" + lyricist + ", trackNumber=" + trackNumber + ", totaltracks=" + totaltracks
                 + ", label=" + label + ", genre=" + genre + ", trackLength=" + trackLength + ", albumArt=" + albumArt
                 + ", lyrics=" + lyrics + "]";
+    }
+
+    public boolean isLyricsAvl() {
+        return isLyricsAvl;
+    }
+
+    public void setLyricsAvl(boolean isLyricsAvl) {
+        this.isLyricsAvl = isLyricsAvl;
     }
 
 }

@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { GroupedThumbImg4 } from "../../GroupedThumbImg4";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { CURRENT_PAGE, GENRE, PLAY_ALL_LABEL, TRACKS_LABEL, TRACK_LIST } from "../../redux/GPActionTypes";
+import { A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, GENRE, LYRICS_AVAILABLE, PLAY_ALL_LABEL, SORT_ARTIST, SORT_YEAR, TRACKS_LABEL, TRACK_LIST } from "../../redux/GPActionTypes";
 import { fetchGenreDetails, fetchSongsByGenre } from "../../redux/library/LibraryActions";
 import { TrackList } from "../track/TrackList";
 import { FaPlay } from "react-icons/fa";
 import { Lyrics } from "../lyrics/Lyrics";
-import { setCookies } from "../../utli";
+import { setCookies } from "../../utilities/util";
 
 export const GenrePage = () => {
     const {genre} = useParams();
@@ -51,6 +51,7 @@ export const GenrePage = () => {
             },
             showSort: false,
             showLKey: false,
+            sortSelectors:[A_TO_Z,A_TO_Z_DESC, SORT_YEAR, SORT_ARTIST, LYRICS_AVAILABLE]
         }
 
         if(genreSongList){

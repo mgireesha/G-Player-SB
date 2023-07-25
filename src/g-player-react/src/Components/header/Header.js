@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { GroupBand } from "../screen/GroupBand";
 import { AiOutlineMenuUnfold } from 'react-icons/ai';
-import { showHideSideBar } from "../utli";
+import { showHideSideBar } from "../utilities/util";
 
 export const Header = ({showGB, linkTO, headerLbl}) => {
     return(

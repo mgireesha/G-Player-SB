@@ -461,9 +461,10 @@ public class LibraryService {
             if (!tag.getFirst(FieldKey.LYRICIST).equals("") && tag.getFirst(FieldKey.LYRICIST) != null)
                 library.setLyricist(tag.getFirst(FieldKey.LYRICIST));
 
-            // if(!tag.getFirst(FieldKey.LYRICS).equals("") &&
-            // tag.getFirst(FieldKey.LYRICS)!=null)
-            // library.setLyrics(tag.getFirst(FieldKey.LYRICS));
+            if (!tag.getFirst(FieldKey.LYRICS).equals("") && tag.getFirst(FieldKey.LYRICS) != null)
+                library.setLyricsAvl(true);
+            else
+                library.setLyricsAvl(false);
 
             try {
                 library.setTrackLength(audioF.getAudioHeader().getTrackLength());
@@ -615,6 +616,8 @@ public class LibraryService {
             tag.addField(FieldKey.LYRICS, lyrics);
             audioFile.setTag(tag);
             audioFile.commit();
+            song.setLyricsAvl(true);
+            libraryRepository.save(song);
         } catch (Exception e) {
             e.printStackTrace();
         }

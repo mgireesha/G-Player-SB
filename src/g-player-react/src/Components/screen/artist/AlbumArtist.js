@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { fetchAlbumlistOfAA, fetchAllAlbumArtistsDtls } from "../../redux/library/LibraryActions";
-import { scrollToPlaying } from "../../utli";
+import { callWikiAPI, scrollToPlaying } from "../../utilities/util";
 import { AlbumThumb } from "../album/AlbumThumb";
-import { ALBUM_ARTIST } from "../../redux/GPActionTypes";
+import { ALBUM_ARTIST, MULTI_GENRE, WIKI_SUMMARY_URL } from "../../redux/GPActionTypes";
 import def_album_art from '../../images/def_album_art.png';
 
 export const AlbumArtist = () => {
@@ -20,6 +20,7 @@ export const AlbumArtist = () => {
     const [artistWiki, setArtistWiki] = useState({});
     const [artistWikiImg, setArtistWikiImg] = useState(null);
     const [albumArtistObj, setAlbumArtistObj] = useState({});
+    const [albumCount, setAlbumCount] = useState(0);
     
     useEffect(()=>{
         setArtistWikiImg(null);
@@ -27,6 +28,20 @@ export const AlbumArtist = () => {
         dispatch(fetchAlbumlistOfAA(albumArtist));
         fetchArtistDetailsfromWiki(albumArtist);
     },[albumArtist]);
+
+    useEffect(()=>{
+        if(albumListOfAA){
+            let tempAlbumCount = 0;
+            albumListOfAA.forEach(element => {
+                if(element.genreType === MULTI_GENRE){
+                    tempAlbumCount+= element.genres.split(",").length;
+                }else{
+                    tempAlbumCount++;
+                }
+            });
+            setAlbumCount(tempAlbumCount);
+        }
+    },[albumListOfAA])
 
     useEffect(()=>{
         if(albumArtistsDetails.length>0){
@@ -37,14 +52,48 @@ export const AlbumArtist = () => {
     },[albumArtist, albumArtistsDetails]);
 
     const fetchArtistDetailsfromWiki =async(albumArtist) => {
-        const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${albumArtist}`);
-        const data = await response.json();
-        if(data['extract']!==undefined && (data['extract'].toLowerCase().includes('singer')
-            || data['extract'].toLowerCase().includes('actor')) && !data['extract'].toLowerCase().includes('may refer to')){
-            setArtistWiki(data);
-            if(data["thumbnail"]!==undefined){
-                setArtistWikiImg(data.thumbnail.source);
+        // const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${albumArtist}`);
+        // const data = await response.json();
+        // if(data['extract']!==undefined && (data['extract'].toLowerCase().includes('singer')
+        //     || data['extract'].toLowerCase().includes('actor')) && !data['extract'].toLowerCase().includes('may refer to')){
+        //     setArtistWiki(data);
+        //     if(data["thumbnail"]!==undefined){
+        //         setArtistWikiImg(data.thumbnail.source);
+        //     }
+        // }
+
+        let searchedSingerActor = false;
+        let data = await callWikiAPI(`${WIKI_SUMMARY_URL}${albumArtist}`);
+        // if(data['extract']!==undefined && (data['extract'].toLowerCase().includes('singer')
+        //     || data['extract'].toLowerCase().includes('actor')) && !data['extract'].toLowerCase().includes('may refer to')){
+        //     setArtistWiki(data);
+        //     if(data["thumbnail"]!==undefined){
+        //         setArtistWikiImg(data.thumbnail.source);
+        //     }
+        // }
+        if(data.title.includes("Not Found") || data.title.includes("doesn't exist") || data.extract.includes("may refer to")){
+            data = await callWikiAPI(`${WIKI_SUMMARY_URL}${albumArtist}_(singer)`);
+            if(data.title.includes("Not Found") || data.title.includes("doesn't exist")){
+                data = await callWikiAPI(`${WIKI_SUMMARY_URL}${albumArtist}_(actor)`);
+                searchedSingerActor = true;
             }
+        }
+        if(!(data.extract.includes("singer") || data.extract.includes("director")
+                        || data.extract.includes("actress") || data.extract.includes("actor")
+                        || data.extract.includes("composer") || data.extract.includes("musician")
+                        )){
+            if(!searchedSingerActor){
+                data = await callWikiAPI(`${WIKI_SUMMARY_URL}${albumArtist}_(singer)`);
+                if(data.title.includes("Not Found") || data.title.includes("doesn't exist")){
+                    data = await callWikiAPI(`${WIKI_SUMMARY_URL}${albumArtist}_(actor)`);
+                }
+            }else{
+                data = null;
+            }
+        }
+        setArtistWiki(data);
+        if(data["thumbnail"]!==undefined){
+            setArtistWikiImg(data.thumbnail.source);
         }
     }
     return(
@@ -57,7 +106,7 @@ export const AlbumArtist = () => {
                 </div>
                 <div className="album-artist-details">
                     <h3>{albumArtist}</h3>
-                    <label>Albums: {albumListOfAA.length}</label>
+                    <label>Albums: {albumCount}</label>
                     {playedFrom===ALBUM_ARTIST && songPlaying!==undefined && songPlaying!==null && songPlaying.albumArtist.includes(albumArtist) &&
                         <label>Playing:&nbsp;<i onClick={scrollToPlaying} style={{cursor:'pointer',color:'#ef6464'}}>{songPlaying.title}</i>&nbsp;<Link to={`/music/albums/${songPlaying.album}`}>{songPlaying.album!==null?'from '+songPlaying.album:''}</Link></label>
                     }

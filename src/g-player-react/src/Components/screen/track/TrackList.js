@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { A_TO_Z, SORT_YEAR, SORT_ARTIST, A_TO_Z_DESC, TRACK_LIST } from "../../redux/GPActionTypes";
-import { scrollToPlaying, sortGroupByField } from "../../utli";
+import { A_TO_Z, SORT_YEAR, SORT_ARTIST, A_TO_Z_DESC, TRACK_LIST, TRACK_NUMBER, LYRICS_AVAILABLE } from "../../redux/GPActionTypes";
+import { scrollToPlaying, sortGroupByField } from "../../utilities/util";
 import { SortingContainer } from "../SortingContainer";
 import { Spinner } from "../../utilities/Spinner";
 import { Track } from "./Track";
@@ -15,8 +15,12 @@ export const TrackList = ({tracks, trackListInp}) => {
     const [trackList, setTrackList] = useState({});
     const isPlaying = useSelector(state => state.player.isPlaying);
     const [trackListKeys, setTrackListKeys] = useState([]);
-    const [sortBy, setSortBy] = useState(A_TO_Z);
+    const [sortBy, setSortBy] = useState(null);
     const [trackIndex, setTrackIndex] = useState({});
+
+    useEffect(()=>{
+        setSortBy(trackListInp.selectedSortBy?trackListInp.selectedSortBy:A_TO_Z);
+    },[trackListInp])
 
     useEffect(()=>{
         if(Object.keys(trackList).length>0){
@@ -24,9 +28,12 @@ export const TrackList = ({tracks, trackListInp}) => {
             if(sortBy===SORT_YEAR || sortBy===A_TO_Z_DESC){
                 tempTrakListKeys = tempTrakListKeys.sort((a,b)=>{return a>b?-1:1});
             }
-            if(sortBy===SORT_ARTIST){
+            if(sortBy=== A_TO_Z || sortBy===SORT_ARTIST){
                 tempTrakListKeys = tempTrakListKeys.sort((a,b)=>{return a>b?1:-1});
             }
+             if(sortBy=== LYRICS_AVAILABLE){
+                 tempTrakListKeys = tempTrakListKeys.sort((a,b)=>{return a>b?-1:1});
+             }
 
             setTrackListKeys(tempTrakListKeys);
             if(trackListInp.playedFrom.pfKey !== TRACK_LIST){
@@ -43,19 +50,31 @@ export const TrackList = ({tracks, trackListInp}) => {
             })
             setTrackIndex(tempTrackIndex);
         }
-    },[trackList])
+    },[trackList, sortBy])
 
     useEffect(()=>{
         if(tracks.length>0){
-            if(sortBy===A_TO_Z || sortBy===A_TO_Z_DESC){
-                setTrackList(sortGroupByField(tracks, 'title'));
-            }else if(sortBy===SORT_YEAR){
-                setTrackList(sortGroupByField(tracks, 'year'));
-            }else if(sortBy===SORT_ARTIST){
-                sortByArtist(tracks);
+            switch (sortBy) {
+                case A_TO_Z || A_TO_Z_DESC:
+                    setTrackList(sortGroupByField(tracks, 'title'));
+                    break;
+                case SORT_YEAR:
+                    setTrackList(sortGroupByField(tracks, 'year'));
+                    break;
+                case TRACK_NUMBER:
+                    setTrackList(sortGroupByField(tracks, 'trackNumber'));
+                    break;
+                case LYRICS_AVAILABLE:
+                    setTrackList(sortGroupByField(tracks, 'lyricsAvl'));
+                    break;
+                case SORT_ARTIST:
+                    sortByArtist(tracks);
+                    break;
+                default:
+                    break;
             }
         }
-    },[tracks, sortBy])
+    },[tracks, sortBy]);
 
     const sortByArtist = (tracks) => {
         let trackList = {};
@@ -95,7 +114,7 @@ export const TrackList = ({tracks, trackListInp}) => {
 
     return(
         <>
-            {trackListInp.showSort &&<SortingContainer sortListKeys={trackListKeys} setSortBy={setSortBy} sortBy={sortBy} showLKey={trackListInp.showLKey} sortSelectors={trackListInp.sortSelectors?trackListInp.sortSelectors:[A_TO_Z,A_TO_Z_DESC, SORT_YEAR, SORT_ARTIST]} />}
+            {trackListInp.showSort &&<SortingContainer sortListKeys={trackListKeys} setSortBy={setSortBy} sortBy={sortBy} showLKey={trackListInp.showLKey} sortSelectors={trackListInp.sortSelectors} />}
             <div className="track-list scroll-container" id={TRACK_LIST} style={trackListInp.traskListStyle?trackListInp.traskListStyle:{}} ref={ref}>
                  {trackListKeys !== undefined && trackListKeys.length > 0 && trackListKeys.map((lKey, index) =>
                     <>
