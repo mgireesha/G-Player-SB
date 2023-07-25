@@ -52,25 +52,8 @@ export const AlbumArtist = () => {
     },[albumArtist, albumArtistsDetails]);
 
     const fetchArtistDetailsfromWiki =async(albumArtist) => {
-        // const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${albumArtist}`);
-        // const data = await response.json();
-        // if(data['extract']!==undefined && (data['extract'].toLowerCase().includes('singer')
-        //     || data['extract'].toLowerCase().includes('actor')) && !data['extract'].toLowerCase().includes('may refer to')){
-        //     setArtistWiki(data);
-        //     if(data["thumbnail"]!==undefined){
-        //         setArtistWikiImg(data.thumbnail.source);
-        //     }
-        // }
-
         let searchedSingerActor = false;
         let data = await callWikiAPI(`${WIKI_SUMMARY_URL}${albumArtist}`);
-        // if(data['extract']!==undefined && (data['extract'].toLowerCase().includes('singer')
-        //     || data['extract'].toLowerCase().includes('actor')) && !data['extract'].toLowerCase().includes('may refer to')){
-        //     setArtistWiki(data);
-        //     if(data["thumbnail"]!==undefined){
-        //         setArtistWikiImg(data.thumbnail.source);
-        //     }
-        // }
         if(data.title.includes("Not Found") || data.title.includes("doesn't exist") || data.extract.includes("may refer to")){
             data = await callWikiAPI(`${WIKI_SUMMARY_URL}${albumArtist}_(singer)`);
             if(data.title.includes("Not Found") || data.title.includes("doesn't exist")){
