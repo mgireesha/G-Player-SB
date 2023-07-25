@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { ARTIST, A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, SORT_YEAR, WIKI_SUMMARY_URL } from "../../redux/GPActionTypes";
 import { fetchAllArtistsDtls, fetchSongsByArtist } from "../../redux/library/LibraryActions";
-import { scrolltoId, setCookies } from "../..//utli";
+import { callWikiAPI, scrolltoId, setCookies } from "../../utilities/util";
 import { FilterComp } from "../../FilterComp";
 import { TrackList } from "../track/TrackList";
 import def_album_art from '../../images/def_album_art.png';
@@ -140,12 +140,6 @@ export const Artist = () => {
         if(data["thumbnail"]!==undefined){
             setArtistWikiImg(data.thumbnail.source);
         }
-    }
-
-    const callWikiAPI = async(wikiURL) => {
-        const response = await fetch(wikiURL);
-        const data = await response.json();
-        return data;
     }
 
     const scrollToPlaying = ()=>{

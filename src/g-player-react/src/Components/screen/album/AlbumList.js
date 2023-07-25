@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, SOME_PAGE, SORT_ARTIST, SORT_YEAR } from "../../redux/GPActionTypes";
 import { fetchAllAlbums } from "../../redux/library/LibraryActions";
-import { setCookies, sortGroupByField } from "../../utli";
+import { setCookies, sortGroupByField } from "../../utilities/util";
 import { AlbumThumb } from "./AlbumThumb";
 import { SortingContainer } from "../SortingContainer";
 import { Spinner } from "../../utilities/Spinner";

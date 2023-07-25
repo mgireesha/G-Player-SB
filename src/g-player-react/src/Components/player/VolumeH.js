@@ -4,7 +4,7 @@ import { setMediaVolume } from "../redux/player/PlayerActions";
 
 import {HiOutlineSpeakerWave, HiOutlineSpeakerXMark} from "react-icons/hi2";
 import { SliderRC } from "../SliderRC";
-import { getCookieValue, setCookies } from "../utli";
+import { getCookieValue, setCookies } from "../utilities/util";
 import { TEMP_VOLUME } from "../redux/GPActionTypes";
 
 export const VolumeH = () => {

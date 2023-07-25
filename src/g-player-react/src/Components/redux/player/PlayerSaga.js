@@ -1,5 +1,5 @@
 import { call, put, takeLatest } from "redux-saga/effects";
-import { getCookieValue, handleAPIError, setCookies } from "../../utli";
+import { getCookieValue, handleAPIError, setCookies } from "../../utilities/util";
 import { MEDIA_PLAYER_NULL } from "../GPActionTypes";
 import { getCurrentSongAndStatusAPI, getCurrentSongStatusAPI, playASongAPI, playPauseAPI, setMediaVolumeAPI, 
             setPlaybackLengthAPI, updateLyricsAPI } from "../GPApis";

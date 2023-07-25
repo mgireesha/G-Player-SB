@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateLyrics } from "../../redux/player/PlayerActions";
-import { getMins0 } from "../../utli";
+import { getMins0 } from "../../utilities/util";
 
 export const CreateLyrics = ({onSetIsreateLyricsStarted, newLyrics}) => {
     const dispatch = useDispatch();

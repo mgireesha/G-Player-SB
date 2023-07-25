@@ -4,7 +4,7 @@ import { setShowContextMenu, setShowPlaylistSelector } from "../redux/library/Li
 import { ALBUM, ARTIST, GP_CONTEXT_MENU, GP_CONTEXT_MENU_ELEM_IDS, MAIN_CONTAINER } from "../redux/GPActionTypes";
 import { MdKeyboardArrowRight } from 'react-icons/md';
 import { Link } from "react-router-dom";
-import { checkIfActionAllowed } from "../utli";
+import { checkIfActionAllowed } from "../utilities/util";
 
 export const GPContexMenu = () => {
     const dispatch = useDispatch();
@@ -93,7 +93,7 @@ export const GPContexMenu = () => {
                 <MdKeyboardArrowRight className="icon" />
             </div>
             {contextObj.rowList.includes(ALBUM) && <div className="row">
-                <Link to={`/music/albums/${contextObj.obj.albumName}`} onClick={closeCOntextMenu}>
+                <Link to={`/music/albums/${contextObj.obj.albumName?contextObj.obj.albumName:contextObj.obj.album}`} onClick={closeCOntextMenu}>
                     <label>Album</label>
                     <MdKeyboardArrowRight className="icon" />
                 </Link>

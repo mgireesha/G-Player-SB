@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { GroupedThumbImg4 } from "../../GroupedThumbImg4";
 import { CURRENT_PAGE, GENRES, GENRE_LABEL, TRACKS_LABEL } from "../../redux/GPActionTypes";
 import { ThumbnailActionBtn } from "../../ThumbnailActionBtn";
-import { setCookies } from "../../utli";
+import { setCookies } from "../../utilities/util";
 
 export const Genres = () => {
     const dispatch = useDispatch();

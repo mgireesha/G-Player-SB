@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 
 import { FaPauseCircle, FaPlay } from "react-icons/fa";
-import { MdSkipNext, MdSkipPrevious } from "react-icons/md";
+import { MdOutlineLyrics, MdSkipNext, MdSkipPrevious } from "react-icons/md";
 import { TiArrowRepeat } from "react-icons/ti";
 import { TbArrowsShuffle , TbRepeatOnce} from "react-icons/tb";
 import { useDispatch, useSelector } from "react-redux";
 import { fettchCurrentSongStatus, playASong, playPause, setIsPlaying, setIsShuffle, setPlayBackLength, setRepeat } from "../redux/player/PlayerActions";
-import { getMins, scrolltoId, scrollToPlaying, setCookies } from "../utli";
+import { getMins, scrolltoId, scrollToPlaying, setCookies } from "../utilities/util";
 import { VolumeH } from "./VolumeH";
 import { ALBUM, ARTIST, CURRENT, GENRE, NEXT, PLAYLIST, PREVIOUS, RECENT_PLAYS, REPEAT_ALL, REPEAT_OFF, REPEAT_ONE, TRACK_LIST } from "../redux/GPActionTypes";
 import { Link } from "react-router-dom";
@@ -270,7 +270,7 @@ export const Player = () => {
                         </div>
                     </Link>
                     <div className="song-info-title">
-                        <p onClick={()=>scrollToPlaying(isPlaying)} style={{cursor:'pointer'}}>{songPlaying!==null && songPlaying.title}</p>
+                        <p onClick={()=>scrollToPlaying(isPlaying)} style={{cursor:'pointer'}}>{songPlaying && songPlaying.title}{songPlaying && songPlaying.lyricsAvl && <span><MdOutlineLyrics title="This track has lyrics" style={{margin:'5px 0 0 5px'}} /></span>}</p>
                         <p style={{maxHeight: '3em',overflow: 'auto'}}>{songPlaying!==null && <ArtistLink artist={songPlaying.artist} />}</p>
                     </div>
                     

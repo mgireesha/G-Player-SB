@@ -60,6 +60,8 @@ export const LIBRARY_LABEL = 'Library';
 export const LIBRARY_COUNT = 'LIBRARY_COUNT';
 export const LIBRARY_COUNT_LABEL = 'Never Played';
 export const LOADING = 'LOADING';
+export const LYRICS_AVAILABLE = 'LYRICS_AVAILABLE';
+export const LYRICS_AVAILABLE_LABEL = 'Lyrics Available';
 
 export const MAIN_CONTAINER = "MAIN_CONTAINER";
 export const MEDIA_PLAYER_NULL = 'MEDIA_PLAYER_NULL';
@@ -118,6 +120,8 @@ export const TIME_PLAYED_THIS_MONTH = 'TIME_PLAYED_THIS_MONTH';
 export const TIME_PLAYED_THIS_MONTH_LABEL = 'Time Played This Month';
 export const TRACK = 'TRACK';
 export const TRACK_LIST = 'TRACK_LIST';
+export const TRACK_NUMBER = 'TRACK_NUMBER';
+export const TRACK_NUMBER_LABEL = 'Track Number';
 export const TRACKS= 'TRACKS';
 export const TRACKS_LABEL = 'Tracks';
 export const TRACK_MENU_BTN_CIRCLE = 'TRACK_MENU_BTN_CIRCLE';

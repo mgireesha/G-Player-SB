@@ -5,7 +5,7 @@ import { Screen } from "./screen/Screen";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAlbumTacks, fetchAllAlbums, fetchAllHistory, fetchAllSongs, fetchSongsByArtist, fetchSongsByGenre } from "./redux/library/LibraryActions";
 import { fetchCurrentSontAndStatus, playASongSucc, setIsShuffle, setMediaVolumeSucc, setRepeat } from "./redux/player/PlayerActions";
-import { getCookieDetails, getCookieValue } from "./utli";
+import { getCookieDetails, getCookieValue } from "./utilities/util";
 import { ALBUM, ARTIST, CURRENT_PAGE, GENRE, MAIN_CONTAINER, PLAYLIST, RECENT_PLAYS, TRACK_LIST } from "./redux/GPActionTypes";
 import { Route, Routes } from "react-router-dom";
 import { Library } from "./library/Library";

@@ -3,11 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { ALBUM, ARTIST, CURRENT_PAGE, PLAYLIST, REMOVE_LABEL, TRACK, TRACK_MENU_BTN_CIRCLE } from "../../redux/GPActionTypes";
 import { playASong, playPause, setIsPlaying } from "../../redux/player/PlayerActions";
-import { getCookieValue, getMins } from "../../utli";
+import { getCookieValue, getMins } from "../../utilities/util";
 import { ArtistLink } from "../artist/ArtistLink";
 import { FaPlay } from "react-icons/fa";
 import { setContextObj, setShowContextMenu } from "../../redux/library/LibraryActions";
 import { HiOutlineDotsVertical } from "react-icons/hi";
+import { MdOutlineLyrics } from "react-icons/md";
 import { removeFromPlaylist } from "../../redux/playlist/PlaylistActions";
 
 export const Track = ({track, playedFrom, index, hideTrackNum}) => {
@@ -58,8 +59,8 @@ export const Track = ({track, playedFrom, index, hideTrackNum}) => {
     return(
         <div className={songPlaying!==null && track.songId===songPlaying.songId?"track text-highlighted-y":"track"} id={"track-"+track.songId} onContextMenu={(event)=>showCOntextMenu(event)}>
             {!hideTrackNum && <label style={{paddingLeft:'5'}}>{playedFrom.pfKey===ALBUM && track.trackNumber!==undefined && track.trackNumber!==0?track.trackNumber:index+1}</label>}
-            <label onClick={()=>playSong(track.songId)} style={{cursor:'pointer'}}>
-                {track.title}
+            <label onClick={()=>playSong(track.songId)} style={{cursor:'pointer'}} className="title">
+                <span>{track.title}{track.lyricsAvl && <MdOutlineLyrics title="This track has lyrics" />}</span>
                 <span className="mobile-only-block track-title-artist"><ArtistLink artist={track.artist} /></span>
             </label>
             <label className="mobile-only-block song-playing-icon-label">{songPlaying!==null && track.songId===songPlaying.songId ? <FaPlay className="faplay"  />:''}</label>

@@ -8,7 +8,7 @@ import { TbPlaylist } from 'react-icons/tb';
 import { Link, useLocation } from "react-router-dom";
 import { LIBRARY, LIBRARY_LABEL, MUSIC, MUSIC_LABEL, PLAYLISTS, PLAYLISTS_LABEL, RECENT, RECENT_PLAYS_LABEL } from "./redux/GPActionTypes";
 import { SearchInput } from "./search/SearchInput";
-import { showHideSideBar } from "./utli";
+import { showHideSideBar } from "./utilities/util";
 
 export const Sidebar = () => {
     const [selectedRow, setSelectedRow] = useState('');

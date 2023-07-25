@@ -6,7 +6,7 @@ import { BUILD_STATUS, COMPLETED, CURRENT_PAGE, GP_LIBRARY_DESCRIPTION, GP_LIBRA
 import { LIBRARY_SAVE_MUSIC_PATH_SUCCESS } from "../redux/library/LibraryActionTypes";
 import loading_icon from '../images/Loading.gif';
 import { Header } from "../header/Header";
-import { setCookies } from "../utli";
+import { setCookies } from "../utilities/util";
 
 export const Library = () => {
     const dispatch = useDispatch();

@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import def_album_art from '../../images/def_album_art.png';
-import { ALBUM, CURRENT_PAGE, MULTI_GENRE, TRACKS_LABEL } from ".././../redux/GPActionTypes";
+import { ALBUM, A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, MULTI_GENRE, TRACKS_LABEL, TRACK_NUMBER } from ".././../redux/GPActionTypes";
 import { Lyrics } from "../lyrics/Lyrics";
-import { Track } from "../track/Track";
 import { fetchAlbum, fetchAlbumTacks } from "../../redux/library/LibraryActions";
-import { setCookies } from "../../utli";
+import { setCookies } from "../../utilities/util";
+import { TrackList } from "../track/TrackList";
 
 export const Album = () => {
     const dispatch = useDispatch();
@@ -16,11 +16,38 @@ export const Album = () => {
     if(albumTracks.length>0){
         albumTracks = albumTracks.sort((a,b) => a.trackNumber - b.trackNumber);
     }
+
+    const [trackListInp, setTrackListInp] = useState({});
+
     useEffect(()=>{
         dispatch(fetchAlbumTacks(albumName, genre));
         dispatch(fetchAlbum(albumName));
         setCookies(CURRENT_PAGE, JSON.stringify({type:ALBUM}));
     },[albumName, genre]);
+
+    useEffect(()=>{
+        const tempTrackListInp = {
+            playedFrom:{
+                pfKey:ALBUM, 
+                pfVal:albumName,
+            },
+            showSort: true,
+            showLKey: false,
+            sortSelectors:[TRACK_NUMBER,A_TO_Z,A_TO_Z_DESC],
+            selectedSortBy:TRACK_NUMBER
+        }
+
+        if(albumTracks){
+            if(albumTracks.length > 6){
+                tempTrackListInp.showSort = true;
+                tempTrackListInp.traskListStyle = {
+                    maxHeight : 'calc(100vh - 24.2em)'
+                }
+            }
+        }
+
+        setTrackListInp(tempTrackListInp);
+    },[albumTracks]);
 
     return(
         <div className="album">
@@ -53,9 +80,7 @@ export const Album = () => {
                 </div>
             </div>}
             <div className="album-track-list">
-                {albumTracks.length>0 && albumTracks.map((track, index)=>
-                    track.title!==null && <Track track={track} key={index} playedFrom={{pfKey:ALBUM, pfVal:albumName}} index={index}  />
-                )}
+                <TrackList trackListInp={trackListInp} tracks={albumTracks}  />
             </div>
         </div>
     );
