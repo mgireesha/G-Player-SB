@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { ARTIST, A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, SORT_YEAR, WIKI_SUMMARY_URL } from "../../redux/GPActionTypes";
 import { fetchAllArtistsDtls, fetchSongsByArtist } from "../../redux/library/LibraryActions";
-import { callWikiAPI, scrolltoId, setCookies } from "../../utilities/util";
+import { callWikiAPI, fetchArtistDetailsfromWiki, scrolltoId, setCookies } from "../../utilities/util";
 import { FilterComp } from "../../FilterComp";
 import { TrackList } from "../track/TrackList";
 import def_album_art from '../../images/def_album_art.png';
@@ -30,8 +30,8 @@ export const Artist = () => {
         setArtistWikiImg(null);
         setArtistWiki({});
         dispatch(fetchSongsByArtist(artist));
-        fetchArtistDetailsfromWiki(artist);
         setCookies(CURRENT_PAGE, JSON.stringify({type:ARTIST}));
+        fetchWikiData(artist);
     },[artist]);
 
     useEffect(()=>{
@@ -106,39 +106,11 @@ export const Artist = () => {
         setTrackListInp(tempTrackListInp);
     },[artistTracksL]);
 
-    const fetchArtistDetailsfromWiki =async(artist) => {
-        let searchedSingerActor = false;
-        let data = await callWikiAPI(`${WIKI_SUMMARY_URL}${artist}`);
-        // if(data['extract']!==undefined && (data['extract'].toLowerCase().includes('singer')
-        //     || data['extract'].toLowerCase().includes('actor')) && !data['extract'].toLowerCase().includes('may refer to')){
-        //     setArtistWiki(data);
-        //     if(data["thumbnail"]!==undefined){
-        //         setArtistWikiImg(data.thumbnail.source);
-        //     }
-        // }
-        if(data.title.includes("Not Found") || data.title.includes("doesn't exist") || data.extract.includes("may refer to")){
-            data = await callWikiAPI(`${WIKI_SUMMARY_URL}${artist}_(singer)`);
-            if(data.title.includes("Not Found") || data.title.includes("doesn't exist")){
-                data = await callWikiAPI(`${WIKI_SUMMARY_URL}${artist}_(actor)`);
-                searchedSingerActor = true;
-            }
-        }
-        if(!(data.extract.includes("singer") || data.extract.includes("director")
-                        || data.extract.includes("actress") || data.extract.includes("actor")
-                        || data.extract.includes("composer") || data.extract.includes("musician")
-                        )){
-            if(!searchedSingerActor){
-                data = await callWikiAPI(`${WIKI_SUMMARY_URL}${artist}_(singer)`);
-                if(data.title.includes("Not Found") || data.title.includes("doesn't exist")){
-                    data = await callWikiAPI(`${WIKI_SUMMARY_URL}${artist}_(actor)`);
-                }
-            }else{
-                data = null;
-            }
-        }
-        setArtistWiki(data);
-        if(data["thumbnail"]!==undefined){
-            setArtistWikiImg(data.thumbnail.source);
+    const fetchWikiData = async (artist) => {
+        const wikiData = await fetchArtistDetailsfromWiki(artist);
+        setArtistWiki(wikiData);
+        if(wikiData.thumbnail){
+            setArtistWikiImg(wikiData.thumbnail.source);
         }
     }
 
@@ -150,6 +122,7 @@ export const Artist = () => {
             }
         }
     }
+    
     return(
         <div className="artist">
             <div className="artist-img-div-container">
