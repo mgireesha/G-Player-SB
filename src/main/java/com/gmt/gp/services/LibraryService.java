@@ -257,6 +257,7 @@ public class LibraryService {
                 } catch (Exception e) {
                     LOG.error(methodName + " - Exception in file_list_for_loop, exceptionCount: " + ++exceptionCounter);
                     e.printStackTrace();
+                    break;
                 }
                 if (fileListCounter == 100) {
                     LOG.info(methodName + " - Reading audiofiles,  remaining files: " + (fileList.size() - i));
@@ -431,8 +432,11 @@ public class LibraryService {
             if (!tag.getFirst(FieldKey.ARTIST).equals("") && tag.getFirst(FieldKey.ARTIST) != null)
                 library.setArtist(tag.getFirst(FieldKey.ARTIST));
 
-            if (!tag.getFirst(FieldKey.ALBUM).equals("") && tag.getFirst(FieldKey.ALBUM) != null)
+            if (!tag.getFirst(FieldKey.ALBUM).equals("") && tag.getFirst(FieldKey.ALBUM) != null) {
                 library.setAlbum(tag.getFirst(FieldKey.ALBUM));
+            } else {
+                library.setAlbum(GP_CONSTANTS.UNKNOWN_ALBUM_LABEL);
+            }
 
             try {
                 library.setTrackNumber(Integer.parseInt(tag.getFirst(FieldKey.TRACK)));
@@ -800,13 +804,19 @@ public class LibraryService {
 
     // Utility methods - Start
     public boolean isContainsCurrentAlbum(final List<Album> list, final String name, final String genre) {
-        if (genre == null) {
-            return list.stream().filter(o -> o.getAlbumName().equals(name)).findFirst().isPresent();
-        } else {
-            return list.stream().filter(o -> o.getAlbumName().equals(name) && o.getGenre().equalsIgnoreCase(genre))
-                    .findFirst().isPresent();
+        String methodName = "isContainsCurrentAlbum";
+        try {
+            if (genre == null) {
+                return list.stream().filter(o -> o.getAlbumName().equals(name)).findFirst().isPresent();
+            } else {
+                return list.stream().filter(o -> o.getAlbumName().equals(name) && o.getGenre().equalsIgnoreCase(genre))
+                        .findFirst().isPresent();
+            }
+        } catch (Exception e) {
+            LOG.error("Failed in:" + methodName + " method, name: " + name + ", genre: " + genre);
+            e.getMessage();
         }
-
+        return false;
     }
 
     public Library getLibraryFromLibList(final List<Library> libList, History history) {

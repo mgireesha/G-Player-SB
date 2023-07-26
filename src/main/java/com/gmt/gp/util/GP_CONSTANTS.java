@@ -52,6 +52,8 @@ public class GP_CONSTANTS {
     public static final String TRACK_LIST = "TRACK_LIST";
     public static final String TOTAL_TRACKS = "TOTAL_TRACKS";
 
+    public static final String UNKNOWN_ALBUM_LABEL = "Unknown album";
+
     // Contant values
     public static final int GROUPED_ALBUM_COUNT_4 = 4;
 

@@ -41,7 +41,7 @@ export const TrackList = ({tracks, trackListInp}) => {
             
             const tempTrackIndex = {};
             let list = [];
-            if(sortBy !== NO_SORT){
+            if(sortBy !== NO_SORT && sortBy !== TRACK_NUMBER){
                 tempTrakListKeys.forEach(tlk =>{
                     list = trackList[tlk];
                         list.forEach(tr =>{
@@ -130,7 +130,7 @@ export const TrackList = ({tracks, trackListInp}) => {
                         }
                     </>
                 )}
-                {sortBy===NO_SORT && tracks && tracks.length > 0 && tracks.map((track, i)=>
+                {(sortBy===NO_SORT || sortBy === TRACK_NUMBER) && tracks && tracks.length > 0 && tracks.map((track, i)=>
                     <Track track={track} key={track.songId} playedFrom={trackListInp.playedFrom} index={i} hideTrackNum={trackListInp.hideTrackNum} />
                 )}
             </div>
