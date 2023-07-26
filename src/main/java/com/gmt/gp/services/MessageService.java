@@ -59,9 +59,12 @@ public class MessageService {
     }
 
     public void removeMessageName(String name) {
-        Message msg = messageRepository.getByName(name);
-        if (msg != null)
-            removeMessageById(msg.getMessageId());
+        List<Message> msgs = messageRepository.findByName(name);
+        if (msgs != null && msgs.size() > 0) {
+            for (Message msg : msgs) {
+                removeMessageById(msg.getMessageId());
+            }
+        }
     }
 
     // Music Path - start

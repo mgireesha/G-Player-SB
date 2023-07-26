@@ -90,11 +90,14 @@ body{
 
         p{
             padding: 2px;
-            display: flex;
         }
 
         :last-child{
             font-weight: 700;
+        }
+
+        :first-child{
+            display: flex;
         }
     }
 

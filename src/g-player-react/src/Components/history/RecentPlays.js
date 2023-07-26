@@ -74,12 +74,7 @@ export const RecentPlays = () => {
                         </div>
                     </div>
                 } */}
-                {/* <div className="track-list">
-                    <h3>Tracks</h3>
-                    {historyTracks!==undefined && historyTracks.length>0 && historyTracks.map((track, index)=>
-                        <Track track={track} key={index} playedFrom={{pfKey:RECENT_PLAYS}} index={index} hideTrackNum={true} />
-                    )}
-                </div> */}
+                <h3>Tracks</h3>
                 {historyTracks && trackListInp && <TrackList trackListInp={trackListInp} tracks={historyTracks} />}
             </div>
         </div>

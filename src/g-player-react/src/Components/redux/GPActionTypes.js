@@ -72,6 +72,7 @@ export const MUSIC_PATH = 'MUSIC_PATH';
 
 export const NEXT = 'NEXT';
 export const NEW_PLAYLIST_BTN_LABEL = 'New Playlist';
+export const NO_SORT = 'NO_SORT';
 
 export const PLAYLIST_ALBUMS = 'PLAYLIST_ALBUMS';
 export const PLAY_ALL_LABEL = 'Play all'; 
