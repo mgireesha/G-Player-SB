@@ -9,6 +9,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,6 +22,8 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 public class GPUtil {
+
+    private static final Logger LOG = LoggerFactory.getLogger(GPUtil.class);
 
     public static String checkNull(String stringObject) {
         if (null == stringObject || "null".equalsIgnoreCase(stringObject) || "".equalsIgnoreCase(stringObject)) {
@@ -125,5 +130,24 @@ public class GPUtil {
             e.printStackTrace();
         }
         return isDirExits;
+    }
+
+    public static boolean copyFile(String from, String to, String toDirectory) {
+        boolean isCopied = false;
+        try {
+            File src = new File(from);
+            File dest = new File(to);
+            if (toDirectory != null) {
+                File destDir = new File(toDirectory);
+                if (!destDir.exists()) {
+                    destDir.mkdir();
+                }
+            }
+            FileUtils.copyFile(src, dest);
+            isCopied = true;
+        } catch (Exception e) {
+            LOG.error("method: copyFile, Failed to copy " + from + " to --> " + to + ", error:" + e.getMessage());
+        }
+        return isCopied;
     }
 }

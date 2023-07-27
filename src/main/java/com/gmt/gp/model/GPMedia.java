@@ -1,6 +1,6 @@
 package com.gmt.gp.model;
 
-public class GMedia {
+public class GPMedia {
     private String currentTime;
     private double currentVolume;
 
@@ -19,5 +19,5 @@ public class GMedia {
     public void setCurrentTime(String currentTime) {
         this.currentTime = currentTime;
     }
-    
+
 }
