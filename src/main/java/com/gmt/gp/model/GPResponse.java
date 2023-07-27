@@ -6,7 +6,7 @@ public class GPResponse {
     private String status;
     private String error;
     private Library library;
-    private GMedia gMedia;
+    private GPMedia gMedia;
     private PlaylistItems playlist;
     private Message message;
     private List<PlaylistItems> playlists;
@@ -55,11 +55,11 @@ public class GPResponse {
         return "GPResponse [status=" + status + ", error=" + error + ", library=" + library + "]";
     }
 
-    public GMedia getgMedia() {
+    public GPMedia getgMedia() {
         return gMedia;
     }
 
-    public void setgMedia(GMedia gMedia) {
+    public void setgMedia(GPMedia gMedia) {
         this.gMedia = gMedia;
     }
 

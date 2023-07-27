@@ -1631,6 +1631,12 @@ a.disabled-click{
         right: 10px;
         text-align: right;
 
+        /*to show dots if text is too long - start*/
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /*to show dots if text is too long - end*/
+
         span{
             font-size: 14px;
         }
@@ -3233,5 +3239,45 @@ a.disabled-click{
 
     .mobile-only-flex{
         display: flex;
+    }
+}
+
+
+
+
+
+
+.album-multi-genre-select{
+    margin-top: auto;
+    margin-bottom: 15px;
+
+    a{
+        background-color: transparent;
+        border: 1px solid gray;
+        outline: none;
+        padding: 3px 10px 6px 10px;
+        color: beige;
+        cursor: pointer;
+        margin: 0 1px;
+        font-weight: bold;
+    }
+
+    a.selected{
+        //background-color: #17a2b8;
+        background-color: #560C53;
+        //color: #000;
+    }
+
+    a:first-of-type{
+        border-top-left-radius: 5px;
+    }
+
+    a:last-of-type{
+        border-top-right-radius: 5px;
+    }
+
+    a:hover{
+        color: #dfbd16;
+        //font-weight: 400;
     }
 }

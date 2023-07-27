@@ -90,6 +90,7 @@ export const Lyrics = () => {
             setShowEditLyrics(false);
             setisCreateLyricsStarted(false);
             setShowCreateLyrics(false);
+            if(songPlaying!==null)getLyrics(lyrics);
         }
     },[phase]);
 
@@ -160,7 +161,7 @@ export const Lyrics = () => {
         </div>
         {songPlaying!==null &&  songPlaying.lyricist!==null && 
             <div className="lyrics-written-by-div">
-                <span>Lyricist: {songPlaying.lyricist}</span>
+                <span title={songPlaying.lyricist}>Lyricist: {songPlaying.lyricist}</span>
             </div>
         }
     </div>}

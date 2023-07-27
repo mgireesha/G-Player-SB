@@ -2,6 +2,7 @@ package com.gmt.gp.services;
 
 import java.time.LocalDate;
 
+import com.gmt.gp.util.GPUtil;
 import com.gmt.gp.util.SQL_QUERIES;
 
 public class Testj {
@@ -9,6 +10,7 @@ public class Testj {
         try {
             Testj.print_SQL_QUERIES();
             Testj.testSelectDateRange();
+            Testj.testCopy();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -46,5 +48,17 @@ public class Testj {
         String Query = "select count(*) as sfdf from (Select * from history where last_played_time between (" + now
                 + ") and (" + earlier + "))";
         System.out.println("testSelectDateRange: " + Query);
+    }
+
+    public static void testCopy() {
+        try {
+            long startingTime = System.currentTimeMillis();
+            GPUtil.copyFile("C:\\Giri\\Music_AAA_Updated\\Kannada\\Dr. Rajkumar\\Jeevana Chaitra (1992)\\Nadamaya.mp3",
+                    "C:\\Users\\mgire\\G_Player\\temp_file\\Nadamaya.mp3", null);
+            long endingTime = System.currentTimeMillis();
+            System.out.println("Time took: " + (endingTime - startingTime) + " ms");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

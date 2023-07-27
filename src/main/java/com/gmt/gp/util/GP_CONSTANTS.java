@@ -70,6 +70,8 @@ public class GP_CONSTANTS {
 
     public static final String GP_PLAYLIST_PATH = System.getProperty("user.home") + "\\G_Player\\playlists\\";
 
+    public static final String GP_TEMP_SONG_PATH = System.getProperty("user.home") + "\\G_Player\\temp_file\\";
+
     // databes db alias
     // public static final String GP_DB_ALIAS = "g_player";
     public static final String GP_DB_ALIAS = "g_db";
