@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gmt.gp.model.GPResponse;
 import com.gmt.gp.model.Library;
 import com.gmt.gp.model.Message;
-import com.gmt.gp.model.PlaylistItems;
+import com.gmt.gp.model.PlaylistItem;
 import com.gmt.gp.services.MessageService;
 import com.gmt.gp.services.PlaylistService;
 
@@ -53,7 +53,7 @@ public class PlaylistController {
     }
 
     @RequestMapping("/add-to-playlist/")
-    public GPResponse addToPlaList(@RequestBody PlaylistItems reqPlaylist) {
+    public GPResponse addToPlaList(@RequestBody PlaylistItem reqPlaylist) {
         return playlistService.addToPlaList(reqPlaylist);
     }
 

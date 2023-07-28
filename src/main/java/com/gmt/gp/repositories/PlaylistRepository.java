@@ -5,19 +5,19 @@ import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
-import com.gmt.gp.model.PlaylistItems;
+import com.gmt.gp.model.PlaylistItem;
 
-public interface PlaylistRepository extends CrudRepository<PlaylistItems, Long> {
+public interface PlaylistRepository extends CrudRepository<PlaylistItem, Long> {
 
-    List<PlaylistItems> getByPlaylist(String playlist);
+    List<PlaylistItem> getByPlaylist(String playlist);
 
-    @Query("SELECT p.songId FROM PlaylistItems p where p.playlistId =:playlistId")
+    @Query("SELECT p.songId FROM PlaylistItem p where p.playlistId =:playlistId")
     List<Long> getSongIdsInPlaylist(long playlistId);
 
-    @Query("SELECT distinct p.albumName FROM PlaylistItems p where p.playlistId =:playlistId")
+    @Query("SELECT distinct p.albumName FROM PlaylistItem p where p.playlistId =:playlistId")
     List<String> getAlbumNamesByPlaylistId(long playlistId);
 
-    List<PlaylistItems> getByPlaylistId(long playlistId);
+    List<PlaylistItem> getByPlaylistId(long playlistId);
 
-    List<PlaylistItems> getByPlaylistIdAndSongId(long playlistId, long songId);
+    List<PlaylistItem> getByPlaylistIdAndSongId(long playlistId, long songId);
 }

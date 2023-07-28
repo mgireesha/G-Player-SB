@@ -7,9 +7,9 @@ public class GPResponse {
     private String error;
     private Library library;
     private GPMedia gMedia;
-    private PlaylistItems playlist;
+    private PlaylistItem playlistItem;
     private Message message;
-    private List<PlaylistItems> playlists;
+    private List<PlaylistItem> playlistItems;
     private Object response;
     private String status1;
 
@@ -63,20 +63,16 @@ public class GPResponse {
         this.gMedia = gMedia;
     }
 
-    public PlaylistItems getPlaylist() {
-        return playlist;
+    public PlaylistItem getPlaylist() {
+        return playlistItem;
     }
 
-    public void setPlaylist(PlaylistItems playlist) {
-        this.playlist = playlist;
+    public PlaylistItem getPlaylistItem() {
+        return playlistItem;
     }
 
-    public List<PlaylistItems> getPlaylists() {
-        return playlists;
-    }
-
-    public void setPlaylists(List<PlaylistItems> playlists) {
-        this.playlists = playlists;
+    public void setPlaylistItem(PlaylistItem playlistItem) {
+        this.playlistItem = playlistItem;
     }
 
     public Message getMessage() {
@@ -101,6 +97,14 @@ public class GPResponse {
 
     public void setStatus1(String status1) {
         this.status1 = status1;
+    }
+
+    public List<PlaylistItem> getPlaylistItems() {
+        return playlistItems;
+    }
+
+    public void setPlaylistItems(List<PlaylistItem> playlistItems) {
+        this.playlistItems = playlistItems;
     }
 
 }
