@@ -39,7 +39,7 @@ import com.gmt.gp.model.GPResponse;
 import com.gmt.gp.model.History;
 import com.gmt.gp.model.Library;
 import com.gmt.gp.model.Message;
-import com.gmt.gp.model.PlaylistItems;
+import com.gmt.gp.model.PlaylistItem;
 import com.gmt.gp.repositories.AlbumRepository;
 import com.gmt.gp.repositories.ArtistRepository;
 import com.gmt.gp.repositories.LibraryRepository;
@@ -381,23 +381,23 @@ public class LibraryService {
                 messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS_STEP,
                         "Started updating playlists");
                 startingTime = System.currentTimeMillis();
-                List<PlaylistItems> playlists = playlistService.getAllPlaylistItems();
-                List<PlaylistItems> playlistsR = new ArrayList<PlaylistItems>();
-                List<PlaylistItems> playlistsU = new ArrayList<PlaylistItems>();
-                PlaylistItems playlistItem = null;
-                for (int i = 0; i < playlists.size(); i++) {
-                    playlistItem = playlists.get(i);
+                List<PlaylistItem> playlistItems = playlistService.getAllPlaylistItems();
+                List<PlaylistItem> playlistItemsR = new ArrayList<PlaylistItem>();
+                List<PlaylistItem> playlistItemsU = new ArrayList<PlaylistItem>();
+                PlaylistItem playlistItem = null;
+                for (int i = 0; i < playlistItems.size(); i++) {
+                    playlistItem = playlistItems.get(i);
                     library = getLibraryFromLibList(libList, playlistItem);
                     if (library != null) {
                         playlistItem.setSongId(library.getSongId());
                         playlistItem.setSongPath(library.getSongPath());
-                        playlistsU.add(playlistItem);
+                        playlistItemsU.add(playlistItem);
                     } else {
-                        playlistsR.add(playlistItem);
+                        playlistItemsR.add(playlistItem);
                     }
                 }
-                playlistService.removeAll(playlistsR);
-                playlistService.saveAll(playlistsU);
+                playlistService.removeAll(playlistItemsR);
+                playlistService.saveAll(playlistItemsU);
                 endingTime = System.currentTimeMillis();
                 LOG.info(methodName + " - Time took to update playlistitems table : " + (endingTime - startingTime)
                         + " ms, "
@@ -824,7 +824,7 @@ public class LibraryService {
                 && o.getAlbum().equalsIgnoreCase(history.getAlbum()))).findFirst().orElse(null);
     }
 
-    public Library getLibraryFromLibList(final List<Library> libList, PlaylistItems playlistItem) {
+    public Library getLibraryFromLibList(final List<Library> libList, PlaylistItem playlistItem) {
         return libList.stream().filter(o -> (o.getSongPath().equalsIgnoreCase(playlistItem.getSongPath())
                 && o.getAlbum().equalsIgnoreCase(playlistItem.getAlbumName()))).findFirst().orElse(null);
     }

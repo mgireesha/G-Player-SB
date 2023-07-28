@@ -12,6 +12,8 @@ import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +21,7 @@ import com.gmt.gp.model.Album;
 import com.gmt.gp.model.GPResponse;
 import com.gmt.gp.model.Library;
 import com.gmt.gp.model.Message;
-import com.gmt.gp.model.PlaylistItems;
+import com.gmt.gp.model.PlaylistItem;
 import com.gmt.gp.repositories.PlaylistRepository;
 import com.gmt.gp.util.GPUtil;
 import com.gmt.gp.util.GP_CONSTANTS;
@@ -27,6 +29,8 @@ import com.gmt.gp.util.GP_ERRORS;
 
 @Service
 public class PlaylistService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(PlaylistItem.class);
 
     @Autowired
     private PlaylistRepository playlistRepository;
@@ -40,41 +44,41 @@ public class PlaylistService {
     @Autowired
     private HistoryService historyService;
 
-    public List<PlaylistItems> getAllPlaylistItems() {
-        return (List<PlaylistItems>) playlistRepository.findAll();
+    public List<PlaylistItem> getAllPlaylistItems() {
+        return (List<PlaylistItem>) playlistRepository.findAll();
     }
 
-    public void removeAll(List<PlaylistItems> playlistsR) {
+    public void removeAll(List<PlaylistItem> playlistsR) {
         playlistRepository.deleteAll(playlistsR);
     }
 
-    public void saveAll(List<PlaylistItems> playlistsU) {
+    public void saveAll(List<PlaylistItem> playlistsU) {
         playlistRepository.saveAll(playlistsU);
     }
 
-    public GPResponse addToPlaList(PlaylistItems reqPlaylist) {
+    public GPResponse addToPlaList(PlaylistItem reqPlaylist) {
         GPResponse resp = new GPResponse();
-        PlaylistItems playlistItem = null;
-        List<PlaylistItems> playlists = new ArrayList<PlaylistItems>();
+        PlaylistItem playlistItem = null;
+        List<PlaylistItem> playlistItems = new ArrayList<PlaylistItem>();
         try {
             if (reqPlaylist.getSongId() != 0) {
                 Library library = libraryService.getSongBySongId(reqPlaylist.getSongId());
                 playlistItem = createPlaylistItemBySong(library, reqPlaylist);
-                playlistItem.setSongId(reqPlaylist.getSongId());
+                // playlistItem.setSongId(reqPlaylist.getSongId());
                 playlistItem = playlistRepository.save(playlistItem);
-                playlists.add(playlistItem);
+                playlistItems.add(playlistItem);
                 resp.setStatus(GP_CONSTANTS.SUCCESS);
-                resp.setPlaylists(playlists);
+                resp.setPlaylistItems(playlistItems);
             } else if (reqPlaylist.getAlbumId() != 0) {
                 Album album = libraryService.getAlbumByAlbumId(reqPlaylist.getAlbumId());
                 List<Library> songs = libraryService.getSongsByAlbum(album.getAlbumName());
                 for (Library library : songs) {
                     playlistItem = createPlaylistItemBySong(library, reqPlaylist);
                     playlistItem.setAlbumId(reqPlaylist.getAlbumId());
-                    playlists.add(playlistItem);
-                    playlists = (List<PlaylistItems>) playlistRepository.saveAll(playlists);
+                    playlistItems.add(playlistItem);
+                    playlistItems = (List<PlaylistItem>) playlistRepository.saveAll(playlistItems);
                 }
-                resp.setPlaylists(playlists);
+                resp.setPlaylistItems(playlistItems);
             } else {
                 resp.setStatus(GP_CONSTANTS.FAILED);
                 resp.setError(GP_ERRORS.ERR_PLAYLIST_REQ_ID_NOT_FOUND);
@@ -104,7 +108,7 @@ public class PlaylistService {
 
     public GPResponse deletePlaylist(long playlistId) {
         GPResponse resp = new GPResponse();
-        List<PlaylistItems> playlistItems = playlistRepository.getByPlaylistId(playlistId);
+        List<PlaylistItem> playlistItems = playlistRepository.getByPlaylistId(playlistId);
         if (playlistItems != null && !playlistItems.isEmpty()) {
             playlistRepository.deleteAll(playlistItems);
         }
@@ -119,8 +123,8 @@ public class PlaylistService {
             Message playlistName = messageService.getMessageBYId(reqMessage.getMessageId());
             playlistName.setValue(reqMessage.getValue());
             playlistName = messageService.saveMaMessage(playlistName);
-            List<PlaylistItems> playlistItems = playlistRepository.getByPlaylistId(reqMessage.getMessageId());
-            for (PlaylistItems playlistItem : playlistItems) {
+            List<PlaylistItem> playlistItems = playlistRepository.getByPlaylistId(reqMessage.getMessageId());
+            for (PlaylistItem playlistItem : playlistItems) {
                 playlistItem.setPlaylist(reqMessage.getValue());
             }
             playlistRepository.saveAll(playlistItems);
@@ -138,11 +142,11 @@ public class PlaylistService {
         GPResponse resp = new GPResponse();
         try {
             System.out.println("playlistId: " + playlistId + ",  songId: " + songId);
-            List<PlaylistItems> playlistItems = playlistRepository.getByPlaylistIdAndSongId(playlistId, songId);
+            List<PlaylistItem> playlistItems = playlistRepository.getByPlaylistIdAndSongId(playlistId, songId);
             if (playlistItems != null && playlistItems.size() > 0) {
-                PlaylistItems playlistItem = playlistItems.get(0);
+                PlaylistItem playlistItem = playlistItems.get(0);
                 playlistRepository.delete(playlistItem);
-                resp.setPlaylist(playlistItem);
+                resp.setPlaylistItem(playlistItem);
                 resp.setStatus(GP_CONSTANTS.SUCCESS);
             }
         } catch (Exception e) {
@@ -202,45 +206,80 @@ public class PlaylistService {
 
     public GPResponse exportPlaylists() {
         GPResponse resp = new GPResponse();
-        Map<String, List<PlaylistItems>> plItemsMap = new HashMap<String, List<PlaylistItems>>();
-        List<PlaylistItems> plItems = getAllPlaylistItems();
-        List<PlaylistItems> tempPlItems = null;
+        Map<String, List<PlaylistItem>> plItemsMap = new HashMap<String, List<PlaylistItem>>();
+        List<PlaylistItem> plItems = getAllPlaylistItems();
+        List<PlaylistItem> tempPlItems = null;
         String plItemIdentifier = null;
-        for (PlaylistItems plItem : plItems) {
+        for (PlaylistItem plItem : plItems) {
             plItemIdentifier = plItem.getPlaylistId() + plItem.getPlaylist();
             if (plItemsMap.containsKey(plItemIdentifier)) {
                 tempPlItems = plItemsMap.get(plItemIdentifier);
                 tempPlItems.add(plItem);
             } else {
-                tempPlItems = new ArrayList<PlaylistItems>();
+                tempPlItems = new ArrayList<PlaylistItem>();
                 tempPlItems.add(plItem);
             }
             plItemsMap.put(plItemIdentifier, tempPlItems);
         }
         resp.setResponse(plItemsMap);
         resp.setStatus1(GP_CONSTANTS.GP_PLAYLIST_PATH);
-        FileWriter fileWriter = null;
-        File file = null;
         boolean isDirExists = GPUtil
                 .checkAndCreateFolders(GP_CONSTANTS.GP_PLAYLIST_PATH);
         for (String plItemsMapKey : plItemsMap.keySet()) {
             tempPlItems = plItemsMap.get(plItemsMapKey);
-            try {
-                if (isDirExists && tempPlItems.size() > 0) {
-                    file = new File(GP_CONSTANTS.GP_PLAYLIST_PATH + tempPlItems.get(0).getPlaylist() + ".csv");
-
-                    fileWriter = new FileWriter(file);
-                    for (PlaylistItems plItem : tempPlItems) {
-                        fileWriter.append(plItem.getSongPath()).append(System.lineSeparator());
-                    }
-                    fileWriter.close();
-                    fileWriter.flush();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (isDirExists && tempPlItems.size() > 0) {
+                writeSongPathToCSV(tempPlItems);
+                writePlItemToGPFIle(tempPlItems);
             }
         }
         return resp;
+    }
+
+    private void writePlItemToGPFIle(List<PlaylistItem> plItems) {
+        final String methodName = "writePlItemToGPFIle";
+        try {
+            boolean isGpDirExists = GPUtil.checkAndCreateFolders(GP_CONSTANTS.GP_PLAYLIST_PATH_GP);
+            if (!isGpDirExists) {
+                LOG.error(methodName + ", exiting, directory: " + GP_CONSTANTS.GP_PLAYLIST_PATH_GP + " doesn't esists");
+                return;
+            }
+            File gpFile = new File(GP_CONSTANTS.GP_PLAYLIST_PATH_GP + plItems.get(0).getPlaylist() + ".gp");
+            FileWriter gpFileWriter = new FileWriter(gpFile);
+            for (PlaylistItem plItem : plItems) {
+                gpFileWriter.append(plItem.getSongTitle())
+                        .append(",")
+                        .append(plItem.getAlbumName())
+                        .append(",")
+                        .append(plItem.getSongPath())
+                        .append(System.lineSeparator());
+            }
+            gpFileWriter.close();
+            gpFileWriter.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void writeSongPathToCSV(List<PlaylistItem> plItems) {
+        final String methodName = "writeSongPathToCSV";
+        try {
+            boolean isCSVDirExists = GPUtil.checkAndCreateFolders(GP_CONSTANTS.GP_PLAYLIST_PATH_CSV);
+            if (!isCSVDirExists) {
+                LOG.error(
+                        methodName + ", exiting, directory: " + GP_CONSTANTS.GP_PLAYLIST_PATH_CSV + " doesn't esists");
+                return;
+            }
+            File songPathCSVFile = new File(GP_CONSTANTS.GP_PLAYLIST_PATH_CSV + plItems.get(0).getPlaylist() + ".csv");
+            FileWriter songPathCSVFileWriter = new FileWriter(songPathCSVFile);
+            for (PlaylistItem plItem : plItems) {
+                songPathCSVFileWriter.append(plItem.getSongPath())
+                        .append(System.lineSeparator());
+            }
+            songPathCSVFileWriter.close();
+            songPathCSVFileWriter.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public GPResponse importPlaylists(String payload) {
@@ -270,23 +309,24 @@ public class PlaylistService {
         return resp;
     }
 
-    private PlaylistItems createPlaylistItemBySong(Library song, Message playlistName) {
-        PlaylistItems playlistItem = new PlaylistItems();
+    private PlaylistItem createPlaylistItemBySong(Library song, Message playlistName) {
+        PlaylistItem playlistItem = new PlaylistItem();
         playlistItem.setPlaylistId(playlistName.getMessageId());
         playlistItem.setPlaylist(playlistName.getValue());
         playlistItem.setSongId(song.getSongId());
         playlistItem.setSongPath(song.getSongPath());
         playlistItem.setAlbumName(song.getAlbum());
+        playlistItem.setSongTitle(song.getTitle());
         return playlistItem;
     }
 
-    private PlaylistItems createPlaylistItemBySong(Library library, PlaylistItems reqPlaylist) {
+    private PlaylistItem createPlaylistItemBySong(Library library, PlaylistItem reqPlaylist) {
         return createPlaylistItemBySong(library,
                 new Message(reqPlaylist.getPlaylistId(), null, null, reqPlaylist.getPlaylist()));
     }
 
-    private Iterable<PlaylistItems> addSongsToPlaylist(List<Library> songs, Message playlistName) {
-        List<PlaylistItems> playlistItems = new ArrayList<PlaylistItems>();
+    private Iterable<PlaylistItem> addSongsToPlaylist(List<Library> songs, Message playlistName) {
+        List<PlaylistItem> playlistItems = new ArrayList<PlaylistItem>();
         for (Library song : songs) {
             playlistItems.add(createPlaylistItemBySong(song, playlistName));
         }
