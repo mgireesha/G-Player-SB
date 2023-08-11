@@ -265,8 +265,9 @@ export const Player = () => {
                 <div className="song-info">
                     <Link to={songPlaying!==null?`/music/albums/${songPlaying.album}`:'#'}>
                         <div className="song-info-img">
-                            {songPlayingImg !== null && songPlayingImg!=='' && <img src={songPlayingImg} />}
-                            {(songPlayingImg===null || songPlayingImg==='') && <img src={def_album_art} />}
+                            <img src={songPlaying ?`/gp_images/albums/${songPlaying.album}.jpg`: def_album_art} />
+                            {/* {songPlayingImg !== null && songPlayingImg!=='' && <img src={songPlayingImg} />}
+                            {(songPlayingImg===null || songPlayingImg==='') && <img src={def_album_art} />} */}
                         </div>
                     </Link>
                     <div className="song-info-title">

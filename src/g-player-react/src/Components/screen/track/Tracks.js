@@ -15,6 +15,15 @@ export const Tracks = () => {
         }
     },[tracks])
     return(
-        <TrackList tracks={tracks?tracks:[]} trackListInp={{showSort:true, showLKey:true, playedFrom:{pfKey:TRACKS}, sortSelectors:[A_TO_Z,A_TO_Z_DESC, SORT_YEAR, SORT_ARTIST, LYRICS_AVAILABLE]}} />
+        <TrackList tracks={tracks?tracks:[]} 
+            trackListInp={
+                {showSort:true, showLKey:true, 
+                    lKeyStyle : {position:'absolute',visibility:'hidden'},
+                    playedFrom:{pfKey:TRACKS}, 
+                    sortSelectors:[A_TO_Z,A_TO_Z_DESC, SORT_YEAR, SORT_ARTIST, LYRICS_AVAILABLE],
+                    selectedSortBy:A_TO_Z
+                }
+            } 
+        />
     );
 }

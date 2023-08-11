@@ -16,8 +16,8 @@ export const PlaylistImg = ({albumNames}) => {
         <div className="playlist-img-container">
             {albumNameList.length > 0 &&
                 <div className="playlist-img">
-                    {albumNameList.map(albumName =>
-                        <img src={`/gp_images/albums/${albumName}.jpg`} />
+                    {albumNameList.map((albumName, i) =>
+                        <img src={`/gp_images/albums/${albumName}.jpg`} key={i} />
                     )}
                 </div>
             }

@@ -81,7 +81,8 @@ export const Artist = () => {
             },
             showSort: false,
             showLKey: false,
-            sortSelectors:[A_TO_Z,A_TO_Z_DESC,SORT_YEAR]
+            sortSelectors:[A_TO_Z,A_TO_Z_DESC,SORT_YEAR],
+            selectedSortBy: A_TO_Z
         }
 
         if(artistTracksL){

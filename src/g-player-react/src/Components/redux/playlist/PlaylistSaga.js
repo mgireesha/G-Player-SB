@@ -4,6 +4,7 @@ import { PLAYLIST_ADD_TO_PLAYLIST_START, PLAYLIST_CREATE_PLAYLIST_START, PLAYLIS
 import { addToPlaylistSucc, createPlaylistSucc, deltePlaylistSucc, fetchSongsInPlaylistSucc, fethPLaylistNamesSucc, importPlaylistsSucc, removeFromPlaylistSucc, renamePlaylistSucc } from "./PlaylistActions";
 import { handleAPIError } from "../../utilities/util";
 import { setCommonPopupObj, setShowContextMenu, setStatusMessage } from "../library/LibraryActions";
+import { SUCCESS } from "../GPActionTypes";
 
 export function* onFetchPlaylistNames(){
     yield takeLatest(PLAYLIST_FETCH_PLAYLIST_NAMES_START, onFetchPlaylistNamesAsnc);
@@ -50,16 +51,23 @@ export function* onAddToPlaylistAsnc(payload){
         const response = yield call(addToPlaylistAPI, payload.reqPLObj);
         if(response.status===200){
             const data = response.data;
-            let addedSongsCount = data.playlists.length;
-            const playlistItem = data.playlists[0];
-            let successMessage = "Added "+addedSongsCount+" tracks to "+playlistItem.playlist+" playlist!";
-            if(addedSongsCount === 1){
-                const songPath = playlistItem.songPath;
-                addedSongsCount = songPath.substring(songPath.lastIndexOf("\\")+1, songPath.indexOf("."));
-                successMessage = "Added "+addedSongsCount+" to "+playlistItem.playlist+" playlist!";
+            let successMessage;
+            if(data.status === SUCCESS){
+                let addedSongsCount = data.playlistItems.length;
+                const playlistItem = data.playlistItems[0];
+                successMessage = "Added "+addedSongsCount+" tracks to "+playlistItem.playlist+" playlist!";
+                if(addedSongsCount === 1){
+                    const songPath = playlistItem.songPath;
+                    addedSongsCount = songPath.substring(songPath.lastIndexOf("\\")+1, songPath.indexOf("."));
+                    successMessage = "Added "+addedSongsCount+" to "+playlistItem.playlist+" playlist!";
+                }
+                yield put(addToPlaylistSucc(data));
+            }else{
+                successMessage = data.error;
             }
+            
             yield put(setStatusMessage(successMessage));
-            yield put(addToPlaylistSucc(data));
+            
         }
     } catch (error) {
         console.log(error);
@@ -178,7 +186,7 @@ export function* onImportPlaylists(){
 
 export function* onImportPlaylistsAsnc(payload){
     try {
-        const response = yield call(importPlaylistsAPI, payload.payload);
+        const response = yield call(importPlaylistsAPI, payload.payload, payload.fileType);
         if(response.status===200){
             const data = response.data;
             yield put(fethPLaylistNamesSucc(data.response));

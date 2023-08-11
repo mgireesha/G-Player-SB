@@ -45,7 +45,7 @@ export const AlbumArtistList = () => {
 
     return(
         <>
-            <SortingContainer sortListKeys={albumArtistsDetailsListKeys} setSortBy={setSortBy} sortBy={sortBy} sortSelectors={[A_TO_Z,A_TO_Z_DESC, SORT_COUNT_ALBUMS]} />
+            <SortingContainer sortListKeys={albumArtistsDetailsListKeys} setSortBy={setSortBy} sortBy={sortBy} sortSelectors={[A_TO_Z,A_TO_Z_DESC, SORT_COUNT_ALBUMS]} showSortByLabel={true} />
             <div className="album-artists-list">
                 {sortBy===SORT_COUNT_ALBUMS && albumArtistsDetails!==null && albumArtistsDetails!==undefined && albumArtistsDetails.length>0 && albumArtistsDetails.map((albumArtist, index) =>
                     <AlbumArtistThumb albumArtist={albumArtist} key={index} />

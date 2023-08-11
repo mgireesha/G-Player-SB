@@ -24,6 +24,7 @@ export const COMPONENT = 'COMPONENT';
 export const CREATE = 'CREATE';
 export const CREATE_LABEL = 'Create';
 export const CREATE_PLAYLIST_LABEL = 'Create Playlist';
+export const CSV_IMPORT_INPUT = 'CSV_IMPORT_INPUT';
 export const CURRENT = 'CURRENT';
 export const CURRENT_PAGE = 'CURRENT_PAGE';
 
@@ -43,6 +44,7 @@ export const GENRE_COUNT = 'GENRE_COUNT';
 export const GENRES_COUNT_LABEL = 'Genres';
 export const GENRE_SONG_COUNT = 'GENRE_SONG_COUNT';
 export const GP_CONTEXT_MENU = 'GP_CONTEXT_MENU';
+export const GP_IMPORT_INPUT = 'GP_IMPORT_INPUT';
 export const GP_SELECTOR = 'GP_SELECTOR';
 
 export const HISTORY_COUNT = 'HISTORY_COUNT';

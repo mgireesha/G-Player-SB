@@ -39,9 +39,9 @@ export const ArtistLink = ({artist}) => {
     return(
         <>
         {artists!==null && artists!==undefined && artists.map((artist,index)=>
-            <>
+            <span key={index}>
                 <span key={index+'deli'}>{index===0?'':', '}</span><Link className="artist-link" to={`/music/artists/${artist}`} key={index}>{artist}</Link>
-            </>    
+            </span>    
         )}
         </>
     );

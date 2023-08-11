@@ -20,4 +20,6 @@ public interface PlaylistRepository extends CrudRepository<PlaylistItem, Long> {
     List<PlaylistItem> getByPlaylistId(long playlistId);
 
     List<PlaylistItem> getByPlaylistIdAndSongId(long playlistId, long songId);
+
+    PlaylistItem getByPlaylistIdAndSongPath(long playlistId, String songPath);
 }

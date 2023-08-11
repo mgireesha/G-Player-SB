@@ -129,15 +129,15 @@ export const setPlaybackLengthAPI = (pbVal) => {
 
 //History Start
 export const fetchAllHistoryAPI = () => {
-    return iAxios.get(`/history/getAllGroupedHistory`).then(response => response);
+    return iAxios.get(`/history/all-grouped-history`).then(response => response);
 }
 
 export const updateHistoryAPI = (songId) => {
-    return iAxios.put(`/history/updateHistory/${songId}`).then(response => response);
+    return iAxios.put(`/history/add-to-history/${songId}`).then(response => response);
 }
 
 export const fetchMostPlayedDataAPI = () => {
-    return iAxios.get(`/history/getMostPlayedData`).then(response => response);
+    return iAxios.get(`/history/most-played-data`).then(response => response);
 }
 //History End
 
@@ -176,7 +176,7 @@ export const exportPlaylistsAPI = () => {
     return iAxios.put(`/playlist/export`).then(response => response);
 }
 
-export const importPlaylistsAPI = (payload) => {
-    return iAxios.post(`/playlist/import`, JSON.stringify(payload)).then(response => response);
+export const importPlaylistsAPI = (payload, fileType) => {
+    return iAxios.post(`/playlist/import/${fileType}`, JSON.stringify(payload)).then(response => response);
 }
 //Playlist - End

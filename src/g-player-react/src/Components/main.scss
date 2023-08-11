@@ -96,7 +96,7 @@ body{
             font-weight: 700;
         }
 
-        :first-child{
+        > :first-child{
             display: flex;
         }
     }
@@ -1315,6 +1315,11 @@ body{
                 }
             }
 
+            .sortby{
+                padding: 10px;
+                margin-top: -4px;
+            }
+
         }
 
         .playlist-list{
@@ -1539,6 +1544,10 @@ body{
 
         input[type="file"].m3u::before{
             content: "Import m3u";
+        }
+
+        input[type="file"].gp::before{
+            content: "Import GP";
         }
     }
 }
