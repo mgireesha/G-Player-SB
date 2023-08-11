@@ -1155,4 +1155,14 @@ public class LibraryService {
         return genreDetails;
     }
 
+    public List<Library> getSongsByAlbumAndTitle(List<Library> reqPlaylistLibraryList) {
+        List<Library> songs = new ArrayList<Library>();
+        List<Library> tempSongs = null;
+        for (Library reqLibrary : reqPlaylistLibraryList) {
+            tempSongs = libraryRepository.getByTitleAndAlbum(reqLibrary.getTitle(), reqLibrary.getAlbum());
+            songs.addAll(tempSongs);
+        }
+        return songs;
+    }
+
 }

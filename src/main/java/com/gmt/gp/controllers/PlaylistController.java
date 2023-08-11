@@ -67,9 +67,9 @@ public class PlaylistController {
         return playlistService.exportPlaylists();
     }
 
-    @RequestMapping(value = "/import", method = RequestMethod.POST)
-    public GPResponse importPlaylists(@RequestBody String payload) {
-        return playlistService.importPlaylists(payload);
+    @RequestMapping(value = "/import/{fileType}", method = RequestMethod.POST)
+    public GPResponse importPlaylists(@RequestBody String payload, @PathVariable String fileType) {
+        return playlistService.importPlaylists(payload, fileType);
     }
 
 }

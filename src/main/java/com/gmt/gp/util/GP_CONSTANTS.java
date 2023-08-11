@@ -22,6 +22,8 @@ public class GP_CONSTANTS {
     public static final String FAILED = "FAILED";
     public static final String FILES_READ_TIME = "FILES_READ_TIME";
     public static final String FILES_TO_READ = "FILES_TO_READ";
+    public static final String FILETYPE_CSV = ".csv";
+    public static final String FILETYPE_GP = ".gp";
 
     public static final String GENRE_ALBUMS = "GENRE_ALBUMS";
     public static final String GENRE_COUNT = "GENRE_COUNT";

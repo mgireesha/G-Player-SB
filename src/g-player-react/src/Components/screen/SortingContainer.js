@@ -2,11 +2,11 @@ import React from "react";
 import { A_TO_Z, A_TO_Z_DESC, LYRICS_AVAILABLE, LYRICS_AVAILABLE_LABEL, SORT_ARTIST, SORT_COUNT_ALBUMS, SORT_COUNT_TRACKS, SORT_YEAR, TRACK_NUMBER, TRACK_NUMBER_LABEL } from "../redux/GPActionTypes";
 import { scrolltoId } from "../utilities/util";
 
-export const SortingContainer = ({sortBy, setSortBy, sortListKeys, sortSelectors, showLKey}) => {
+export const SortingContainer = ({sortBy, setSortBy, sortListKeys, sortSelectors, showLKey, showSortByLabel}) => {
     return(
         <>
             <div className="order-container">
-                <span>Sort By:</span>
+                {showSortByLabel && <span>Sort By:</span>}
                 <select onChange={(event)=>setSortBy(event.target.value)} className="sortby">
                     {sortSelectors.includes(A_TO_Z) && <option value={A_TO_Z} selected={sortBy===A_TO_Z?true:false}>{A_TO_Z}</option>}
                     {sortSelectors.includes(A_TO_Z_DESC) && <option value={A_TO_Z_DESC} selected={sortBy===A_TO_Z_DESC?true:false}>{A_TO_Z_DESC}</option>}
@@ -20,7 +20,7 @@ export const SortingContainer = ({sortBy, setSortBy, sortListKeys, sortSelectors
             </div>
             {showLKey && <div className="lKey-line">
                 {sortBy!==SORT_ARTIST && sortListKeys !== undefined && sortListKeys.length > 0 && sortListKeys.map((lKey, index) =>
-                    <span onClick={() => scrolltoId("lKey" + lKey)} className={lKey.length>8?sortBy+"_25":sortBy+"_10"}>{lKey}</span>
+                    <span key={index} onClick={() => scrolltoId("lKey" + lKey)} className={lKey.length>8?sortBy+"_25":sortBy+"_10"}>{lKey}</span>
                 )}
             </div>}
         </>

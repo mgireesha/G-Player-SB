@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { COMING_SOON_LABEL, EXPORT_LABEL, IMPORT_LABEL, IMPORT_PLAYLISTS_LABEL } from "../redux/GPActionTypes";
+import { COMING_SOON_LABEL, CSV_IMPORT_INPUT, EXPORT_LABEL, GP_IMPORT_INPUT, IMPORT_LABEL, IMPORT_PLAYLISTS_LABEL } from "../redux/GPActionTypes";
 import { useDispatch, useSelector } from "react-redux";
 import { exportPlaylists, importPlaylists } from "../redux/playlist/PlaylistActions";
 import { setCommonPopupObj } from "../redux/library/LibraryActions";
@@ -30,7 +30,7 @@ export const ImportExportPlaylistPopupBtns = () => {
     }
 
     const handleFileOnChange = async (event) => {
-        const tempSelectedFiles = {};
+        let tempSelectedFiles = {};
         let fileType;
         let fileList;
         if(event.target){
@@ -58,7 +58,14 @@ export const ImportExportPlaylistPopupBtns = () => {
             })
             tempSelectedFiles[playlistName] = result.split("\r\n");
         }
-        setSelectedFiles(tempSelectedFiles); 
+        if(fileType === '.csv'){
+            setSelectedFiles(tempSelectedFiles); 
+        }else if(fileType === '.gp'){
+            tempSelectedFiles = getGPPLPayload(tempSelectedFiles);
+            console.log("65 tempSelectedFiles: ",tempSelectedFiles)
+        }
+        
+        console.log("tempSelectedFiles",tempSelectedFiles)
         /*console.log("tempSelectedFiles",tempSelectedFiles);
         const tempCommonPopupObj = {...commonPopupObj};
         tempCommonPopupObj.payload = tempSelectedFiles;
@@ -67,19 +74,50 @@ export const ImportExportPlaylistPopupBtns = () => {
         return tempSelectedFiles;
     }
 
+    const getGPPLPayload = (selectedFiles) => {
+        const tempSelectedFiles = {};
+        const plNames = Object.keys(selectedFiles);
+        //let plItem;
+        let plItems;
+        let track = {};
+        let tracks = [];
+        plNames.forEach(plName=>{
+            tracks = [];
+            plItems = selectedFiles[plName];
+            plItems.forEach(plItem => {
+                plItem = plItem.split(",");
+                if(plItem.length === 3){
+                    track = {
+                        title : plItem[0],
+                        album : plItem[1],
+                        songPath : plItem[2]
+                    }
+                    tracks.push(track);
+                }
+            });
+            tempSelectedFiles[plName] = tracks;
+        });
+        return tempSelectedFiles;
+    }
+
     const submitImportPlaylists = async () => {
         //console.log("selectedFiles",{...selectedFiles});
-        const fileInput = document.getElementById("CSV_IMPORT_INPUT");
+        let fileInput = document.getElementById(CSV_IMPORT_INPUT);
+        const importInpIds = [CSV_IMPORT_INPUT, GP_IMPORT_INPUT];
+        for(let i=0; i<importInpIds.length;i++){
+            fileInput = document.getElementById(importInpIds[i]);
+            if(fileInput.files.length > 0)break;
+        }
         if(fileInput){
             if(fileInput.files.length === 0){
                 alert("No file selected");
                 return false;
             }
             const selectedFiles = await handleFileOnChange(fileInput);
-            console.log("v 73",selectedFiles);
+            const fileType = fileInput.accept;
             if(window.confirm("Import Playlists ?")===true){
                 setShowSpinner(true);
-                dispatch(importPlaylists(selectedFiles));
+                dispatch(importPlaylists(selectedFiles, fileType));
             }
         }
         
@@ -91,12 +129,12 @@ export const ImportExportPlaylistPopupBtns = () => {
             <>
                 <div className="export-playlist">
                     <button className="g-btn md success" onClick={onExportPlaylists}>
-                        <spna>{EXPORT_LABEL}</spna>
+                        <span>{EXPORT_LABEL}</span>
                     </button>
                 </div>
                 <div className="import-playlist">
                     <button className="g-btn md success" onClick={()=>onSetShowImportOptions(true)}>
-                        <spna>{IMPORT_LABEL}</spna>
+                        <span>{IMPORT_LABEL}</span>
                     </button>
                 </div>
             </>
@@ -106,7 +144,10 @@ export const ImportExportPlaylistPopupBtns = () => {
                     {!showSpinner && 
                         <div className="import-options">
                             <div className="import-csv">
-                                <input type="file" className="csv" accept=".csv" multiple /*onChange={(event)=>handleFileOnChange(event)}*/ id="CSV_IMPORT_INPUT" />
+                                <input type="file" className="csv" accept=".csv" multiple id={CSV_IMPORT_INPUT} /*onChange={(event)=>handleFileOnChange(event)}*/ />
+                            </div>
+                            <div className="import-gp">
+                                <input type="file" className="gp" accept=".gp" multiple id={GP_IMPORT_INPUT} />
                             </div>
                             <div className="import-m3u">
                                 <input type="file" className="m3u" accept=".m3u" multiple disabled title={COMING_SOON_LABEL} />

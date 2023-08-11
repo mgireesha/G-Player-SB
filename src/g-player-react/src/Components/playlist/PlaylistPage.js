@@ -40,6 +40,7 @@ export const PlaylistPage = () => {
                 pfField:{name:playlistName}
             },
             sortSelectors:[A_TO_Z,A_TO_Z_DESC, SORT_YEAR],
+            selectedSortBy: A_TO_Z,
             showSort: false,
             showLKey: false,
         }
@@ -48,7 +49,7 @@ export const PlaylistPage = () => {
             if(playlistSongs.length > 6){
                 tempTrackListInp.showSort = true;
                 tempTrackListInp.traskListStyle = {
-                    maxHeight : 'calc(100vh - 24.2em)'
+                    maxHeight : 'calc(100vh - 27.8em)'
                 }
             }
             if(playlistSongs.length > 20){
@@ -58,7 +59,7 @@ export const PlaylistPage = () => {
                     visibility:'hidden'
                 }
                 tempTrackListInp.traskListStyle = {
-                    maxHeight : 'calc(100vh - 30.8em)'
+                    maxHeight : 'calc(100vh - 30.2em)'
                 }
             }
         }

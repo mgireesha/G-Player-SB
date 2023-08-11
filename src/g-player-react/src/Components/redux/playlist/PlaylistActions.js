@@ -84,9 +84,10 @@ export const exportPlaylistsSucc = () => ({
     type: PLAYLIST_EXPORT_PLAYLISTS_SUCCESS
 })
 
-export const importPlaylists = (payload) => ({
+export const importPlaylists = (payload, fileType) => ({
     type: PLAYLIST_IMPORT_PLAYLISTS_START,
-    payload
+    payload,
+    fileType
 })
 
 export const importPlaylistsSucc = () => ({

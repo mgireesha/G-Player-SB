@@ -51,7 +51,8 @@ export const GenrePage = () => {
             },
             showSort: false,
             showLKey: false,
-            sortSelectors:[A_TO_Z,A_TO_Z_DESC, SORT_YEAR, SORT_ARTIST, LYRICS_AVAILABLE]
+            sortSelectors:[A_TO_Z,A_TO_Z_DESC, SORT_YEAR, SORT_ARTIST, LYRICS_AVAILABLE],
+            selectedSortBy:A_TO_Z
         }
 
         if(genreSongList){

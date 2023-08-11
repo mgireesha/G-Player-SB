@@ -46,7 +46,7 @@ export const ArtistsList = () => {
     
     return(
         <>
-            <SortingContainer sortListKeys={artistsDetailsListKeys} setSortBy={setSortBy} sortBy={sortBy} sortSelectors={[A_TO_Z,A_TO_Z_DESC, SORT_COUNT_TRACKS]} />
+            <SortingContainer sortListKeys={artistsDetailsListKeys} setSortBy={setSortBy} sortBy={sortBy} sortSelectors={[A_TO_Z,A_TO_Z_DESC, SORT_COUNT_TRACKS]} showSortByLabel={true} />
             <div className="artists-list">
                 {sortBy === SORT_COUNT_TRACKS && artistsDetails!==null && artistsDetails!==undefined && artistsDetails.length>0 && artistsDetails.map((artist, index) =>
                     <ArtistThumb artist={artist} key={index} />

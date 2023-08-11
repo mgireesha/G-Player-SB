@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { A_TO_Z, SORT_YEAR, SORT_ARTIST, A_TO_Z_DESC, TRACK_LIST, TRACK_NUMBER, LYRICS_AVAILABLE, NO_SORT } from "../../redux/GPActionTypes";
 import { scrollToPlaying, sortGroupByField } from "../../utilities/util";
 import { SortingContainer } from "../SortingContainer";
@@ -18,22 +18,19 @@ export const TrackList = ({tracks, trackListInp}) => {
     const [trackIndex, setTrackIndex] = useState({});
 
     useEffect(()=>{
-        setSortBy(trackListInp.selectedSortBy?trackListInp.selectedSortBy:NO_SORT);
-    },[trackListInp])
+        if(trackListInp)setSortBy(trackListInp.selectedSortBy?trackListInp.selectedSortBy:NO_SORT);
+    },[tracks])
 
     useEffect(()=>{
         if(Object.keys(trackList).length>0){
             let tempTrakListKeys = Object.keys(trackList);
-            switch (sortBy) {
-                case SORT_YEAR || A_TO_Z_DESC || LYRICS_AVAILABLE:
-                    tempTrakListKeys = tempTrakListKeys.sort((a,b)=>{return a>b?-1:1});
-                    break;
-                case A_TO_Z || SORT_ARTIST:
-                    tempTrakListKeys = tempTrakListKeys.sort((a,b)=>{return a>b?1:-1});
-                    break;
-                default:
-                    break;
+            
+            if(sortBy === SORT_YEAR || sortBy === A_TO_Z_DESC || sortBy === LYRICS_AVAILABLE){
+                tempTrakListKeys = tempTrakListKeys.sort((a,b)=>{return a>b?-1:1});
+            }else if(sortBy === A_TO_Z || sortBy === SORT_ARTIST){
+                tempTrakListKeys = tempTrakListKeys.sort((a,b)=>{return a>b?1:-1});
             }
+
             setTrackListKeys(tempTrakListKeys);
             if(trackListInp.playedFrom.pfKey !== TRACK_LIST){
                 scrollToPlaying(isPlaying);
@@ -44,9 +41,12 @@ export const TrackList = ({tracks, trackListInp}) => {
             if(sortBy !== NO_SORT && sortBy !== TRACK_NUMBER){
                 tempTrakListKeys.forEach(tlk =>{
                     list = trackList[tlk];
-                        list.forEach(tr =>{
-                            tempTrackIndex[tr.songId] = Object.keys(tempTrackIndex).length;
-                        })
+                        if(list.length){
+                            list.forEach(tr =>{
+                                tempTrackIndex[tr.songId] = Object.keys(tempTrackIndex).length;
+                            })
+                        }
+                        
                 })
             }
             setTrackIndex(tempTrackIndex);
@@ -56,7 +56,10 @@ export const TrackList = ({tracks, trackListInp}) => {
     useEffect(()=>{
         if(tracks.length>0){
             switch (sortBy) {
-                case A_TO_Z || A_TO_Z_DESC:
+                case A_TO_Z:
+                    setTrackList(sortGroupByField(tracks, 'title'));
+                    break;
+                case A_TO_Z_DESC:
                     setTrackList(sortGroupByField(tracks, 'title'));
                     break;
                 case SORT_YEAR:
@@ -116,10 +119,10 @@ export const TrackList = ({tracks, trackListInp}) => {
 
     return(
         <>
-            {trackListInp.showSort &&<SortingContainer sortListKeys={trackListKeys} setSortBy={setSortBy} sortBy={sortBy} showLKey={trackListInp.showLKey} sortSelectors={trackListInp.sortSelectors} />}
+            {trackListInp.showSort &&<SortingContainer sortListKeys={trackListKeys} setSortBy={setSortBy} sortBy={sortBy} showLKey={trackListInp.showLKey} sortSelectors={trackListInp.sortSelectors} showSortByLabel={true} />}
             <div className="track-list scroll-container" id={TRACK_LIST} style={trackListInp.traskListStyle?trackListInp.traskListStyle:{}} ref={ref}>
                  {trackListKeys && trackListKeys.length > 0 && trackListKeys.map((lKey, index) =>
-                    <>
+                    <div key={index}>
                         {trackListInp.showLKey && <label id={"lKey" + lKey} className="track-lKey" style={trackListInp.lKeyStyle?trackListInp.lKeyStyle:{}}>{lKey}</label>}
                         {trackList[lKey] && trackList[lKey].length > 0 && Object.keys(trackIndex).length > 0 &&
                             <ViewportList viewportRef={ref} items={trackList[lKey]} itemMinSize={tracks ? tracks.length:50} margin={8}>
@@ -128,7 +131,7 @@ export const TrackList = ({tracks, trackListInp}) => {
                                 )}
                             </ViewportList>
                         }
-                    </>
+                    </div>
                 )}
                 {(sortBy===NO_SORT || sortBy === TRACK_NUMBER) && tracks && tracks.length > 0 && tracks.map((track, i)=>
                     <Track track={track} key={track.songId} playedFrom={trackListInp.playedFrom} index={i} hideTrackNum={trackListInp.hideTrackNum} />

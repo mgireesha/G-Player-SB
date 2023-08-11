@@ -16,20 +16,20 @@ import com.gmt.gp.services.LibraryService;
 @RestController
 @RequestMapping("/history")
 public class HistoryController {
-    
+
     @Autowired
     private HistoryService historyService;
 
     @Autowired
     private LibraryService libraryService;
 
-    @RequestMapping("/getAllGroupedHistory")
-    public Map<String, Object> getAllGroupedHistory(){
+    @RequestMapping("/all-grouped-history")
+    public Map<String, Object> getAllGroupedHistory() {
         return historyService.getAllGroupedHistory();
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/updateHistory/{songId}")
-    public GPResponse updateHistory(@PathVariable String songId){
+    @RequestMapping(method = RequestMethod.PUT, value = "/add-to-history/{songId}")
+    public GPResponse updateHistory(@PathVariable String songId) {
         GPResponse resp = new GPResponse();
         Library library = libraryService.getSongBySongId(Integer.parseInt(songId));
         historyService.updateHistory(library);
@@ -37,8 +37,8 @@ public class HistoryController {
         return resp;
     }
 
-    @RequestMapping("/getMostPlayedData")
-    public Map<String, Object> getMostPlayedData(){
+    @RequestMapping("/most-played-data")
+    public Map<String, Object> getMostPlayedData() {
         return historyService.getMostPlayedData();
     }
 }
