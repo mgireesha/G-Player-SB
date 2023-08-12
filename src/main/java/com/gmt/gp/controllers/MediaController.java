@@ -64,7 +64,7 @@ public class MediaController {
         if (song.getLyrics() == null) {
             getLyrics = true;
         }
-        song = libraryService.getAAttrFromTag(song, true, getLyrics);
+        song = libraryService.getAAttrFromTag(song, false, getLyrics);
         if (mPlayer != null) {
             try {
                 tempSong = getTempSong(song);
@@ -226,7 +226,7 @@ public class MediaController {
                 Library library = null;
                 if (lastPlayedSongId != null) {
                     library = libraryService.getSongBySongId(Long.parseLong(lastPlayedSongId.getValue()));
-                    library = libraryService.getAAttrFromTag(library, true, true);
+                    library = libraryService.getAAttrFromTag(library, false, true);
                     resp.setLibrary(library);
                 }
                 resp.setStatus(mPlayer.getStatus().toString());
@@ -237,7 +237,7 @@ public class MediaController {
                 String songId = message != null ? message.getValue() : null;
                 if (!GPUtil.checkIsNull(songId)) {
                     resp.setLibrary(libraryService
-                            .getAAttrFromTag(libraryService.getSongBySongId(Integer.parseInt(songId)), true, true));
+                            .getAAttrFromTag(libraryService.getSongBySongId(Integer.parseInt(songId)), false, true));
                 }
             }
         } catch (Exception e) {

@@ -51,7 +51,7 @@ const playerReducer = (state = initialState, action) => {
                 songPlaying: action.response.library,
                 songPlayingImg: action.response.library.albumArt,
                 playedFrom:action.playedFrom,
-                phase: SUCCESS
+                phase: PLAYER_PLAY_A_SONG_SUCCESS
             }
         case PLAYER_CURRENT_SONG_STATUS_START:
             return{

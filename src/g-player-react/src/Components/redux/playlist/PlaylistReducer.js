@@ -40,7 +40,7 @@ const playlistReducer = (state = initialState, action) => {
             return{
                 ...state,
                 playlistSongs:action.playlistSongs,
-                phase:SUCCESS
+                phase:PLAYLIST_FETCH_SONGS_IN_PLAYLIST_SUCCESS
             }
         case PLAYLIST_CREATE_PLAYLIST_START:
             return{

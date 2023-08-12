@@ -1,4 +1,4 @@
-import { call, put, takeLatest } from "redux-saga/effects";
+import { call, put, takeEvery, takeLatest } from "redux-saga/effects";
 import { handleAPIError } from "../../utilities/util";
 import { deleteMusicPathAPI, fetchAlbumAPI, fetchAlbumImgsAPI,
          fetchalbumListOfAAAPI,
@@ -14,7 +14,7 @@ import { deleteMusicPathAPI, fetchAlbumAPI, fetchAlbumImgsAPI,
 import { deleteMusicPathSucc, fetchAlbumImgsScc, fetchAlbumlistOfAASucc, fetchAlbumSucc, 
         fetchAlbumTacksSucc, 
         fetchAllAlbumArtistsDtlsSucc, fetchAllAlbumsDtlsSucc, fetchAllAlbumsSucc, 
-        fetchAllArtistsDtlsSucc, fetchAllHistorySucc, fetchBuildStatusSucc, fetchGenreDetailsSucc, fetchMostPlayedDataSucc, fetchMusicPathSucc, fetchSongsByArtistSucc, fetchAllSongsSucc, initiArtistImageDownloadSucc, initLibraryBuildSucc, saveMusicPathSucc, searchByKeySucc, updateHistorySucc, fetchSongsByGenreSucc 
+        fetchAllArtistsDtlsSucc, fetchAllHistorySucc, fetchBuildStatusSucc, fetchGenreDetailsSucc, fetchMostPlayedDataSucc, fetchMusicPathSucc, fetchSongsByArtistSucc, fetchAllSongsSucc, initiArtistImageDownloadSucc, initLibraryBuildSucc, saveMusicPathSucc, searchByKeySucc, updateHistorySucc, fetchSongsByGenreSucc, setPlayerTracks 
     } from "./LibraryActions";
 import { FETCH_SONGS_START, HISTORY_FETCH_ALL_HISTORY_START, HISTORY_UPDATE_HISTORY_START, LIBRARY_DELETE_MUSIC_PATH_START, LIBRARY_FETCH_ALBUMS_DETAILS_START, LIBRARY_FETCH_ALBUMS_START, 
     LIBRARY_FETCH_ALBUM_ARTIST_LIST_START, 
@@ -32,15 +32,19 @@ import { FETCH_SONGS_START, HISTORY_FETCH_ALL_HISTORY_START, HISTORY_UPDATE_HIST
 } from "./LibraryActionTypes";
 
 export function* onFetchAllSongs(){
-    yield takeLatest(FETCH_SONGS_START, onFetchAllSongsAsnc);
+    yield takeEvery(FETCH_SONGS_START, onFetchAllSongsAsnc);
 }
 
-export function* onFetchAllSongsAsnc(){
+export function* onFetchAllSongsAsnc(payload){
     try {
         const response = yield call(getAllSongsAPI);
         if(response.status===200){
             const data = response.data;
-            yield put(fetchAllSongsSucc(data));
+            if(payload.isSetPlayerTracks){
+                yield put(setPlayerTracks(null,data.SONG_IDS));
+            }else{
+                yield put(fetchAllSongsSucc(data));
+            }
         }
     } catch (error) {
         console.log(error);
@@ -98,14 +102,18 @@ export function* onFetchAlbumimgsAsync(){
 }
 
 export function* onFetchAlbumTracks(){
-    yield takeLatest(LIBRARY_FETCH_ALBUM_TRACKS_START, onFetchAlbumTracksAsync);
+    yield takeEvery(LIBRARY_FETCH_ALBUM_TRACKS_START, onFetchAlbumTracksAsync);
 }
 
 export function* onFetchAlbumTracksAsync(payload){
     try {
         const response = yield call(fetchAlbumtracksAPI,payload.albumName, payload.genre);
         if(response.status === 200){
-            yield put(fetchAlbumTacksSucc(response.data));
+            if(payload.isSetPlayerTracks){
+                yield put(setPlayerTracks(null,response.data));
+            }else{
+                yield put(fetchAlbumTacksSucc(response.data));
+            }
         }
     } catch (error) {
         console.log(error);
@@ -146,14 +154,18 @@ export function* onFetchAllArtistsDtlsAsync(payload){
 }
 
 export function* onFetchSongsByArtist(){
-    yield takeLatest(LIBRARY_FETCH_SONGS_BY_ARTIST_START, onFetchSongsByArtistAsync);
+    yield takeEvery(LIBRARY_FETCH_SONGS_BY_ARTIST_START, onFetchSongsByArtistAsync);
 }
 
 export function* onFetchSongsByArtistAsync(payload){
     try {
         const response = yield call(fetchSongsByArtistAPI,payload.artist);
         if(response.status === 200){
-            yield put(fetchSongsByArtistSucc(response.data));
+            if(payload.isSetPlayerTracks){
+                yield put(setPlayerTracks(null,response.data));
+            }else{
+                yield put(fetchSongsByArtistSucc(response.data));
+            }
         }
     } catch (error) {
         console.log(error);
@@ -211,14 +223,18 @@ export function* onFetchGenreDetailsAsync(){
 }
 
 export function* onFetchSongsByGenre(){
-    yield takeLatest(LIBRARY_FETCH_SONGS_BY_GENRE_START, onFetchSongsByGenreAsync);
+    yield takeEvery(LIBRARY_FETCH_SONGS_BY_GENRE_START, onFetchSongsByGenreAsync);
 }
 
 export function* onFetchSongsByGenreAsync(payload){
     try {
         const response = yield call(fetchSongsByGenreAPI, payload.genre);
         if(response.status === 200){
-            yield put(fetchSongsByGenreSucc(response.data));
+            if(payload.isSetPlayerTracks){
+                yield put(setPlayerTracks(null,response.data));
+            }else{
+                yield put(fetchSongsByGenreSucc(response.data));
+            }
         }
     } catch (error) {
         console.log(error);
@@ -358,14 +374,18 @@ export function* onInitArtistImgDownloadAsync(){
 
 //History Start
 export function* onFetchAllHistory(){
-    yield takeLatest(HISTORY_FETCH_ALL_HISTORY_START, onFetchAllHistoryAsync);
+    yield takeEvery(HISTORY_FETCH_ALL_HISTORY_START, onFetchAllHistoryAsync);
 }
 
-export function* onFetchAllHistoryAsync(){
+export function* onFetchAllHistoryAsync(payload){
     try {
         const response = yield call(fetchAllHistoryAPI);
         if(response.status === 200){
-            yield put(fetchAllHistorySucc(response.data));
+            if(payload.isSetPlayerTracks){
+                yield put(setPlayerTracks(null,response.data.songs));
+            }else{
+                yield put(fetchAllHistorySucc(response.data));
+            }
         }
     } catch (error) {
         console.log(error);
