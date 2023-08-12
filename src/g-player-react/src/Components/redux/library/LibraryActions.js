@@ -1,32 +1,33 @@
 import { SUCCESS } from "../GPActionTypes";
 import { FETCH_SONGS_START, FETCH_SONGS_SUCCESS, 
-        HISTORY_FETCH_ALL_HISTORY_START, 
-        HISTORY_FETCH_ALL_HISTORY_SUCCESS, 
-        HISTORY_UPDATE_HISTORY_START, 
-        HISTORY_UPDATE_HISTORY_SUCCESS, 
-        LIBRARY_DELETE_MUSIC_PATH_START, 
-        LIBRARY_DELETE_MUSIC_PATH_SUCCESS, 
+        HISTORY_FETCH_ALL_HISTORY_START, HISTORY_FETCH_ALL_HISTORY_SUCCESS, 
+        HISTORY_UPDATE_HISTORY_START, HISTORY_UPDATE_HISTORY_SUCCESS, 
+        LIBRARY_DELETE_MUSIC_PATH_START, LIBRARY_DELETE_MUSIC_PATH_SUCCESS, 
         LIBRARY_FETCH_ALBUMS_DETAILS_START, LIBRARY_FETCH_ALBUMS_DETAILS_SUCCESS, 
-        LIBRARY_FETCH_ALBUMS_START, LIBRARY_FETCH_ALBUMS_SUCCESS, LIBRARY_FETCH_ALBUM_ARTIST_LIST_START, 
-        LIBRARY_FETCH_ALBUM_ARTIST_LIST_SUCCESS, 
-        LIBRARY_FETCH_ALBUM_IMGS_START, 
-        LIBRARY_FETCH_ALBUM_IMGS_SUCCESS, LIBRARY_FETCH_ALBUM_LIST_OF_AA_START, LIBRARY_FETCH_ALBUM_LIST_OF_AA_SUCCESS, LIBRARY_FETCH_ALBUM_START, LIBRARY_FETCH_ALBUM_SUCCESS, 
-        LIBRARY_FETCH_ALBUM_TRACKS_START, 
-        LIBRARY_FETCH_ALBUM_TRACKS_SUCCESS, 
+        LIBRARY_FETCH_ALBUMS_START, LIBRARY_FETCH_ALBUMS_SUCCESS, 
+        LIBRARY_FETCH_ALBUM_ARTIST_LIST_START, LIBRARY_FETCH_ALBUM_ARTIST_LIST_SUCCESS, 
+        LIBRARY_FETCH_ALBUM_IMGS_START, LIBRARY_FETCH_ALBUM_IMGS_SUCCESS, 
+        LIBRARY_FETCH_ALBUM_LIST_OF_AA_START, LIBRARY_FETCH_ALBUM_LIST_OF_AA_SUCCESS, 
+        LIBRARY_FETCH_ALBUM_START, LIBRARY_FETCH_ALBUM_SUCCESS, 
+        LIBRARY_FETCH_ALBUM_TRACKS_START, LIBRARY_FETCH_ALBUM_TRACKS_SUCCESS, 
         LIBRARY_FETCH_ARTIST_LIST_START, LIBRARY_FETCH_ARTIST_LIST_SUCCESS, 
-        LIBRARY_FETCH_BUILD_STATUS_START, 
-        LIBRARY_FETCH_BUILD_STATUS_SUCCESS, 
-        LIBRARY_FETCH_GENRE_DETAILS_START, 
-        LIBRARY_FETCH_GENRE_DETAILS_SUCCESS, 
-        LIBRARY_FETCH_MOST_PLAYED_DATA_START, 
-        LIBRARY_FETCH_MOST_PLAYED_DATA_SUCCESS, 
-        LIBRARY_FETCH_MUSIC_PATH_START, 
-        LIBRARY_FETCH_MUSIC_PATH_SUCCESS, 
-        LIBRARY_FETCH_SONGS_BY_ARTIST_START, LIBRARY_FETCH_SONGS_BY_ARTIST_SUCCESS, LIBRARY_FETCH_SONGS_BY_GENRE_START, LIBRARY_FETCH_SONGS_BY_GENRE_SUCCESS, LIBRARY_INIT_ARTIST_IMG_DOWNLOAD_START, LIBRARY_INIT_ARTIST_IMG_DOWNLOAD_SUCCESS, LIBRARY_INIT_BUILD_LIBRARY_START, LIBRARY_INIT_BUILD_LIBRARY_SUCESS, LIBRARY_SAVE_MUSIC_PATH_START, LIBRARY_SAVE_MUSIC_PATH_SUCCESS, LIBRARY_SEARCH_BY_KEY_START, LIBRARY_SEARCH_BY_KEY_SUCCESS, SET_COMMON_POPUP_OBJ, SET_CONTEXT_OBJECT, SET_CURRENT_PAGE, SET_GROUP_BAND, SET_IS_CLICKED_ON_CONTEXT_MENU, SET_SHOW_CONTEXT_MENU, SET_SHOW_PLAY_LIST_SELECTOR, SET_STATUS_MESSAGE 
+        LIBRARY_FETCH_BUILD_STATUS_START, LIBRARY_FETCH_BUILD_STATUS_SUCCESS, 
+        LIBRARY_FETCH_GENRE_DETAILS_START, LIBRARY_FETCH_GENRE_DETAILS_SUCCESS, 
+        LIBRARY_FETCH_MOST_PLAYED_DATA_START, LIBRARY_FETCH_MOST_PLAYED_DATA_SUCCESS, 
+        LIBRARY_FETCH_MUSIC_PATH_START, LIBRARY_FETCH_MUSIC_PATH_SUCCESS, 
+        LIBRARY_FETCH_SONGS_BY_ARTIST_START, LIBRARY_FETCH_SONGS_BY_ARTIST_SUCCESS, 
+        LIBRARY_FETCH_SONGS_BY_GENRE_START, LIBRARY_FETCH_SONGS_BY_GENRE_SUCCESS, 
+        LIBRARY_INIT_ARTIST_IMG_DOWNLOAD_START, LIBRARY_INIT_ARTIST_IMG_DOWNLOAD_SUCCESS, 
+        LIBRARY_INIT_BUILD_LIBRARY_START, LIBRARY_INIT_BUILD_LIBRARY_SUCESS, 
+        LIBRARY_SAVE_MUSIC_PATH_START, LIBRARY_SAVE_MUSIC_PATH_SUCCESS, 
+        LIBRARY_SEARCH_BY_KEY_START, LIBRARY_SEARCH_BY_KEY_SUCCESS, 
+        SET_COMMON_POPUP_OBJ, SET_CONTEXT_OBJECT, SET_CURRENT_PAGE, SET_IS_CLICKED_ON_CONTEXT_MENU, 
+        SET_PLAYER_TRACKS, SET_PLAYLIST_SONGS, SET_SHOW_CONTEXT_MENU, SET_SHOW_PLAY_LIST_SELECTOR, SET_STATUS_MESSAGE 
     } from "./LibraryActionTypes";
 
-export const fetchAllSongs = () => ({
-    type: FETCH_SONGS_START
+export const fetchAllSongs = (isSetPlayerTracks) => ({
+    type: FETCH_SONGS_START,
+    isSetPlayerTracks
 })
 
 export const fetchAllSongsSucc = (tracks) => ({
@@ -61,10 +62,11 @@ export const fetchAlbumImgsScc = (albumImgs) => ({
     albumImgs
 })
 
-export const fetchAlbumTacks = (albumName, genre) => ({
+export const fetchAlbumTacks = (albumName, genre, isSetPlayerTracks) => ({
     type:LIBRARY_FETCH_ALBUM_TRACKS_START,
     albumName,
-    genre
+    genre,
+    isSetPlayerTracks
 })
 
 export const fetchAlbumTacksSucc = (albumTracks) => ({
@@ -97,9 +99,10 @@ export const fetchAllArtistsDtlsSucc = (artistsDetails) => ({
     artistsDetails
 })
 
-export const fetchSongsByArtist = (artist) => ({
+export const fetchSongsByArtist = (artist,isSetPlayerTracks) => ({
     type: LIBRARY_FETCH_SONGS_BY_ARTIST_START,
-    artist
+    artist,
+    isSetPlayerTracks
 })
 
 export const fetchSongsByArtistSucc = (artistTracks) => ({
@@ -137,15 +140,28 @@ export const fetchGenreDetailsSucc = (genreDetails) => ({
     genreDetails
 })
 
-export const fetchSongsByGenre = (genre) => ({
+export const fetchSongsByGenre = (genre, isSetPlayerTracks) => ({
     type: LIBRARY_FETCH_SONGS_BY_GENRE_START,
-    genre
+    genre,
+    isSetPlayerTracks
 })
 
 export const fetchSongsByGenreSucc = (genreSongList) => ({
     type: LIBRARY_FETCH_SONGS_BY_GENRE_SUCCESS,
     genreSongList
 })
+
+export const setPlayerTracks = (trackListName, playerTracks) => ({
+    type: SET_PLAYER_TRACKS,
+    trackListName,
+    playerTracks
+})
+
+export const setPlaylistSongs = (playlistSongs) => ({
+    type: SET_PLAYLIST_SONGS,
+    playlistSongs
+})
+
 //Genre - End
 
 //Side bar Library
@@ -227,8 +243,9 @@ export const initiArtistImageDownloadSucc = (response) => ({
 })
 
 //History Start
-export const fetchAllHistory = () => ({
-    type: HISTORY_FETCH_ALL_HISTORY_START
+export const fetchAllHistory = (isSetPlayerTracks) => ({
+    type: HISTORY_FETCH_ALL_HISTORY_START,
+    isSetPlayerTracks
 })
 
 export const fetchAllHistorySucc = (response) => ({
@@ -288,6 +305,27 @@ export const filterMusicPath = (response, musicPath,musicPaths) => {
         musicPaths = musicPaths.filter(mPath => {return mPath.messageId!==musicPath.messageId});
     }
     return musicPaths;
+}
+
+export const getPlayerTracks = (library, trackListName, playerTracks) => {
+    let tempPTracks;
+    if(!playerTracks){
+        if(trackListName === 'historyTracks'){
+            tempPTracks = library['history'].songs;
+        }else{
+            tempPTracks = library[trackListName];
+        }
+        if(tempPTracks && trackListName !== 'tracks'){
+            tempPTracks = tempPTracks.map((track) => { return track.songId});
+        }
+    }else{
+        tempPTracks = playerTracks;
+        if(tempPTracks.length > 0 && tempPTracks[0].songId){
+            tempPTracks = tempPTracks.map((track) => { return track.songId});
+        }
+    }
+    return tempPTracks;
+    
 }
 
 

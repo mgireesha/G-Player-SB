@@ -9,16 +9,15 @@ import { Spinner } from "../../utilities/Spinner";
 
 export const AlbumList = () => {
     const dispatch = useDispatch();
+
     let albums = useSelector(state => state.library.albums);
+    
     const [albumList, setAlbumList] = useState({});
     const [albumListKeys, setAlbumListKeys] = useState([]);
     const [sortBy, setSortBy] = useState(SORT_YEAR);
-    //const [albumDtlsKeys, setAlbumDtlsKeys] = useState(null);
-    
-    //const albumImgs = useSelector(state => state.library.albumImgs);
 
      useEffect(()=>{
-         if(albums===null){
+         if(albums.length === 0){
             dispatch(fetchAllAlbums());
          }
      },[albums]);

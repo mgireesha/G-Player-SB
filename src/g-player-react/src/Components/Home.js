@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAlbumTacks, fetchAllAlbums, fetchAllHistory, fetchAllSongs, fetchSongsByArtist, fetchSongsByGenre } from "./redux/library/LibraryActions";
 import { fetchCurrentSontAndStatus, playASongSucc, setIsShuffle, setMediaVolumeSucc, setRepeat } from "./redux/player/PlayerActions";
 import { getCookieDetails, getCookieValue } from "./utilities/util";
-import { ALBUM, ARTIST, CURRENT_PAGE, GENRE, MAIN_CONTAINER, PLAYLIST, RECENT_PLAYS, TRACK_LIST } from "./redux/GPActionTypes";
+import { ALBUM, ARTIST, GENRE, MAIN_CONTAINER, PLAYLIST, RECENT_PLAYS, TRACK_LIST } from "./redux/GPActionTypes";
 import { Route, Routes } from "react-router-dom";
 import { Library } from "./library/Library";
 import { Search } from "./search/Search";
@@ -22,15 +22,12 @@ export const Home = () => {
     const dispatch = useDispatch();
     const showContextMenu = useSelector(state => state.library.showContextMenu);
     const showPlaylistSelector = useSelector(state => state.library.showPlaylistSelector);
+
     useEffect(()=>{
         dispatch(fetchPlaylistNames());
-        //dispatch(fetchAlbumImgs());
-        //dispatch(fetchAllAlbumsDtls());
-        dispatch(fetchAllAlbums());
-        //dispatch(fetchCurrentSontAndStatus());
-        getSetCookieDetails();
+        //dispatch(fetchAllAlbums());
+        getSetCookieDetails(); // reads cookie value and store the required values in reducer
         fetchTracks();
-        
     },[]);
 
     const getSetCookieDetails = () =>{
@@ -56,37 +53,34 @@ export const Home = () => {
         let playedFromCookieValue = getCookieValue("playedFrom");
         if(playedFromCookieValue){
             playedFromCookieValue = JSON.parse(playedFromCookieValue);
-            let currentPage = getCookieValue(CURRENT_PAGE);
-            if(currentPage)currentPage = JSON.parse(currentPage);
             if(playedFromCookieValue.pfKey!==undefined){
-                if(playedFromCookieValue.pfKey === currentPage.type){
-                    return false;
-                }
                 switch (playedFromCookieValue.pfKey) {
                     case ALBUM:
-                        dispatch(fetchAlbumTacks(playedFromCookieValue.pfVal));
+                        dispatch(fetchAlbumTacks(playedFromCookieValue.pfVal, undefined, true)); // sending true will set tracks to playertracks
                         break;
                     case ARTIST:
-                        dispatch(fetchSongsByArtist(playedFromCookieValue.pfVal));
+                        dispatch(fetchSongsByArtist(playedFromCookieValue.pfVal,true));
                         break;
                     case RECENT_PLAYS:
-                        dispatch(fetchAllHistory());
+                        dispatch(fetchAllHistory(true));
                         break;
                     case PLAYLIST:
-                        dispatch(fetchSongsInPlaylist(playedFromCookieValue.pfVal));
+                        dispatch(fetchSongsInPlaylist(playedFromCookieValue.pfVal,true));
                         break;
                     case GENRE:
-                        dispatch(fetchSongsByGenre(playedFromCookieValue.pfVal));
+                        dispatch(fetchSongsByGenre(playedFromCookieValue.pfVal,true));
                         break;
                     default:
-                        dispatch(fetchAllSongs());
+                        dispatch(fetchAllSongs(true));
                         break;
                 }
             }else{
-                dispatch(fetchAllSongs());
+                dispatch(fetchAllSongs(true));
             }
         }
     }
+
+
 
     return(
         <div className="main-container" id={MAIN_CONTAINER}>

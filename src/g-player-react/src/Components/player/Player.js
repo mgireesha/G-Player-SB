@@ -8,30 +8,28 @@ import { useDispatch, useSelector } from "react-redux";
 import { fettchCurrentSongStatus, playASong, playPause, setIsPlaying, setIsShuffle, setPlayBackLength, setRepeat } from "../redux/player/PlayerActions";
 import { getMins, scrolltoId, scrollToPlaying, setCookies } from "../utilities/util";
 import { VolumeH } from "./VolumeH";
-import { ALBUM, ARTIST, CURRENT, GENRE, NEXT, PLAYLIST, PREVIOUS, RECENT_PLAYS, REPEAT_ALL, REPEAT_OFF, REPEAT_ONE, TRACK_LIST } from "../redux/GPActionTypes";
 import { Link } from "react-router-dom";
 import { ArtistLink } from "../screen/artist/ArtistLink";
 import { fetchAllHistory, updateHistory } from "../redux/library/LibraryActions";
 import { SliderRC } from "../SliderRC";
+import { CURRENT, NEXT, PLAYER, PLAYLIST, PREVIOUS, REPEAT_ALL, REPEAT_OFF, REPEAT_ONE } from "../redux/GPActionTypes";
+
 import def_album_art from '../images/def_album_art.png';
 
 export const Player = () => {
 
     const dispatch = useDispatch();
+
+    const playerTracks = useSelector(state => state.library.playerTracks);
     const isPlaying = useSelector(state => state.player.isPlaying);
     const repeat = useSelector(state => state.player.repeat);
     const isShuffle = useSelector(state => state.player.isShuffle);
-    const songPlayingImg = useSelector(state => state.player.songPlayingImg);
     const songPlaying = useSelector(state => state.player.songPlaying);
     const playedFrom = useSelector(state => state.player.playedFrom);
     const playingSongStat = useSelector(state => state.player.playingSongStat);
-    const tracks = useSelector(state => state.library.trackIds);
-    const albumTracks = useSelector(state => state.library.albumTracks);
-    const artistTracks = useSelector(state => state.library.artistTracks);
-    const historyTracks = useSelector(state => state.library.history.songs);
     const playlistSongs = useSelector(state => state.playlist.playlistSongs);
-    const genreSongList = useSelector(state => state.library.genreSongList);
     const currentVolume = useSelector(state => state.player.currentVolume);
+    
     const [statClearIntrvl, setStatClearIntrvl] = useState(0);
     const [currentPlayVal, setCurrentplayVal] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
@@ -109,55 +107,27 @@ export const Player = () => {
        }
     },[playingSongStat]);
 
-    useEffect(()=> {
-        const library = getSetLibrary();
-        if(library.length>0)setPTrackList(library);
-    },[playedFrom, isShuffle, tracks, albumTracks, artistTracks, historyTracks]);
-
     const dispatchFetchStat = () => {
         dispatch(fettchCurrentSongStatus());
     }
 
+    useEffect(()=> {
+        getSetLibrary();
+    },[isShuffle, playerTracks]);
+
     const getSetLibrary = () => {
-        //if(playedFrom === ALBUM_ARTISTS || playedFrom ===ARTISTS || playedFrom === ALBUMS)return [];
         let library = [];
-        switch (playedFrom.pfKey) {
-            case TRACK_LIST:
-                library = tracks;
-                break;
-            case ALBUM:
-                if(albumTracks.length>0){
-                    library = albumTracks.map((track) => { return track.songId});
-                }
-                break;
-            case ARTIST:
-                if(artistTracks.length>0){
-                    library = artistTracks.map((track) => { return track.songId});
-                }
-                break;
-            case RECENT_PLAYS:
-                if(historyTracks!==undefined && historyTracks.length>0){
-                    library = historyTracks.map((track) => { return track.songId});
-                }
-                break;
-            case PLAYLIST:
-                if(playlistSongs!==undefined && playlistSongs.length>0){
-                    library = playlistSongs.map((track) => { return track.songId});
-                }
-                break;
-            case GENRE:
-                if(genreSongList && genreSongList.length > 0){
-                    library = genreSongList.map((track) => { return track.songId});
-                }
-                break;
-            default:
-                library = tracks;
-                break;
+        const pfKey = playedFrom.pfKey;
+
+        if(playerTracks && playerTracks.length > 0){
+            library= playerTracks;
+        }else if(pfKey === PLAYLIST){
+            library= playlistSongs.map((track) => { return track.songId});
         }
 
-        if(library.length === 0)library = tracks;
+        //if(library && library.length === 0)library = tracks;
 
-        if(isShuffle && library.length>0){
+        if(isShuffle && library && library.length>0){
             library = getShuffledTrackList(library);
         }
         setPTrackList(library);
@@ -223,7 +193,7 @@ export const Player = () => {
         }
         let songId = nextSong;
         scrolltoId("track-" + songId);
-        dispatch(playASong(songId, playedFrom, currentVolume));
+        dispatch(playASong(songId, {pfKey:PLAYER}, currentVolume));
         dispatch(setIsPlaying(true));
     }
 

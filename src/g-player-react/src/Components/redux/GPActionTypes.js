@@ -77,7 +77,8 @@ export const NEW_PLAYLIST_BTN_LABEL = 'New Playlist';
 export const NO_SORT = 'NO_SORT';
 
 export const PLAYLIST_ALBUMS = 'PLAYLIST_ALBUMS';
-export const PLAY_ALL_LABEL = 'Play all'; 
+export const PLAY_ALL_LABEL = 'Play all';
+export const PLAYER = 'PLAYER';
 export const PLAYLIST = 'PLAYLIST';
 export const PLAYLIST_SELECTOR = 'PLAYLIST_SELECTOR';
 export const PLAYLISTS = 'PLAYLISTS';
@@ -139,3 +140,12 @@ export const GP_LIBRARY_DESC_TEXT_1 = "This might take from few seconds to few m
 export const GP_CONTEXT_MENU_ELEM_IDS = [TRACK_MENU_BTN_CIRCLE,GP_CONTEXT_MENU, PLAYLIST_SELECTOR, THUMBNAIL_ACTION_BTN_CIRCLE];
 
 export const GP_SELECTOR_ELEM_IDS = [GENRE_TYPE_BTN, GP_SELECTOR];
+
+export const GP_PAGE_TRACKS_MAP = {
+    ALBUM: 'albumTracks',
+    TRACKS: 'tracks',
+    ARTIST: 'artistTracks',
+    GENRE: 'genreSongList',
+    PLAYLIST: 'playlistSongs',
+    RECENT_PLAYS:'historyTracks'
+}

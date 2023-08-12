@@ -1,9 +1,9 @@
-import { call, put, takeLatest } from "redux-saga/effects";
+import { call, put, takeEvery, takeLatest } from "redux-saga/effects";
 import { addToPlaylistAPI, createPlaylistAPI, deletePlaylistAPI, exportPlaylistsAPI, fetchPlaylistNamesAPI, fetchSongsInPlaylistAPI, importPlaylistsAPI, removeFromPlaylistAPI, renamePlaylistAPI } from "../GPApis";
 import { PLAYLIST_ADD_TO_PLAYLIST_START, PLAYLIST_CREATE_PLAYLIST_START, PLAYLIST_DELETE_PLAYLIST_START, PLAYLIST_EXPORT_PLAYLISTS_START, PLAYLIST_FETCH_PLAYLIST_NAMES_START, PLAYLIST_FETCH_SONGS_IN_PLAYLIST_START, PLAYLIST_IMPORT_PLAYLISTS_START, PLAYLIST_REMOVE_FROM_PLAYLIST_START, PLAYLIST_RENAME_PLAYLIST_START } from "./PlaylistActionTypes";
 import { addToPlaylistSucc, createPlaylistSucc, deltePlaylistSucc, fetchSongsInPlaylistSucc, fethPLaylistNamesSucc, importPlaylistsSucc, removeFromPlaylistSucc, renamePlaylistSucc } from "./PlaylistActions";
 import { handleAPIError } from "../../utilities/util";
-import { setCommonPopupObj, setShowContextMenu, setStatusMessage } from "../library/LibraryActions";
+import { setCommonPopupObj, setPlayerTracks, setPlaylistSongs, setShowContextMenu, setStatusMessage } from "../library/LibraryActions";
 import { SUCCESS } from "../GPActionTypes";
 
 export function* onFetchPlaylistNames(){
@@ -25,7 +25,7 @@ export function* onFetchPlaylistNamesAsnc(){
 }
 
 export function* onFetchSongsInPlaylist(){
-    yield takeLatest(PLAYLIST_FETCH_SONGS_IN_PLAYLIST_START, onFetchSongsInPlaylistAsnc);
+    yield takeEvery(PLAYLIST_FETCH_SONGS_IN_PLAYLIST_START, onFetchSongsInPlaylistAsnc);
 }
 
 export function* onFetchSongsInPlaylistAsnc(payload){
@@ -33,7 +33,12 @@ export function* onFetchSongsInPlaylistAsnc(payload){
         const response = yield call(fetchSongsInPlaylistAPI, payload.playListId);
         if(response.status===200){
             const data = response.data;
-            yield put(fetchSongsInPlaylistSucc(data));
+            if(payload.isSetPlayerTracks){
+                yield put(setPlayerTracks(null,data));
+            }else{
+                yield put(fetchSongsInPlaylistSucc(data));
+                yield put(setPlaylistSongs(data));
+            }
         }
     } catch (error) {
         console.log(error);

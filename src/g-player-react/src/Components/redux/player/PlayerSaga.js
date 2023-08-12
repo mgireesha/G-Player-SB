@@ -1,6 +1,6 @@
 import { call, put, takeLatest } from "redux-saga/effects";
 import { getCookieValue, handleAPIError, setCookies } from "../../utilities/util";
-import { MEDIA_PLAYER_NULL } from "../GPActionTypes";
+import { GP_PAGE_TRACKS_MAP, MEDIA_PLAYER_NULL, PLAYER } from "../GPActionTypes";
 import { getCurrentSongAndStatusAPI, getCurrentSongStatusAPI, playASongAPI, playPauseAPI, setMediaVolumeAPI, 
             setPlaybackLengthAPI, updateLyricsAPI } from "../GPApis";
 import { fetchCurrentSontAndStatusSucc, fettchCurrentSongStatusSucc, playASong, playASongSucc, playPauseSucc, 
@@ -9,6 +9,7 @@ import { PLAYER_CURRENT_SONG_AND_STATUS_START, PLAYER_CURRENT_SONG_STATUS_START,
         PLAYER_PLAY_PAUSE_START, PLAYER_SET_MEDIA_VOLUME_START, PLAYER_SET_PB_LENGTH_START, 
         PLAYER_UPDATE_LYRICS_START 
     } from "./PlayerActionTypes";
+import { setPlayerTracks } from "../library/LibraryActions";
 
 export function * onPlayPause() {
     yield takeLatest(PLAYER_PLAY_PAUSE_START,onPlayPauseAsync);
@@ -42,12 +43,12 @@ export function* onPlayASongAsync(payload){
         const response = yield call(playASongAPI,payload.songId, payload.currentVolume, payload.currentPlayTime);
         if(response.status===200){
             const data = response.data;
-            //console.log("data.library",data.library);
-            //console.log("btoa(data.library)",btoa(data.library));
             yield put(playASongSucc(data,payload.playedFrom,payload.currentVolume));
-            //setCookies("songPlaying", btoa(JSON.stringify(data.library)));
-            setCookies("playedFrom", JSON.stringify(payload.playedFrom));
-            
+            const pfKey = payload.playedFrom.pfKey;
+            if(pfKey && pfKey !== PLAYER){
+                setCookies("playedFrom", JSON.stringify(payload.playedFrom));
+                yield put(setPlayerTracks(GP_PAGE_TRACKS_MAP[payload.playedFrom.pfKey]));
+            }
             //if(data.status==="UNKNOWN")fettchCurrentSongStatus();
         }
     }catch (error){

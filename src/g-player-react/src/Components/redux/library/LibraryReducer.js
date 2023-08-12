@@ -1,6 +1,6 @@
 import { INIT, LOADING, SUCCESS, TRACK_LIST } from "../GPActionTypes";
-import { filterMusicPath, sortAZ } from "./LibraryActions";
-import { FETCH_SONGS_START, FETCH_SONGS_SUCCESS, HISTORY_FETCH_ALL_HISTORY_START, HISTORY_FETCH_ALL_HISTORY_SUCCESS, LIBRARY_DELETE_MUSIC_PATH_START, LIBRARY_DELETE_MUSIC_PATH_SUCCESS, LIBRARY_FETCH_ALBUMS_DETAILS_START, LIBRARY_FETCH_ALBUMS_DETAILS_SUCCESS, LIBRARY_FETCH_ALBUMS_START, LIBRARY_FETCH_ALBUMS_SUCCESS, LIBRARY_FETCH_ALBUM_ARTIST_LIST_START, LIBRARY_FETCH_ALBUM_ARTIST_LIST_SUCCESS, LIBRARY_FETCH_ALBUM_DETAILS_BY_ALBUM_ARTIST_START, LIBRARY_FETCH_ALBUM_DETAILS_BY_ALBUM_ARTIST_SUCCESS, LIBRARY_FETCH_ALBUM_IMGS_START, LIBRARY_FETCH_ALBUM_IMGS_SUCCESS, LIBRARY_FETCH_ALBUM_LIST_OF_AA_START, LIBRARY_FETCH_ALBUM_LIST_OF_AA_SUCCESS, LIBRARY_FETCH_ALBUM_START, LIBRARY_FETCH_ALBUM_SUCCESS, LIBRARY_FETCH_ALBUM_TRACKS_START, LIBRARY_FETCH_ALBUM_TRACKS_SUCCESS, LIBRARY_FETCH_ARTIST_LIST_START, LIBRARY_FETCH_ARTIST_LIST_SUCCESS, LIBRARY_FETCH_BUILD_STATUS_START, LIBRARY_FETCH_BUILD_STATUS_SUCCESS, LIBRARY_FETCH_GENRE_DETAILS_START, LIBRARY_FETCH_GENRE_DETAILS_SUCCESS, LIBRARY_FETCH_MOST_PLAYED_DATA_START, LIBRARY_FETCH_MOST_PLAYED_DATA_SUCCESS, LIBRARY_FETCH_MUSIC_PATH_START, LIBRARY_FETCH_MUSIC_PATH_SUCCESS, LIBRARY_FETCH_SONGS_BY_ARTIST_START, LIBRARY_FETCH_SONGS_BY_ARTIST_SUCCESS, LIBRARY_FETCH_SONGS_BY_GENRE_START, LIBRARY_FETCH_SONGS_BY_GENRE_SUCCESS, LIBRARY_SAVE_MUSIC_PATH_START, LIBRARY_SAVE_MUSIC_PATH_SUCCESS, LIBRARY_SEARCH_BY_KEY_START, LIBRARY_SEARCH_BY_KEY_SUCCESS, SET_COMMON_POPUP_OBJ, SET_CONTEXT_OBJECT, SET_CURRENT_PAGE, SET_GROUP_BAND, SET_IS_CLICKED_ON_CONTEXT_MENU, SET_SHOW_COMMON_POPUP, SET_SHOW_CONTEXT_MENU, SET_SHOW_PLAY_LIST_SELECTOR, SET_STATUS_MESSAGE } from "./LibraryActionTypes";
+import { filterMusicPath, getPlayerTracks } from "./LibraryActions";
+import { FETCH_SONGS_START, FETCH_SONGS_SUCCESS, HISTORY_FETCH_ALL_HISTORY_START, HISTORY_FETCH_ALL_HISTORY_SUCCESS, LIBRARY_DELETE_MUSIC_PATH_START, LIBRARY_DELETE_MUSIC_PATH_SUCCESS, LIBRARY_FETCH_ALBUMS_DETAILS_START, LIBRARY_FETCH_ALBUMS_DETAILS_SUCCESS, LIBRARY_FETCH_ALBUMS_START, LIBRARY_FETCH_ALBUMS_SUCCESS, LIBRARY_FETCH_ALBUM_ARTIST_LIST_START, LIBRARY_FETCH_ALBUM_ARTIST_LIST_SUCCESS, LIBRARY_FETCH_ALBUM_DETAILS_BY_ALBUM_ARTIST_START, LIBRARY_FETCH_ALBUM_DETAILS_BY_ALBUM_ARTIST_SUCCESS, LIBRARY_FETCH_ALBUM_IMGS_START, LIBRARY_FETCH_ALBUM_IMGS_SUCCESS, LIBRARY_FETCH_ALBUM_LIST_OF_AA_START, LIBRARY_FETCH_ALBUM_LIST_OF_AA_SUCCESS, LIBRARY_FETCH_ALBUM_START, LIBRARY_FETCH_ALBUM_SUCCESS, LIBRARY_FETCH_ALBUM_TRACKS_START, LIBRARY_FETCH_ALBUM_TRACKS_SUCCESS, LIBRARY_FETCH_ARTIST_LIST_START, LIBRARY_FETCH_ARTIST_LIST_SUCCESS, LIBRARY_FETCH_BUILD_STATUS_START, LIBRARY_FETCH_BUILD_STATUS_SUCCESS, LIBRARY_FETCH_GENRE_DETAILS_START, LIBRARY_FETCH_GENRE_DETAILS_SUCCESS, LIBRARY_FETCH_MOST_PLAYED_DATA_START, LIBRARY_FETCH_MOST_PLAYED_DATA_SUCCESS, LIBRARY_FETCH_MUSIC_PATH_START, LIBRARY_FETCH_MUSIC_PATH_SUCCESS, LIBRARY_FETCH_SONGS_BY_ARTIST_START, LIBRARY_FETCH_SONGS_BY_ARTIST_SUCCESS, LIBRARY_FETCH_SONGS_BY_GENRE_START, LIBRARY_FETCH_SONGS_BY_GENRE_SUCCESS, LIBRARY_SAVE_MUSIC_PATH_START, LIBRARY_SAVE_MUSIC_PATH_SUCCESS, LIBRARY_SEARCH_BY_KEY_START, LIBRARY_SEARCH_BY_KEY_SUCCESS, SET_COMMON_POPUP_OBJ, SET_CONTEXT_OBJECT, SET_CURRENT_PAGE, SET_GROUP_BAND, SET_IS_CLICKED_ON_CONTEXT_MENU, SET_PLAYER_TRACKS, SET_PLAYLIST_SONGS, SET_SHOW_COMMON_POPUP, SET_SHOW_CONTEXT_MENU, SET_SHOW_PLAY_LIST_SELECTOR, SET_STATUS_MESSAGE } from "./LibraryActionTypes";
 
 export const initialState = {
     tracks:[],
@@ -13,6 +13,8 @@ export const initialState = {
     albumListOfAA:[],
     artistsDetails:[],
     artistTracks:[],
+    playerTracks: [],
+    playlistSongs: [],
     albumArtistsDetails:[],
     genreDetails: {},
     genreSongList:[],
@@ -44,7 +46,7 @@ const libraryReducer = (state = initialState, action) => {
                 ...state,
                 tracks:action.tracks.SONGS.filter((track=>track.title!==null)),
                 trackIds:action.tracks.SONG_IDS,
-                phase:SUCCESS
+                phase:FETCH_SONGS_SUCCESS
             }
         case LIBRARY_FETCH_ALBUMS_START:
             return{
@@ -88,7 +90,7 @@ const libraryReducer = (state = initialState, action) => {
             return{
                 ...state,
                 albumTracks:action.albumTracks,
-                phase:SUCCESS
+                phase:LIBRARY_FETCH_ALBUM_TRACKS_SUCCESS
             }
         case LIBRARY_FETCH_ALBUM_START:
             return{
@@ -128,7 +130,7 @@ const libraryReducer = (state = initialState, action) => {
                 return{
                     ...state,
                     artistTracks:action.artistTracks,
-                    phase:SUCCESS
+                    phase:LIBRARY_FETCH_SONGS_BY_ARTIST_SUCCESS
                 }
             case LIBRARY_FETCH_ALBUM_ARTIST_LIST_START:
                 return{
@@ -174,7 +176,7 @@ const libraryReducer = (state = initialState, action) => {
                 return{
                     ...state,
                     genreSongList: action.genreSongList,
-                    SUCCESS
+                    phase: LIBRARY_FETCH_SONGS_BY_GENRE_SUCCESS
                 }
             case LIBRARY_SAVE_MUSIC_PATH_START:
                 return{
@@ -229,7 +231,7 @@ const libraryReducer = (state = initialState, action) => {
                 return{
                     ...state,
                     history: action.response,
-                    phase:SUCCESS
+                    phase:HISTORY_FETCH_ALL_HISTORY_SUCCESS
                 }
             case LIBRARY_FETCH_BUILD_STATUS_START:
                     return{
@@ -288,6 +290,16 @@ const libraryReducer = (state = initialState, action) => {
                 return{
                     ...state,
                     statusMessage: action.statusMessage
+                }
+            case SET_PLAYER_TRACKS:
+                return{
+                    ...state,
+                    playerTracks: getPlayerTracks({...state}, action.trackListName, action.playerTracks)
+                }
+            case SET_PLAYLIST_SONGS:
+                return{
+                    ...state,
+                    playlistSongs: action.playlistSongs
                 }
         default:
             return {
