@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { ARTIST, A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, SORT_YEAR, WIKI_SUMMARY_URL } from "../../redux/GPActionTypes";
-import { fetchAllArtistsDtls, fetchSongsByArtist } from "../../redux/library/LibraryActions";
-import { callWikiAPI, fetchArtistDetailsfromWiki, scrolltoId, setCookies } from "../../utilities/util";
+import { fetchAllArtistsDtls, fetchSongsByArtist, uploadArtistImg } from "../../redux/library/LibraryActions";
+import { fetchArtistDetailsfromWiki, scrolltoId, setCookies } from "../../utilities/util";
 import { FilterComp } from "../../FilterComp";
 import { TrackList } from "../track/TrackList";
 import def_album_art from '../../images/def_album_art.png';
@@ -123,6 +123,15 @@ export const Artist = () => {
             }
         }
     }
+
+    const handleArtistFileChnage = (event) => {
+        const file = event.target.files[0];
+        console.log("file: ",file);
+        let formData = new FormData();
+        formData.append('file', event.target.value);
+        formData.append('name', 'test')
+        dispatch(uploadArtistImg(artistObj.artistId,formData))
+    }
     
     return(
         <div className="artist">
@@ -131,6 +140,7 @@ export const Artist = () => {
                     {artistObj.imgAvl  && <img src={"/gp_images/artists/"+artistObj.artistName+".jpg"} />}
                     {!artistObj.imgAvl && artistWikiImg!==null && <img src={artistWikiImg} />}
                     {!artistObj.imgAvl && artistWikiImg===null && <img src={def_album_art} />}
+                    <input type="file" onChange={handleArtistFileChnage} />
                 </div>
                 <div className="artist-details">
                     <h3>{artist}</h3>

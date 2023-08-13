@@ -9,12 +9,12 @@ import { deleteMusicPathAPI, fetchAlbumAPI, fetchAlbumImgsAPI,
          fetchGenreDetailsAPI, 
          fetchMostPlayedDataAPI, 
          fetchMusicpathAPI, 
-         fetchSongsByArtistAPI, fetchSongsByGenreAPI, getAllSongsAPI, initiateArtistImageDownload, initLibraryBuildAPI, saveMusicpathAPI, searchByKeyAPI, updateHistoryAPI 
+         fetchSongsByArtistAPI, fetchSongsByGenreAPI, getAllSongsAPI, initiateArtistImageDownload, initLibraryBuildAPI, saveMusicpathAPI, searchByKeyAPI, updateHistoryAPI, uploadArtistImgAPI 
     } from "../GPApis";
 import { deleteMusicPathSucc, fetchAlbumImgsScc, fetchAlbumlistOfAASucc, fetchAlbumSucc, 
         fetchAlbumTacksSucc, 
         fetchAllAlbumArtistsDtlsSucc, fetchAllAlbumsDtlsSucc, fetchAllAlbumsSucc, 
-        fetchAllArtistsDtlsSucc, fetchAllHistorySucc, fetchBuildStatusSucc, fetchGenreDetailsSucc, fetchMostPlayedDataSucc, fetchMusicPathSucc, fetchSongsByArtistSucc, fetchAllSongsSucc, initiArtistImageDownloadSucc, initLibraryBuildSucc, saveMusicPathSucc, searchByKeySucc, updateHistorySucc, fetchSongsByGenreSucc, setPlayerTracks 
+        fetchAllArtistsDtlsSucc, fetchAllHistorySucc, fetchBuildStatusSucc, fetchGenreDetailsSucc, fetchMostPlayedDataSucc, fetchMusicPathSucc, fetchSongsByArtistSucc, fetchAllSongsSucc, initiArtistImageDownloadSucc, initLibraryBuildSucc, saveMusicPathSucc, searchByKeySucc, updateHistorySucc, fetchSongsByGenreSucc, setPlayerTracks, uploadArtistImg 
     } from "./LibraryActions";
 import { FETCH_SONGS_START, HISTORY_FETCH_ALL_HISTORY_START, HISTORY_UPDATE_HISTORY_START, LIBRARY_DELETE_MUSIC_PATH_START, LIBRARY_FETCH_ALBUMS_DETAILS_START, LIBRARY_FETCH_ALBUMS_START, 
     LIBRARY_FETCH_ALBUM_ARTIST_LIST_START, 
@@ -28,7 +28,8 @@ import { FETCH_SONGS_START, HISTORY_FETCH_ALL_HISTORY_START, HISTORY_UPDATE_HIST
     LIBRARY_INIT_ARTIST_IMG_DOWNLOAD_START, 
     LIBRARY_INIT_BUILD_LIBRARY_START,
     LIBRARY_SAVE_MUSIC_PATH_START,
-    LIBRARY_SEARCH_BY_KEY_START
+    LIBRARY_SEARCH_BY_KEY_START,
+    LIBRARY_UPLOAD_ARTIST_IMG_START
 } from "./LibraryActionTypes";
 
 export function* onFetchAllSongs(){
@@ -198,6 +199,22 @@ export function* onFetchAlbumListOfAAAsync(payload){
         const response = yield call(fetchalbumListOfAAAPI,payload.albumArtist);
         if(response.status === 200){
             yield put(fetchAlbumlistOfAASucc(response.data));
+        }
+    } catch (error) {
+        console.log(error);
+        handleAPIError(error);
+    }
+}
+
+export function* onUploadArtistImg(){
+    yield takeLatest(LIBRARY_UPLOAD_ARTIST_IMG_START, onUploadArtistImgAsync);
+}
+
+export function* onUploadArtistImgAsync(payload){
+    try {
+        const response = yield call(uploadArtistImgAPI,payload.artistId,payload.data);
+        if(response.status === 200){
+            //yield put(fetchAlbumlistOfAASucc(response.data));
         }
     } catch (error) {
         console.log(error);

@@ -143,6 +143,7 @@ public class LibraryService {
 
         AudioFile audioF = null;
         Tag tag = null;
+        File mpFile = null;
 
         Library library = null;
         Album album = null;
@@ -180,10 +181,10 @@ public class LibraryService {
                 isAlbumAdded = false;
                 try { // label for try block : file_list_for_loop
                     try { // label for try block : jaudiotagger_read
-                        audioF = AudioFileIO.read(fileList.get(i));
+                        mpFile = fileList.get(i);
+                        audioF = AudioFileIO.read(mpFile);
                         tag = audioF.getTag();
-                        library = getLibraryFromFile(tag, audioF);
-                        library.setSongPath(fileList.get(i).getAbsolutePath());
+                        library = getLibraryFromFile(tag, audioF, mpFile);
                         libList.add(library);
                         if (library.getArtist() != null) {
                             artistName = library.getArtist().trim();
@@ -288,7 +289,7 @@ public class LibraryService {
                 artist.setType(GP_CONSTANTS.ARTIST);
                 artist.setImgAvl(false);
                 artist.setCount(artCount);
-                artist.setImgAvl(isLocalImgAvailable(artist.getArtistName(), GP_CONSTANTS.GP_ARTIST_IMAGES_PATH));
+                artist.setImgAvl(isArtistImgAvailabeInLocal(artist.getArtistName()));
                 artistList.add(artist);
             }
             artistCount = artistList.size(); // Reading artist count before inserting album artist into same list
@@ -302,8 +303,7 @@ public class LibraryService {
                 albumArtist.setType(GP_CONSTANTS.ALBUM_ARTIST);
                 albumArtist.setImgAvl(false);
                 albumArtist.setCount(artCount);
-                albumArtist.setImgAvl(
-                        isLocalImgAvailable(albumArtist.getArtistName(), GP_CONSTANTS.GP_ARTIST_IMAGES_PATH));
+                albumArtist.setImgAvl(isArtistImgAvailabeInLocal(albumArtist.getArtistName()));
                 artistList.add(albumArtist);
             }
             endingTime = System.currentTimeMillis();
@@ -422,20 +422,26 @@ public class LibraryService {
         messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.COMPLETED);
     }
 
-    public Library getLibraryFromFile(Tag tag, AudioFile audioF) throws Exception {
+    public Library getLibraryFromFile(Tag tag, AudioFile audioF, File mpFile) throws Exception {
         Library library = new Library();
         try {
             library = new Library();
-            if (!tag.getFirst(FieldKey.TITLE).equals("") && tag.getFirst(FieldKey.TITLE) != null)
+            if (!tag.getFirst(FieldKey.TITLE).equals("") && tag.getFirst(FieldKey.TITLE) != null) {
                 library.setTitle(tag.getFirst(FieldKey.TITLE));
+            } else {
+                library.setTitle(GPUtil.removeExtention(mpFile.getName(), GP_CONSTANTS.GP_FILE_TYPE_ARR));
+            }
 
-            if (!tag.getFirst(FieldKey.ARTIST).equals("") && tag.getFirst(FieldKey.ARTIST) != null)
+            if (!tag.getFirst(FieldKey.ARTIST).equals("") && tag.getFirst(FieldKey.ARTIST) != null) {
                 library.setArtist(tag.getFirst(FieldKey.ARTIST));
+            } else {
+                library.setArtist(GP_CONSTANTS.UNKNOWN_LABEL);
+            }
 
             if (!tag.getFirst(FieldKey.ALBUM).equals("") && tag.getFirst(FieldKey.ALBUM) != null) {
                 library.setAlbum(tag.getFirst(FieldKey.ALBUM));
             } else {
-                library.setAlbum(GP_CONSTANTS.UNKNOWN_ALBUM_LABEL);
+                library.setAlbum(GP_CONSTANTS.UNKNOWN_LABEL);
             }
 
             try {
@@ -448,14 +454,23 @@ public class LibraryService {
             } catch (Exception e) {
             }
 
-            if (!tag.getFirst(FieldKey.ALBUM_ARTIST).equals("") && tag.getFirst(FieldKey.ALBUM_ARTIST) != null)
+            if (!tag.getFirst(FieldKey.ALBUM_ARTIST).equals("") && tag.getFirst(FieldKey.ALBUM_ARTIST) != null) {
                 library.setAlbumArtist(tag.getFirst(FieldKey.ALBUM_ARTIST));
+            } else {
+                library.setAlbumArtist(GP_CONSTANTS.UNKNOWN_LABEL);
+            }
 
-            if (!tag.getFirst(FieldKey.COMPOSER).equals("") && tag.getFirst(FieldKey.COMPOSER) != null)
+            if (!tag.getFirst(FieldKey.COMPOSER).equals("") && tag.getFirst(FieldKey.COMPOSER) != null) {
                 library.setComposer(tag.getFirst(FieldKey.COMPOSER));
+            } else {
+                library.setComposer(GP_CONSTANTS.UNKNOWN_LABEL);
+            }
 
-            if (!tag.getFirst(FieldKey.GENRE).equals("") && tag.getFirst(FieldKey.GENRE) != null)
+            if (!tag.getFirst(FieldKey.GENRE).equals("") && tag.getFirst(FieldKey.GENRE) != null) {
                 library.setGenre(tag.getFirst(FieldKey.GENRE));
+            } else {
+                library.setGenre(GP_CONSTANTS.UNKNOWN_LABEL);
+            }
 
             try {
                 library.setTotaltracks(Integer.parseInt(tag.getFirst(FieldKey.TRACK_TOTAL)));
@@ -473,7 +488,11 @@ public class LibraryService {
             try {
                 library.setTrackLength(audioF.getAudioHeader().getTrackLength());
             } catch (Exception e) {
+                throw e;
             }
+
+            library.setSongPath(mpFile.getAbsolutePath());
+
         } catch (Exception e) {
             throw e;
         }
@@ -661,7 +680,7 @@ public class LibraryService {
         return artistRepository.getByArtistNameAndType(artistName, type);
     }
 
-    @Transactional
+    @Transactional // Method Not used currently
     public Iterable<Artist> setArtistLocalImgAvlStatusList(String artistType, List<Artist> artistList) {
         Artist artist = null;
         File artistImgFIle = null;
@@ -689,17 +708,21 @@ public class LibraryService {
         List<Artist> downloadedArtists = new ArrayList<Artist>();
         List<Artist> failedArtists = new ArrayList<Artist>();
         File localArtistImg = null;
+        boolean isArtistImgAvailableInLocal = false;
         String localArtistPath = GP_CONSTANTS.GP_ARTIST_IMAGES_PATH;
         String wikiResp = "";
         JSONObject wikiRespJson = null;
         boolean isDirectoryExists = checkAndCreateUserImageFolders();
-        if (!isDirectoryExists)
-            return null;
+        if (!isDirectoryExists) {
+            return null;// handle exception instead of returning null
+        }
         boolean isRestExchangeFailed = false;
         for (Artist artist : artistList) {
             isRestExchangeFailed = false;
-            localArtistImg = new File(localArtistPath + "\\" + artist.getArtistName() + ".jpg");
-            if (!localArtistImg.exists()) {
+            isArtistImgAvailableInLocal = isArtistImgAvailabeInLocal(artist.getArtistName());
+
+            if (!isArtistImgAvailableInLocal) {
+                localArtistImg = new File(localArtistPath + "\\" + artist.getArtistName() + ".jpg");
                 wikiResp = GPUtil.restExchange(GP_CONSTANTS.WIKI_SUMMARY_URI + artist.getArtistName());
                 try {
                     if (wikiResp.equalsIgnoreCase(GP_CONSTANTS.NOT_FOUND)) {
@@ -928,6 +951,11 @@ public class LibraryService {
             if (!isDirExits) {
                 return false;// handle exception, send exception back to user
             }
+
+            isDirExits = GPUtil.checkAndCreateFolders(GP_CONSTANTS.GP_UASER_ARTIST_IMAGES_PATH);
+            if (!isDirExits) {
+                return false;// handle exception, send exception back to user
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -966,6 +994,15 @@ public class LibraryService {
             }
         }
         return artistList1;
+    }
+
+    public boolean isArtistImgAvailabeInLocal(String artistName) {
+        boolean isArtistImgAvailable = false;
+        isArtistImgAvailable = isLocalImgAvailable(artistName, GP_CONSTANTS.GP_UASER_ARTIST_IMAGES_PATH);
+        if (!isArtistImgAvailable) {
+            isArtistImgAvailable = isLocalImgAvailable(artistName, GP_CONSTANTS.GP_ARTIST_IMAGES_PATH);
+        }
+        return isArtistImgAvailable;
     }
 
     public boolean isLocalImgAvailable(String fileName, String path) {

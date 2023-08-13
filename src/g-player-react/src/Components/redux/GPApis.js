@@ -66,6 +66,20 @@ export const fetchSongsByGenreAPI = (genre) => {
     return iAxios.get(`/library/getByGenre/${genre}`).then(response => response);
 }
 
+export const uploadArtistImgAPI = (artistId,data) => {
+    const headers = {
+        'Accept': 'application/json, application/xml, text/plain, text/html, *.*',
+        'Content-Type': 'multipart/form-data'
+    }
+    const tempAxios = iAxios
+    return iAxios.put(`/library/upload-artist-image/${artistId}`,data, {
+        headers:{
+        'Content-Type': 'multipart/form-data',
+        'Content-Disposition': 'form-data; name="file"'
+        }
+    }).then(response => response);
+}
+
 //Sidebar library
 export const initLibraryBuildAPI = () => {
     return iAxios.get(`/library/initLibraryBuild`).then(response => response);

@@ -8,11 +8,15 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.gmt.gp.model.Album;
 import com.gmt.gp.model.Artist;
@@ -141,7 +145,7 @@ public class LibraryController {
         return libraryService.getAllAlbumArtistDetails();
     }
 
-    @RequestMapping("/readAndStoreArtistnames/{artistType}")
+    @RequestMapping("/readAndStoreArtistnames/{artistType}") // Not used currently
     public Iterable<Artist> readAndStoreArtistnames(@PathVariable String artistType) {
         return libraryService.setArtistLocalImgAvlStatusList(artistType, null);
     }
@@ -169,6 +173,13 @@ public class LibraryController {
     @RequestMapping("/genre-details")
     public Map<String, Object> getGenreDetails() {
         return libraryService.getGenreDetails();
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "/upload-artist-image/{artistId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String uploadArtistImg(@RequestParam String name, @RequestPart MultipartFile file,
+            @PathVariable String artistId) {
+        System.out.println(name);
+        return name;
     }
 
 }

@@ -150,4 +150,13 @@ public class GPUtil {
         }
         return isCopied;
     }
+
+    public static String removeExtention(String name, String[] gpFileTypeArr) {
+        for (String fileType : gpFileTypeArr) {
+            if (name.contains(fileType)) {
+                name = name.substring(0, name.length() - fileType.length());
+            }
+        }
+        return name;
+    }
 }
