@@ -18,8 +18,9 @@ public class GPWebMvcConfigurer implements WebMvcConfigurer {
         try {
             registry.addResourceHandler("/gp_images/**")
                     .addResourceLocations("file:" + GP_CONSTANTS.GP_IMAGES_PATH);
-            //Resource gp_react = new ClassPathResource("public");
-            //registry.addResourceHandler("/**").addResourceLocations(gp_react.getURL() + "\\");
+            // Resource gp_react = new ClassPathResource("public");
+            // registry.addResourceHandler("/**").addResourceLocations(gp_react.getURL() +
+            // "\\");
             registry.addResourceHandler("/**").addResourceLocations("classpath:/gp_react/");
         } catch (Exception e) {
             e.printStackTrace();

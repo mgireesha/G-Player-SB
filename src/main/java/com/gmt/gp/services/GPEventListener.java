@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class GPEventListener {
-    
+
     @EventListener(ApplicationReadyEvent.class)
-    public void runAppInBrowser(){
+    public void runAppInBrowser() {
         try {
             Runtime rt = Runtime.getRuntime();
             String url = "http://localhost:8085/#/music";

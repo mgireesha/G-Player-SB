@@ -9,9 +9,9 @@ import org.springframework.data.repository.query.Param;
 
 import com.gmt.gp.model.Artist;
 
-public interface ArtistRepository extends CrudRepository<Artist, Long>{
+public interface ArtistRepository extends CrudRepository<Artist, Long> {
     @Modifying
-    @Query(value = "truncate table artist",nativeQuery = true)
+    @Query(value = "truncate table artist", nativeQuery = true)
     void truncateMyTable();
 
     List<Artist> getByTypeOrderByArtistNameAsc(String type);
@@ -22,4 +22,6 @@ public interface ArtistRepository extends CrudRepository<Artist, Long>{
 
     @Query("select artist from Artist artist where artist.artistName in :artistNames")
     List<Artist> getByArtistNames(@Param("artistNames") List<String> artistNames);
+
+    Artist getByArtistId(long artistId);
 }

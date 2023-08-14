@@ -21,6 +21,8 @@ import { FETCH_SONGS_START, FETCH_SONGS_SUCCESS,
         LIBRARY_INIT_BUILD_LIBRARY_START, LIBRARY_INIT_BUILD_LIBRARY_SUCESS, 
         LIBRARY_SAVE_MUSIC_PATH_START, LIBRARY_SAVE_MUSIC_PATH_SUCCESS, 
         LIBRARY_SEARCH_BY_KEY_START, LIBRARY_SEARCH_BY_KEY_SUCCESS, 
+        LIBRARY_UPLOAD_ARTIST_IMG_START, 
+        LIBRARY_UPLOAD_ARTIST_IMG_SUCCESS, 
         SET_COMMON_POPUP_OBJ, SET_CONTEXT_OBJECT, SET_CURRENT_PAGE, SET_IS_CLICKED_ON_CONTEXT_MENU, 
         SET_PLAYER_TRACKS, SET_PLAYLIST_SONGS, SET_SHOW_CONTEXT_MENU, SET_SHOW_PLAY_LIST_SELECTOR, SET_STATUS_MESSAGE 
     } from "./LibraryActionTypes";
@@ -128,6 +130,17 @@ export const fetchAlbumlistOfAA = (albumArtist) => ({
 export const fetchAlbumlistOfAASucc = (albumListOfAA) => ({
     type: LIBRARY_FETCH_ALBUM_LIST_OF_AA_SUCCESS,
     albumListOfAA
+})
+
+export const uploadArtistImg = (artistId,data) => ({
+    type: LIBRARY_UPLOAD_ARTIST_IMG_START,
+    artistId,
+    data
+})
+
+export const uploadArtistImgSucc = (artistObj) => ({
+    type: LIBRARY_UPLOAD_ARTIST_IMG_SUCCESS,
+    artistObj
 })
 
 //Genre - Start
@@ -325,9 +338,13 @@ export const getPlayerTracks = (library, trackListName, playerTracks) => {
         }
     }
     return tempPTracks;
-    
 }
 
-
-
-
+export const updateArtistsDetails = (artistsDetails, artistObj) => {
+    artistsDetails.forEach((artist, i) => {
+        if(artistObj.artistId === artist.artistId){
+            artistsDetails[i] = artistObj; 
+        }
+    });
+    return artistsDetails;
+}

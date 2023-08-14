@@ -130,6 +130,9 @@ export const TRACKS= 'TRACKS';
 export const TRACKS_LABEL = 'Tracks';
 export const TRACK_MENU_BTN_CIRCLE = 'TRACK_MENU_BTN_CIRCLE';
 
+export const UPDATE_LABEL = 'Update';
+export const UPDATE_ARTIST_IMAGE_TEXT = 'Upload custom image';
+
 export const WIKI_SUMMARY_URL = "https://en.wikipedia.org/api/rest_v1/page/summary/";
 
 
@@ -148,4 +151,10 @@ export const GP_PAGE_TRACKS_MAP = {
     GENRE: 'genreSongList',
     PLAYLIST: 'playlistSongs',
     RECENT_PLAYS:'historyTracks'
+}
+
+export const GP_ARTIST_IMAGE_PATHS_MAP = {
+    GP_PATH: '/gp_images/artists/',
+    USER_PATH: '/gp_images/artists/user_images/',
+    null:null
 }

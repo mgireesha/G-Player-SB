@@ -64,14 +64,14 @@ export const Track = ({track, playedFrom, index, hideTrackNum}) => {
                 <span className="mobile-only-block track-title-artist"><ArtistLink artist={track.artist} /></span>
             </label>
             <label className="mobile-only-block song-playing-icon-label">{songPlaying!==null && track.songId===songPlaying.songId ? <FaPlay className="faplay"  />:''}</label>
-            <label onDoubleClick={()=>playSong(track.songId)}>
+            <label className="text-overflow-ellipsis" onDoubleClick={()=>playSong(track.songId)} title={track.artist}>
                 <ArtistLink artist={track.artist} />
             </label>
             <label onDoubleClick={()=>playSong(track.songId)}>
             <Link to={`/music/albums/${track.album}`}>{track.album}</Link>
             </label>
             <label onDoubleClick={()=>playSong(track.songId)}>{track.year!==0?track.year:''}</label>
-            <Link to={`/music/genres/${track.genre}`} onDoubleClick={()=>playSong(track.songId)}>{track.genre}</Link>
+            <Link to={`/music/genres/${track.genre}`} onDoubleClick={()=>playSong(track.songId)} className="text-overflow-ellipsis">{track.genre}</Link>
             <label>{getMins(track.trackLength)}</label>
             <label style={{position:'relative'}}>
                 <div className="track-menu-btn-div">

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import { fetchAlbumlistOfAA, fetchAllAlbumArtistsDtls } from "../../redux/library/LibraryActions";
-import { callWikiAPI, fetchArtistDetailsfromWiki, scrollToPlaying } from "../../utilities/util";
+import { fetchAlbumlistOfAA, fetchAllAlbumArtistsDtls, uploadArtistImg } from "../../redux/library/LibraryActions";
+import { callWikiAPI, convertDataFileToBase64, fetchArtistDetailsfromWiki, scrollToPlaying } from "../../utilities/util";
 import { AlbumThumb } from "../album/AlbumThumb";
-import { ALBUM_ARTIST, MULTI_GENRE, WIKI_SUMMARY_URL } from "../../redux/GPActionTypes";
+import { ALBUM_ARTIST, GP_ARTIST_IMAGE_PATHS_MAP, MULTI_GENRE, UPDATE_ARTIST_IMAGE_TEXT, UPDATE_LABEL, WIKI_SUMMARY_URL } from "../../redux/GPActionTypes";
 import def_album_art from '../../images/def_album_art.png';
 
 export const AlbumArtist = () => {
@@ -21,6 +21,7 @@ export const AlbumArtist = () => {
     const [artistWikiImg, setArtistWikiImg] = useState(null);
     const [albumArtistObj, setAlbumArtistObj] = useState({});
     const [albumCount, setAlbumCount] = useState(0);
+    const [newArtistImgStr, setNewArtistImgStr] = useState(null);
     
     useEffect(()=>{
         setArtistWikiImg(null);
@@ -59,13 +60,35 @@ export const AlbumArtist = () => {
         }
     }
 
+    const handleArtistFileChnage = async (event) => {
+        const file = event.target.files[0];
+        const fileB64 = await convertDataFileToBase64(file);
+        document.getElementById("artist_image").src = fileB64;
+        setNewArtistImgStr(fileB64);
+        
+    }
+
+    const initArtistImgUpload = () => {
+        if(newArtistImgStr !== null){
+            if(window.confirm("Change picture ?")===true){
+                dispatch(uploadArtistImg(albumArtistObj.artistId, newArtistImgStr));
+            }
+        }else{
+            alert("Please select a picture")
+        }
+    }
+
     return(
         <div className="album-artist">
             <div className="album-artist-img-div-container">
                 <div className="album-artist-img-div">
-                    {albumArtistObj.imgAvl  && <img src={"/gp_images/artists/"+albumArtistObj.artistName+".jpg"} />}
-                    {!albumArtistObj.imgAvl && artistWikiImg!==null &&  <img src={artistWikiImg} />}
-                    {!albumArtistObj.imgAvl && artistWikiImg===null &&<img src={def_album_art} />}
+                    {albumArtistObj.imgAvl  && <img id="artist_image" src={GP_ARTIST_IMAGE_PATHS_MAP[albumArtistObj.imageSource] + albumArtistObj.artistName+".jpg"} />}
+                    {!albumArtistObj.imgAvl && artistWikiImg!==null &&  <img id="artist_image" src={artistWikiImg} />}
+                    {!albumArtistObj.imgAvl && artistWikiImg===null &&<img id="artist_image" src={def_album_art} />}
+                    <div className="change-artist-img">
+                        <input type="file" onChange={handleArtistFileChnage} title={UPDATE_ARTIST_IMAGE_TEXT} />
+                        <button className="g-btn sm success" onClick={initArtistImgUpload}>{UPDATE_LABEL}</button>
+                    </div>
                 </div>
                 <div className="album-artist-details">
                     <h3>{albumArtist}</h3>

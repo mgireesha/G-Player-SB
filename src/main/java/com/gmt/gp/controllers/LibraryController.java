@@ -46,7 +46,7 @@ public class LibraryController {
         }
 
         messageService.removeMessageType(GP_CONSTANTS.BUILD_STATUS);
-        messageService.removeMessageName(GP_CONSTANTS.LAST_PLAYED_SONG_ID);
+        // messageService.removeMessageName(GP_CONSTANTS.LAST_PLAYED_SONG_ID);
         messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.RUNNING);
 
         List<Message> mainFolderList = messageService.getAllMusicPaths();
@@ -141,7 +141,7 @@ public class LibraryController {
         return libraryService.getAllAlbumArtistDetails();
     }
 
-    @RequestMapping("/readAndStoreArtistnames/{artistType}")
+    @RequestMapping("/readAndStoreArtistnames/{artistType}") // Not used currently
     public Iterable<Artist> readAndStoreArtistnames(@PathVariable String artistType) {
         return libraryService.setArtistLocalImgAvlStatusList(artistType, null);
     }
@@ -169,6 +169,21 @@ public class LibraryController {
     @RequestMapping("/genre-details")
     public Map<String, Object> getGenreDetails() {
         return libraryService.getGenreDetails();
+    }
+
+    // @RequestMapping(method = RequestMethod.PUT, value =
+    // "/upload-artist-image/{artistId}", consumes =
+    // MediaType.MULTIPART_FORM_DATA_VALUE)
+    // public String uploadArtistImg(@RequestParam String name, @RequestPart
+    // MultipartFile file,
+    // @PathVariable String artistId) {
+    // System.out.println(name);
+    // return name;
+    // }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "/upload-artist-image/{artistId}")
+    public GPResponse uploadArtistImg(@RequestBody String imageB64, @PathVariable String artistId) {
+        return libraryService.uploadArtistImg(imageB64, Long.parseLong(artistId));
     }
 
 }

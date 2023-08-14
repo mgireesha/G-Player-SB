@@ -30,6 +30,7 @@ public class GP_CONSTANTS {
     public static final String GENRE_SONG_COUNT = "GENRE_SONG_COUNT";
     public static final String GENRE_TYPE = "GENRE_TYPE";
     public static final String GENRES = "GENRES";
+    public static final String GP_PATH = "GP_PATH";
 
     public static final String LAST_PLAYED_SONG_ID = "LAST_PLAYED_SONG_ID";
     public static final String LIBRARY = "LIBRARY";
@@ -55,6 +56,9 @@ public class GP_CONSTANTS {
     public static final String TOTAL_TRACKS = "TOTAL_TRACKS";
 
     public static final String UNKNOWN_ALBUM_LABEL = "Unknown album";
+    public static final String UNKNOWN_LABEL = "Unknown";
+    public static final String UNKNOWN_ERROR_TEXT = "An unknown error occured";
+    public static final String USER_PATH = "USER_PATH";
 
     // Contant values
     public static final int GROUPED_ALBUM_COUNT_4 = 4;
@@ -63,23 +67,31 @@ public class GP_CONSTANTS {
     public static final String WIKI_SUMMARY_URI = "https://en.wikipedia.org/api/rest_v1/page/summary/";
 
     // GP Image Paths
-    public static final String GP_IMAGES_PATH = System.getProperty("user.home") + "\\G_Player\\images\\";
+    public static final String GP_USER_PATH = System.getProperty("user.home");
 
-    public static final String GP_ALBUM_IMAGES_PATH = System.getProperty("user.home") + "\\G_Player\\images\\albums\\";
+    public static final String GP_IMAGES_PATH = GP_USER_PATH + "\\G_Player\\images\\";
 
-    public static final String GP_ARTIST_IMAGES_PATH = System.getProperty("user.home")
-            + "\\G_Player\\images\\artists\\";
+    public static final String GP_ALBUM_IMAGES_PATH = GP_USER_PATH + "\\G_Player\\images\\albums\\";
 
-    public static final String GP_PLAYLIST_PATH = System.getProperty("user.home") + "\\G_Player\\playlists\\";
+    public static final String GP_ARTIST_IMAGES_PATH = GP_USER_PATH + "\\G_Player\\images\\artists\\";
 
-    public static final String GP_PLAYLIST_PATH_CSV = System.getProperty("user.home") + "\\G_Player\\playlists\\csv\\";
+    public static final String GP_UASER_ARTIST_IMAGES_PATH = GP_USER_PATH
+            + "\\G_Player\\images\\artists\\user_images\\";
 
-    public static final String GP_PLAYLIST_PATH_GP = System.getProperty("user.home") + "\\G_Player\\playlists\\gp\\";
+    public static final String GP_PLAYLIST_PATH = GP_USER_PATH + "\\G_Player\\playlists\\";
 
-    public static final String GP_TEMP_SONG_PATH = System.getProperty("user.home") + "\\G_Player\\temp_file\\";
+    public static final String GP_PLAYLIST_PATH_CSV = GP_USER_PATH + "\\G_Player\\playlists\\csv\\";
+
+    public static final String GP_PLAYLIST_PATH_GP = GP_USER_PATH + "\\G_Player\\playlists\\gp\\";
+
+    public static final String GP_TEMP_SONG_PATH = GP_USER_PATH + "\\G_Player\\temp_file\\";
+
+    // const arrays
+
+    public static final String[] GP_FILE_TYPE_ARR = new String[] { ".mp3", ".m4a" };
 
     // databes db alias
-    // public static final String GP_DB_ALIAS = "g_player";
-    public static final String GP_DB_ALIAS = "g_db";
+    public static final String GP_DB_ALIAS = "g_player";
+    // public static final String GP_DB_ALIAS = "g_db";
 
 }
