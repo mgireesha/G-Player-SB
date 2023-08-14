@@ -30,6 +30,7 @@ public class GP_CONSTANTS {
     public static final String GENRE_SONG_COUNT = "GENRE_SONG_COUNT";
     public static final String GENRE_TYPE = "GENRE_TYPE";
     public static final String GENRES = "GENRES";
+    public static final String GP_PATH = "GP_PATH";
 
     public static final String LAST_PLAYED_SONG_ID = "LAST_PLAYED_SONG_ID";
     public static final String LIBRARY = "LIBRARY";
@@ -56,6 +57,8 @@ public class GP_CONSTANTS {
 
     public static final String UNKNOWN_ALBUM_LABEL = "Unknown album";
     public static final String UNKNOWN_LABEL = "Unknown";
+    public static final String UNKNOWN_ERROR_TEXT = "An unknown error occured";
+    public static final String USER_PATH = "USER_PATH";
 
     // Contant values
     public static final int GROUPED_ALBUM_COUNT_4 = 4;

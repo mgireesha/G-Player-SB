@@ -14,7 +14,7 @@ import { deleteMusicPathAPI, fetchAlbumAPI, fetchAlbumImgsAPI,
 import { deleteMusicPathSucc, fetchAlbumImgsScc, fetchAlbumlistOfAASucc, fetchAlbumSucc, 
         fetchAlbumTacksSucc, 
         fetchAllAlbumArtistsDtlsSucc, fetchAllAlbumsDtlsSucc, fetchAllAlbumsSucc, 
-        fetchAllArtistsDtlsSucc, fetchAllHistorySucc, fetchBuildStatusSucc, fetchGenreDetailsSucc, fetchMostPlayedDataSucc, fetchMusicPathSucc, fetchSongsByArtistSucc, fetchAllSongsSucc, initiArtistImageDownloadSucc, initLibraryBuildSucc, saveMusicPathSucc, searchByKeySucc, updateHistorySucc, fetchSongsByGenreSucc, setPlayerTracks, uploadArtistImg 
+        fetchAllArtistsDtlsSucc, fetchAllHistorySucc, fetchBuildStatusSucc, fetchGenreDetailsSucc, fetchMostPlayedDataSucc, fetchMusicPathSucc, fetchSongsByArtistSucc, fetchAllSongsSucc, initiArtistImageDownloadSucc, initLibraryBuildSucc, saveMusicPathSucc, searchByKeySucc, updateHistorySucc, fetchSongsByGenreSucc, setPlayerTracks, uploadArtistImg, uploadArtistImgSucc, setStatusMessage 
     } from "./LibraryActions";
 import { FETCH_SONGS_START, HISTORY_FETCH_ALL_HISTORY_START, HISTORY_UPDATE_HISTORY_START, LIBRARY_DELETE_MUSIC_PATH_START, LIBRARY_FETCH_ALBUMS_DETAILS_START, LIBRARY_FETCH_ALBUMS_START, 
     LIBRARY_FETCH_ALBUM_ARTIST_LIST_START, 
@@ -31,6 +31,7 @@ import { FETCH_SONGS_START, HISTORY_FETCH_ALL_HISTORY_START, HISTORY_UPDATE_HIST
     LIBRARY_SEARCH_BY_KEY_START,
     LIBRARY_UPLOAD_ARTIST_IMG_START
 } from "./LibraryActionTypes";
+import { SUCCESS } from "../GPActionTypes";
 
 export function* onFetchAllSongs(){
     yield takeEvery(FETCH_SONGS_START, onFetchAllSongsAsnc);
@@ -214,7 +215,14 @@ export function* onUploadArtistImgAsync(payload){
     try {
         const response = yield call(uploadArtistImgAPI,payload.artistId,payload.data);
         if(response.status === 200){
-            //yield put(fetchAlbumlistOfAASucc(response.data));
+            const data = response.data;
+            if(data.status === SUCCESS){
+                yield put(uploadArtistImgSucc(data.response));
+                yield put(setStatusMessage("Updated image successfully"))
+            }else{
+                yield put(setStatusMessage("Unable to change picture. Please try again later or select different picture."))
+            }
+            
         }
     } catch (error) {
         console.log(error);

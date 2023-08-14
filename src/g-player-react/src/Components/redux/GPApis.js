@@ -67,17 +67,14 @@ export const fetchSongsByGenreAPI = (genre) => {
 }
 
 export const uploadArtistImgAPI = (artistId,data) => {
-    const headers = {
-        'Accept': 'application/json, application/xml, text/plain, text/html, *.*',
-        'Content-Type': 'multipart/form-data'
-    }
-    const tempAxios = iAxios
-    return iAxios.put(`/library/upload-artist-image/${artistId}`,data, {
-        headers:{
-        'Content-Type': 'multipart/form-data',
-        'Content-Disposition': 'form-data; name="file"'
-        }
-    }).then(response => response);
+    return iAxios.put(`/library/upload-artist-image/${artistId}`,data
+    // , {
+    //     headers:{
+    //     'Content-Type': 'multipart/form-data',
+    //     'Content-Disposition': 'form-data; name="file"'
+    //     }
+    // }
+    ).then(response => response);
 }
 
 //Sidebar library

@@ -8,15 +8,11 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.gmt.gp.model.Album;
 import com.gmt.gp.model.Artist;
@@ -50,7 +46,7 @@ public class LibraryController {
         }
 
         messageService.removeMessageType(GP_CONSTANTS.BUILD_STATUS);
-        messageService.removeMessageName(GP_CONSTANTS.LAST_PLAYED_SONG_ID);
+        // messageService.removeMessageName(GP_CONSTANTS.LAST_PLAYED_SONG_ID);
         messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.RUNNING);
 
         List<Message> mainFolderList = messageService.getAllMusicPaths();
@@ -175,11 +171,19 @@ public class LibraryController {
         return libraryService.getGenreDetails();
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/upload-artist-image/{artistId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String uploadArtistImg(@RequestParam String name, @RequestPart MultipartFile file,
-            @PathVariable String artistId) {
-        System.out.println(name);
-        return name;
+    // @RequestMapping(method = RequestMethod.PUT, value =
+    // "/upload-artist-image/{artistId}", consumes =
+    // MediaType.MULTIPART_FORM_DATA_VALUE)
+    // public String uploadArtistImg(@RequestParam String name, @RequestPart
+    // MultipartFile file,
+    // @PathVariable String artistId) {
+    // System.out.println(name);
+    // return name;
+    // }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "/upload-artist-image/{artistId}")
+    public GPResponse uploadArtistImg(@RequestBody String imageB64, @PathVariable String artistId) {
+        return libraryService.uploadArtistImg(imageB64, Long.parseLong(artistId));
     }
 
 }

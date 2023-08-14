@@ -490,8 +490,9 @@ body{
             height: 10em;
             width: 10em;
             border-radius: 15px;
-    border-bottom-left-radius: unset;
-    box-shadow: rgb(0 0 0 / 40%) 0px 2px 4px, rgb(0 0 0 / 30%) 0px 7px 13px -3px, rgb(0 0 0 / 20%) 0px -3px 0px inset;
+            border-bottom-left-radius: unset;
+            box-shadow: rgb(0 0 0 / 40%) 0px 2px 4px, rgb(0 0 0 / 30%) 0px 7px 13px -3px, rgb(0 0 0 / 20%) 0px -3px 0px inset;
+            
         }
         .artist-img-div-container{
             display: grid;
@@ -521,6 +522,44 @@ body{
                     width: 96%;
                     max-height: 7em;
                     overflow-y: auto;
+                }
+            }
+
+            .artist-img-div{
+                .change-artist-img{
+                    position: relative;
+                    input[type="file"]{
+                        width: 0;
+                    }
+            
+                    input[type="file"]::before{
+                        content: "Select Picture";
+                        position: absolute;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        height: 1em;
+                        width: 6.2em;
+                        padding: 7px;
+                        border-radius: 4px;
+                        border: 1px solid rgb(10, 113, 75);
+                        cursor: pointer;
+                        background-color: transparent;
+                        //color: #000;
+                        top: 0.7em;
+                    }
+
+                    input[type=file]:hover::before {
+                        background-color: rgb(10, 113, 75);
+                        color: beige;
+                    }
+
+                    button{
+                        margin-right: 25%;
+                        float: right;
+                        margin-top: 0.7em;
+                        color: beige;
+                    }
                 }
             }
         }
@@ -581,6 +620,7 @@ body{
         .album-artist-img-div-container{
             display: grid;
             grid-template-columns: 1fr 4fr;
+            margin-bottom: 5px;
         
             .album-artist-details{
                 display: flex;
@@ -603,6 +643,44 @@ body{
                     width: 94%;
                     max-height: 60%;
                     overflow-y: auto;
+                }
+            }
+        }
+
+        .album-artist-img-div{
+            .change-artist-img{
+                position: relative;
+                input[type="file"]{
+                    width: 0;
+                }
+        
+                input[type="file"]::before{
+                    content: "Select Picture";
+                    position: absolute;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 1em;
+                    width: 6.2em;
+                    padding: 7px;
+                    border-radius: 4px;
+                    border: 1px solid rgb(10, 113, 75);
+                    cursor: pointer;
+                    background-color: transparent;
+                    //color: #000;
+                    top: 0.7em;
+                }
+
+                input[type=file]:hover::before {
+                    background-color: rgb(10, 113, 75);
+                    color: beige;
+                }
+
+                button{
+                    margin-right: 25%;
+                    float: right;
+                    margin-top: 0.7em;
+                    color: beige;
                 }
             }
         }
@@ -2600,9 +2678,7 @@ a.disabled-click{
 //GLobal components styling - start
 
 //buttons
-.g-btn.md{
-    width: 7em;
-    padding: 7px;
+.g-btn{
     border-radius: 4px;
     border: none;
     cursor: pointer;
@@ -2611,13 +2687,34 @@ a.disabled-click{
     
 }
 
-.g-btn.md.success{
+.g-btn.md{
+    width: 7em;
+    padding: 7px;
+}
+
+.g-btn.sm{
+    width: 5em;
+    padding: 5px;
+}
+
+.g-btn.success{
     border: 1px solid rgb(10, 113, 75);
 }
 
-.g-btn.md.success:hover{
+.g-btn.success:hover{
     background-color: rgb(10, 113, 75);
     color: beige;
+}
+
+.text-overflow-ellipsis{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.text-overflow-ellipsis > *:hover, .text-overflow-ellipsis:hover {
+    overflow: auto;
+    white-space: normal;
 }
 
 //GLobal components styling - end

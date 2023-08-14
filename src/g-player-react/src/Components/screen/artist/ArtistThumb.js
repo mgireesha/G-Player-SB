@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import def_album_art from '../../images/def_album_art.png';
+import { GP_ARTIST_IMAGE_PATHS_MAP } from "../../redux/GPActionTypes";
 
 export const ArtistThumb = ({artist}) => {
     return(
@@ -8,7 +9,7 @@ export const ArtistThumb = ({artist}) => {
             <div className="artist-thumb-img-div">
             <Link to={`/music/artists/${artist.artistName}`}>
                 {!artist.imgAvl && <img src={def_album_art} />}
-                {artist.imgAvl && <img src={"/gp_images/artists/"+artist.artistName+".jpg"} />}
+                {artist.imgAvl && <img src={GP_ARTIST_IMAGE_PATHS_MAP[artist.imageSource] +artist.artistName+".jpg"} />}
             </Link>
             </div>
             <div className="artist-thumb-details">

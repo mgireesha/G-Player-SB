@@ -138,9 +138,9 @@ export const uploadArtistImg = (artistId,data) => ({
     data
 })
 
-export const uploadArtistImgSucc = (data) => ({
+export const uploadArtistImgSucc = (artistObj) => ({
     type: LIBRARY_UPLOAD_ARTIST_IMG_SUCCESS,
-    data
+    artistObj
 })
 
 //Genre - Start
@@ -338,9 +338,13 @@ export const getPlayerTracks = (library, trackListName, playerTracks) => {
         }
     }
     return tempPTracks;
-    
 }
 
-
-
-
+export const updateArtistsDetails = (artistsDetails, artistObj) => {
+    artistsDetails.forEach((artist, i) => {
+        if(artistObj.artistId === artist.artistId){
+            artistsDetails[i] = artistObj; 
+        }
+    });
+    return artistsDetails;
+}

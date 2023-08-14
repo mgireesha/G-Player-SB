@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import { ARTIST, A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, SORT_YEAR, WIKI_SUMMARY_URL } from "../../redux/GPActionTypes";
+import { ARTIST, A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, GP_ARTIST_IMAGE_PATHS_MAP, SORT_YEAR, UPDATE_ARTIST_IMAGE_TEXT, UPDATE_LABEL, WIKI_SUMMARY_URL } from "../../redux/GPActionTypes";
 import { fetchAllArtistsDtls, fetchSongsByArtist, uploadArtistImg } from "../../redux/library/LibraryActions";
-import { fetchArtistDetailsfromWiki, scrolltoId, setCookies } from "../../utilities/util";
+import { convertDataFileToBase64, fetchArtistDetailsfromWiki, scrolltoId, setCookies } from "../../utilities/util";
 import { FilterComp } from "../../FilterComp";
 import { TrackList } from "../track/TrackList";
 import def_album_art from '../../images/def_album_art.png';
@@ -11,6 +11,7 @@ import def_album_art from '../../images/def_album_art.png';
 export const Artist = () => {
     const dispatch = useDispatch();
     const { artist } = useParams();
+
     const artistsDetails = useSelector(state => state.library.artistsDetails);
     let artistTracks = useSelector(state => state.library.artistTracks);
     if(artistTracks.length>0){
@@ -25,6 +26,8 @@ export const Artist = () => {
     const [artistTracksL, setArtistTracksL] = useState([]);
     const [filterTxt, setFilterTxt] = useState(null);
     const [trackListInp, setTrackListInp] = useState(null);
+    const [artistImgSrc, setArtistImgSrc] = useState(null);
+    const [newArtistImgStr, setNewArtistImgStr] = useState(null);
     
     useEffect(()=>{
         setArtistWikiImg(null);
@@ -36,7 +39,9 @@ export const Artist = () => {
 
     useEffect(()=>{
         if(artistsDetails.length>0){
-            setArtistObj(artistsDetails.find(artistObj => artistObj.artistName===artist));
+            const artistObj = artistsDetails.find(artistObj => artistObj.artistName===artist);
+            setArtistObj(artistObj);
+            setArtistImgSrc(GP_ARTIST_IMAGE_PATHS_MAP[artistObj.imageSource]);
         }else{
             dispatch(fetchAllArtistsDtls(ARTIST));
         }
@@ -124,23 +129,40 @@ export const Artist = () => {
         }
     }
 
-    const handleArtistFileChnage = (event) => {
+    const handleArtistFileChnage = async (event) => {
         const file = event.target.files[0];
-        console.log("file: ",file);
-        let formData = new FormData();
-        formData.append('file', event.target.value);
-        formData.append('name', 'test')
-        dispatch(uploadArtistImg(artistObj.artistId,formData))
+        // console.log("file: ",file);
+        // let formData = new FormData();
+        // formData.append('file', event.target.value);
+        // formData.append('name', 'test')
+        //dispatch(uploadArtistImg(artistObj.artistId,formData))
+        const fileB64 = await convertDataFileToBase64(file);
+        document.getElementById("artist_image").src = fileB64;
+        setNewArtistImgStr(fileB64);
+        
     }
+
+      const initArtistImgUpload = () => {
+        if(newArtistImgStr !== null){
+            if(window.confirm("Change picture ?")===true){
+                dispatch(uploadArtistImg(artistObj.artistId, newArtistImgStr));
+            }
+        }else{
+            alert("Please select a picture")
+        }
+      }
     
     return(
         <div className="artist">
             <div className="artist-img-div-container">
                 <div className="artist-img-div">
-                    {artistObj.imgAvl  && <img src={"/gp_images/artists/"+artistObj.artistName+".jpg"} />}
-                    {!artistObj.imgAvl && artistWikiImg!==null && <img src={artistWikiImg} />}
-                    {!artistObj.imgAvl && artistWikiImg===null && <img src={def_album_art} />}
-                    <input type="file" onChange={handleArtistFileChnage} />
+                    {artistObj.imgAvl  && <img src={artistImgSrc + artistObj.artistName+".jpg"} id="artist_image" />}
+                    {!artistObj.imgAvl && artistWikiImg!==null && <img src={artistWikiImg} id="artist_image" />}
+                    {!artistObj.imgAvl && artistWikiImg===null && <img src={def_album_art} id="artist_image" />}
+                    <div className="change-artist-img">
+                        <input type="file" onChange={handleArtistFileChnage} title={UPDATE_ARTIST_IMAGE_TEXT} />
+                        <button className="g-btn sm success" onClick={initArtistImgUpload}>{UPDATE_LABEL}</button>
+                    </div>
                 </div>
                 <div className="artist-details">
                     <h3>{artist}</h3>
