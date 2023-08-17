@@ -136,7 +136,7 @@ export const Library = () => {
                         </div>
                     </div>
                     <div className="existing-lib-paths">
-                        {musicPaths.map((musicPath, index)=>
+                        {musicPaths && musicPaths.map((musicPath, index)=>
                             <label key={index}>{musicPath.value}<RiDeleteBinLine onClick={()=>dispatch(deleteMusicPath(musicPath))} /></label>
                         )}
                     </div>

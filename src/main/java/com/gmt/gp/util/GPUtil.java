@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.jaudiotagger.tag.FieldKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -158,5 +159,59 @@ public class GPUtil {
             }
         }
         return name;
+    }
+
+    public static FieldKey getFieldKeyForString(String field) {
+        FieldKey fieldKey = null;
+        switch (field) {
+            case "title":
+                fieldKey = FieldKey.TITLE;
+                break;
+            case "album":
+                fieldKey = FieldKey.ALBUM;
+                break;
+            case "artist":
+                fieldKey = FieldKey.ARTIST;
+                break;
+            case "albumArtist":
+                fieldKey = FieldKey.ALBUM_ARTIST;
+                break;
+            case "composer":
+                fieldKey = FieldKey.COMPOSER;
+                break;
+            case "year":
+                fieldKey = FieldKey.YEAR;
+                break;
+            case "genre":
+                fieldKey = FieldKey.GENRE;
+                break;
+            case "lyricist":
+                fieldKey = FieldKey.LYRICIST;
+                break;
+            case "lyrics":
+                fieldKey = FieldKey.LYRICS;
+                break;
+            case "trackNumber":
+                fieldKey = FieldKey.TRACK;
+                break;
+            case "totaltracks":
+                fieldKey = FieldKey.TRACK_TOTAL;
+                break;
+            case "label":
+                fieldKey = FieldKey.RECORD_LABEL;
+                break;
+            case "bpm":
+                fieldKey = FieldKey.BPM;
+                break;
+            case "groupingGP":
+                fieldKey = FieldKey.GROUPING;
+                break;
+            case "language":
+                fieldKey = FieldKey.LANGUAGE;
+                break;
+            default:
+                break;
+        }
+        return fieldKey;
     }
 }

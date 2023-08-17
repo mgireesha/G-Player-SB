@@ -16,10 +16,15 @@ public class GP_CONSTANTS {
     public static final String BUILD_STATUS_STEP = "BUILD_STATUS_STEP";
 
     public static final String COMPLETED = "COMPLETED";
+    public static final String COMPLETED_WITH_ERROR = "COMPLETED_WITH_ERROR";
+    public static final String COMPLETED_WITH_ERRORS = "COMPLETED_WITH_ERRORS";
 
     public static final String ERROR = "ERROR";
+    public static final String EXCEPTION = "EXCEPTION";
 
     public static final String FAILED = "FAILED";
+    public static final String FILENAME = "FILENAME";
+    public static final String FILEPATH = "FILEPATH";
     public static final String FILES_READ_TIME = "FILES_READ_TIME";
     public static final String FILES_TO_READ = "FILES_TO_READ";
     public static final String FILETYPE_CSV = ".csv";
@@ -36,6 +41,9 @@ public class GP_CONSTANTS {
     public static final String LIBRARY = "LIBRARY";
 
     public static final String MEDIA_PLAYER_NULL = "MEDIA_PLAYER_NULL";
+    public static final String METHOD_NAME = "METHOD_NAME";
+    public static final String MUSIC_FILE_METADATA_FIELD = "MUSIC_FILE_METADATA_FIELD";
+    public static final String MUSIC_FILE_METADATA_VALUE = "MUSIC_FILE_METADATA_VALUE";
     public static final String MULTI_GENRE = "MULTI_GENRE";
 
     public static final String NOT_FOUND = "NOT_FOUND";
@@ -78,6 +86,8 @@ public class GP_CONSTANTS {
     public static final String GP_UASER_ARTIST_IMAGES_PATH = GP_USER_PATH
             + "\\G_Player\\images\\artists\\user_images\\";
 
+    public static final String GP_LOGS_PATH = GP_USER_PATH + "\\G_Player\\logs\\";
+
     public static final String GP_PLAYLIST_PATH = GP_USER_PATH + "\\G_Player\\playlists\\";
 
     public static final String GP_PLAYLIST_PATH_CSV = GP_USER_PATH + "\\G_Player\\playlists\\csv\\";
@@ -91,7 +101,7 @@ public class GP_CONSTANTS {
     public static final String[] GP_FILE_TYPE_ARR = new String[] { ".mp3", ".m4a" };
 
     // databes db alias
-    public static final String GP_DB_ALIAS = "g_player";
-    // public static final String GP_DB_ALIAS = "g_db";
+    // public static final String GP_DB_ALIAS = "g_player";
+    public static final String GP_DB_ALIAS = "g_db";
 
 }

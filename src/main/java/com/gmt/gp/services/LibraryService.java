@@ -3,12 +3,14 @@ package com.gmt.gp.services;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -21,8 +23,15 @@ import org.apache.commons.io.FileUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.audio.exceptions.CannotReadException;
+import org.jaudiotagger.audio.exceptions.CannotWriteException;
+import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
+import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
+import org.jaudiotagger.tag.FieldDataInvalidException;
 import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.KeyNotFoundException;
 import org.jaudiotagger.tag.Tag;
+import org.jaudiotagger.tag.TagException;
 import org.jaudiotagger.tag.datatype.Artwork;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -92,7 +101,7 @@ public class LibraryService {
         }
     };
 
-    public List<File> getMusicFiles(List<Message> mainFolderList) {
+    public List<File> getMusicFiles(List<String> mainFolderList) {
         List<File> fileList = new ArrayList<File>();
         try {
             List<File> tempFileList = new ArrayList<File>();
@@ -102,8 +111,8 @@ public class LibraryService {
                 }
             };
             File[] folders = null;
-            for (Message mainFolder : mainFolderList) {
-                File musicDir = new File(mainFolder.getValue());
+            for (String mainFolder : mainFolderList) {
+                File musicDir = new File(mainFolder);
                 fileList.addAll(Arrays.asList(musicDir.listFiles(mp3filter)));
                 folders = musicDir.listFiles(folderFilter);
                 fileList.addAll(recursiveSearch(folders, 0, 0, tempFileList));
@@ -513,6 +522,12 @@ public class LibraryService {
                 library.setLyricsAvl(true);
             else
                 library.setLyricsAvl(false);
+
+            if (!tag.getFirst(FieldKey.LANGUAGE).equals("") && tag.getFirst(FieldKey.LANGUAGE) != null) {
+                library.setLanguage(tag.getFirst(FieldKey.LANGUAGE));
+            } else {
+                library.setLanguage(GP_CONSTANTS.UNKNOWN_LABEL);
+            }
 
             try {
                 library.setTrackLength(audioF.getAudioHeader().getTrackLength());
@@ -1292,5 +1307,122 @@ public class LibraryService {
             songs.addAll(tempSongs);
         }
         return songs;
+    }
+
+    public GPResponse updateMp3Files(String path, String field, String value) {
+        GPResponse resp = new GPResponse();
+        List<File> fileList = new ArrayList<File>();
+        fileList = getMusicFiles(new ArrayList<>(Arrays.asList(path)));
+        Map<String, String> updateMp3FileResponse = new HashMap<String, String>();
+        Map<String, Map<String, String>> updateMp3FilesResponse = new HashMap<String, Map<String, String>>();
+        removeJAudioTagLogger();
+        FieldKey fieldKey = GPUtil.getFieldKeyForString(field);
+        for (File musicFile : fileList) {
+            updateMp3FileResponse = updateMp3File(musicFile, fieldKey, value);
+            updateMp3FilesResponse.put(musicFile.getAbsolutePath(), updateMp3FileResponse);
+        }
+
+        try {
+            GPUtil.checkAndCreateFolders(GP_CONSTANTS.GP_LOGS_PATH);
+            File updateMp3FilesResponseFile = new File(GP_CONSTANTS.GP_LOGS_PATH + "UPDATE_MUSIC_FILE_RESPINSE" + "_"
+                    + new Date().getTime() + GP_CONSTANTS.FILETYPE_CSV);
+            FileWriter fileWriter = new FileWriter(updateMp3FilesResponseFile);
+            fileWriter.append(GP_CONSTANTS.FILENAME).append(",")
+                    .append(GP_CONSTANTS.FILEPATH).append(",")
+                    .append(GP_CONSTANTS.MUSIC_FILE_METADATA_FIELD).append(",")
+                    .append(GP_CONSTANTS.MUSIC_FILE_METADATA_VALUE).append(",")
+                    .append(GP_CONSTANTS.STATUS).append(",")
+                    .append(GP_CONSTANTS.ERROR).append(",")
+                    .append(GP_CONSTANTS.EXCEPTION).append(System.lineSeparator());
+            for (String key : updateMp3FilesResponse.keySet()) {
+                updateMp3FileResponse = updateMp3FilesResponse.get(key);
+                fileWriter.append(updateMp3FileResponse.get(GP_CONSTANTS.FILENAME))
+                        .append(",")
+                        .append(updateMp3FileResponse.get(GP_CONSTANTS.FILEPATH))
+                        .append(",")
+                        .append(updateMp3FileResponse.get(GP_CONSTANTS.MUSIC_FILE_METADATA_FIELD))
+                        .append(",")
+                        .append(updateMp3FileResponse.get(GP_CONSTANTS.MUSIC_FILE_METADATA_VALUE))
+                        .append(",")
+                        .append(updateMp3FileResponse.get(GP_CONSTANTS.STATUS))
+                        .append(",")
+                        .append(updateMp3FileResponse.get(GP_CONSTANTS.ERROR))
+                        .append(",")
+                        .append(updateMp3FileResponse.get(GP_CONSTANTS.EXCEPTION))
+                        .append(System.lineSeparator());
+            }
+            fileWriter.flush();
+            fileWriter.close();
+            resp.setStatus(GP_CONSTANTS.SUCCESS);
+        } catch (IOException e) {
+            resp.setStatus(GP_CONSTANTS.FAILED);
+            resp.setError(e.getMessage());
+        }
+        return resp;
+    }
+
+    public Map<String, String> updateMp3File(File musicFile, FieldKey fieldKey, String value) {
+        final String METHOD_NAME = "updateMp3File";
+        AudioFile audioFile = null;
+        Tag tag = null;
+        Map<String, String> updateMp3FileResponseMap = new HashMap<String, String>();
+        String existingField = null;
+        try {
+            audioFile = AudioFileIO.read(new File(musicFile.getAbsolutePath()));
+            tag = audioFile.getTag();
+            // Iterator<TagField> tagFItr = tag.getFields();
+            // while (tagFItr.hasNext()) {
+            // TagField field3 = tagFItr.next();
+            // System.out.println("field3: " + field3.getId());
+            // System.out.println("getRawContent: " + FieldKey.LANGUAGE);
+            // }
+
+            existingField = tag.getFirst(fieldKey);
+            if (existingField != null && !existingField.equals("")) {
+                tag.deleteField(fieldKey);
+            }
+            tag.addField(fieldKey, value);
+            audioFile.setTag(tag);
+            audioFile.commit();
+            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldKey.name(), value,
+                    null);
+        } catch (KeyNotFoundException e) {
+            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldKey.name(), value, e);
+        } catch (FieldDataInvalidException e) {
+            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldKey.name(), value, e);
+        } catch (CannotWriteException e) {
+            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldKey.name(), value, e);
+        } catch (CannotReadException e) {
+            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldKey.name(), value, e);
+        } catch (IOException e) {
+            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldKey.name(), value, e);
+        } catch (TagException e) {
+            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldKey.name(), value, e);
+        } catch (ReadOnlyFileException e) {
+            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldKey.name(), value, e);
+        } catch (InvalidAudioFrameException e) {
+            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldKey.name(), value, e);
+        } catch (Exception e) {
+            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldKey.name(), value, e);
+        }
+        return updateMp3FileResponseMap;
+    }
+
+    private Map<String, String> getUpdateMp3FileResponseMap(final String METHOD_NAME, File musicFile, String field,
+            String value, Exception e) {
+        Map<String, String> updateMp3FileResponseMap = new HashMap<String, String>();
+        updateMp3FileResponseMap.put(GP_CONSTANTS.METHOD_NAME, METHOD_NAME);
+        updateMp3FileResponseMap.put(GP_CONSTANTS.FILENAME, musicFile.getName());
+        updateMp3FileResponseMap.put(GP_CONSTANTS.FILEPATH, musicFile.getAbsolutePath());
+        updateMp3FileResponseMap.put(GP_CONSTANTS.MUSIC_FILE_METADATA_FIELD, field);
+        updateMp3FileResponseMap.put(GP_CONSTANTS.MUSIC_FILE_METADATA_VALUE, value);
+        if (e != null) {
+            updateMp3FileResponseMap.put(GP_CONSTANTS.STATUS, GP_CONSTANTS.ERROR);
+            updateMp3FileResponseMap.put(GP_CONSTANTS.EXCEPTION, e.getClass().getName());
+            updateMp3FileResponseMap.put(GP_CONSTANTS.ERROR, e.getMessage());
+        } else {
+            updateMp3FileResponseMap.put(GP_CONSTANTS.STATUS, GP_CONSTANTS.SUCCESS);
+        }
+        return updateMp3FileResponseMap;
     }
 }

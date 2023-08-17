@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gmt.gp.model.Album;
 import com.gmt.gp.model.Artist;
 import com.gmt.gp.model.GPResponse;
 import com.gmt.gp.model.Library;
-import com.gmt.gp.model.Message;
 import com.gmt.gp.services.LibraryService;
 import com.gmt.gp.services.MessageService;
 import com.gmt.gp.util.GP_CONSTANTS;
@@ -36,20 +36,23 @@ public class LibraryController {
     private MessageService messageService;
 
     @RequestMapping("/initLibraryBuild")
-    public List<File> runBuild() {
+    public GPResponse runBuild() {
         final String methodName = "runBuild";
+        GPResponse resp = new GPResponse();
         List<File> fileList = new ArrayList<File>();
 
         boolean isImgDirExists = libraryService.checkAndCreateUserImageFolders();
         if (!isImgDirExists) {
-            return null;
+            resp = new GPResponse(GP_CONSTANTS.FAILED, "Failed to create / featch user image folders");
+            messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.FAILED);
+            return resp;
         }
 
         messageService.removeMessageType(GP_CONSTANTS.BUILD_STATUS);
         // messageService.removeMessageName(GP_CONSTANTS.LAST_PLAYED_SONG_ID);
         messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.RUNNING);
 
-        List<Message> mainFolderList = messageService.getAllMusicPaths();
+        List<String> mainFolderList = messageService.getAllMusicPaths();
 
         LOG.info(methodName + " - Started searching for audio files in : " + mainFolderList);
         fileList = libraryService.getMusicFiles(mainFolderList);
@@ -63,7 +66,7 @@ public class LibraryController {
 
         LOG.info(methodName + " - calling build library");
         libraryService.buildLibrary(fileList);
-        return fileList;
+        return resp;
     }
 
     @RequestMapping("/getAllSongs")
@@ -184,6 +187,13 @@ public class LibraryController {
     @RequestMapping(method = RequestMethod.PUT, value = "/upload-artist-image/{artistId}")
     public GPResponse uploadArtistImg(@RequestBody String imageB64, @PathVariable String artistId) {
         return libraryService.uploadArtistImg(imageB64, Long.parseLong(artistId));
+    }
+
+    // temporary apis
+    @RequestMapping(method = RequestMethod.GET, value = "/update-mp3-files/{field}")
+    public GPResponse updateMp3Files(@RequestParam String path, @RequestParam String value,
+            @PathVariable String field) {
+        return libraryService.updateMp3Files(path, field, value);
     }
 
 }

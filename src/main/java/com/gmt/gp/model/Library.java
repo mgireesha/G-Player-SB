@@ -30,6 +30,10 @@ public class Library {
     private String label;
     private long trackLength;
     private String albumArt;
+    private String bpm;
+    private String groupingGP;// grouping is reserved key in hsqldb and cannot be used as column, hence added
+                              // GP suffix
+    private String language;
 
     @Transient
     private long playlistItemId;
@@ -178,36 +182,65 @@ public class Library {
         this.playlistItemId = playlistItemId;
     }
 
+    public String getBpm() {
+        return bpm;
+    }
+
+    public void setBpm(String bpm) {
+        this.bpm = bpm;
+    }
+
+    public String getGroupingGP() {
+        return groupingGP;
+    }
+
+    public void setGroupingGP(String groupingGP) {
+        this.groupingGP = groupingGP;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
     public Library() {
 
     }
 
-    public Library(long songId, String songPath, String title, String artist, String albumArtist, String album,
-            int year, String composer, String lyricist, boolean isLyricsAvl, int trackNumber, int totaltracks,
-            String label, String genre, long trackLength, String albumArt, String lyrics, long playlistItemId) {
+    public Library(long songId, String songPath, String title, String album, String artist, String albumArtist,
+            String composer, int year, String genre, String lyricist, boolean isLyricsAvl, String lyrics,
+            int trackNumber, int totaltracks, String label, long trackLength, String albumArt, String bpm,
+            String groupingGP, String language, long playlistItemId) {
         this.songId = songId;
         this.songPath = songPath;
         this.title = title;
+        this.album = album;
         this.artist = artist;
         this.albumArtist = albumArtist;
-        this.album = album;
-        this.year = year;
         this.composer = composer;
+        this.year = year;
+        this.genre = genre;
         this.lyricist = lyricist;
         this.isLyricsAvl = isLyricsAvl;
+        this.lyrics = lyrics;
         this.trackNumber = trackNumber;
         this.totaltracks = totaltracks;
         this.label = label;
-        this.genre = genre;
         this.trackLength = trackLength;
         this.albumArt = albumArt;
-        this.lyrics = lyrics;
+        this.bpm = bpm;
+        this.groupingGP = groupingGP;
+        this.language = language;
         this.playlistItemId = playlistItemId;
     }
 
     public Library copy() {
-        return new Library(songId, songPath, title, artist, albumArtist, album, year, composer, lyricist,
-                isLyricsAvl, trackNumber, totaltracks, label, genre, trackLength, albumArt, lyrics, playlistItemId);
+        return new Library(songId, songPath, title, album, artist, albumArtist, composer, year, genre, lyricist,
+                isLyricsAvl, lyrics, trackNumber, totaltracks, label, trackLength, albumArt, bpm, groupingGP, language,
+                playlistItemId);
     }
 
     @Override
@@ -216,8 +249,9 @@ public class Library {
                 + ", artist=" + artist + ", albumArtist=" + albumArtist + ", composer=" + composer + ", year=" + year
                 + ", genre=" + genre + ", lyricist=" + lyricist + ", isLyricsAvl=" + isLyricsAvl + ", lyrics=" + lyrics
                 + ", trackNumber=" + trackNumber + ", totaltracks=" + totaltracks + ", label=" + label
-                + ", trackLength=" + trackLength + ", albumArt=" + albumArt + ", playlistItemId=" + playlistItemId
-                + "]";
+                + ", trackLength=" + trackLength + ", albumArt=" + albumArt + ", bpm=" + bpm + ", groupingGP="
+                + groupingGP
+                + ", language=" + language + ", playlistItemId=" + playlistItemId + "]";
     }
 
 }
