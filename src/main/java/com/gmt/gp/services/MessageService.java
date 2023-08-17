@@ -68,8 +68,13 @@ public class MessageService {
     }
 
     // Music Path - start
-    public List<Message> getAllMusicPaths() {
-        return messageRepository.getByType(MUSIC_PATH);
+    public List<String> getAllMusicPaths() {
+        List<Message> mainFolderListMessage = messageRepository.getByType(MUSIC_PATH);
+        List<String> mainFolderList = null;
+        if (mainFolderListMessage != null && mainFolderListMessage.size() > 0) {
+            mainFolderList = mainFolderListMessage.stream().map(message -> message.getValue()).toList();
+        }
+        return mainFolderList;
     }
 
     public Message saveMusicPath(Message message) {

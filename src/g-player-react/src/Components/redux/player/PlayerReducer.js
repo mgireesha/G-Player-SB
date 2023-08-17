@@ -103,7 +103,7 @@ const playerReducer = (state = initialState, action) => {
                 ...state,
                 isPlaying: action.response.status==='PLAYING'?true:false,
                 songPlaying: action.response.library,
-                songPlayingImg: action.response.library.albumArt,
+                songPlayingImg: action.response.library && action.response.library.albumArt,
                 playingSongStat:action.response.gMedia,
                 currentVolume: action.response.gMedia!==null?action.response.gMedia.currentVolume:getCookieValue("currentVolume"),
                 phase: SUCCESS

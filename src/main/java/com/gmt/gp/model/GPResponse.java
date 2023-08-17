@@ -107,4 +107,9 @@ public class GPResponse {
         this.playlistItems = playlistItems;
     }
 
+    public GPResponse(String status, String error) {
+        this.status = status;
+        this.error = error;
+    }
+
 }

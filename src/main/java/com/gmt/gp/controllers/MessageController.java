@@ -47,7 +47,7 @@ public class MessageController {
     }
 
     @RequestMapping("/getAllMusicPaths")
-    public List<Message> getAllMusicPaths() {
+    public List<String> getAllMusicPaths() {
         return messageService.getAllMusicPaths();
     }
 
