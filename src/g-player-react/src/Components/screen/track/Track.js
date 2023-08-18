@@ -4,12 +4,12 @@ import { Link } from "react-router-dom";
 import { ALBUM, ARTIST, CURRENT_PAGE, PLAYLIST, REMOVE_LABEL, TRACK, TRACK_MENU_BTN_CIRCLE } from "../../redux/GPActionTypes";
 import { playASong, playPause, setIsPlaying } from "../../redux/player/PlayerActions";
 import { getCookieValue, getMins } from "../../utilities/util";
-import { ArtistLink } from "../artist/ArtistLink";
 import { FaPlay } from "react-icons/fa";
 import { setContextObj, setShowContextMenu } from "../../redux/library/LibraryActions";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { MdOutlineLyrics } from "react-icons/md";
 import { removeFromPlaylist } from "../../redux/playlist/PlaylistActions";
+import { SplitAndLink } from "../../utilities/SplitAndLink";
 
 export const Track = ({track, playedFrom, index, hideTrackNum}) => {
     const dispatch = useDispatch();
@@ -61,11 +61,11 @@ export const Track = ({track, playedFrom, index, hideTrackNum}) => {
             {!hideTrackNum && <label style={{paddingLeft:'5'}}>{playedFrom.pfKey===ALBUM && track.trackNumber!==undefined && track.trackNumber!==0?track.trackNumber:index+1}</label>}
             <label onClick={()=>playSong(track.songId)} style={{cursor:'pointer'}} className="title">
                 <span>{track.title}{track.lyricsAvl && <MdOutlineLyrics title="This track has lyrics" />}</span>
-                <span className="mobile-only-block track-title-artist"><ArtistLink artist={track.artist} /></span>
+                <span className="mobile-only-block track-title-artist"><SplitAndLink str={track.artist} url={`/music/artists/`} /></span>
             </label>
             <label className="mobile-only-block song-playing-icon-label">{songPlaying!==null && track.songId===songPlaying.songId ? <FaPlay className="faplay"  />:''}</label>
             <label className="text-overflow-ellipsis" onDoubleClick={()=>playSong(track.songId)} title={track.artist}>
-                <ArtistLink artist={track.artist} />
+                <SplitAndLink str={track.artist} url={`/music/artists/`} />
             </label>
             <label onDoubleClick={()=>playSong(track.songId)}>
             <Link to={`/music/albums/${track.album}`}>{track.album}</Link>

@@ -9,12 +9,12 @@ import { fettchCurrentSongStatus, playASong, playPause, setIsPlaying, setIsShuff
 import { getMins, scrolltoId, scrollToPlaying, setCookies } from "../utilities/util";
 import { VolumeH } from "./VolumeH";
 import { Link } from "react-router-dom";
-import { ArtistLink } from "../screen/artist/ArtistLink";
 import { fetchAllHistory, updateHistory } from "../redux/library/LibraryActions";
 import { SliderRC } from "../SliderRC";
 import { CURRENT, NEXT, PLAYER, PLAYLIST, PREVIOUS, REPEAT_ALL, REPEAT_OFF, REPEAT_ONE } from "../redux/GPActionTypes";
 
 import def_album_art from '../images/def_album_art.png';
+import { SplitAndLink } from "../utilities/SplitAndLink";
 
 export const Player = () => {
 
@@ -242,7 +242,7 @@ export const Player = () => {
                     </Link>
                     <div className="song-info-title">
                         <p onClick={()=>scrollToPlaying(isPlaying)} style={{cursor:'pointer'}}>{songPlaying && songPlaying.title}{songPlaying && songPlaying.lyricsAvl && <span><MdOutlineLyrics title="This track has lyrics" style={{margin:'5px 0 0 5px'}} /></span>}</p>
-                        <p style={{maxHeight: '3em',overflow: 'auto'}}>{songPlaying!==null && <ArtistLink artist={songPlaying.artist} />}</p>
+                        <p style={{maxHeight: '3em',overflow: 'auto'}}>{songPlaying!==null && <SplitAndLink str={songPlaying.artist} url={`/music/artists/`} />}</p>
                     </div>
                     
                 </div>

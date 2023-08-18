@@ -5,8 +5,9 @@ import def_album_art from '../../images/def_album_art.png';
 import { ALBUM, A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, MULTI_GENRE, TRACKS_LABEL, TRACK_NUMBER } from ".././../redux/GPActionTypes";
 import { Lyrics } from "../lyrics/Lyrics";
 import { fetchAlbum, fetchAlbumTacks } from "../../redux/library/LibraryActions";
-import { setCookies } from "../../utilities/util";
+import { camelize, setCookies } from "../../utilities/util";
 import { TrackList } from "../track/TrackList";
+import { SplitAndLink } from "../../utilities/SplitAndLink";
 
 export const Album = () => {
     const dispatch = useDispatch();
@@ -61,11 +62,11 @@ export const Album = () => {
                         <Link to={`/music/album_artists/${album.albumArtist}`} >
                             <label style={{cursor:'pointer'}}>{album.albumArtist}</label>
                         </Link>
-                        {album.genreType !== MULTI_GENRE &&<label>{album.year} - <Link to={`/music/genres/${album.genre}`}>{album.genre}</Link></label>}
+                        {album.genreType !== MULTI_GENRE &&<label>{album.year} - <SplitAndLink str={album.genre} url={`/music/genres/`} /></label>}
                         {albumTracks && <label>{albumTracks.length}&nbsp;{TRACKS_LABEL}</label> }
                         {album.genreType === MULTI_GENRE &&
                             <>
-                                <label>{album.year} - {genre?<Link to={`/music/genres/${album.genre}`}>{genre}</Link>:"All"}</label>
+                                <label>{album.year} - {genre?<Link to={`/music/genres/${album.genre}`}>{camelize(genre)}</Link>:"All"}</label>
                                 <div className="album-multi-genre-select">
                                     <Link className={!genre?"selected":""} to={`/music/albums/${album.albumName}`}>All</Link>
                                     {album.genres.split(",").map(gnre=>
