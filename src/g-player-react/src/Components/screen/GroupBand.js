@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
-import { ALBUMS, ALBUMS_LABEL, ALBUM_ARTISTS, ALBUM_ARTISTS_LABEL, ARTISTS, ARTISTS_LABEL, GENRES, GENRES_LABEL, TRACKS_LABEL, TRACKS } from "../redux/GPActionTypes";
+import { ALBUMS, ALBUMS_LABEL, ALBUM_ARTISTS, ALBUM_ARTISTS_LABEL, ARTISTS, ARTISTS_LABEL, GENRES, GENRES_LABEL, TRACKS_LABEL, TRACKS, LANGUAGES, LANGUAGES_LABEL } from "../redux/GPActionTypes";
 
 export const GroupBand = () => {
     const groupBand = useSelector(state => state.library.groupBand);
@@ -20,6 +20,8 @@ export const GroupBand = () => {
                 setSelectedBand(ARTISTS);
             }else if(uri.startsWith("/music/genres")){
                 setSelectedBand(GENRES);
+            }else if(uri.startsWith("/music/languages")){
+                setSelectedBand(LANGUAGES);
             }else{
                 setSelectedBand('');
             }
@@ -41,6 +43,9 @@ export const GroupBand = () => {
             </div>
             <div className={selectedBand===GENRES?"genres-band group-band-highlight":"genres-band"}>
                 <Link to="/music/genres"><h3>{GENRES_LABEL}</h3></Link>
+            </div>
+            <div className={selectedBand===LANGUAGES?"languages-band group-band-highlight":"languages-band"}>
+                <Link to="/music/languages"><h3>{LANGUAGES_LABEL}</h3></Link>
             </div>
         </div>
     );

@@ -99,6 +99,11 @@ public class LibraryController {
         return libraryService.getSongsByGenre(genre);
     }
 
+    @RequestMapping("/getByLanguage/{language}")
+    public List<Library> getSongsByLanguage(@PathVariable String language) {
+        return libraryService.getSongsByLanguage(language);
+    }
+
     @RequestMapping("/getByArtist/{artist}")
     public List<Library> getSongsByArtist(@PathVariable String artist) {
         return libraryService.getSongsByArtist(artist);
@@ -172,6 +177,11 @@ public class LibraryController {
     @RequestMapping("/genre-details")
     public Map<String, Object> getGenreDetails() {
         return libraryService.getGenreDetails();
+    }
+
+    @RequestMapping("/language-details")
+    public Map<String, Object> getLanguageDetails() {
+        return libraryService.getLanguageDetails();
     }
 
     // @RequestMapping(method = RequestMethod.PUT, value =

@@ -837,6 +837,155 @@ body{
         }
     }
 
+    .languages{
+        .language-list{
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+            row-gap: 30px;
+            max-height: calc(100vh - 11.5em);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 10px 5px;
+            .language-thumb{
+                width: 10em;
+
+                .language-thumb-img-div{
+                    position: relative;
+
+                    .language-img-container{
+                        width: 9em;
+                        height: 9em;
+                        border: 1px solid #494949;
+                        border-radius: 5px;
+                        
+                        .language-img{
+                            display: grid;
+                            grid-template-columns: 1fr 1fr;
+
+                            img{
+                                height: 4.5em;
+                                width: 4.5em;
+                            }
+
+                            img:first-child{
+                                border-top-left-radius: 5px;
+                            }
+                            img:nth-child(2){
+                                border-top-right-radius: 5px;
+                            }
+                            img:nth-child(3){
+                                border-bottom-left-radius: 5px;
+                            }
+                            img:last-child{
+                                border-bottom-right-radius: 5px;
+                            }
+                        }
+                        .language-no-img{
+                            img{
+                                width: 9em;
+                                height: 9em;
+                                border-radius: 5px;
+                            }
+                        }
+                    }
+                }
+
+                .language-thumb-details{
+                    label{
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+    }
+
+    .language-page{
+        .spinner{
+            display: none;
+        }
+        .language-page-header{
+            display: flex;
+            column-gap: 20px;
+            padding: 15px;
+            margin: 15px 0;
+            background-color: #3a3a3a;
+            border-radius: 5px;
+
+            .language-img-container{
+                width: 9em;
+                height: 9em;
+                border: 1px solid #494949;
+                border-radius: 5px;
+
+                .language-img{
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+
+                    img{
+                        height: 4.5em;
+                        width: 4.5em;
+                    }
+
+                    img:first-child{
+                        border-top-left-radius: 5px;
+                    }
+                    img:nth-child(2){
+                        border-top-right-radius: 5px;
+                    }
+                    img:nth-child(3){
+                        border-bottom-left-radius: 5px;
+                    }
+                    img:last-child{
+                        border-bottom-right-radius: 5px;
+                    }
+                }
+                .language-no-img{
+                    img{
+                        width: 9em;
+                        height: 9em;
+                        border-radius: 5px;
+                    }
+                }
+            }
+
+            .language-details{
+                .language-name{
+                    padding: 5px;
+                }
+                .language-actions{
+                    display: flex;
+                    align-items: center;
+                    column-gap: 10px;
+                    margin-top: 30px;
+
+                    button{
+                        display: flex;
+                        align-items: center;
+                        column-gap: 5px;
+                        border: none;
+                        padding: 8px;
+                        color: beige;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        background-color: transparent;
+                        border: 1px solid lightgrey;
+                    }
+
+                    .play-all{
+                        button{
+                            background-color: #560C53;
+                        }
+                    }
+                }
+            }
+
+            .language-lyrics{
+                margin-left: auto;
+                width: 50%;
+            }
+        }
+    }
+
     .music{
         height: calc(100vh - 6em - 7em);
         overflow-y: auto;
@@ -2713,8 +2862,9 @@ a.disabled-click{
 }
 
 .text-overflow-ellipsis > *:hover, .text-overflow-ellipsis:hover {
-    overflow: auto;
     white-space: normal;
+    text-overflow: unset;
+    overflow: unset;
 }
 
 //GLobal components styling - end

@@ -37,6 +37,11 @@ public class GP_CONSTANTS {
     public static final String GENRES = "GENRES";
     public static final String GP_PATH = "GP_PATH";
 
+    public static final String LANGUAGE_ALBUMS = "LANGUAGE_ALBUMS";
+    public static final String LANGUAGE_COUNT = "LANGUAGE_COUNT";
+    public static final String LANGUAGE_SONG_COUNT = "LANGUAGE_SONG_COUNT";
+    public static final String LANGUAGE_TYPE = "LANGUAGE_TYPE";
+    public static final String LANGUAGES = "LANGUAGES";
     public static final String LAST_PLAYED_SONG_ID = "LAST_PLAYED_SONG_ID";
     public static final String LIBRARY = "LIBRARY";
 

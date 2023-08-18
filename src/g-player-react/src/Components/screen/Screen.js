@@ -12,6 +12,8 @@ import { Tracks } from "./track/Tracks";
 import { Album } from "./album/Album";
 import { Genres } from "./genre/Genres";
 import { GenrePage } from "./genre/GenrePage";
+import { LanguagePage } from "./language/LanguagePage";
+import { Languages } from "./language/Languages";
 
 export const Screen = () => {
     return(
@@ -29,6 +31,8 @@ export const Screen = () => {
                 <Route path='album_artists' element={<AlbumArtistList />} />
                 <Route path='genres/:genre' element={<GenrePage />} />
                 <Route path='genres' element={<Genres />} />
+                <Route path='languages/:language' element={<LanguagePage />} />
+                <Route path='languages' element={<Languages />} />
             </Routes>
         </div>
     );
