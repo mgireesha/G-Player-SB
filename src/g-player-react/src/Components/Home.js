@@ -3,10 +3,10 @@ import { Player } from "./player/Player";
 import { Sidebar } from "./Sidebar";
 import { Screen } from "./screen/Screen";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAlbumTacks, fetchAllAlbums, fetchAllHistory, fetchAllSongs, fetchSongsByArtist, fetchSongsByGenre } from "./redux/library/LibraryActions";
+import { fetchAlbumTacks, fetchAllAlbums, fetchAllHistory, fetchAllSongs, fetchSongsByArtist, fetchSongsByGenre, fetchSongsByLanguage } from "./redux/library/LibraryActions";
 import { fetchCurrentSontAndStatus, playASongSucc, setIsShuffle, setMediaVolumeSucc, setRepeat } from "./redux/player/PlayerActions";
 import { getCookieDetails, getCookieValue } from "./utilities/util";
-import { ALBUM, ARTIST, GENRE, MAIN_CONTAINER, PLAYLIST, RECENT_PLAYS, TRACK_LIST } from "./redux/GPActionTypes";
+import { ALBUM, ARTIST, GENRE, LANGUAGE, MAIN_CONTAINER, PLAYLIST, RECENT_PLAYS, TRACK_LIST } from "./redux/GPActionTypes";
 import { Route, Routes } from "react-router-dom";
 import { Library } from "./library/Library";
 import { Search } from "./search/Search";
@@ -69,6 +69,9 @@ export const Home = () => {
                         break;
                     case GENRE:
                         dispatch(fetchSongsByGenre(playedFromCookieValue.pfVal,true));
+                        break;
+                    case LANGUAGE:
+                        dispatch(fetchSongsByLanguage(playedFromCookieValue.pfVal,true));
                         break;
                     default:
                         dispatch(fetchAllSongs(true));

@@ -582,6 +582,10 @@ public class LibraryService {
         return libraryRepository.getByGenreContainsIgnoreCase(genre);
     }
 
+    public List<Library> getSongsByLanguage(String language) {
+        return libraryRepository.getByLanguageContainsIgnoreCase(language);
+    }
+
     public Library getSongBySongPath(String songPath) {
         return libraryRepository.getBySongPath(songPath);
     }
@@ -1288,35 +1292,6 @@ public class LibraryService {
                     albums = GPUtil.sortAlbumsByMostPlayed(albumListByGenre, mostPlayedAlbums);
                     genreAlbums.put(resLineGenre, albums);
                 }
-
-                // albumListByGenre = libraryRepository.getAlbumListByGenre(resLineGenre);
-                // albums = new ArrayList<String>();
-                // if (albumListByGenre.size() <= GP_CONSTANTS.GROUPED_ALBUM_COUNT_4) {
-                // albums.addAll(albumListByGenre);
-                // } else {
-                // for (Map<String, Object> mAlbum : mostPlayedAlbums) {
-                // if (albumListByGenre.contains(mAlbum.get("albumName"))
-                // && !albums.contains(mAlbum.get("albumName"))) {
-                // albums.add((String) mAlbum.get("albumName"));
-                // if (albums.size() == GP_CONSTANTS.GROUPED_ALBUM_COUNT_4) {
-                // break;
-                // }
-                // }
-                // }
-
-                // if (albums.size() < GP_CONSTANTS.GROUPED_ALBUM_COUNT_4
-                // && albumListByGenre.size() >= GP_CONSTANTS.GROUPED_ALBUM_COUNT_4) {
-                // for (String albumName : albumListByGenre) {
-                // if (!albums.contains(albumName)) {
-                // albums.add(albumName);
-                // if (albums.size() == GP_CONSTANTS.GROUPED_ALBUM_COUNT_4) {
-                // break;
-                // }
-                // }
-                // }
-                // }
-                // }
-
             }
             genreDetails.put(GP_CONSTANTS.GENRES, genres);
             genreDetails.put(GP_CONSTANTS.GENRE_SONG_COUNT, genreSongCount);
@@ -1455,4 +1430,62 @@ public class LibraryService {
         }
         return updateMp3FileResponseMap;
     }
+
+    public Map<String, Object> getLanguageDetails() {
+        Map<String, Object> languageDetails = new HashMap<String, Object>();
+        List<String> languages = new ArrayList<String>();
+        Map<String, Integer> languageSongCount = new HashMap<String, Integer>();
+        Map<String, List<String>> languageAlbums = new HashMap<String, List<String>>();
+        List<String> albums = null;
+        List<String> albumListByLanguage = null;
+        String[] resLineArr = null;
+        String resLineLanguage = null;
+        int resLineLanguageCount = 0;
+        int tempResLineLanguageCount = 0;
+        try {
+            List<Map<String, Object>> mostPlayedAlbums = historyService.getAlbumsGroupedFromHistoryJDBC(0, "count");
+            List<String> tempLanguages = libraryRepository.getLanguagesGroupByLanguage();
+            for (String resLine : tempLanguages) {
+                resLineArr = resLine.split(",", 2);
+                resLineLanguage = resLineArr[1];
+                resLineLanguageCount = Integer.parseInt(resLineArr[0]);
+                if (resLineLanguage.contains(",") || resLineLanguage.contains("/")) {
+                    if (resLineLanguage.contains(",")) {
+                        resLineArr = resLineLanguage.split(",");
+                    } else {
+                        resLineArr = resLineLanguage.split("/");
+                    }
+                    for (String resLineLanguage1 : resLineArr) {
+                        if (!languages.contains(resLineLanguage1)) {
+                            languages.add(resLineLanguage1);
+                        }
+                        if (!languageSongCount.containsKey(resLineLanguage1)) {
+                            languageSongCount.put(resLineLanguage1, resLineLanguageCount);
+                        } else {
+                            tempResLineLanguageCount = languageSongCount.get(resLineLanguage1);
+                            languageSongCount.put(resLineLanguage1, tempResLineLanguageCount + resLineLanguageCount);
+                        }
+                        albumListByLanguage = libraryRepository.getAlbumListByLanguage(resLineLanguage1);
+                        albums = GPUtil.sortAlbumsByMostPlayed(albumListByLanguage, mostPlayedAlbums);
+                        languageAlbums.put(resLineLanguage1, albums);
+                    }
+                } else {
+                    languages.add(resLineLanguage);
+                    languageSongCount.put(resLineLanguage, resLineLanguageCount);
+                    albumListByLanguage = libraryRepository.getAlbumListByLanguage(resLineLanguage);
+                    albums = GPUtil.sortAlbumsByMostPlayed(albumListByLanguage, mostPlayedAlbums);
+                    languageAlbums.put(resLineLanguage, albums);
+                }
+            }
+            languageDetails.put(GP_CONSTANTS.LANGUAGES, languages);
+            languageDetails.put(GP_CONSTANTS.LANGUAGE_SONG_COUNT, languageSongCount);
+            languageDetails.put(GP_CONSTANTS.LANGUAGE_ALBUMS, languageAlbums);
+        } catch (Exception e) {
+            e.printStackTrace();
+            languageDetails.put(GP_CONSTANTS.ERROR, Arrays.asList(e.getMessage()));
+        }
+
+        return languageDetails;
+    }
+
 }

@@ -27,8 +27,14 @@ public interface LibraryRepository extends CrudRepository<Library, Long> {
     @Query("select count(*) as count, lib.genre as genre from Library lib group by lib.genre order by count desc")
     List<String> getGenresGroupByGenre();
 
+    @Query("select count(*) as count, lib.language as language from Library lib group by lib.language order by count desc")
+    List<String> getLanguagesGroupByLanguage();
+
     @Query("select distinct l.album from Library l where l.genre like %:genre%")
     List<String> getAlbumListByGenre(String genre);
+
+    @Query("select distinct l.album from Library l where l.language like %:language%")
+    List<String> getAlbumListByLanguage(String language);
 
     List<Library> getByAlbumArtistOrderByYearAsc(String albumArtist);
 
@@ -60,5 +66,7 @@ public interface LibraryRepository extends CrudRepository<Library, Long> {
 
     @Query("Select l from Library l where l.songPath in (:songPathList)")
     List<Library> getSongsBySongPath(List<String> songPathList);
+
+    List<Library> getByLanguageContainsIgnoreCase(String language);
 
 }

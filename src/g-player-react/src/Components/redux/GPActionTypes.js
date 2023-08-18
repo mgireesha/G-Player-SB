@@ -57,6 +57,10 @@ export const IMPORT_PLAYLISTS_LABEL = "Import Playlists";
 export const INIT = 'INIT';
 export const INPUT = 'INPUT';
 
+export const LANGUAGE = 'LANGUAGE';
+export const LANGUAGES = 'LANGUAGES';
+export const LANGUAGE_LABEL = 'Language';
+export const LANGUAGES_LABEL = 'Languages';
 export const LIBRARY = 'LIBRARY';
 export const LIBRARY_LABEL = 'Library';
 export const LIBRARY_COUNT = 'LIBRARY_COUNT';
@@ -149,6 +153,7 @@ export const GP_PAGE_TRACKS_MAP = {
     TRACKS: 'tracks',
     ARTIST: 'artistTracks',
     GENRE: 'genreSongList',
+    LANGUAGE: 'languageSongList',
     PLAYLIST: 'playlistSongs',
     RECENT_PLAYS:'historyTracks'
 }
