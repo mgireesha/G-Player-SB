@@ -216,3 +216,14 @@ export const fetchArtistDetailsfromWiki = async(artist) => {
           }
         })
       }
+
+
+      export const camelize = (str) => {
+        if(!str)return str;
+        const tempStrArr = str.split(" ");
+        const strArr = [];
+        tempStrArr.forEach(trmpStr =>{
+            strArr.push(trmpStr.substring(0, 1).toUpperCase() + trmpStr.substring(1))
+        })
+        return strArr.join(" ");
+      }

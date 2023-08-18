@@ -214,4 +214,46 @@ public class GPUtil {
         }
         return fieldKey;
     }
+
+    public static final String getCamelCase(String str) {
+        if (str == null || str.length() == 0)
+            return str;
+        String[] tempStrArr = str.split(" ");
+        String[] strArr = new String[tempStrArr.length];
+        for (int i = 0; i < tempStrArr.length; i++) {
+            strArr[i] = tempStrArr[i].substring(0, 1).toUpperCase() + tempStrArr[i].substring(1);
+        }
+        return String.join(" ", strArr);
+    }
+
+    public static List<String> sortAlbumsByMostPlayed(List<String> albumListByGenre,
+            List<Map<String, Object>> mostPlayedAlbums) {
+        List<String> albums = new ArrayList<String>();
+        if (albumListByGenre.size() <= GP_CONSTANTS.GROUPED_ALBUM_COUNT_4) {
+            albums.addAll(albumListByGenre);
+        } else {
+            for (Map<String, Object> mAlbum : mostPlayedAlbums) {
+                if (albumListByGenre.contains(mAlbum.get("albumName"))
+                        && !albums.contains(mAlbum.get("albumName"))) {
+                    albums.add((String) mAlbum.get("albumName"));
+                    if (albums.size() == GP_CONSTANTS.GROUPED_ALBUM_COUNT_4) {
+                        break;
+                    }
+                }
+            }
+
+            if (albums.size() < GP_CONSTANTS.GROUPED_ALBUM_COUNT_4
+                    && albumListByGenre.size() >= GP_CONSTANTS.GROUPED_ALBUM_COUNT_4) {
+                for (String albumName : albumListByGenre) {
+                    if (!albums.contains(albumName)) {
+                        albums.add(albumName);
+                        if (albums.size() == GP_CONSTANTS.GROUPED_ALBUM_COUNT_4) {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return albums;
+    }
 }
