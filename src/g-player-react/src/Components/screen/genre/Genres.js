@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { GroupedThumbImg4 } from "../../GroupedThumbImg4";
 import { CURRENT_PAGE, GENRES, GENRE_LABEL, TRACKS_LABEL } from "../../redux/GPActionTypes";
 import { ThumbnailActionBtn } from "../../ThumbnailActionBtn";
-import { setCookies } from "../../utilities/util";
+import { camelize, setCookies } from "../../utilities/util";
 
 export const Genres = () => {
     const dispatch = useDispatch();
@@ -50,7 +50,7 @@ export const Genres = () => {
                         </div>
                         <div className="genre-thumb-details">
                             <Link to={`/music/genres/${genre}`}>
-                                <label>{genre}</label>
+                                <label>{camelize(genre)}</label>
                                 <br />
                                 <label>{genreSongCount[genre]}&nbsp;{TRACKS_LABEL}</label>
                             </Link>

@@ -7,7 +7,7 @@ import { fetchGenreDetails, fetchSongsByGenre } from "../../redux/library/Librar
 import { TrackList } from "../track/TrackList";
 import { FaPlay } from "react-icons/fa";
 import { Lyrics } from "../lyrics/Lyrics";
-import { setCookies } from "../../utilities/util";
+import { camelize, setCookies } from "../../utilities/util";
 
 export const GenrePage = () => {
     const {genre} = useParams();
@@ -90,7 +90,7 @@ export const GenrePage = () => {
                 <GroupedThumbImg4 albumNames={genreAlbums[genre]} classPrefix="genre" />
                 <div className="genre-details">
                     <div className="genre-name">
-                        <h2>{genre}</h2>
+                        <h2>{camelize(genre)}</h2>
                         <label>{genreSongCount[genre]}&nbsp;{TRACKS_LABEL}</label>
                     </div>
                     <div className="genre-actions">
