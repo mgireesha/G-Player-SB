@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import def_album_art from '../../images/def_album_art.png';
 import {MdOpenInFull} from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
-import { ALBUM, ARTIST, GENRE_TYPE_BTN, MULTI_GENRE } from "../../redux/GPActionTypes";
+import { ALBUM, ARTIST, GENRE_TYPE_BTN, MULTI_GENRE, MULTI_LINGUAL } from "../../redux/GPActionTypes";
 import { ThumbnailActionBtn } from "../../ThumbnailActionBtn";
 import { RxDragHandleDots2 } from "react-icons/rx";
 import { GPSelector } from "../../utilities/GPSelector";
@@ -14,14 +14,14 @@ export const AlbumThumb = ({album}) => {
     const [showGpSelector, setShowGpSelector] = useState(false);
 
     useEffect(()=>{
-        if(album.genreType === MULTI_GENRE){
+        if(album.languageType === MULTI_LINGUAL){
             let options = [];
-            const genres = album.genres.split(",");
-            genres.forEach(genre => {
+            const languages = album.languages.split(",");
+            languages.forEach(language => {
                 options.push({
-                    label:genre,
+                    label:language,
                     callbackFunc: navigateToGenre,
-                    args:{genre}
+                    args:{language}
                 });
             });
             setGpSelectorOptions(options);
@@ -31,7 +31,7 @@ export const AlbumThumb = ({album}) => {
     },[album]);
 
     const navigateToGenre = (args) => {
-        navigate(`/music/albums/${album.albumName}/${args.genre}`);
+        navigate(`/music/albums/${album.albumName}/${args.language}`);
     }
 
     return(
@@ -41,7 +41,7 @@ export const AlbumThumb = ({album}) => {
                     {album.albumImgAvl && <img src={"/gp_images/albums/"+album.albumName+".jpg"} />}
                     {!album.albumImgAvl && <img src={def_album_art} />}
                 </Link>
-                {album.genreType === MULTI_GENRE &&
+                {album.languageType === MULTI_LINGUAL &&
                     <>
                         <div id={GENRE_TYPE_BTN} className="genre-type-btn" onClick={()=>setShowGpSelector(true)}>
                             <RxDragHandleDots2 />

@@ -68,10 +68,10 @@ export const fetchAlbumImgsScc = (albumImgs) => ({
     albumImgs
 })
 
-export const fetchAlbumTacks = (albumName, genre, isSetPlayerTracks) => ({
+export const fetchAlbumTacks = (albumName, language, isSetPlayerTracks) => ({
     type:LIBRARY_FETCH_ALBUM_TRACKS_START,
     albumName,
-    genre,
+    language,
     isSetPlayerTracks
 })
 

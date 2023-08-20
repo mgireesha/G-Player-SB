@@ -175,8 +175,8 @@ public class LibraryService {
         boolean stepSuccess = true;
         long startingTime = System.currentTimeMillis();
         boolean isAlbumAdded = false;
-        Map<String, List<String>> albumGenreMap = new HashMap<String, List<String>>();
-        List<String> genreList = null;
+        Map<String, List<String>> albumLanguageMap = new HashMap<String, List<String>>();
+        List<String> languageList = null;
         String artistImgAvailablePath = null;
         Library songPlaying = null;
         Message lastPlayedSongId = null;
@@ -233,16 +233,16 @@ public class LibraryService {
                         e.printStackTrace();
                     }
 
-                    isAlbumAdded = isContainsCurrentAlbum(tempAlbumList, library.getAlbum(), library.getGenre());
+                    isAlbumAdded = isContainsCurrentAlbum(tempAlbumList, library.getAlbum(), library.getLanguage());
                     if (!isAlbumAdded) {
-                        if (albumGenreMap.containsKey(library.getAlbum())) {
-                            genreList = albumGenreMap.get(library.getAlbum());
-                            genreList.add(library.getGenre());
-                            albumGenreMap.put(library.getAlbum(), genreList);
+                        if (albumLanguageMap.containsKey(library.getAlbum())) {
+                            languageList = albumLanguageMap.get(library.getAlbum());
+                            languageList.add(library.getLanguage());
+                            albumLanguageMap.put(library.getAlbum(), languageList);
                         } else {
-                            genreList = new ArrayList<String>();
-                            genreList.add(library.getGenre());
-                            albumGenreMap.put(library.getAlbum(), genreList);
+                            languageList = new ArrayList<String>();
+                            languageList.add(library.getLanguage());
+                            albumLanguageMap.put(library.getAlbum(), languageList);
                         }
                     }
 
@@ -255,6 +255,7 @@ public class LibraryService {
                             album.setAlbumArtist(library.getAlbumArtist());
                             album.setComposer(library.getComposer());
                             album.setGenre(library.getGenre());
+                            album.setLanguage(library.getLanguage());
                             album.setTotaltracks(library.getTotaltracks());
                             album.setYear(library.getYear());
                             album = writeByteArrayToImgFile(album, albumImg);
@@ -353,13 +354,13 @@ public class LibraryService {
                 libList = (List<Library>) libraryRepository.saveAll(libList);
 
                 for (Album tempAlbum : tempAlbumList) {
-                    genreList = albumGenreMap.get(tempAlbum.getAlbumName());
+                    languageList = albumLanguageMap.get(tempAlbum.getAlbumName());
                     if (!isContainsCurrentAlbum(albumList, tempAlbum.getAlbumName(), null)) {
-                        if (genreList.size() > 1) {
-                            tempAlbum.setGenreType(GP_CONSTANTS.MULTI_GENRE);
-                            tempAlbum.setGenres(String.join(",", genreList));
+                        if (languageList.size() > 1) {
+                            tempAlbum.setLanguageType(GP_CONSTANTS.MULTI_LINGUAL);
+                            tempAlbum.setLanguages(String.join(",", languageList));
                         } else {
-                            tempAlbum.setGenreType(GP_CONSTANTS.SINGLE_GENRE);
+                            tempAlbum.setLanguageType(GP_CONSTANTS.MONO_LINGUAL);
                         }
                         albumList.add(tempAlbum);
                     }
@@ -570,8 +571,8 @@ public class LibraryService {
         return libraryRepository.getByAlbum(album);
     }
 
-    public List<Library> getSongsByAlbumAndGenre(String album, String genre) {
-        return libraryRepository.getByAlbumAndGenre(album, genre);
+    public List<Library> getSongsByAlbumAndLanguage(String album, String language) {
+        return libraryRepository.getByAlbumAndLanguage(album, language);
     }
 
     public List<Library> getSongsByYear(int year) {
@@ -878,17 +879,18 @@ public class LibraryService {
     // Multiple repositories - end
 
     // Utility methods - Start
-    public boolean isContainsCurrentAlbum(final List<Album> list, final String name, final String genre) {
-        String methodName = "isContainsCurrentAlbum";
+    public boolean isContainsCurrentAlbum(final List<Album> list, final String name, final String field) {
+        final String METHOD_NAME = "isContainsCurrentAlbum";
         try {
-            if (genre == null) {
+            if (field == null) {
                 return list.stream().filter(o -> o.getAlbumName().equals(name)).findFirst().isPresent();
             } else {
-                return list.stream().filter(o -> o.getAlbumName().equals(name) && o.getGenre().equalsIgnoreCase(genre))
+                return list.stream()
+                        .filter(o -> o.getAlbumName().equals(name) && o.getLanguage().equalsIgnoreCase(field))
                         .findFirst().isPresent();
             }
         } catch (Exception e) {
-            LOG.error("Failed in:" + methodName + " method, name: " + name + ", genre: " + genre);
+            LOG.error("Failed in:" + METHOD_NAME + " method, name: " + name + ", field: " + field);
             e.getMessage();
         }
         return false;

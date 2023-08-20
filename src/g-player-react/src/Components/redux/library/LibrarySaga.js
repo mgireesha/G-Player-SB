@@ -112,7 +112,7 @@ export function* onFetchAlbumTracks(){
 
 export function* onFetchAlbumTracksAsync(payload){
     try {
-        const response = yield call(fetchAlbumtracksAPI,payload.albumName, payload.genre);
+        const response = yield call(fetchAlbumtracksAPI,payload.albumName, payload.language);
         if(response.status === 200){
             if(payload.isSetPlayerTracks){
                 yield put(setPlayerTracks(null,response.data));

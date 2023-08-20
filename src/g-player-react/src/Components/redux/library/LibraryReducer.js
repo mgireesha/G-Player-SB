@@ -340,7 +340,7 @@ const libraryReducer = (state = initialState, action) => {
         default:
             return {
                 ...state,
-                phase:INIT
+                //phase:INIT
             }
     }
 }

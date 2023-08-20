@@ -50,6 +50,8 @@ public class GP_CONSTANTS {
     public static final String MUSIC_FILE_METADATA_FIELD = "MUSIC_FILE_METADATA_FIELD";
     public static final String MUSIC_FILE_METADATA_VALUE = "MUSIC_FILE_METADATA_VALUE";
     public static final String MULTI_GENRE = "MULTI_GENRE";
+    public static final String MULTI_LINGUAL = "MULTI_LINGUAL";
+    public static final String MONO_LINGUAL = "MONO_LINGUAL";
 
     public static final String NOT_FOUND = "NOT_FOUND";
 
