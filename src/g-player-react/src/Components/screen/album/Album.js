@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import def_album_art from '../../images/def_album_art.png';
-import { ALBUM, A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, MULTI_GENRE, TRACKS_LABEL, TRACK_NUMBER } from ".././../redux/GPActionTypes";
+import { ALBUM, A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, MULTI_GENRE, MULTI_LINGUAL, TRACKS_LABEL, TRACK_NUMBER } from ".././../redux/GPActionTypes";
 import { Lyrics } from "../lyrics/Lyrics";
 import { fetchAlbum, fetchAlbumTacks } from "../../redux/library/LibraryActions";
 import { camelize, setCookies } from "../../utilities/util";
@@ -11,7 +11,7 @@ import { SplitAndLink } from "../../utilities/SplitAndLink";
 
 export const Album = () => {
     const dispatch = useDispatch();
-    const { albumName, genre } = useParams();
+    const { albumName, language } = useParams();
     const album = useSelector(state => state.library.album);
     let albumTracks = useSelector(state => state.library.albumTracks);
     if(albumTracks.length>0){
@@ -21,10 +21,10 @@ export const Album = () => {
     const [trackListInp, setTrackListInp] = useState({});
 
     useEffect(()=>{
-        dispatch(fetchAlbumTacks(albumName, genre));
+        dispatch(fetchAlbumTacks(albumName, language));
         dispatch(fetchAlbum(albumName));
         setCookies(CURRENT_PAGE, JSON.stringify({type:ALBUM}));
-    },[albumName, genre]);
+    },[albumName, language]);
 
     useEffect(()=>{
         const tempTrackListInp = {
@@ -62,15 +62,15 @@ export const Album = () => {
                         <Link to={`/music/album_artists/${album.albumArtist}`} >
                             <label style={{cursor:'pointer'}}>{album.albumArtist}</label>
                         </Link>
-                        {album.genreType !== MULTI_GENRE &&<label>{album.year} - <SplitAndLink str={album.genre} url={`/music/genres/`} /></label>}
+                        {album.languageType !== MULTI_LINGUAL &&<label>{album.year} - <SplitAndLink str={album.language} url={`/music/languages/`} /></label>}
                         {albumTracks && <label>{albumTracks.length}&nbsp;{TRACKS_LABEL}</label> }
-                        {album.genreType === MULTI_GENRE &&
+                        {album.languageType === MULTI_LINGUAL &&
                             <>
-                                <label>{album.year} - {genre?<Link to={`/music/genres/${album.genre}`}>{camelize(genre)}</Link>:"All"}</label>
+                                <label>{album.year} - {language ? <Link to={`/music/languages/${language}`}>{camelize(language)}</Link> : 'All'}</label>
                                 <div className="album-multi-genre-select">
-                                    <Link className={!genre?"selected":""} to={`/music/albums/${album.albumName}`}>All</Link>
-                                    {album.genres.split(",").map(gnre=>
-                                        <Link className={genre === gnre ? "selected":""} to={`/music/albums/${album.albumName}/${gnre}`}>{gnre}</Link>
+                                    <Link className={!language?"selected":""} to={`/music/albums/${album.albumName}`}>All</Link>
+                                    {album.languages.split(",").map(gnre=>
+                                        <Link className={language === gnre ? "selected":""} to={`/music/albums/${album.albumName}/${gnre}`}>{gnre}</Link>
                                     )}
                                 </div>
                             </>

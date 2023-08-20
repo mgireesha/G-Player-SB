@@ -60,7 +60,7 @@ public interface LibraryRepository extends CrudRepository<Library, Long> {
     @Query("Select l from Library l where l.songId in (:songsId) order by l.title")
     List<Library> getSongsBySongIds(List<Long> songsId);
 
-    List<Library> getByAlbumAndGenre(String album, String genre);
+    List<Library> getByAlbumAndLanguage(String album, String language);
 
     List<Library> getByTitleAndAlbum(String title, String album);
 

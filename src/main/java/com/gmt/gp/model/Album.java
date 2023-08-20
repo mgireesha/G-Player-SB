@@ -21,19 +21,20 @@ public class Album {
     private int year;
     private int totaltracks;
     private String genre;
+    private String language;
     private boolean isAlbumImgAvl;
-    private String genreType;
-    private String genres;
+    private String languageType;
+    private String languages;
 
     public Album() {
     }
 
-    public String getGenres() {
-        return genres;
+    public String getLanguages() {
+        return languages;
     }
 
-    public void setGenres(String genres) {
-        this.genres = genres;
+    public void setLanguages(String languages) {
+        this.languages = languages;
     }
 
     public long getAlbumId() {
@@ -108,20 +109,28 @@ public class Album {
         this.isAlbumImgAvl = isAlbumImgAvl;
     }
 
-    public String getGenreType() {
-        return genreType;
+    public String getLanguageType() {
+        return languageType;
     }
 
-    public void setGenreType(String genreType) {
-        this.genreType = genreType;
+    public void setLanguageType(String languageType) {
+        this.languageType = languageType;
     }
 
     @Override
     public String toString() {
         return "Album [albumId=" + albumId + ", albumName=" + albumName + ", albumImgPath=" + albumImgPath
                 + ", albumArtist=" + albumArtist + ", composer=" + composer + ", year=" + year + ", totaltracks="
-                + totaltracks + ", genre=" + genre + ", isAlbumImgAvl=" + isAlbumImgAvl + ", genreType=" + genreType
-                + "]";
+                + totaltracks + ", genre=" + genre + ", language=" + language + ", isAlbumImgAvl=" + isAlbumImgAvl
+                + ", languageType=" + languageType + ", languages=" + languages + "]";
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 
 }

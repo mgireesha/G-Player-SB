@@ -22,7 +22,7 @@ export const Screen = () => {
             <Routes>
                 <Route path='/' element={<Music />} />
                 <Route path='tracks' element={<Tracks />} />
-                <Route path='albums/:albumName/:genre' element={<Album />} />
+                <Route path='albums/:albumName/:language' element={<Album />} />
                 <Route path='albums/:albumName' element={<Album />} />
                 <Route path='albums' element={<AlbumList />} />
                 <Route path='artists/:artist' element={<Artist />} />

@@ -8,6 +8,7 @@ export const StatusMessage = () => {
     const dispatch = useDispatch();
     const message = useSelector(state => state.library.statusMessage);
     const [showMessage, setShowMessage] = useState(false);
+    const [clearTimeoutM, setClearTimeoutM] = useState();
 
     useEffect(()=> {
         if(message && message !== ""){
@@ -16,10 +17,15 @@ export const StatusMessage = () => {
     },[message]);
 
     useEffect(()=>{
+        if(clearTimeoutM){
+            clearTimeout(clearTimeoutM);
+        }
+        let tempClearTimeoutM;
         if(showMessage){
-            setTimeout(() => {
+            tempClearTimeoutM = setTimeout(() => {
                 closeMessage();
             }, 5000);
+            setClearTimeoutM(tempClearTimeoutM);
         }
     },[showMessage]);
 

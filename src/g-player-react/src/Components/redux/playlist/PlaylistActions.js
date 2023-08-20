@@ -1,5 +1,5 @@
 import { ADD, RENAME } from "../GPActionTypes"
-import { PLAYLIST_ADD_TO_PLAYLIST_START, PLAYLIST_ADD_TO_PLAYLIST_SUCCESS, 
+import { PLAYLIST_ADD_TO_PLAYLIST_FAIL, PLAYLIST_ADD_TO_PLAYLIST_START, PLAYLIST_ADD_TO_PLAYLIST_SUCCESS, 
     PLAYLIST_CREATE_PLAYLIST_START, PLAYLIST_CREATE_PLAYLIST_SUCCESS, 
     PLAYLIST_DELETE_PLAYLIST_START, PLAYLIST_DELETE_PLAYLIST_SUCCESS, 
     PLAYLIST_EXPORT_PLAYLISTS_START, PLAYLIST_EXPORT_PLAYLISTS_SUCCESS, 
@@ -39,6 +39,11 @@ export const addToPlaylist = (reqPLObj) => ({
 export const addToPlaylistSucc = (playlists) => ({
     type:PLAYLIST_ADD_TO_PLAYLIST_SUCCESS,
     playlists
+})
+
+export const addToPlaylistFail = (error) => ({
+    type:PLAYLIST_ADD_TO_PLAYLIST_FAIL,
+    error
 })
 
 export const setAddedNewPlaylistObj = (addedNewPlaylistObj) => ({
