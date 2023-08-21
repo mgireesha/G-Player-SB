@@ -156,10 +156,13 @@ export const updateHistoryAPI = (songId) => {
 }
 
 export const fetchMostPlayedDataAPI = () => {
-    return iAxios.get(`/history/most-played-data`).then(response => response);
+    return iAxios.get(`/library/most-played-data`).then(response => response);
 }
 //History End
 
+export const editTrackInfoAPI = (payload, onjType) => {
+    return iAxios.post(`/library/edit-track-info/${onjType}`, payload).then(response => response);
+}
 
 //Playlist - Start
 

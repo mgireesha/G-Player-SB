@@ -17,11 +17,13 @@ import { PlaylistSelector } from "./playlist/PlayllistSelector";
 import { CommonPopup } from "./CommnPopup";
 import { GPContexMenu } from "./screen/GPContextMenu";
 import { StatusMessage } from "./screen/StatusMessage";
+import { MetadataPopup } from "./screen/metadata/MetadataPopup";
 
 export const Home = () => {
     const dispatch = useDispatch();
     const showContextMenu = useSelector(state => state.library.showContextMenu);
     const showPlaylistSelector = useSelector(state => state.library.showPlaylistSelector);
+    const showMetadataPopup = useSelector(state => state.library.metadataPopupObj.showMetadataPopup);
 
     useEffect(()=>{
         dispatch(fetchPlaylistNames());
@@ -101,6 +103,7 @@ export const Home = () => {
             {showPlaylistSelector && <PlaylistSelector />}
             <CommonPopup />
             <StatusMessage />
+            {showMetadataPopup && <MetadataPopup />}
         </div>
     );
 }

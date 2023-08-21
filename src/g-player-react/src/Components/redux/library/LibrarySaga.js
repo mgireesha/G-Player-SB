@@ -1,6 +1,6 @@
 import { call, put, takeEvery, takeLatest } from "redux-saga/effects";
-import { handleAPIError } from "../../utilities/util";
-import { deleteMusicPathAPI, fetchAlbumAPI, fetchAlbumImgsAPI,
+import { getCookieValue, handleAPIError } from "../../utilities/util";
+import { deleteMusicPathAPI, editTrackInfoAPI, fetchAlbumAPI, fetchAlbumImgsAPI,
          fetchalbumListOfAAAPI,
          fetchAlbumtracksAPI,
          fetchAllAlbumDtlsAPI, fetchAllAlbumsAPI, fetchAllArtistsDtlsAPI, 
@@ -15,9 +15,9 @@ import { deleteMusicPathAPI, fetchAlbumAPI, fetchAlbumImgsAPI,
 import { deleteMusicPathSucc, fetchAlbumImgsScc, fetchAlbumlistOfAASucc, fetchAlbumSucc, 
         fetchAlbumTacksSucc, 
         fetchAllAlbumArtistsDtlsSucc, fetchAllAlbumsDtlsSucc, fetchAllAlbumsSucc, 
-        fetchAllArtistsDtlsSucc, fetchAllHistorySucc, fetchBuildStatusSucc, fetchGenreDetailsSucc, fetchMostPlayedDataSucc, fetchMusicPathSucc, fetchSongsByArtistSucc, fetchAllSongsSucc, initiArtistImageDownloadSucc, initLibraryBuildSucc, saveMusicPathSucc, searchByKeySucc, updateHistorySucc, fetchSongsByGenreSucc, setPlayerTracks, uploadArtistImg, uploadArtistImgSucc, setStatusMessage, fetchLanguageDetailsSucc, fetchSongsByLanguageSucc 
+        fetchAllArtistsDtlsSucc, fetchAllHistorySucc, fetchBuildStatusSucc, fetchGenreDetailsSucc, fetchMostPlayedDataSucc, fetchMusicPathSucc, fetchSongsByArtistSucc, fetchAllSongsSucc, initiArtistImageDownloadSucc, initLibraryBuildSucc, saveMusicPathSucc, searchByKeySucc, updateHistorySucc, fetchSongsByGenreSucc, setPlayerTracks, uploadArtistImg, uploadArtistImgSucc, setStatusMessage, fetchLanguageDetailsSucc, fetchSongsByLanguageSucc, editTrackInfoSucc, setMetadataPopupObj 
     } from "./LibraryActions";
-import { FETCH_SONGS_START, HISTORY_FETCH_ALL_HISTORY_START, HISTORY_UPDATE_HISTORY_START, LIBRARY_DELETE_MUSIC_PATH_START, LIBRARY_FETCH_ALBUMS_DETAILS_START, LIBRARY_FETCH_ALBUMS_START, 
+import { FETCH_SONGS_START, HISTORY_FETCH_ALL_HISTORY_START, HISTORY_UPDATE_HISTORY_START, LIBRARY_DELETE_MUSIC_PATH_START, LIBRARY_EDIT_TRACK_INFO_START, LIBRARY_FETCH_ALBUMS_DETAILS_START, LIBRARY_FETCH_ALBUMS_START, 
     LIBRARY_FETCH_ALBUM_ARTIST_LIST_START, 
     LIBRARY_FETCH_ALBUM_IMGS_START, LIBRARY_FETCH_ALBUM_LIST_OF_AA_START, LIBRARY_FETCH_ALBUM_START, LIBRARY_FETCH_ALBUM_TRACKS_START, LIBRARY_FETCH_ARTIST_LIST_START, 
     LIBRARY_FETCH_BUILD_STATUS_START, 
@@ -34,7 +34,7 @@ import { FETCH_SONGS_START, HISTORY_FETCH_ALL_HISTORY_START, HISTORY_UPDATE_HIST
     LIBRARY_SEARCH_BY_KEY_START,
     LIBRARY_UPLOAD_ARTIST_IMG_START
 } from "./LibraryActionTypes";
-import { SUCCESS } from "../GPActionTypes";
+import { CURRENT_PAGE, GP_PAGE_TRACKS_MAP, SUCCESS } from "../GPActionTypes";
 
 export function* onFetchAllSongs(){
     yield takeEvery(FETCH_SONGS_START, onFetchAllSongsAsnc);
@@ -431,6 +431,36 @@ export function* onInitArtistImgDownloadAsync(){
         const response = yield call(initiateArtistImageDownload);
         if(response.status === 200){
             yield put(initiArtistImageDownloadSucc(response.data));
+        }
+    } catch (error) {
+        console.log(error);
+        handleAPIError(error);
+    }
+}
+
+export function* onEditTrackInfo (){
+    yield takeLatest(LIBRARY_EDIT_TRACK_INFO_START, onEditTrackInfoAsync);
+}
+
+export function* onEditTrackInfoAsync(payload){
+    console.log("446 payload",payload)
+    try {
+        const response = yield call(editTrackInfoAPI, payload.payload, payload.onjType);
+        if(response.status === 200){
+            const data = response.data;
+            
+            if(data.status === SUCCESS){
+                let currentPage = getCookieValue(CURRENT_PAGE);
+                if(currentPage){
+                    currentPage = JSON.parse(currentPage);
+                    const field = GP_PAGE_TRACKS_MAP[currentPage.type];
+                    yield put(editTrackInfoSucc(field, data.library));
+                }
+                yield put(setMetadataPopupObj({showMetadataPopup:false}));
+                yield put(setStatusMessage("Updated info successfully"));
+            }else{
+                yield put(setStatusMessage(data.status1));
+            }
         }
     } catch (error) {
         console.log(error);
