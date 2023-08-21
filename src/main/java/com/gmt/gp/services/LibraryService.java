@@ -530,6 +530,12 @@ public class LibraryService {
                 library.setLanguage(GP_CONSTANTS.UNKNOWN_LABEL);
             }
 
+            if (!tag.getFirst(FieldKey.RECORD_LABEL).equals("") && tag.getFirst(FieldKey.RECORD_LABEL) != null) {
+                library.setLabel(tag.getFirst(FieldKey.RECORD_LABEL));
+            } else {
+                library.setLabel(GP_CONSTANTS.UNKNOWN_LABEL);
+            }
+
             try {
                 library.setTrackLength(audioF.getAudioHeader().getTrackLength());
             } catch (Exception e) {
@@ -1323,12 +1329,19 @@ public class LibraryService {
         Map<String, String> updateMp3FileResponse = new HashMap<String, String>();
         Map<String, Map<String, String>> updateMp3FilesResponse = new HashMap<String, Map<String, String>>();
         removeJAudioTagLogger();
-        FieldKey fieldKey = GPUtil.getFieldKeyForString(field);
+        Map<String, String> inputMap = new HashMap<String, String>();
+        inputMap.put(field, value);
         for (File musicFile : fileList) {
-            updateMp3FileResponse = updateMp3File(musicFile, fieldKey, value);
+            updateMp3FileResponse = updateMp3File(musicFile, inputMap);
             updateMp3FilesResponse.put(musicFile.getAbsolutePath(), updateMp3FileResponse);
         }
+        resp = writeUpdateMp3ResonseToCSV(updateMp3FilesResponse, updateMp3FileResponse);
+        return resp;
+    }
 
+    public GPResponse writeUpdateMp3ResonseToCSV(Map<String, Map<String, String>> updateMp3FilesResponse,
+            Map<String, String> updateMp3FileResponse) {
+        GPResponse resp = new GPResponse();
         try {
             GPUtil.checkAndCreateFolders(GP_CONSTANTS.GP_LOGS_PATH);
             File updateMp3FilesResponseFile = new File(GP_CONSTANTS.GP_LOGS_PATH + "UPDATE_MUSIC_FILE_RESPINSE" + "_"
@@ -1337,19 +1350,36 @@ public class LibraryService {
             fileWriter.append(GP_CONSTANTS.FILENAME).append(",")
                     .append(GP_CONSTANTS.FILEPATH).append(",")
                     .append(GP_CONSTANTS.MUSIC_FILE_METADATA_FIELD).append(",")
-                    .append(GP_CONSTANTS.MUSIC_FILE_METADATA_VALUE).append(",")
+                    // .append(GP_CONSTANTS.MUSIC_FILE_METADATA_VALUE).append(",")
                     .append(GP_CONSTANTS.STATUS).append(",")
                     .append(GP_CONSTANTS.ERROR).append(",")
                     .append(GP_CONSTANTS.EXCEPTION).append(System.lineSeparator());
-            for (String key : updateMp3FilesResponse.keySet()) {
-                updateMp3FileResponse = updateMp3FilesResponse.get(key);
+            if (updateMp3FilesResponse != null) {
+                for (String key : updateMp3FilesResponse.keySet()) {
+                    updateMp3FileResponse = updateMp3FilesResponse.get(key);
+                    fileWriter.append(updateMp3FileResponse.get(GP_CONSTANTS.FILENAME))
+                            .append(",")
+                            .append(updateMp3FileResponse.get(GP_CONSTANTS.FILEPATH))
+                            .append(",")
+                            .append(updateMp3FileResponse.get(GP_CONSTANTS.MUSIC_FILE_METADATA_FIELD))
+                            .append(",")
+                            // .append(updateMp3FileResponse.get(GP_CONSTANTS.MUSIC_FILE_METADATA_VALUE))
+                            .append(",")
+                            .append(updateMp3FileResponse.get(GP_CONSTANTS.STATUS))
+                            .append(",")
+                            .append(updateMp3FileResponse.get(GP_CONSTANTS.ERROR))
+                            .append(",")
+                            .append(updateMp3FileResponse.get(GP_CONSTANTS.EXCEPTION))
+                            .append(System.lineSeparator());
+                }
+            } else {
                 fileWriter.append(updateMp3FileResponse.get(GP_CONSTANTS.FILENAME))
                         .append(",")
                         .append(updateMp3FileResponse.get(GP_CONSTANTS.FILEPATH))
                         .append(",")
                         .append(updateMp3FileResponse.get(GP_CONSTANTS.MUSIC_FILE_METADATA_FIELD))
                         .append(",")
-                        .append(updateMp3FileResponse.get(GP_CONSTANTS.MUSIC_FILE_METADATA_VALUE))
+                        // .append(updateMp3FileResponse.get(GP_CONSTANTS.MUSIC_FILE_METADATA_VALUE))
                         .append(",")
                         .append(updateMp3FileResponse.get(GP_CONSTANTS.STATUS))
                         .append(",")
@@ -1368,61 +1398,57 @@ public class LibraryService {
         return resp;
     }
 
-    public Map<String, String> updateMp3File(File musicFile, FieldKey fieldKey, String value) {
+    public Map<String, String> updateMp3File(File musicFile, Map<String, String> fieldValMap) {
         final String METHOD_NAME = "updateMp3File";
         AudioFile audioFile = null;
         Tag tag = null;
         Map<String, String> updateMp3FileResponseMap = new HashMap<String, String>();
         String existingField = null;
+        FieldKey fieldKey = null;
         try {
             audioFile = AudioFileIO.read(new File(musicFile.getAbsolutePath()));
             tag = audioFile.getTag();
-            // Iterator<TagField> tagFItr = tag.getFields();
-            // while (tagFItr.hasNext()) {
-            // TagField field3 = tagFItr.next();
-            // System.out.println("field3: " + field3.getId());
-            // System.out.println("getRawContent: " + FieldKey.LANGUAGE);
-            // }
-
-            existingField = tag.getFirst(fieldKey);
-            if (existingField != null && !existingField.equals("")) {
-                tag.deleteField(fieldKey);
+            for (String field : fieldValMap.keySet()) {
+                fieldKey = GPUtil.getFieldKeyForString(field);
+                existingField = tag.getFirst(fieldKey);
+                if (existingField != null && !existingField.equals("")) {
+                    tag.setField(fieldKey, fieldValMap.get(field));
+                } else {
+                    tag.addField(fieldKey, fieldValMap.get(field));
+                }
             }
-            tag.addField(fieldKey, value);
             audioFile.setTag(tag);
             audioFile.commit();
-            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldKey.name(), value,
-                    null);
+            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldValMap, null);
         } catch (KeyNotFoundException e) {
-            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldKey.name(), value, e);
+            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldValMap, e);
         } catch (FieldDataInvalidException e) {
-            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldKey.name(), value, e);
+            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldValMap, e);
         } catch (CannotWriteException e) {
-            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldKey.name(), value, e);
+            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldValMap, e);
         } catch (CannotReadException e) {
-            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldKey.name(), value, e);
+            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldValMap, e);
         } catch (IOException e) {
-            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldKey.name(), value, e);
+            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldValMap, e);
         } catch (TagException e) {
-            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldKey.name(), value, e);
+            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldValMap, e);
         } catch (ReadOnlyFileException e) {
-            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldKey.name(), value, e);
+            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldValMap, e);
         } catch (InvalidAudioFrameException e) {
-            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldKey.name(), value, e);
+            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldValMap, e);
         } catch (Exception e) {
-            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldKey.name(), value, e);
+            updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldValMap, e);
         }
         return updateMp3FileResponseMap;
     }
 
-    private Map<String, String> getUpdateMp3FileResponseMap(final String METHOD_NAME, File musicFile, String field,
-            String value, Exception e) {
+    private Map<String, String> getUpdateMp3FileResponseMap(final String METHOD_NAME, File musicFile,
+            Map<String, String> fieldValMap, Exception e) {
         Map<String, String> updateMp3FileResponseMap = new HashMap<String, String>();
         updateMp3FileResponseMap.put(GP_CONSTANTS.METHOD_NAME, METHOD_NAME);
         updateMp3FileResponseMap.put(GP_CONSTANTS.FILENAME, musicFile.getName());
         updateMp3FileResponseMap.put(GP_CONSTANTS.FILEPATH, musicFile.getAbsolutePath());
-        updateMp3FileResponseMap.put(GP_CONSTANTS.MUSIC_FILE_METADATA_FIELD, field);
-        updateMp3FileResponseMap.put(GP_CONSTANTS.MUSIC_FILE_METADATA_VALUE, value);
+        updateMp3FileResponseMap.put(GP_CONSTANTS.MUSIC_FILE_METADATA_FIELD, fieldValMap.toString());
         if (e != null) {
             updateMp3FileResponseMap.put(GP_CONSTANTS.STATUS, GP_CONSTANTS.ERROR);
             updateMp3FileResponseMap.put(GP_CONSTANTS.EXCEPTION, e.getClass().getName());
@@ -1488,6 +1514,73 @@ public class LibraryService {
         }
 
         return languageDetails;
+    }
+
+    public GPResponse updateTrackInfo(Library reqLibrary, String type) {
+        GPResponse resp = new GPResponse();
+        Map<String, String> fieldValMap = new HashMap<String, String>();
+        Map<String, String> updateMp3FileResponseMap = null;
+        Library respLibrary = getSongBySongId(reqLibrary.getSongId());
+        try {
+            if (type.equals(GP_CONSTANTS.TRACK)) {
+                File musicFile = new File(respLibrary.getSongPath());
+                if (reqLibrary.getTitle() != null && !reqLibrary.getTitle().equalsIgnoreCase("")) {
+                    fieldValMap.put("title", reqLibrary.getTitle());
+                    respLibrary.setTitle(reqLibrary.getTitle());
+                }
+                if (reqLibrary.getAlbum() != null && !reqLibrary.getAlbum().equalsIgnoreCase("")) {
+                    fieldValMap.put("album", reqLibrary.getAlbum());
+                    respLibrary.setAlbum(reqLibrary.getAlbum());
+                }
+                if (reqLibrary.getArtist() != null && !reqLibrary.getArtist().equalsIgnoreCase("")) {
+                    fieldValMap.put("artist", reqLibrary.getArtist());
+                    respLibrary.setArtist(reqLibrary.getArtist());
+                }
+                if (reqLibrary.getAlbumArtist() != null && !reqLibrary.getAlbumArtist().equalsIgnoreCase("")) {
+                    fieldValMap.put("albumArtist", reqLibrary.getAlbumArtist());
+                    respLibrary.setAlbumArtist(reqLibrary.getAlbumArtist());
+                }
+
+                if (reqLibrary.getTrackNumber() != 0) {
+                    fieldValMap.put("trackNumber", String.valueOf(reqLibrary.getTrackNumber()));
+                    respLibrary.setTrackNumber(reqLibrary.getTrackNumber());
+                }
+                if (reqLibrary.getYear() != 0) {
+                    fieldValMap.put("year", String.valueOf(reqLibrary.getYear()));
+                    respLibrary.setYear(reqLibrary.getYear());
+                }
+                if (reqLibrary.getLanguage() != null && !reqLibrary.getLanguage().equalsIgnoreCase("")) {
+                    fieldValMap.put("language", reqLibrary.getLanguage());
+                    respLibrary.setLanguage(reqLibrary.getLanguage());
+                }
+                if (reqLibrary.getGenre() != null && !reqLibrary.getGenre().equalsIgnoreCase("")) {
+                    fieldValMap.put("genre", reqLibrary.getGenre());
+                    respLibrary.setGenre(reqLibrary.getGenre());
+                }
+                if (reqLibrary.getLyricist() != null && !reqLibrary.getLyricist().equalsIgnoreCase("")) {
+                    fieldValMap.put("lyricist", reqLibrary.getLyricist());
+                    respLibrary.setLyricist(reqLibrary.getLyricist());
+                }
+                if (reqLibrary.getLabel() != null && !reqLibrary.getLabel().equalsIgnoreCase("")) {
+                    fieldValMap.put("label", reqLibrary.getLabel());
+                    respLibrary.setLabel(reqLibrary.getLabel());
+                }
+                updateMp3FileResponseMap = updateMp3File(musicFile, fieldValMap);
+                if (GP_CONSTANTS.SUCCESS.equals(updateMp3FileResponseMap.get(GP_CONSTANTS.STATUS))) {
+                    respLibrary = libraryRepository.save(respLibrary);
+                    resp.setLibrary(respLibrary);
+                    resp.setStatus(GP_CONSTANTS.SUCCESS);
+                } else {
+                    writeUpdateMp3ResonseToCSV(null, updateMp3FileResponseMap);
+                    resp.setStatus(GP_CONSTANTS.FAILED);
+                    resp.setStatus1("Find more details at : " + GP_CONSTANTS.GP_LOGS_PATH);
+                }
+            }
+        } catch (Exception e) {
+            resp.setStatus(GP_CONSTANTS.FAILED);
+            resp.setError(e.getMessage());
+        }
+        return resp;
     }
 
 }

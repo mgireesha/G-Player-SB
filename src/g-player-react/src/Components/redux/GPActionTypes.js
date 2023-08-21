@@ -17,6 +17,7 @@ export const ARTISTS_LABEL = 'Artists';
 
 export const BUILD_STATUS = 'BUILD_STATUS';
 
+export const CANCEL_LABEL = 'Cancel';
 export const COMING_SOON_LABEL = 'Coming soon';
 export const COMMON_POPUP_ERROR_MSG = 'COMMON_POPUP_ERROR_MSG';
 export const COMPLETED = 'COMPLETED';
@@ -32,7 +33,11 @@ export const DELETE = "Delete";
 export const DELETE_PLAYLIST_LABEL = "Delete Playlist";
 export const DELETE_PLAYLIST_CONF_TEXT = "Are you sure to delete this playlist?";
 
+export const EDIT_TRACK_INFO = 'EDIT_TRACK_INFO';
+export const EDIT_TRACK_INFO_LABEL = 'Edit track info';
 export const EXPORT_LABEL = 'Export';
+
+export const FILE_LOCATION_LABEL = 'File laocation:';
 
 export const GENRE = 'GENRE';
 export const GENRE_ALBUMS = 'GENRE_ALBUMS';
@@ -68,6 +73,8 @@ export const LIBRARY_COUNT_LABEL = 'Never Played';
 export const LOADING = 'LOADING';
 export const LYRICS_AVAILABLE = 'LYRICS_AVAILABLE';
 export const LYRICS_AVAILABLE_LABEL = 'Lyrics Available';
+export const LYRICIST_LABEL = 'Lyricist';
+export const LABEL_LABEL = 'Label';
 
 export const MAIN_CONTAINER = "MAIN_CONTAINER";
 export const MEDIA_PLAYER_NULL = 'MEDIA_PLAYER_NULL';
@@ -111,6 +118,7 @@ export const REPEAT_OFF = 'REPEAT_OFF';
 export const REPEAT_ONE = 'REPEAT_ONE';
 export const RUNNING = 'RUNNING';
 
+export const SAVE_LABEL = 'Save';
 export const SEARCH_RESULTS_LABEL = 'Search Results';
 export const SOME_PAGE = 'SOME_PAGE';
 export const SORT_ARTIST = 'Artist';
@@ -128,6 +136,7 @@ export const TOTAL_TIME_PLAYED = 'TOTAL_TIME_PLAYED';
 export const TOTAL_TIME_PLAYED_LABEL = 'Total Time Played';
 export const TIME_PLAYED_THIS_MONTH = 'TIME_PLAYED_THIS_MONTH';
 export const TIME_PLAYED_THIS_MONTH_LABEL = 'Time Played This Month';
+export const TITLE_LABEL = 'Title';
 export const TRACK = 'TRACK';
 export const TRACK_LIST = 'TRACK_LIST';
 export const TRACK_NUMBER = 'TRACK_NUMBER';
@@ -140,6 +149,8 @@ export const UPDATE_LABEL = 'Update';
 export const UPDATE_ARTIST_IMAGE_TEXT = 'Upload custom image';
 
 export const WIKI_SUMMARY_URL = "https://en.wikipedia.org/api/rest_v1/page/summary/";
+
+export const YEAR_LABEL = 'Year';
 
 
 /** Text */
@@ -155,6 +166,7 @@ export const GP_PAGE_TRACKS_MAP = {
     TRACKS: 'tracks',
     ARTIST: 'artistTracks',
     GENRE: 'genreSongList',
+    GENRES: 'genreSongList',
     LANGUAGE: 'languageSongList',
     PLAYLIST: 'playlistSongs',
     RECENT_PLAYS:'historyTracks'

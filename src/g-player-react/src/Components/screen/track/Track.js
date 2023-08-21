@@ -1,11 +1,11 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { ALBUM, ARTIST, CURRENT_PAGE, PLAYLIST, REMOVE_LABEL, TRACK, TRACK_MENU_BTN_CIRCLE } from "../../redux/GPActionTypes";
+import { ALBUM, ARTIST, CURRENT_PAGE, EDIT_TRACK_INFO_LABEL, PLAYLIST, REMOVE_LABEL, TRACK, TRACK_MENU_BTN_CIRCLE } from "../../redux/GPActionTypes";
 import { playASong, playPause, setIsPlaying } from "../../redux/player/PlayerActions";
 import { getCookieValue, getMins } from "../../utilities/util";
 import { FaPlay } from "react-icons/fa";
-import { setContextObj, setShowContextMenu } from "../../redux/library/LibraryActions";
+import { setContextObj, setMetadataPopupObj, setShowContextMenu } from "../../redux/library/LibraryActions";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { MdOutlineLyrics } from "react-icons/md";
 import { removeFromPlaylist } from "../../redux/playlist/PlaylistActions";
@@ -33,6 +33,7 @@ export const Track = ({track, playedFrom, index, hideTrackNum}) => {
         if(playedFrom.pfKey === PLAYLIST){
             options.push({label:REMOVE_LABEL, callBackFunc: removeTrackFromPlaylist});
         }
+        options.push({label:EDIT_TRACK_INFO_LABEL, callBackFunc: onSetShowMetadataPopup});
         const contextObj = {
             position,
             type: TRACK,
@@ -54,6 +55,15 @@ export const Track = ({track, playedFrom, index, hideTrackNum}) => {
         }else{
             alert("Error")
         }
+    }
+
+    const onSetShowMetadataPopup = () => {
+        const metadataPopupObj = {
+            showMetadataPopup : true,
+            obj:track,
+            objType:TRACK
+        }
+        dispatch(setMetadataPopupObj(metadataPopupObj));
     }
 
     return(

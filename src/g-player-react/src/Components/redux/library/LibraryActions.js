@@ -3,6 +3,8 @@ import { FETCH_SONGS_START, FETCH_SONGS_SUCCESS,
         HISTORY_FETCH_ALL_HISTORY_START, HISTORY_FETCH_ALL_HISTORY_SUCCESS, 
         HISTORY_UPDATE_HISTORY_START, HISTORY_UPDATE_HISTORY_SUCCESS, 
         LIBRARY_DELETE_MUSIC_PATH_START, LIBRARY_DELETE_MUSIC_PATH_SUCCESS, 
+        LIBRARY_EDIT_TRACK_INFO_START, 
+        LIBRARY_EDIT_TRACK_INFO_SUCCESS, 
         LIBRARY_FETCH_ALBUMS_DETAILS_START, LIBRARY_FETCH_ALBUMS_DETAILS_SUCCESS, 
         LIBRARY_FETCH_ALBUMS_START, LIBRARY_FETCH_ALBUMS_SUCCESS, 
         LIBRARY_FETCH_ALBUM_ARTIST_LIST_START, LIBRARY_FETCH_ALBUM_ARTIST_LIST_SUCCESS, 
@@ -28,7 +30,8 @@ import { FETCH_SONGS_START, FETCH_SONGS_SUCCESS,
         LIBRARY_UPLOAD_ARTIST_IMG_START, 
         LIBRARY_UPLOAD_ARTIST_IMG_SUCCESS, 
         SET_COMMON_POPUP_OBJ, SET_CONTEXT_OBJECT, SET_CURRENT_PAGE, SET_IS_CLICKED_ON_CONTEXT_MENU, 
-        SET_PLAYER_TRACKS, SET_PLAYLIST_SONGS, SET_SHOW_CONTEXT_MENU, SET_SHOW_PLAY_LIST_SELECTOR, SET_STATUS_MESSAGE 
+        SET_METADATA_POPUP_OBJ, 
+        SET_PLAYER_TRACKS, SET_PLAYLIST_SONGS, SET_SHOW_CONTEXT_MENU, SET_SHOW_METADATA_POPUP, SET_SHOW_PLAY_LIST_SELECTOR, SET_STATUS_MESSAGE 
     } from "./LibraryActionTypes";
 
 export const fetchAllSongs = (isSetPlayerTracks) => ({
@@ -282,6 +285,18 @@ export const initiArtistImageDownloadSucc = (response) => ({
     response
 })
 
+export const editTrackInfo = (payload, onjType) => ({
+    type: LIBRARY_EDIT_TRACK_INFO_START,
+    payload,
+    onjType
+})
+
+export const editTrackInfoSucc = (field, track) => ({
+    type: LIBRARY_EDIT_TRACK_INFO_SUCCESS,
+    field,
+    track
+})
+
 //History Start
 export const fetchAllHistory = (isSetPlayerTracks) => ({
     type: HISTORY_FETCH_ALL_HISTORY_START,
@@ -340,6 +355,11 @@ export const setStatusMessage = (statusMessage) => ({
     statusMessage
 })
 
+export const setMetadataPopupObj = (metadataPopupObj) => ({
+    type: SET_METADATA_POPUP_OBJ,
+    metadataPopupObj
+})
+
 export const filterMusicPath = (response, musicPath,musicPaths) => {
     if(response.status===SUCCESS){
         musicPaths = musicPaths.filter(mPath => {return mPath.messageId!==musicPath.messageId});
@@ -374,4 +394,14 @@ export const updateArtistsDetails = (artistsDetails, artistObj) => {
         }
     });
     return artistsDetails;
+}
+
+export const updateTracksPostEditTrack = (state, track, field) => {
+    const tracks = state[field];
+    tracks.forEach((elem,i) =>{
+        if(elem.songId === track.songId){
+            tracks[i] = track;
+        }
+    });
+    return tracks;
 }

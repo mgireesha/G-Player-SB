@@ -206,4 +206,9 @@ public class LibraryController {
         return libraryService.updateMp3Files(path, field, value);
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/edit-track-info/{type}")
+    public GPResponse updateTrackInfo(@RequestBody Library reqLibrary, @PathVariable String type) {
+        return libraryService.updateTrackInfo(reqLibrary, type);
+    }
+
 }

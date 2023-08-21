@@ -1818,22 +1818,6 @@ a.disabled-click{
         //animation: slideIn 500ms ease-in;
         text-align: center;
     }
-    @keyframes slideIn {
-        0%{
-            transform:  translateY(-50px);
-        }
-        80%{
-            transform:  translateY(-25px);
-        }
-        100%{
-            
-        }
-        
-    }
-
-
-    
-    
 }
 
 .lyrics{
@@ -2823,6 +2807,90 @@ a.disabled-click{
     }
 }
 
+.metadata-popup{
+    position: absolute;
+    top: 6%;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    height: auto;
+    //align-items: center;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 1000;
+
+    .edit-info{
+        padding: 10px;
+        background-color: #202020;
+        position: relative;
+        width: 60%;
+        border-radius: 10px;
+        z-index: 1002;
+        animation: slideIn 350ms ease-in-out 1;
+
+        .header{
+            border-bottom: 1px solid grey;
+            padding-bottom: 10px;
+            .close{
+                position: absolute;
+                right: 0.3em;
+                top: 5px;
+                height: 5px;
+                color: beige;
+                background: none;
+                border: none;
+                font-size: 20px;
+                cursor: pointer;
+            }
+            
+            .close:hover{
+                color: rgb(145, 18, 18);
+            }
+        }
+
+        .body{
+            .track-details{
+                padding: 5px;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                column-gap: 3em;
+                row-gap: 15px;
+                .row{
+                    display: flex;
+                    flex-direction: column;
+                    row-gap: 5px;
+                    input{
+                        padding: 10px;
+                        border-radius: 5px;
+                        outline: none;
+                        background-color: #303030;
+                        border: none;
+                        color: beige;
+                    }
+                }
+
+                .row.song-path{
+                    grid-column: span 2;
+                    display: flex;
+                    flex-direction: row;
+                    column-gap: 10px;
+                }
+            }
+        }
+
+        .footer{
+            .buttons{
+                float: right;
+                column-gap: 15px;
+                display: flex;
+                margin-top: 10px;
+            }
+        }
+    }
+}
+
 
 //GLobal components styling - start
 
@@ -2850,6 +2918,10 @@ a.disabled-click{
     border: 1px solid rgb(10, 113, 75);
 }
 
+.g-btn.success.beige{
+    color: beige;
+}
+
 .g-btn.success:hover{
     background-color: rgb(10, 113, 75);
     color: beige;
@@ -2868,6 +2940,21 @@ a.disabled-click{
 }
 
 //GLobal components styling - end
+
+
+//Keyframes
+@keyframes slideIn {
+    0%{
+        transform:  translateY(-100px);
+    }
+    // 25%{
+    //     transform:  translateY(-75px);
+    // }
+    100%{
+        transform:  translateY(0px);
+    }
+    
+}
 
 
 /*Custom Scrollbar*/
@@ -3074,7 +3161,14 @@ a.disabled-click{
     width: 100%;
 }
 
+.grid-column-span-2{
+    grid-column: span 2;
+}
 
+.flex-direction-row{
+    display: flex;
+    flex-direction: row;
+}
 
 
 
