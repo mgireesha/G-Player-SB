@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +21,7 @@ import javax.imageio.ImageIO;
 import javax.sql.rowset.serial.SerialBlob;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
@@ -248,29 +250,32 @@ public class LibraryService {
 
                     if (!isAlbumAdded) {
                         albumImg = getAlbumImgBinFromTag(tag);
+                        // if (albumImg != null) {
+                        album = new Album();
+                        album.setAlbumName(library.getAlbum());
+                        album.setAlbumArtist(library.getAlbumArtist());
+                        album.setComposer(library.getComposer());
+                        album.setGenre(library.getGenre());
+                        album.setLanguage(library.getLanguage());
+                        album.setTotaltracks(library.getTotaltracks());
+                        album.setYear(library.getYear());
                         if (albumImg != null) {
-                            album = new Album();
-                            album.setAlbumImgAvl(true);
-                            album.setAlbumName(library.getAlbum());
-                            album.setAlbumArtist(library.getAlbumArtist());
-                            album.setComposer(library.getComposer());
-                            album.setGenre(library.getGenre());
-                            album.setLanguage(library.getLanguage());
-                            album.setTotaltracks(library.getTotaltracks());
-                            album.setYear(library.getYear());
                             album = writeByteArrayToImgFile(album, albumImg);
-                            tempAlbumList.add(album);
-                            if (album.getAlbumArtist() != null) {
-                                artistName = album.getAlbumArtist().trim();
-                                if (albumArtistArtCount.get(artistName) != null) {
-                                    albumArtistArtCount.put(artistName, albumArtistArtCount.get(artistName) + 1);
-                                } else {
-                                    albumArtistArtCount.put(artistName, 1);
-                                }
-                            }
                         } else {
-                            // Logic to include albums without image -- Think about something
+                            album.setAlbumImgAvl(false);
                         }
+                        tempAlbumList.add(album);
+                        if (album.getAlbumArtist() != null) {
+                            artistName = album.getAlbumArtist().trim();
+                            if (albumArtistArtCount.get(artistName) != null) {
+                                albumArtistArtCount.put(artistName, albumArtistArtCount.get(artistName) + 1);
+                            } else {
+                                albumArtistArtCount.put(artistName, 1);
+                            }
+                        }
+                        // } else {
+                        // Logic to include albums without image -- Think about something
+                        // }
                     }
 
                 } catch (Exception e) {
@@ -763,7 +768,7 @@ public class LibraryService {
                 GP_CONSTANTS.ARTIST_IMG_DOWNLOAD_STATUS,
                 GP_CONSTANTS.RUNNING);
         Map<String, List<Artist>> artists = new HashMap<String, List<Artist>>();
-        Iterable<Artist> artistList = artistRepository.findAll();
+        List<Artist> artistList = artistRepository.getByIsImgAvlFalse();// .findAll();
         List<Artist> downloadedArtists = new ArrayList<Artist>();
         List<Artist> failedArtists = new ArrayList<Artist>();
         File localArtistImg = null;
@@ -776,7 +781,9 @@ public class LibraryService {
             return null;// handle exception instead of returning null
         }
         boolean isRestExchangeFailed = false;
+        LOG.info(METHOD_NAME + ", Found " + artistList.size() + " artists");
         for (Artist artist : artistList) {
+            LOG.info(METHOD_NAME + ", Trying to download image for :  " + artist.getArtistName());
             isRestExchangeFailed = false;
             artistImgAvailablePath = isArtistImgAvailabeInLocal(artist.getArtistName());
 
@@ -819,21 +826,29 @@ public class LibraryService {
                                         || wikiRespJson.getString("extract").contains("actress")
                                         || wikiRespJson.getString("extract").contains("composer")
                                         || wikiRespJson.getString("extract").contains("musician")
-                                        || wikiRespJson.getString("extract").contains("director"))) {
+                                        || wikiRespJson.getString("extract").contains("director")
+                                        || wikiRespJson.getString("extract").contains("rapper")
+                                        || wikiRespJson.getString("extract").contains("music producer"))) {
 
                             FileUtils.copyURLToFile(
                                     new URL(wikiRespJson.getJSONObject("thumbnail").getString("source")),
                                     localArtistImg);
                             artist.setImgAvl(true);
+                            artist.setImageSource(GP_CONSTANTS.GP_PATH);
                             downloadedArtists.add(artist);
+                        } else {
+                            failedArtists.add(artist);
+                            LOG.info(METHOD_NAME + ", Failed to download image of artist:  " + artist.getArtistName());
                         }
                     } catch (JSONException e) {
+                        failedArtists.add(artist);
                         LOG.error("For artist: " + artist.getArtistName()
                                 + ", Failed while fetching thimbnainf from wiki response "
                                 + e.getMessage());
                     }
                 } catch (Exception e) {
                     failedArtists.add(artist);
+                    LOG.info(METHOD_NAME + ", Failed to download image of artist:  " + artist.getArtistName());
                     e.printStackTrace();
                 }
             }
@@ -844,6 +859,8 @@ public class LibraryService {
         messageService.updateBuildStatus(GP_CONSTANTS.ARTIST_IMG_DOWNLOAD_STATUS,
                 GP_CONSTANTS.ARTIST_IMG_DOWNLOAD_STATUS,
                 GP_CONSTANTS.COMPLETED);
+        LOG.info(METHOD_NAME + ", Download completed, Successful download count:  " + downloadedArtists.size());
+        LOG.info(METHOD_NAME + ", Download completed, Failed download count:  " + failedArtists.size());
         return artists;
     }
     // artistRepository - end
@@ -915,6 +932,7 @@ public class LibraryService {
     public Library getAAttrFromTag(Library song, boolean getAlbumImg, boolean getLyrics) {
         AudioFile audioFile;
         try {
+            removeJAudioTagLogger();
             audioFile = AudioFileIO.read(new File(song.getSongPath()));
             Tag tag = audioFile.getTag();
             if (getAlbumImg) {
@@ -1332,7 +1350,7 @@ public class LibraryService {
         Map<String, String> inputMap = new HashMap<String, String>();
         inputMap.put(field, value);
         for (File musicFile : fileList) {
-            updateMp3FileResponse = updateMp3File(musicFile, inputMap);
+            updateMp3FileResponse = updateMp3File(musicFile, inputMap, false);
             updateMp3FilesResponse.put(musicFile.getAbsolutePath(), updateMp3FileResponse);
         }
         resp = writeUpdateMp3ResonseToCSV(updateMp3FilesResponse, updateMp3FileResponse);
@@ -1398,7 +1416,8 @@ public class LibraryService {
         return resp;
     }
 
-    public Map<String, String> updateMp3File(File musicFile, Map<String, String> fieldValMap) {
+    public Map<String, String> updateMp3File(File musicFile, Map<String, String> fieldValMap,
+            boolean removeUnwantedFields) {
         final String METHOD_NAME = "updateMp3File";
         AudioFile audioFile = null;
         Tag tag = null;
@@ -1406,15 +1425,51 @@ public class LibraryService {
         String existingField = null;
         FieldKey fieldKey = null;
         try {
+            removeJAudioTagLogger();
             audioFile = AudioFileIO.read(new File(musicFile.getAbsolutePath()));
             tag = audioFile.getTag();
+            if (removeUnwantedFields) {
+                tag = removeUnwantedTags(tag);
+            }
             for (String field : fieldValMap.keySet()) {
-                fieldKey = GPUtil.getFieldKeyForString(field);
-                existingField = tag.getFirst(fieldKey);
-                if (existingField != null && !existingField.equals("")) {
-                    tag.setField(fieldKey, fieldValMap.get(field));
+                if (StringUtils.equals(field, "albumArt")) {
+                    String[] parts = fieldValMap.get(field).split(",");
+                    String imageStringB64 = parts[1];
+                    byte[] imageByteArr = Base64.decodeBase64(imageStringB64);
+                    String albumName = tag.getFirst(FieldKey.ALBUM);
+                    File imageFile = new File(GP_CONSTANTS.GP_ALBUM_IMAGES_PATH + albumName + ".jpg");
+                    ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(imageByteArr);
+                    BufferedImage newImage = ImageIO.read(byteArrayInputStream);
+                    Image image = newImage.getScaledInstance(250, 250, Image.SCALE_DEFAULT);
+                    newImage = new BufferedImage(250, 250, BufferedImage.TYPE_INT_RGB);
+                    newImage.getGraphics().drawImage(image, 0, 0, null);
+                    boolean isImageWrote = ImageIO.write(newImage, "jpg", imageFile);
+                    if (isImageWrote) {
+                        Artwork artwork = tag.getFirstArtwork();
+                        try {
+                            artwork = Artwork.createArtworkFromFile(imageFile);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            // error = e.getMessage();
+                        }
+                        if (artwork != null) {
+                            // artwork.setBinaryData(imageByteArr);
+                            tag.deleteArtworkField();
+                            tag.setField(artwork);
+                        } // else {
+                          // artwork.setBinaryData(imageByteArr);
+                          // tag.addField(artwork);
+                          // tag.setField(artwork);
+                          // }
+                    }
                 } else {
-                    tag.addField(fieldKey, fieldValMap.get(field));
+                    fieldKey = GPUtil.getFieldKeyForString(field);
+                    existingField = tag.getFirst(fieldKey);
+                    if (existingField != null && !existingField.equals("")) {
+                        tag.setField(fieldKey, fieldValMap.get(field));
+                    } else {
+                        tag.addField(fieldKey, fieldValMap.get(field));
+                    }
                 }
             }
             audioFile.setTag(tag);
@@ -1440,6 +1495,18 @@ public class LibraryService {
             updateMp3FileResponseMap = getUpdateMp3FileResponseMap(METHOD_NAME, musicFile, fieldValMap, e);
         }
         return updateMp3FileResponseMap;
+    }
+
+    private Tag removeUnwantedTags(Tag tag) {
+        List<FieldKey> allFieldKeys = Arrays.asList(FieldKey.values());
+        for (FieldKey fieldKey : allFieldKeys) {
+            if (!GPUtil.isFieldKeyRequired(fieldKey)) {
+                // if (tag.getFirst(fieldKey) != null) {
+                tag.deleteField(fieldKey);
+                // }
+            }
+        }
+        return tag;
     }
 
     private Map<String, String> getUpdateMp3FileResponseMap(final String METHOD_NAME, File musicFile,
@@ -1565,7 +1632,7 @@ public class LibraryService {
                     fieldValMap.put("label", reqLibrary.getLabel());
                     respLibrary.setLabel(reqLibrary.getLabel());
                 }
-                updateMp3FileResponseMap = updateMp3File(musicFile, fieldValMap);
+                updateMp3FileResponseMap = updateMp3File(musicFile, fieldValMap, false);
                 if (GP_CONSTANTS.SUCCESS.equals(updateMp3FileResponseMap.get(GP_CONSTANTS.STATUS))) {
                     respLibrary = libraryRepository.save(respLibrary);
                     resp.setLibrary(respLibrary);
@@ -1579,6 +1646,143 @@ public class LibraryService {
         } catch (Exception e) {
             resp.setStatus(GP_CONSTANTS.FAILED);
             resp.setError(e.getMessage());
+        }
+        return resp;
+    }
+
+    public GPResponse updateAlbumInfo(Album reqAlbum) {
+        GPResponse resp = new GPResponse();
+        Map<String, String> fieldValMap = new HashMap<String, String>();
+        Map<String, Object> response = new HashMap<String, Object>();
+        List<Object> respTracks = new ArrayList<Object>();
+        Album respAlbum = getAlbumByAlbumId((reqAlbum.getAlbumId()));
+        File musicFile = null;
+        Map<String, String> updateMp3FileResponse = new HashMap<String, String>();
+        Map<String, Object> updateMp3FilesResponse = new HashMap<String, Object>();
+        try {
+            List<Library> respAlbumTracks = getSongsByAlbum(respAlbum.getAlbumName());
+            List<Object> reqAlbumTracks = reqAlbum.getAlbumTracks();
+            // Library reqAlbumTrack = null;
+            for (Library respAlbumTrack : respAlbumTracks) {
+                musicFile = new File(respAlbumTrack.getSongPath());
+
+                // Album name
+                if (StringUtils.isNotEmpty(reqAlbum.getAlbumName())) {
+                    fieldValMap.put("album", reqAlbum.getAlbumName());
+                    respAlbum.setAlbumName(reqAlbum.getAlbumName());
+                    respAlbumTrack.setAlbum(reqAlbum.getAlbumName());
+                }
+
+                // Album Artist
+                if (StringUtils.isNotEmpty(reqAlbum.getAlbumArtist())) {
+                    fieldValMap.put("albumArtist", reqAlbum.getAlbumArtist());
+                    respAlbum.setAlbumArtist(reqAlbum.getAlbumArtist());
+                    respAlbum.setComposer(reqAlbum.getAlbumArtist());
+                    respAlbumTrack.setAlbumArtist(reqAlbum.getAlbumArtist());
+                    respAlbumTrack.setComposer(reqAlbum.getAlbumArtist());
+                }
+
+                // Genre
+                if (StringUtils.isNotEmpty(reqAlbum.getGenre())) {
+                    fieldValMap.put("genre", reqAlbum.getGenre());
+                    respAlbum.setGenre(reqAlbum.getGenre());
+                    respAlbumTrack.setGenre(reqAlbum.getGenre());
+                }
+
+                // Year
+                if (reqAlbum.getYear() != 0) {
+                    fieldValMap.put("year", String.valueOf(reqAlbum.getYear()));
+                    respAlbum.setYear(reqAlbum.getYear());
+                    respAlbumTrack.setYear(reqAlbum.getYear());
+                }
+
+                // Language
+                if (StringUtils.isNotEmpty(reqAlbum.getLanguage())) {
+                    fieldValMap.put("language", reqAlbum.getLanguage());
+                    respAlbum.setLanguage(reqAlbum.getLanguage());
+                    // respAlbumTrack.setLanguage(reqAlbum.getLanguage());
+                }
+
+                // Total tracks
+                if (reqAlbum.getTotaltracks() != 0) {
+                    fieldValMap.put("totaltracks", String.valueOf(reqAlbum.getTotaltracks()));
+                    respAlbum.setTotaltracks(reqAlbum.getTotaltracks());
+                    respAlbumTrack.setTotaltracks(reqAlbum.getTotaltracks());
+                }
+
+                // Album Art
+                if (reqAlbum.getAlbumArt() != null) {
+                    fieldValMap.put("albumArt", String.valueOf(reqAlbum.getAlbumArt()));
+                    respAlbum.setAlbumArt(reqAlbum.getAlbumArt());
+                    respAlbumTrack.setAlbumArt(reqAlbum.getAlbumArt());
+                }
+
+                if (reqAlbumTracks != null && !reqAlbumTracks.isEmpty()) {
+                    Library reqAlbumTrack = null;
+                    Iterator iterator = reqAlbumTracks.iterator();
+                    while (iterator.hasNext()) {
+                        reqAlbumTrack = new Library((LinkedHashMap) iterator.next());
+                        if (reqAlbumTrack.getSongId() != respAlbumTrack.getSongId()) {
+                            continue;
+                        }
+
+                        // Track number
+                        if (reqAlbumTrack.getTrackNumber() != 0) {
+                            fieldValMap.put("trackNumber", String.valueOf(reqAlbumTrack.getTrackNumber()));
+                            respAlbumTrack.setTrackNumber(reqAlbumTrack.getTrackNumber());
+                        }
+
+                        // Title
+                        if (StringUtils.isNotEmpty(reqAlbumTrack.getTitle())) {
+                            fieldValMap.put("title", reqAlbumTrack.getTitle());
+                            respAlbumTrack.setTitle(reqAlbumTrack.getTitle());
+                        }
+
+                        // Artist
+                        if (StringUtils.isNotEmpty(reqAlbumTrack.getArtist())) {
+                            fieldValMap.put("artist", reqAlbumTrack.getArtist());
+                            respAlbumTrack.setArtist(reqAlbumTrack.getArtist());
+                        }
+
+                        if (StringUtils.isNotEmpty(reqAlbumTrack.getLabel())) {
+                            fieldValMap.put("label", reqAlbumTrack.getLabel());
+                            fieldValMap.put("label", reqAlbumTrack.getLabel());
+                            respAlbumTrack.setLabel(reqAlbumTrack.getLabel());
+                        }
+
+                        // lyricist
+                        if (StringUtils.isNotEmpty(reqAlbumTrack.getLyricist())) {
+                            fieldValMap.put("lyricist", reqAlbumTrack.getLyricist());
+                            respAlbumTrack.setLyricist(reqAlbumTrack.getLyricist());
+                        }
+
+                        // Language
+                        if (StringUtils.isNotEmpty(reqAlbumTrack.getLanguage())) {
+                            fieldValMap.put("language", reqAlbumTrack.getLanguage());
+                            respAlbumTrack.setLanguage(reqAlbumTrack.getLanguage());
+                        }
+
+                    }
+                }
+                updateMp3FileResponse = updateMp3File(musicFile, fieldValMap, true);
+                updateMp3FilesResponse.put(musicFile.getAbsolutePath(), updateMp3FileResponse);
+                if (StringUtils.equals(updateMp3FileResponse.get(GP_CONSTANTS.STATUS), GP_CONSTANTS.SUCCESS)) {
+                    if (reqAlbum.isAlbumImgAvl()) {
+                        respAlbum.setAlbumImgAvl(true);
+                    }
+                    respAlbum = albumRepository.save(respAlbum);
+                    respAlbumTrack = libraryRepository.save(respAlbumTrack);
+                    respTracks.add(respAlbumTrack);
+                }
+            }
+            respAlbum.setAlbumTracks(respTracks);
+            updateMp3FilesResponse.put(GP_CONSTANTS.RESPONSE_ALBUM, respAlbum);
+            resp.setResponse(updateMp3FilesResponse);
+            resp.setStatus(GP_CONSTANTS.SUCCESS);
+        } catch (Exception e) {
+            resp.setStatus(GP_CONSTANTS.FAILED);
+            resp.setError(e.getMessage());
+            e.printStackTrace();
         }
         return resp;
     }

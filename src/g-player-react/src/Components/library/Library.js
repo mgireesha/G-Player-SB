@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import {RiDeleteBinLine} from 'react-icons/ri';
 import { useDispatch, useSelector } from "react-redux";
-import { deleteMusicPath, fetchBuildStatus, fetchMusicPath, initiArtistImageDownload, initLibraryBuild, saveMusicPath } from "../redux/library/LibraryActions";
-import { BUILD_STATUS, COMPLETED, CURRENT_PAGE, GP_LIBRARY_DESCRIPTION, GP_LIBRARY_DESC_TEXT_1, LIBRARY, LIBRARY_LABEL, MUSIC_PATH, RUNNING } from "../redux/GPActionTypes";
+import { deleteMusicPath, fetchBuildStatus, fetchMessagesByType, fetchMusicPath, initiArtistImageDownload, initLibraryBuild, saveMusicPath } from "../redux/library/LibraryActions";
+import { ARTIST_IMG_DOWNLOAD_STATUS, BUILD_STATUS, COMPLETED, CURRENT_PAGE, GP_LIBRARY_DESCRIPTION, GP_LIBRARY_DESC_TEXT_1, LIBRARY, LIBRARY_LABEL, MUSIC_PATH, RUNNING } from "../redux/GPActionTypes";
 import { LIBRARY_SAVE_MUSIC_PATH_SUCCESS } from "../redux/library/LibraryActionTypes";
 import loading_icon from '../images/Loading.gif';
 import { Header } from "../header/Header";
@@ -13,11 +13,15 @@ export const Library = () => {
     const musicPaths = useSelector(state => state.library.musicPaths);
     const libraryPhase = useSelector(state => state.library.phase);
     const buildStatus = useSelector(state => state.library.buildStatus);
+    const artistImageDownloadSummary = useSelector(state => state.library.artistImageDownloadSummary);
     const [buildStatusL, setBuildStatusL] = useState(null);
     const [bStatus, setBStatus] = useState(null);
     const [statClearIntrvl, setStatClearIntrvl] = useState(0);
     const [isFetchBStat, setIsFetchBStat] = useState(false);
     const [isBuildInit, setIsBuildInit] = useState(false);
+    const [artistIImgDownloadStat, setArtistIImgDownloadStat] = useState({});
+
+    
     
     const onInitLibraryBuild = () => {
         if(window.confirm("Build library ?")===true){
@@ -49,6 +53,7 @@ export const Library = () => {
         dispatch(fetchMusicPath());
         dispatch(fetchBuildStatus());
         setCookies(CURRENT_PAGE, JSON.stringify({type:LIBRARY}));
+        dispatch(fetchMessagesByType(ARTIST_IMG_DOWNLOAD_STATUS));
     },[])
 
     useEffect(()=>{
@@ -84,6 +89,36 @@ export const Library = () => {
             }  
         }
     },[buildStatus, bStatus, isFetchBStat, isBuildInit])
+
+    useEffect(()=>{
+        if(artistImageDownloadSummary && artistImageDownloadSummary.length > 0){
+            const status = artistImageDownloadSummary.find(elem => {return elem.name === ARTIST_IMG_DOWNLOAD_STATUS});
+            setArtistIImgDownloadStat(status);
+        }
+    },[artistImageDownloadSummary]);
+
+    useEffect(()=>{
+        if(artistIImgDownloadStat && artistIImgDownloadStat.value){
+            if(artistIImgDownloadStat.value === RUNNING){
+                clearInterval(statClearIntrvl);
+                setStatClearIntrvl(setInterval(() => {
+                    dispatch(fetchMessagesByType(ARTIST_IMG_DOWNLOAD_STATUS));
+                },5000));
+            }
+        }
+    },[artistIImgDownloadStat]);
+
+    const initiateArtistImageDownload = () => {
+        if(window.confirm("Build library ?")===true){
+            const tempArtistIImgDownloadStat = {
+                "name": "ARTIST_IMG_DOWNLOAD_STATUS",
+                "value": "RUNNING",
+                "type": "ARTIST_IMG_DOWNLOAD_STATUS"
+                }
+            setArtistIImgDownloadStat(tempArtistIImgDownloadStat);
+            dispatch(initiArtistImageDownload());
+        }
+    }
 
     return(
         <div className="library">
@@ -143,8 +178,14 @@ export const Library = () => {
                 </div>
                 <div className="library-artist-download">
                         <label>Download Artist Images</label>
+                        <p style={{marginTop:10}}>Download Status: &nbsp;
+                            <>
+                                {artistIImgDownloadStat.value === RUNNING && <>{RUNNING} <img src={loading_icon} style={{height:12}} /></>}
+                                {artistIImgDownloadStat.value === COMPLETED && COMPLETED}
+                            </>
+                        </p>
                         <div className="btn-container">
-                            <a className="library-btn" onClick={()=>dispatch(initiArtistImageDownload())}>Initiate Download</a>
+                            <a className="library-btn" onClick={initiateArtistImageDownload}>Initiate Download</a>
                         </div>
                 </div>
             </div>

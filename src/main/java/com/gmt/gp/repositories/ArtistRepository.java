@@ -24,4 +24,8 @@ public interface ArtistRepository extends CrudRepository<Artist, Long> {
     List<Artist> getByArtistNames(@Param("artistNames") List<String> artistNames);
 
     Artist getByArtistId(long artistId);
+
+    List<Artist> getByIsImgAvlTrue();
+
+    List<Artist> getByIsImgAvlFalse();
 }

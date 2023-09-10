@@ -2,11 +2,14 @@ package com.gmt.gp.model;
 
 import java.sql.Blob;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
+import jakarta.persistence.Transient;
 
 @Entity
 public class Album {
@@ -25,6 +28,12 @@ public class Album {
     private boolean isAlbumImgAvl;
     private String languageType;
     private String languages;
+
+    @Transient
+    private List<Object> albumTracks;
+
+    @Transient
+    private String albumArt;
 
     public Album() {
     }
@@ -131,6 +140,22 @@ public class Album {
 
     public void setLanguage(String language) {
         this.language = language;
+    }
+
+    public List<Object> getAlbumTracks() {
+        return albumTracks;
+    }
+
+    public void setAlbumTracks(List<Object> albumTracks) {
+        this.albumTracks = albumTracks;
+    }
+
+    public String getAlbumArt() {
+        return albumArt;
+    }
+
+    public void setAlbumArt(String albumArt) {
+        this.albumArt = albumArt;
     }
 
 }

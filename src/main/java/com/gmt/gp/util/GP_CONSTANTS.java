@@ -60,6 +60,7 @@ public class GP_CONSTANTS {
     public static final String PLAYLIST_NAMES = "PLAYLIST_NAMES";
     public static final String PLAYLIST_SONGS_COUNT = "PLAYLIST_SONGS_COUNT";
 
+    public static final String RESPONSE_ALBUM = "RESPONSE_ALBUM";
     public static final String RUNNING = "RUNNING";
 
     public static final String SINGLE_GENRE = "SINGLE_GENRE";

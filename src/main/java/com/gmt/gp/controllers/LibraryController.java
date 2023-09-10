@@ -211,4 +211,9 @@ public class LibraryController {
         return libraryService.updateTrackInfo(reqLibrary, type);
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/edit-album-info")
+    public GPResponse updateAlbumInfo(@RequestBody Album reqAlbum) {
+        return libraryService.updateAlbumInfo(reqAlbum);
+    }
+
 }
