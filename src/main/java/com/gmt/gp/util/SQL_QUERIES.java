@@ -6,11 +6,11 @@ public class SQL_QUERIES {
 
     public static String getAlbumsGroupedFromHistoryJDBCQuery(int rowCount, String orderBy) {
         String query = "select "
-                + "his.album, his.count, his.last_played_time, alb.album_artist, alb.year, alb.genre, alb.is_album_img_avl,alb.album_id,alb.genre_type,alb.genres "
+                + "his.album, his.count, his.last_played_time, alb.album_artist, alb.year, alb.genre,alb.language, alb.is_album_img_avl,alb.album_id,alb.language_type,alb.languages "
                 + "from "
                 + "(select album, sum(count) as count, max(last_played_time) as last_played_time from history group by album) his "
                 + "inner join "
-                + "(select album_name, album_artist,year,genre,is_album_img_avl,album_id,genre_type,genres from album group by album, album_artist,year, genre,is_album_img_avl,album_id, genre_type,genres) alb "
+                + "(select album_name, album_artist,year,genre,language,is_album_img_avl,album_id,language_type,languages from album group by album, album_artist,year, genre,language,is_album_img_avl,album_id, language_type,languages) alb "
                 + "on "
                 + "alb.album_name=his.album "
                 + "order by "

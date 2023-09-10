@@ -1153,6 +1153,7 @@ body{
     display: grid;
     //grid-template-columns: 3fr 3fr 8fr;
     grid-template-columns: 7fr 10fr 20fr;
+    column-gap: 10px;
 
     .album-lyrics{
         margin-left: auto;
@@ -2821,6 +2822,36 @@ a.disabled-click{
     border-radius: 5px;
     z-index: 1000;
 
+    .edit-album-info.edit-info{
+        width: 40%;
+
+        .album-details{
+            max-height: 70vh;
+            overflow-y: auto;
+            
+            .album-track-details{
+                .header, .body{
+                    display: grid;
+                    grid-template-columns: 1fr 4fr 4fr;
+                    row-gap: 10px;
+                    column-gap: 5px;
+                    input{
+                        width: 90%;
+                    }
+                }
+
+                .body.multi-lingual{
+                    grid-template-columns: 1fr 4fr 4fr 3fr;
+                }
+            }
+        }
+
+        .album-details::-webkit-scrollbar {
+            width: 5px;
+            height: 6px;
+          }
+    }
+
     .edit-info{
         padding: 10px;
         background-color: #202020;
@@ -2851,7 +2882,7 @@ a.disabled-click{
         }
 
         .body{
-            .track-details{
+            .track-details, .album-details{
                 padding: 5px;
                 display: grid;
                 grid-template-columns: 1fr 1fr;
@@ -2918,12 +2949,19 @@ a.disabled-click{
     border: 1px solid rgb(10, 113, 75);
 }
 
-.g-btn.success.beige{
-    color: beige;
-}
 
 .g-btn.success:hover{
     background-color: rgb(10, 113, 75);
+    color: beige;
+}
+
+.g-btn.info{
+    border: 1px solid #17a2b8;
+}
+
+
+.g-btn.info:hover{
+    background-color: #17a2b8;
     color: beige;
 }
 
@@ -2939,6 +2977,40 @@ a.disabled-click{
     overflow: unset;
 }
 
+.g-btn.success.beige, .g-btn.info.beige{
+    color: beige;
+}
+
+//Custom checkbox
+.custom-checkbox{
+    appearance: none;
+    padding: 0 !important;
+    position: relative;
+    cursor: pointer;
+}
+
+.custom-checkbox::before{
+    content: "";
+    width: 25px;
+    height: 25px;
+    border: 1px solid beige;
+    display: block;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.custom-checkbox:checked::after{
+    content: "";
+    border-right: 5px solid green;
+    border-bottom: 5px solid green;
+    transform: rotateZ(45deg);
+    width: 8px;
+    height: 15px;
+    position: absolute;
+    top: 0;
+    left: 6px;
+    cursor: pointer;
+}
 //GLobal components styling - end
 
 
@@ -3168,6 +3240,10 @@ a.disabled-click{
 .flex-direction-row{
     display: flex;
     flex-direction: row;
+}
+
+.column-gap-5{
+    column-gap: 5px;
 }
 
 

@@ -1,6 +1,6 @@
 import { call, put, takeEvery, takeLatest } from "redux-saga/effects";
 import { getCookieValue, handleAPIError } from "../../utilities/util";
-import { deleteMusicPathAPI, editTrackInfoAPI, fetchAlbumAPI, fetchAlbumImgsAPI,
+import { deleteMusicPathAPI, editAlbumInfoAPI, editTrackInfoAPI, fetchAlbumAPI, fetchAlbumImgsAPI,
          fetchalbumListOfAAAPI,
          fetchAlbumtracksAPI,
          fetchAllAlbumDtlsAPI, fetchAllAlbumsAPI, fetchAllArtistsDtlsAPI, 
@@ -10,14 +10,14 @@ import { deleteMusicPathAPI, editTrackInfoAPI, fetchAlbumAPI, fetchAlbumImgsAPI,
          fetchLanguageDetailsAPI, 
          fetchMostPlayedDataAPI, 
          fetchMusicpathAPI, 
-         fetchSongsByArtistAPI, fetchSongsByGenreAPI, fetchSongsByLanguageAPI, getAllSongsAPI, initiateArtistImageDownload, initLibraryBuildAPI, saveMusicpathAPI, searchByKeyAPI, updateHistoryAPI, uploadArtistImgAPI 
+         fetchSongsByArtistAPI, fetchSongsByGenreAPI, fetchSongsByLanguageAPI, getAllSongsAPI, getMessagesByType, initiateArtistImageDownload, initLibraryBuildAPI, saveMusicpathAPI, searchByKeyAPI, updateHistoryAPI, uploadArtistImgAPI 
     } from "../GPApis";
 import { deleteMusicPathSucc, fetchAlbumImgsScc, fetchAlbumlistOfAASucc, fetchAlbumSucc, 
         fetchAlbumTacksSucc, 
         fetchAllAlbumArtistsDtlsSucc, fetchAllAlbumsDtlsSucc, fetchAllAlbumsSucc, 
-        fetchAllArtistsDtlsSucc, fetchAllHistorySucc, fetchBuildStatusSucc, fetchGenreDetailsSucc, fetchMostPlayedDataSucc, fetchMusicPathSucc, fetchSongsByArtistSucc, fetchAllSongsSucc, initiArtistImageDownloadSucc, initLibraryBuildSucc, saveMusicPathSucc, searchByKeySucc, updateHistorySucc, fetchSongsByGenreSucc, setPlayerTracks, uploadArtistImg, uploadArtistImgSucc, setStatusMessage, fetchLanguageDetailsSucc, fetchSongsByLanguageSucc, editTrackInfoSucc, setMetadataPopupObj 
+        fetchAllArtistsDtlsSucc, fetchAllHistorySucc, fetchBuildStatusSucc, fetchGenreDetailsSucc, fetchMostPlayedDataSucc, fetchMusicPathSucc, fetchSongsByArtistSucc, fetchAllSongsSucc, initiArtistImageDownloadSucc, initLibraryBuildSucc, saveMusicPathSucc, searchByKeySucc, updateHistorySucc, fetchSongsByGenreSucc, setPlayerTracks, uploadArtistImg, uploadArtistImgSucc, setStatusMessage, fetchLanguageDetailsSucc, fetchSongsByLanguageSucc, editTrackInfoSucc, setMetadataPopupObj, setArtistImageDownloadSummary, fetchMessagesByTypeSucc, editAlbumInfoSucc 
     } from "./LibraryActions";
-import { FETCH_SONGS_START, HISTORY_FETCH_ALL_HISTORY_START, HISTORY_UPDATE_HISTORY_START, LIBRARY_DELETE_MUSIC_PATH_START, LIBRARY_EDIT_TRACK_INFO_START, LIBRARY_FETCH_ALBUMS_DETAILS_START, LIBRARY_FETCH_ALBUMS_START, 
+import { FETCH_SONGS_START, HISTORY_FETCH_ALL_HISTORY_START, HISTORY_UPDATE_HISTORY_START, LIBRARY_DELETE_MUSIC_PATH_START, LIBRARY_EDIT_ALBUM_INFO_START, LIBRARY_EDIT_TRACK_INFO_START, LIBRARY_FETCH_ALBUMS_DETAILS_START, LIBRARY_FETCH_ALBUMS_START, 
     LIBRARY_FETCH_ALBUM_ARTIST_LIST_START, 
     LIBRARY_FETCH_ALBUM_IMGS_START, LIBRARY_FETCH_ALBUM_LIST_OF_AA_START, LIBRARY_FETCH_ALBUM_START, LIBRARY_FETCH_ALBUM_TRACKS_START, LIBRARY_FETCH_ARTIST_LIST_START, 
     LIBRARY_FETCH_BUILD_STATUS_START, 
@@ -32,9 +32,10 @@ import { FETCH_SONGS_START, HISTORY_FETCH_ALL_HISTORY_START, HISTORY_UPDATE_HIST
     LIBRARY_INIT_BUILD_LIBRARY_START,
     LIBRARY_SAVE_MUSIC_PATH_START,
     LIBRARY_SEARCH_BY_KEY_START,
-    LIBRARY_UPLOAD_ARTIST_IMG_START
+    LIBRARY_UPLOAD_ARTIST_IMG_START,
+    MESSAGE_FETCH_BY_TYPE_START
 } from "./LibraryActionTypes";
-import { CURRENT_PAGE, GP_PAGE_TRACKS_MAP, SUCCESS } from "../GPActionTypes";
+import { ARTIST_IMG_DOWNLOAD_STATUS, CURRENT_PAGE, GP_PAGE_TRACKS_MAP, SUCCESS } from "../GPActionTypes";
 
 export function* onFetchAllSongs(){
     yield takeEvery(FETCH_SONGS_START, onFetchAllSongsAsnc);
@@ -443,9 +444,8 @@ export function* onEditTrackInfo (){
 }
 
 export function* onEditTrackInfoAsync(payload){
-    console.log("446 payload",payload)
     try {
-        const response = yield call(editTrackInfoAPI, payload.payload, payload.onjType);
+        const response = yield call(editTrackInfoAPI, payload.payload, payload.objType);
         if(response.status === 200){
             const data = response.data;
             
@@ -456,6 +456,29 @@ export function* onEditTrackInfoAsync(payload){
                     const field = GP_PAGE_TRACKS_MAP[currentPage.type];
                     yield put(editTrackInfoSucc(field, data.library));
                 }
+                yield put(setMetadataPopupObj({showMetadataPopup:false}));
+                yield put(setStatusMessage("Updated info successfully"));
+            }else{
+                yield put(setStatusMessage(data.status1));
+            }
+        }
+    } catch (error) {
+        console.log(error);
+        handleAPIError(error);
+    }
+}
+
+export function* onEditAlbumInfo (){
+    yield takeLatest(LIBRARY_EDIT_ALBUM_INFO_START, onEditAlbumInfoAsync);
+}
+
+export function* onEditAlbumInfoAsync(payload){
+    try {
+        const response = yield call(editAlbumInfoAPI, payload.payload);
+        if(response.status === 200){
+            const data = response.data;
+            if(data.status === SUCCESS){
+                yield put(editAlbumInfoSucc(data.response.RESPONSE_ALBUM));
                 yield put(setMetadataPopupObj({showMetadataPopup:false}));
                 yield put(setStatusMessage("Updated info successfully"));
             }else{
@@ -505,3 +528,24 @@ export function* onUpdateHistoryAsync(payload){
     }
 }
 //History End
+
+
+export function* onFetchMessagesByType(){
+    yield takeLatest(MESSAGE_FETCH_BY_TYPE_START, onFetchMessagesByTypeAsync);
+}
+
+export function* onFetchMessagesByTypeAsync(payload){
+    try {
+        const response = yield call(getMessagesByType, payload.messageType);
+        if(response.status === 200){
+            if(payload.messageType === ARTIST_IMG_DOWNLOAD_STATUS){
+                yield put(setArtistImageDownloadSummary(response.data))
+            }else{
+                yield put(fetchMessagesByTypeSucc(response.data));
+            }
+        }
+    } catch (error) {
+        console.log(error);
+        handleAPIError(error);
+    }
+}

@@ -156,13 +156,9 @@ export const updateHistoryAPI = (songId) => {
 }
 
 export const fetchMostPlayedDataAPI = () => {
-    return iAxios.get(`/library/most-played-data`).then(response => response);
+    return iAxios.get(`/history/most-played-data`).then(response => response);
 }
 //History End
-
-export const editTrackInfoAPI = (payload, onjType) => {
-    return iAxios.post(`/library/edit-track-info/${onjType}`, payload).then(response => response);
-}
 
 //Playlist - Start
 
@@ -202,3 +198,17 @@ export const importPlaylistsAPI = (payload, fileType) => {
     return iAxios.post(`/playlist/import/${fileType}`, JSON.stringify(payload)).then(response => response);
 }
 //Playlist - End
+
+//Edit metadata - start
+export const editTrackInfoAPI = (payload, onbType) => {
+    return iAxios.post(`/library/edit-track-info/${onbType}`, payload).then(response => response);
+}
+
+export const editAlbumInfoAPI = (payload) => {
+    return iAxios.post(`/library/edit-album-info`, payload).then(response => response);
+}
+//Edit metadata - end
+
+export const getMessagesByType = (messageType) => {
+    return iAxios.get(`/message/type/${messageType}`).then(response => response);
+}

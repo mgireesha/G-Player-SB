@@ -1,5 +1,7 @@
 package com.gmt.gp.model;
 
+import java.util.LinkedHashMap;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,6 +31,7 @@ public class Library {
     private int totaltracks;
     private String label;
     private long trackLength;
+    @Transient
     private String albumArt;
     private String bpm;
     private String groupingGP;// grouping is reserved key in hsqldb and cannot be used as column, hence added
@@ -252,6 +255,33 @@ public class Library {
                 + ", trackLength=" + trackLength + ", albumArt=" + albumArt + ", bpm=" + bpm + ", groupingGP="
                 + groupingGP
                 + ", language=" + language + ", playlistItemId=" + playlistItemId + "]";
+    }
+
+    public Library(LinkedHashMap track) {
+        this.songId = (Integer) track.get("songId");
+        // this.songPath = songPath;
+        this.title = (String) track.get("title");
+        this.album = (String) track.get("album");
+        this.artist = (String) track.get("artist");
+        this.albumArtist = (String) track.get("albumArtist");
+        this.composer = (String) track.get("composer");
+        if (track.get("year") != null) {
+            this.year = (Integer) track.get("year");
+        }
+        this.genre = (String) track.get("genre");
+        this.lyricist = (String) track.get("lyricist");
+        // this.isLyricsAvl = isLyricsAvl;
+        // this.lyrics = lyrics;
+        if (track.get("trackNumber") != null) {
+            this.trackNumber = Integer.parseInt((String) track.get("trackNumber"));
+        }
+        if (track.get("totaltracks") != null) {
+            this.totaltracks = (Integer) track.get("totaltracks");
+        }
+        this.label = (String) track.get("label");
+        // this.bpm = bpm;
+        // this.groupingGP = groupingGP;
+        this.language = (String) track.get("language");
     }
 
 }

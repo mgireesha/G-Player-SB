@@ -3,6 +3,8 @@ import { FETCH_SONGS_START, FETCH_SONGS_SUCCESS,
         HISTORY_FETCH_ALL_HISTORY_START, HISTORY_FETCH_ALL_HISTORY_SUCCESS, 
         HISTORY_UPDATE_HISTORY_START, HISTORY_UPDATE_HISTORY_SUCCESS, 
         LIBRARY_DELETE_MUSIC_PATH_START, LIBRARY_DELETE_MUSIC_PATH_SUCCESS, 
+        LIBRARY_EDIT_ALBUM_INFO_START, 
+        LIBRARY_EDIT_ALBUM_INFO_SUCCESS, 
         LIBRARY_EDIT_TRACK_INFO_START, 
         LIBRARY_EDIT_TRACK_INFO_SUCCESS, 
         LIBRARY_FETCH_ALBUMS_DETAILS_START, LIBRARY_FETCH_ALBUMS_DETAILS_SUCCESS, 
@@ -29,6 +31,9 @@ import { FETCH_SONGS_START, FETCH_SONGS_SUCCESS,
         LIBRARY_SEARCH_BY_KEY_START, LIBRARY_SEARCH_BY_KEY_SUCCESS, 
         LIBRARY_UPLOAD_ARTIST_IMG_START, 
         LIBRARY_UPLOAD_ARTIST_IMG_SUCCESS, 
+        MESSAGE_FETCH_BY_TYPE_START, 
+        MESSAGE_FETCH_BY_TYPE_SUCCESS, 
+        SET_ARTIST_IMGAE_DOWNLOAD_SUMMARY, 
         SET_COMMON_POPUP_OBJ, SET_CONTEXT_OBJECT, SET_CURRENT_PAGE, SET_IS_CLICKED_ON_CONTEXT_MENU, 
         SET_METADATA_POPUP_OBJ, 
         SET_PLAYER_TRACKS, SET_PLAYLIST_SONGS, SET_SHOW_CONTEXT_MENU, SET_SHOW_METADATA_POPUP, SET_SHOW_PLAY_LIST_SELECTOR, SET_STATUS_MESSAGE 
@@ -285,16 +290,26 @@ export const initiArtistImageDownloadSucc = (response) => ({
     response
 })
 
-export const editTrackInfo = (payload, onjType) => ({
+export const editTrackInfo = (payload, objType) => ({
     type: LIBRARY_EDIT_TRACK_INFO_START,
     payload,
-    onjType
+    objType
 })
 
 export const editTrackInfoSucc = (field, track) => ({
     type: LIBRARY_EDIT_TRACK_INFO_SUCCESS,
     field,
     track
+})
+
+export const editAlbumInfo = (payload) => ({
+    type: LIBRARY_EDIT_ALBUM_INFO_START,
+    payload
+})
+
+export const editAlbumInfoSucc = (responseAlbum) => ({
+    type: LIBRARY_EDIT_ALBUM_INFO_SUCCESS,
+    responseAlbum
 })
 
 //History Start
@@ -319,6 +334,21 @@ export const updateHistorySucc = (response) => ({
 })
 
 //History End
+
+export const fetchMessagesByType = (messageType) => ({
+    type: MESSAGE_FETCH_BY_TYPE_START,
+    messageType
+})
+
+export const fetchMessagesByTypeSucc = (response) => ({
+    type: MESSAGE_FETCH_BY_TYPE_SUCCESS,
+    response
+})
+
+export const setArtistImageDownloadSummary = (artistImageDownloadSummary) =>({
+    type: SET_ARTIST_IMGAE_DOWNLOAD_SUMMARY,
+    artistImageDownloadSummary
+})
 
 export const setShowContextMenu = (showContextMenu) => ({
     type: SET_SHOW_CONTEXT_MENU,

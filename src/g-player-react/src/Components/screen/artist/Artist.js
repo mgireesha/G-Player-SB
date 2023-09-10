@@ -26,7 +26,7 @@ export const Artist = () => {
     const [artistTracksL, setArtistTracksL] = useState([]);
     const [filterTxt, setFilterTxt] = useState(null);
     const [trackListInp, setTrackListInp] = useState(null);
-    const [artistImgSrc, setArtistImgSrc] = useState(null);
+    const [artistImgSrc, setArtistImgSrc] = useState("");
     const [newArtistImgStr, setNewArtistImgStr] = useState(null);
     
     useEffect(()=>{
@@ -41,7 +41,7 @@ export const Artist = () => {
         if(artistsDetails.length>0){
             const artistObj = artistsDetails.find(artistObj => artistObj.artistName===artist);
             setArtistObj(artistObj);
-            setArtistImgSrc(GP_ARTIST_IMAGE_PATHS_MAP[artistObj.imageSource]);
+            if(artistObj && artistObj.imageSource)setArtistImgSrc(GP_ARTIST_IMAGE_PATHS_MAP[artistObj.imageSource]);
         }else{
             dispatch(fetchAllArtistsDtls(ARTIST));
         }
@@ -156,9 +156,9 @@ export const Artist = () => {
         <div className="artist">
             <div className="artist-img-div-container">
                 <div className="artist-img-div">
-                    {artistObj.imgAvl  && <img src={artistImgSrc + artistObj.artistName+".jpg"} id="artist_image" />}
-                    {!artistObj.imgAvl && artistWikiImg!==null && <img src={artistWikiImg} id="artist_image" />}
-                    {!artistObj.imgAvl && artistWikiImg===null && <img src={def_album_art} id="artist_image" />}
+                    {artistObj && artistObj.imgAvl  && <img src={artistImgSrc + artistObj.artistName+".jpg"} id="artist_image" />}
+                    {artistObj && !artistObj.imgAvl && artistWikiImg!==null && <img src={artistWikiImg} id="artist_image" />}
+                    {artistObj && !artistObj.imgAvl && artistWikiImg===null && <img src={def_album_art} id="artist_image" />}
                     <div className="change-artist-img">
                         <input type="file" onChange={handleArtistFileChnage} title={UPDATE_ARTIST_IMAGE_TEXT} />
                         <button className="g-btn sm success" onClick={initArtistImgUpload}>{UPDATE_LABEL}</button>

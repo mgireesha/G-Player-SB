@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import def_album_art from '../../images/def_album_art.png';
-import { ALBUM, A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, MULTI_GENRE, MULTI_LINGUAL, TRACKS_LABEL, TRACK_NUMBER } from ".././../redux/GPActionTypes";
+import { ALBUM, A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, EDIT_INFO_LABEL, MULTI_GENRE, MULTI_LINGUAL, TRACKS_LABEL, TRACK_NUMBER } from ".././../redux/GPActionTypes";
 import { Lyrics } from "../lyrics/Lyrics";
-import { fetchAlbum, fetchAlbumTacks } from "../../redux/library/LibraryActions";
+import { fetchAlbum, fetchAlbumTacks, setMetadataPopupObj } from "../../redux/library/LibraryActions";
 import { camelize, setCookies } from "../../utilities/util";
 import { TrackList } from "../track/TrackList";
 import { SplitAndLink } from "../../utilities/SplitAndLink";
+import { RiEditLine } from 'react-icons/ri';
 
 export const Album = () => {
     const dispatch = useDispatch();
@@ -50,6 +51,17 @@ export const Album = () => {
         setTrackListInp(tempTrackListInp);
     },[albumTracks]);
 
+    const onSetShowMetadataPopup = () => {
+        const tempAlbum = {...album};
+        tempAlbum.albumTracks = [...albumTracks];
+        const metadataPopupObj = {
+            showMetadataPopup : true,
+            obj:tempAlbum,
+            objType:ALBUM
+        }
+        dispatch(setMetadataPopupObj(metadataPopupObj));
+    }
+
     return(
         <div className="album">
             {album["albumName"]!==undefined && <div className="album-img-div-container">
@@ -75,6 +87,9 @@ export const Album = () => {
                                 </div>
                             </>
                         }
+                        <div className="edit-info-btn">
+                            <button className="g-btn md info beige flex-align-center column-gap-5" onClick={onSetShowMetadataPopup}><RiEditLine />{EDIT_INFO_LABEL}</button>
+                        </div>
                     </div>
                 <div className="album-lyrics">
                     <Lyrics />

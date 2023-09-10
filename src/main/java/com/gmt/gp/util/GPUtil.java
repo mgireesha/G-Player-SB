@@ -3,6 +3,7 @@ package com.gmt.gp.util;
 import java.io.File;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -25,6 +26,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class GPUtil {
 
     private static final Logger LOG = LoggerFactory.getLogger(GPUtil.class);
+
+    public static final List<FieldKey> GP_REQUIRED_FIELD_KEYS = new ArrayList<FieldKey>(
+            Arrays.asList(FieldKey.ALBUM, FieldKey.ALBUM_ARTIST, FieldKey.ARTIST, FieldKey.BPM, FieldKey.COMPOSER,
+                    FieldKey.COVER_ART, FieldKey.GENRE, FieldKey.GROUPING, FieldKey.LANGUAGE, FieldKey.LYRICIST,
+                    FieldKey.LYRICS, FieldKey.RECORD_LABEL, FieldKey.TITLE, FieldKey.TRACK, FieldKey.TRACK_TOTAL,
+                    FieldKey.YEAR));
 
     public static String checkNull(String stringObject) {
         if (null == stringObject || "null".equalsIgnoreCase(stringObject) || "".equalsIgnoreCase(stringObject)) {
@@ -163,6 +170,7 @@ public class GPUtil {
 
     public static FieldKey getFieldKeyForString(String field) {
         FieldKey fieldKey = null;
+        field = field.toLowerCase();
         switch (field) {
             case "title":
                 fieldKey = FieldKey.TITLE;
@@ -173,7 +181,7 @@ public class GPUtil {
             case "artist":
                 fieldKey = FieldKey.ARTIST;
                 break;
-            case "albumArtist":
+            case "albumartist":
                 fieldKey = FieldKey.ALBUM_ARTIST;
                 break;
             case "composer":
@@ -191,7 +199,7 @@ public class GPUtil {
             case "lyrics":
                 fieldKey = FieldKey.LYRICS;
                 break;
-            case "trackNumber":
+            case "tracknumber":
                 fieldKey = FieldKey.TRACK;
                 break;
             case "totaltracks":
@@ -203,7 +211,7 @@ public class GPUtil {
             case "bpm":
                 fieldKey = FieldKey.BPM;
                 break;
-            case "groupingGP":
+            case "groupinggp":
                 fieldKey = FieldKey.GROUPING;
                 break;
             case "language":
@@ -213,6 +221,10 @@ public class GPUtil {
                 break;
         }
         return fieldKey;
+    }
+
+    public static boolean isFieldKeyRequired(FieldKey fieldKey) {
+        return GP_REQUIRED_FIELD_KEYS.contains(fieldKey);
     }
 
     public static final String getCamelCase(String str) {
