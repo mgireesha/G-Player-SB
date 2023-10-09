@@ -405,7 +405,7 @@ export const getPlayerTracks = (library, trackListName, playerTracks) => {
         }else{
             tempPTracks = library[trackListName];
         }
-        if(tempPTracks && trackListName !== 'tracks'){
+        if(tempPTracks && trackListName !== 'tracks' && trackListName !== 'trackIds'){
             tempPTracks = tempPTracks.map((track) => { return track.songId});
         }
     }else{

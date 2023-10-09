@@ -170,7 +170,8 @@ export const GP_SELECTOR_ELEM_IDS = [GENRE_TYPE_BTN, GP_SELECTOR];
 
 export const GP_PAGE_TRACKS_MAP = {
     ALBUM: 'albumTracks',
-    TRACKS: 'tracks',
+    //TRACKS: 'tracks',
+    TRACKS: 'trackIds',
     ARTIST: 'artistTracks',
     GENRE: 'genreSongList',
     GENRES: 'genreSongList',
