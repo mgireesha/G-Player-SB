@@ -8,9 +8,10 @@ import com.gmt.gp.util.SQL_QUERIES;
 public class Testj {
     public static void main(String[] args) {
         try {
-            Testj.print_SQL_QUERIES();
-            Testj.testSelectDateRange();
-            Testj.testCopy();
+            // Testj.print_SQL_QUERIES();
+            // Testj.testSelectDateRange();
+            // Testj.testCopy();
+            Testj.trimSpace();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -60,5 +61,14 @@ public class Testj {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void trimSpace() {
+        String test = "aaaaaaaaa/ bbbbbbb/ cccccc";
+        String[] testArr = test.split("\\s*/\\s*");
+        for (String test1 : testArr) {
+            System.out.println(test1);
+        }
+
     }
 }

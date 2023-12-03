@@ -508,7 +508,7 @@ public class LibraryService {
             if (!tag.getFirst(FieldKey.GENRE).equals("") && tag.getFirst(FieldKey.GENRE) != null) {
                 genre = tag.getFirst(FieldKey.GENRE);
                 if (genre.contains("/")) {
-                    String[] genreArr = genre.split("/");
+                    String[] genreArr = genre.split("\\s*/\\s*");
                     genre = String.join(",", genreArr);
                 }
                 library.setGenre(genre.toLowerCase());
@@ -1293,9 +1293,9 @@ public class LibraryService {
                 resLineGenreCount = Integer.parseInt(resLineArr[0]);
                 if (resLineGenre.contains(",") || resLineGenre.contains("/")) {
                     if (resLineGenre.contains(",")) {
-                        resLineArr = resLineGenre.split(",");
+                        resLineArr = resLineGenre.split("\\s*,\\s*");
                     } else {
-                        resLineArr = resLineGenre.split("/");
+                        resLineArr = resLineGenre.split("\\s*/\\s*");
                     }
                     for (String resLineGenre1 : resLineArr) {
                         if (!genres.contains(resLineGenre1)) {

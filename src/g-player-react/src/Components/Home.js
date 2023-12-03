@@ -5,7 +5,7 @@ import { Screen } from "./screen/Screen";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAlbumTacks, fetchAllAlbums, fetchAllHistory, fetchAllSongs, fetchSongsByArtist, fetchSongsByGenre, fetchSongsByLanguage } from "./redux/library/LibraryActions";
 import { fetchCurrentSontAndStatus, playASongSucc, setIsShuffle, setMediaVolumeSucc, setRepeat } from "./redux/player/PlayerActions";
-import { getCookieDetails, getCookieValue } from "./utilities/util";
+import { getCookieDetails, getCookieValue, setCookies } from "./utilities/util";
 import { ALBUM, ARTIST, GENRE, LANGUAGE, MAIN_CONTAINER, PLAYLIST, RECENT_PLAYS, TRACK_LIST } from "./redux/GPActionTypes";
 import { Route, Routes } from "react-router-dom";
 import { Library } from "./library/Library";
@@ -48,6 +48,8 @@ export const Home = () => {
         }
         if(cookieDetails["currentVolume"]!==undefined){
             dispatch(setMediaVolumeSucc({currentVolume:cookieDetails["currentVolume"]}));
+        }else{
+            setCookies("currentVolume",0.6);
         }
     }
 
