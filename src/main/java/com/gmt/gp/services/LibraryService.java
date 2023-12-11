@@ -358,15 +358,49 @@ public class LibraryService {
                         "Saving library, album and artists list");
                 libList = (List<Library>) libraryRepository.saveAll(libList);
 
+                String language = "";
+                String[] tempLanguageArr = null;
                 for (Album tempAlbum : tempAlbumList) {
+                    language = "";
                     languageList = albumLanguageMap.get(tempAlbum.getAlbumName());
                     if (!isContainsCurrentAlbum(albumList, tempAlbum.getAlbumName(), null)) {
                         if (languageList.size() > 1) {
                             tempAlbum.setLanguageType(GP_CONSTANTS.MULTI_LINGUAL);
-                            tempAlbum.setLanguages(String.join(",", languageList));
+                            // tempAlbum.setLanguages(String.join(",", languageList));
+                            for (String tempLanguage : languageList) {
+                                tempLanguageArr = null;
+                                if (tempLanguage.contains(",")) {
+                                    tempLanguageArr = tempLanguage.split(",");
+                                } else if (tempLanguage.contains("/")) {
+                                    tempLanguageArr = tempLanguage.split("/");
+                                }
+                                if (tempLanguageArr != null) {
+                                    for (String tempLanguage1 : tempLanguageArr) {
+                                        if (!language.contains(tempLanguage1)) {
+                                            if (language == "") {
+                                                language += tempLanguage1;
+                                            } else {
+                                                language += "," + tempLanguage1;
+                                            }
+                                        }
+                                    }
+
+                                } else {
+                                    if (!language.contains(tempLanguage)) {
+                                        if (language == "") {
+                                            language += tempLanguage;
+                                        } else {
+                                            language += "," + tempLanguage;
+                                        }
+                                    }
+                                }
+
+                            }
+                            tempLanguageArr = null;
                         } else {
                             tempAlbum.setLanguageType(GP_CONSTANTS.MONO_LINGUAL);
                         }
+                        tempAlbum.setLanguages(language);
                         albumList.add(tempAlbum);
                     }
 
@@ -530,7 +564,7 @@ public class LibraryService {
                 library.setLyricsAvl(false);
 
             if (!tag.getFirst(FieldKey.LANGUAGE).equals("") && tag.getFirst(FieldKey.LANGUAGE) != null) {
-                library.setLanguage(tag.getFirst(FieldKey.LANGUAGE));
+                library.setLanguage(tag.getFirst(FieldKey.LANGUAGE).toLowerCase());
             } else {
                 library.setLanguage(GP_CONSTANTS.UNKNOWN_LABEL);
             }
@@ -583,7 +617,7 @@ public class LibraryService {
     }
 
     public List<Library> getSongsByAlbumAndLanguage(String album, String language) {
-        return libraryRepository.getByAlbumAndLanguage(album, language);
+        return libraryRepository.getByAlbumAndLanguageQ(album, language);
     }
 
     public List<Library> getSongsByYear(int year) {

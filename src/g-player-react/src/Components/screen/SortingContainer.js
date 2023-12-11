@@ -1,6 +1,6 @@
 import React from "react";
-import { A_TO_Z, A_TO_Z_DESC, LYRICS_AVAILABLE, LYRICS_AVAILABLE_LABEL, SORT_ARTIST, SORT_COUNT_ALBUMS, SORT_COUNT_TRACKS, SORT_YEAR, TRACK_NUMBER, TRACK_NUMBER_LABEL } from "../redux/GPActionTypes";
-import { scrolltoId } from "../utilities/util";
+import { A_TO_Z, A_TO_Z_DESC, GENRE, GENRE_LABEL, LANGUAGE, LANGUAGE_LABEL, LYRICS_AVAILABLE, LYRICS_AVAILABLE_LABEL, MULTI_LINGUAL, MULTI_LINGUAL_LABEL, SORT_ARTIST, SORT_COUNT_ALBUMS, SORT_COUNT_TRACKS, SORT_YEAR, TRACK_NUMBER, TRACK_NUMBER_LABEL } from "../redux/GPActionTypes";
+import { replace_AndCamelize, scrolltoId } from "../utilities/util";
 
 export const SortingContainer = ({sortBy, setSortBy, sortListKeys, sortSelectors, showLKey, showSortByLabel}) => {
     return(
@@ -16,11 +16,14 @@ export const SortingContainer = ({sortBy, setSortBy, sortListKeys, sortSelectors
                     {sortSelectors.includes(SORT_COUNT_TRACKS) && <option value={SORT_COUNT_TRACKS} selected={sortBy===SORT_COUNT_TRACKS?true:false}>{SORT_COUNT_TRACKS}</option>}
                     {sortSelectors.includes(TRACK_NUMBER) && <option value={TRACK_NUMBER} selected={sortBy===TRACK_NUMBER?true:false}>{TRACK_NUMBER_LABEL}</option>}
                     {sortSelectors.includes(LYRICS_AVAILABLE) && <option value={LYRICS_AVAILABLE} selected={sortBy===LYRICS_AVAILABLE?true:false}>{LYRICS_AVAILABLE_LABEL}</option>}
+                    {sortSelectors.includes(MULTI_LINGUAL) && <option value={MULTI_LINGUAL} selected={sortBy===MULTI_LINGUAL?true:false}>{MULTI_LINGUAL_LABEL}</option>}
+                    {sortSelectors.includes(LANGUAGE) && <option value={LANGUAGE} selected={sortBy===LANGUAGE?true:false}>{LANGUAGE_LABEL}</option>}
+                    {sortSelectors.includes(GENRE) && <option value={GENRE} selected={sortBy===GENRE?true:false}>{GENRE_LABEL}</option>}
                 </select>
             </div>
             {showLKey && <div className="lKey-line">
                 {sortBy!==SORT_ARTIST && sortListKeys !== undefined && sortListKeys.length > 0 && sortListKeys.map((lKey, index) =>
-                    <span key={index} onClick={() => scrolltoId("lKey" + lKey)} className={lKey.length>8?sortBy+"_25":sortBy+"_10"}>{lKey}</span>
+                    <span key={index} onClick={() => scrolltoId("lKey" + lKey)} className={lKey.length>8?sortBy+"_25":sortBy+"_10"}>{replace_AndCamelize(lKey)}</span>
                 )}
             </div>}
         </>

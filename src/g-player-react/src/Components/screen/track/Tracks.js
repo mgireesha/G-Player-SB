@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { TrackList } from "./TrackList";
 import { useDispatch, useSelector } from "react-redux";
-import { A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, LYRICS_AVAILABLE, SORT_ARTIST, SORT_YEAR, TRACKS } from "../../redux/GPActionTypes";
+import { A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, GENRE, LANGUAGE, LYRICS_AVAILABLE, SORT_ARTIST, SORT_YEAR, TRACKS } from "../../redux/GPActionTypes";
 import { setCookies } from "../../utilities/util";
 import { fetchAllSongs } from "../../redux/library/LibraryActions";
 
@@ -20,7 +20,7 @@ export const Tracks = () => {
                 {showSort:true, showLKey:true, 
                     lKeyStyle : {position:'absolute',visibility:'hidden'},
                     playedFrom:{pfKey:TRACKS}, 
-                    sortSelectors:[A_TO_Z,A_TO_Z_DESC, SORT_YEAR, SORT_ARTIST, LYRICS_AVAILABLE],
+                    sortSelectors:[A_TO_Z,A_TO_Z_DESC, SORT_YEAR, SORT_ARTIST, LANGUAGE, LYRICS_AVAILABLE],
                     selectedSortBy:A_TO_Z
                 }
             } 

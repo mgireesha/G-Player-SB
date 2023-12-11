@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, SOME_PAGE, SORT_ARTIST, SORT_YEAR } from "../../redux/GPActionTypes";
+import { A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, LANGUAGE, MULTI_LINGUAL, SOME_PAGE, SORT_ARTIST, SORT_YEAR } from "../../redux/GPActionTypes";
 import { fetchAllAlbums } from "../../redux/library/LibraryActions";
-import { setCookies, sortGroupByField } from "../../utilities/util";
+import { camelize, replace_AndCamelize, setCookies, sortGroupByField } from "../../utilities/util";
 import { AlbumThumb } from "./AlbumThumb";
 import { SortingContainer } from "../SortingContainer";
 import { Spinner } from "../../utilities/Spinner";
@@ -34,6 +34,10 @@ export const AlbumList = () => {
                 setAlbumList(sortGroupByField(albums,'year'))
             }else if(sortBy===SORT_ARTIST){
                 setAlbumList(sortGroupByField(albums,'albumArtist'))
+            }else if(sortBy===LANGUAGE){
+                setAlbumList(sortGroupByField(albums,'language'))
+            }else if(sortBy===MULTI_LINGUAL){
+                setAlbumList(sortGroupByField(albums,'languageType'))
             }
         }
     },[albums, sortBy])
@@ -54,14 +58,14 @@ export const AlbumList = () => {
     return(
         <>
             <div className="album-list-container">
-                <SortingContainer sortListKeys={albumListKeys} showLKey={true} setSortBy={setSortBy} sortBy={sortBy} sortSelectors={[A_TO_Z,A_TO_Z_DESC,SORT_YEAR,SORT_ARTIST]} showSortByLabel={true} />
+                <SortingContainer sortListKeys={albumListKeys} showLKey={true} setSortBy={setSortBy} sortBy={sortBy} sortSelectors={[A_TO_Z,A_TO_Z_DESC,SORT_YEAR,SORT_ARTIST,LANGUAGE,MULTI_LINGUAL]} showSortByLabel={true} />
                 <div className="album-list">
                 {/* {albums!==null && albums.length>0 && albums.map((album, index) =>
                     <AlbumThumb album={album} key={index} />
                 )} */}
                 {albumListKeys !== undefined && albumListKeys.length > 0 && albumListKeys.map((lKey, index) =>
                         <>
-                            <label id={"lKey" + lKey} className="album-lKey">{lKey}</label>
+                            <label id={"lKey" + lKey} className="album-lKey">{replace_AndCamelize(lKey)}</label>
                             {albumList[lKey] !== undefined && albumList[lKey].length > 0 && albumList[lKey].map((album, albumIndex) =>
                                 <AlbumThumb album={album} key={albumIndex} />
                             )}

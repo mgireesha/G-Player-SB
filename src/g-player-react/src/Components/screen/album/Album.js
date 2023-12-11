@@ -81,8 +81,8 @@ export const Album = () => {
                                 <label>{album.year} - {language ? <Link to={`/music/languages/${language}`}>{camelize(language)}</Link> : 'All'}</label>
                                 <div className="album-multi-genre-select">
                                     <Link className={!language?"selected":""} to={`/music/albums/${album.albumName}`}>All</Link>
-                                    {album.languages.split(",").map(gnre=>
-                                        <Link className={language === gnre ? "selected":""} to={`/music/albums/${album.albumName}/${gnre}`}>{gnre}</Link>
+                                    {album.languages.split(",").map(lang=>
+                                        <Link className={language === lang ? "selected":""} to={`/music/albums/${album.albumName}/${lang}`}>{camelize(lang)}</Link>
                                     )}
                                 </div>
                             </>
