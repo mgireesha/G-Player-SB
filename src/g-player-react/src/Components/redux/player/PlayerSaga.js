@@ -1,4 +1,4 @@
-import { call, put, takeLatest } from "redux-saga/effects";
+import { call, put, takeEvery, takeLatest } from "redux-saga/effects";
 import { getCookieValue, handleAPIError, setCookies } from "../../utilities/util";
 import { GP_PAGE_TRACKS_MAP, MEDIA_PLAYER_NULL, PLAYER } from "../GPActionTypes";
 import { getCurrentSongAndStatusAPI, getCurrentSongStatusAPI, playASongAPI, playPauseAPI, setMediaVolumeAPI, 
@@ -73,7 +73,7 @@ export function* onFetchCurrentSongStatusAsync(){
 }
 
 export function* onSetMediaVolume(){
-    yield takeLatest(PLAYER_SET_MEDIA_VOLUME_START, onSetMediaVolumeAsync);
+    yield takeEvery(PLAYER_SET_MEDIA_VOLUME_START, onSetMediaVolumeAsync);
 }
 
 export function* onSetMediaVolumeAsync(payload){
@@ -91,7 +91,7 @@ export function* onSetMediaVolumeAsync(payload){
 }
 
 export function* onSetPlayBackTime(){
-    yield takeLatest(PLAYER_SET_PB_LENGTH_START, onSetPlayBackTimeAsync);
+    yield takeEvery(PLAYER_SET_PB_LENGTH_START, onSetPlayBackTimeAsync);
 }
 
 export function* onSetPlayBackTimeAsync(payload){

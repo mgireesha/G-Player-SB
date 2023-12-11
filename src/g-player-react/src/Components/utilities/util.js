@@ -110,7 +110,10 @@ export const sortGroupByField = (entArr, field) => {
     let entListObj = {};
     let tempArr = [];
     let ind;
+    let indArr;
+    console.log("entArr: ",entArr)
     entArr.forEach((ent) => {
+        indArr = []
         if (ent[field] !== null && ent[field] !== undefined && ent[field] !== "") {
             if(field==='title' || field==='albumName' || field==='artistName'){
                 ind = ent[field].substring(0, 1).toUpperCase();
@@ -122,16 +125,37 @@ export const sortGroupByField = (entArr, field) => {
             }else{
                 ind = ent[field];
             }
-            if (entListObj[ind] !== undefined) {
-                tempArr = entListObj[ind];
-                tempArr.push(ent);
-                entListObj[ind] = tempArr;
-            } else {
-                entListObj[ind] = [ent];
+
+            if(field === "language" || field === "genre"){
+                if(ind.includes(",")){
+                    indArr = ind.split(",");
+                }else if(ind.includes("/")){
+                    indArr = ind.split("/");
+                }
+            }
+
+            if(indArr && indArr.length > 0){
+                indArr.forEach(ind1 =>{
+                    if (entListObj[ind1] !== undefined) {
+                        tempArr = entListObj[ind1];
+                        tempArr.push(ent);
+                        entListObj[ind1] = tempArr;
+                    } else {
+                        entListObj[ind1] = [ent];
+                    }
+                });
+            }else{
+                if (entListObj[ind] !== undefined) {
+                    tempArr = entListObj[ind];
+                    tempArr.push(ent);
+                    entListObj[ind] = tempArr;
+                } else {
+                    entListObj[ind] = [ent];
+                }
             }
         }
     });
-    console.log(entListObj)
+    //console.log("entListObj: ",entListObj)
 return entListObj;
 }
 
@@ -226,4 +250,28 @@ export const fetchArtistDetailsfromWiki = async(artist) => {
             strArr.push(trmpStr.substring(0, 1).toUpperCase() + trmpStr.substring(1))
         })
         return strArr.join(" ");
+      }
+
+      export const replace_AndCamelize = (str) => {
+        if(!str)return str;
+        str = str.replaceAll("_"," ").toLowerCase();
+        return camelize(str);
+      }
+
+      export const selectFocusedText = (e) => {
+        let target;
+        if(e.target){
+            target = e.target;
+        }
+        target.select();
+      }
+
+      export const trimInputText = (e) => {
+        let target;
+        if(e.target){
+            target = e.target;
+        }
+        
+        target.value = target.value.trim();
+        //console.log(target.value)
       }

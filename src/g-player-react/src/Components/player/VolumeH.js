@@ -12,16 +12,31 @@ export const VolumeH = () => {
     const currentVolume = useSelector(state => state.player.currentVolume);
     const songPlaying = useSelector(state => state.player.songPlaying);
     const [isMute,setIsMute] = useState(false);
+    const [timeOutVar,setTimeoutVar] = useState(0);
 
     useEffect(() => {
         const handleMute = (e) => {
             var key = e.which || e.keyCode; // keyCode detection
             var ctrl = e.ctrlKey ? e.ctrlKey : ((key === 17) ? true : false); // ctrl detection
-            if ( key == 77 && ctrl ) {
-                if(isMute){
-                    muteMedia(false);
-                }else{
-                    muteMedia(true);
+            if(ctrl){
+                switch (key) {
+                    case 77:
+                        if(isMute){
+                            muteMedia(false);
+                        }else{
+                            muteMedia(true);
+                        }
+                        break;
+                    case 38:
+                        //timeOutVar = setTimeout(updateMediaVolume((currentVolume*100)+5), 500);
+                        updateMediaVolume((currentVolume*100)+5);
+                        break;
+                    case 40:
+                        //timeOutVar = setTimeout(updateMediaVolume((currentVolume*100)-5), 500);
+                        updateMediaVolume((currentVolume*100)-5);
+                        break;
+                    default:
+                        break;
                 }
             }
         };
@@ -29,7 +44,7 @@ export const VolumeH = () => {
         return () => {
             window.removeEventListener('keydown', handleMute);
         };
-    }, [isMute]);
+    }, [isMute,currentVolume,timeOutVar]);
 
     useEffect(()=>{
         if(songPlaying!==null){
@@ -47,6 +62,7 @@ export const VolumeH = () => {
 
     const updateMediaVolume = (event) => {
         const value = event;
+        if(value > 100 || value < 0)return false;
         dispatch(setMediaVolume(value/100));
     }
 

@@ -39,15 +39,41 @@ export const Player = () => {
 
     useEffect(() => {
         const handleEscape = (event) => {
-            if(event.code === "Space"){
-                playPauseFunc();
+            var key = event.which || event.keyCode; // keyCode detection
+            var ctrl = event.ctrlKey ? event.ctrlKey : ((key === 17) ? true : false); // ctrl detection
+            var shift = event.shiftKey ? event.shiftKey : ((key === 16) ? true : false);
+            //console.log("key",key,"ctrl",ctrl,"shift",shift)
+            if(ctrl){
+                switch (key) {
+                    case 32:
+                        playPauseFunc();
+                        break;
+                    case 39:
+                        playNextSong(NEXT);
+                        break;
+                    case 37:
+                        playNextSong(PREVIOUS);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            if (shift) {
+                if(playingSongStat && playingSongStat.currentTime){
+                    if(key == 39){
+                        setSlctdPlayBackTime(currentPlayVal+5);
+                    }else if(key == 37){
+                        setSlctdPlayBackTime(currentPlayVal-5);
+                    }
+                }
             }
         };
         window.addEventListener('keyup', handleEscape);
         return () => {
             window.removeEventListener('keyup', handleEscape);
         };
-    }, []);
+    }, [songPlaying,playingSongStat]);
 
     useEffect(()=>{
         setIsPlayingL(isPlaying);
@@ -158,14 +184,20 @@ export const Player = () => {
         dispatch(playPause(songPlaying, playedFrom, currentVolume, currentTime));
     }
 
-    const playNextSong = (action, event) => {
+    const playNextSong = (action, event, tempSongPlaying) => {
          if(event!==undefined){
              event.target.parentElement.classList.add('rotate-player-button');
          }
 
         [...document.getElementsByClassName('player-controls')].forEach(pc => {pc.classList.add('opacity-player-console')});
 
-        if (songPlaying === null) return false;
+        if (songPlaying === null) {
+            if(tempSongPlaying){
+                songPlaying = {...tempSongPlaying};
+            }else{
+                return false;
+            }
+        }
         let library;
         let nextSong = {};
         if (action === CURRENT) {
@@ -197,14 +229,13 @@ export const Player = () => {
         dispatch(setIsPlaying(true));
     }
 
-    const setSlctdPlayBackTime = (event) => {
+    const setSlctdPlayBackTime = (playBackTime) => {
         
         if(!isPlaying || songPlaying===null)return;
-        const pbVal = event;//event.target.value;
+        const pbVal = playBackTime;
         const fPbVal = Math.floor(((songPlaying.trackLength*pbVal)/100)*1000);
-        dispatch(setPlayBackLength(fPbVal))
+        dispatch(setPlayBackLength(fPbVal));
     }
-
 
     const setRepeatL = () => {
         let tempRepeat;

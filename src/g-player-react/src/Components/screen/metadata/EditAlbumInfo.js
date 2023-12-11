@@ -3,7 +3,7 @@ import { editAlbumInfo, setMetadataPopupObj } from "../../redux/library/LibraryA
 import { useDispatch, useSelector } from "react-redux";
 import def_album_art from '../../images/def_album_art.png';
 import { ALBM_ART_IMG_EDIT, ALBUM, ALBUM_ART, ALBUM_ARTIST_LABEL, ALBUM_LABEL, CANCEL_LABEL, GENRE_LABEL, LABEL, LABEL_LABEL, LANGUAGE_LABEL, LYRICIST_LABEL, MULTI_LINGUAL, MULTI_LINGUAL_LABEL, SAVE_LABEL, TOTAL_TRACKS_LABEL, TRACK, TRACKS, YEAR_LABEL } from "../../redux/GPActionTypes";
-import { convertDataFileToBase64 } from "../../utilities/util";
+import { convertDataFileToBase64, selectFocusedText, trimInputText } from "../../utilities/util";
 
 export const EditAlbumInfo = () => {
     const dispatch = useDispatch();
@@ -185,7 +185,7 @@ export const EditAlbumInfo = () => {
                                             <input defaultValue={track.title} onChange={(event)=>updateModifiedAlbum(event,'title',TRACK, track.songId)} />
                                         </div>
                                         <div>
-                                            <input defaultValue={track.artist} onChange={(event)=>updateModifiedAlbum(event,'artist',TRACK, track.songId)} />
+                                            <input defaultValue={track.artist} onChange={(event)=>{updateModifiedAlbum(event,'artist',TRACK, track.songId);trimInputText(event)}} onFocus={(event)=>selectFocusedText(event)} />
                                         </div>
                                         {isMutltiLingual &&
                                             <div>

@@ -81,8 +81,8 @@ export const Track = ({track, playedFrom, index, hideTrackNum}) => {
             <Link to={`/music/albums/${track.album}`}>{track.album}</Link>
             </label>
             <label onDoubleClick={()=>playSong(track.songId)}>{track.year!==0?track.year:''}</label>
-            <label className="text-overflow-ellipsis" onDoubleClick={()=>playSong(track.songId)} title={track.genre}>
-                <SplitAndLink str={track.genre} url={`/music/genres/`} />
+            <label className="text-overflow-ellipsis" onDoubleClick={()=>playSong(track.songId)} title={track.language}>
+                <SplitAndLink str={track.language} url={`/music/languages/`} />
             </label>
             <label>{getMins(track.trackLength)}</label>
             <label style={{position:'relative'}}>
