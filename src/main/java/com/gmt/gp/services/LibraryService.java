@@ -6,8 +6,13 @@ import java.io.FileFilter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -406,7 +411,7 @@ public class LibraryService {
 
                 }
 
-                albumRepository.saveAll(albumList);
+                albumList = (List<Album>) albumRepository.saveAll(albumList);
                 artistRepository.saveAll(artistList);
                 endingTime = System.currentTimeMillis();
                 LOG.info(methodName + " - Time took to save library, album and artists list: "
@@ -481,6 +486,8 @@ public class LibraryService {
         messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.ALBUM_ARTIST_COUNT,
                 String.valueOf((artistList.size() - artistCount)));
         messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.COMPLETED);
+        messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_COMPLETED_TIME,
+                LocalDateTime.now().toString());
         try {
             songPlaying = getSongBySongPath(songPlaying.getSongPath());
             lastPlayedSongId.setValue(String.valueOf(songPlaying.getSongId()));
@@ -680,6 +687,10 @@ public class LibraryService {
 
     List<Library> findAllByIds(List<Long> songIds) {
         return (List<Library>) libraryRepository.findAllById(songIds);
+    }
+
+    public void deleteSongBySongId(long songId) {
+        libraryRepository.deleteById(songId);
     }
 
     /**
@@ -951,6 +962,44 @@ public class LibraryService {
             e.getMessage();
         }
         return false;
+    }
+
+    public boolean isContainsCurrentArtist(final List<Artist> list, final String name, final String type) {
+        final String METHOD_NAME = "isContainsCurrentAlrtist";
+        try {
+            return list.stream()
+                    .filter(o -> o.getArtistName().equals(name) && o.getType().equalsIgnoreCase(type))
+                    .findFirst().isPresent();
+        } catch (Exception e) {
+            LOG.error("Failed in:" + METHOD_NAME + " method, name: " + name + ", field: " + type);
+            e.getMessage();
+        }
+        return false;
+    }
+
+    public Artist getCurrentArtist(final List<Artist> list, final String name, final String type) {
+        final String METHOD_NAME = "getCurrentArtist";
+        try {
+            return list.stream()
+                    .filter(o -> o.getArtistName().equals(name) && o.getType().equalsIgnoreCase(type))
+                    .findFirst().orElse(null);
+        } catch (Exception e) {
+            LOG.error("Failed in:" + METHOD_NAME + " method, name: " + name + ", field: " + type);
+            e.getMessage();
+        }
+        return null;
+    }
+
+    public Album getCurrentAlbum(final List<Album> list, final String name, final int year) {
+        final String METHOD_NAME = "getCurrentAlbum";
+        try {
+            return list.stream().filter(o -> o.getAlbumName().equals(name) && o.getYear() == year)
+                    .findFirst().orElse(null);
+        } catch (Exception e) {
+            LOG.error("Failed in:" + METHOD_NAME + " method, name: " + name + ", field: " + year);
+            e.getMessage();
+        }
+        return null;
     }
 
     public Library getLibraryFromLibList(final List<Library> libList, History history) {
@@ -1687,7 +1736,7 @@ public class LibraryService {
     public GPResponse updateAlbumInfo(Album reqAlbum) {
         GPResponse resp = new GPResponse();
         Map<String, String> fieldValMap = new HashMap<String, String>();
-        Map<String, Object> response = new HashMap<String, Object>();
+        // Map<String, Object> response = new HashMap<String, Object>();
         List<Object> respTracks = new ArrayList<Object>();
         Album respAlbum = getAlbumByAlbumId((reqAlbum.getAlbumId()));
         File musicFile = null;
@@ -1696,6 +1745,7 @@ public class LibraryService {
         try {
             List<Library> respAlbumTracks = getSongsByAlbum(respAlbum.getAlbumName());
             List<Object> reqAlbumTracks = reqAlbum.getAlbumTracks();
+            System.out.println("reqAlbumTracks: " + reqAlbumTracks);
             // Library reqAlbumTrack = null;
             for (Library respAlbumTrack : respAlbumTracks) {
                 musicFile = new File(respAlbumTrack.getSongPath());
@@ -1818,6 +1868,289 @@ public class LibraryService {
             resp.setError(e.getMessage());
             e.printStackTrace();
         }
+        return resp;
+    }
+
+    public GPResponse buildDeltaLibrary(List<File> fileList) {
+        GPResponse resp = new GPResponse();
+        List<File> deltaFileList = new ArrayList<File>();
+        Message lastBuildCompletedTimeM = messageService.getMessageByName(GP_CONSTANTS.BUILD_COMPLETED_TIME);
+        LocalDateTime fileLastModifiedTime = null;
+        try {
+            if (lastBuildCompletedTimeM != null) {
+                String lastBuildCompletedTimeS = lastBuildCompletedTimeM.getValue();
+                LocalDateTime lastBuildCompletedTime = LocalDateTime.parse(lastBuildCompletedTimeS);
+                LOG.info("lastBuildCompletedTime: " + lastBuildCompletedTime.toString());
+                for (File file : fileList) {
+                    Instant modified = Files.getLastModifiedTime(Path.of(file.getAbsolutePath())).toInstant();
+                    fileLastModifiedTime = modified.atZone(ZoneId.systemDefault()).toLocalDateTime();
+                    if (lastBuildCompletedTime.compareTo(fileLastModifiedTime) < 0) {
+                        deltaFileList.add(file);
+                    }
+                }
+            } else {
+                resp.setError(
+                        "Encountered an error while refreshing. Please try running full build in Library page once.");
+                resp.setResponse(messageService.getMessagesByType(GP_CONSTANTS.BUILD_STATUS));
+                return resp;
+            }
+
+            if (deltaFileList.size() == 0) {
+                resp.setError("No change found!");
+                return resp;
+            }
+
+            String albumArtistName = null;
+            String artistName = null;
+            boolean isAlbumAdded = false;
+            String[] artistNameArr = null;
+            byte[] albumImg = null;
+            Artist artist = null;
+            Artist albumArtist = null;
+            Library library = null;
+            Album newAlbum = null;
+            Album existingAlbum = null;
+            Library existingLibrary = null;
+            Tag tag = null;
+            AudioFile audioFile = null;
+            List<Library> libraryList = new ArrayList<Library>();
+            List<Album> deltaAlbums = new ArrayList<Album>();
+            List<Artist> artistList = new ArrayList<Artist>();
+            List<Artist> albumArtistList = new ArrayList<Artist>();
+
+            removeJAudioTagLogger();
+
+            for (File deltaFile : deltaFileList) {
+                audioFile = AudioFileIO.read(deltaFile);
+                tag = audioFile.getTag();
+                tag = removeUnwantedTags(tag);
+                library = getLibraryFromFile(tag, audioFile, deltaFile);
+                existingLibrary = libraryRepository.getBySongPath(library.getSongPath());
+
+                if (existingLibrary != null) {
+                    existingAlbum = albumRepository.getByAlbumNameAndYear(existingLibrary.getAlbum(),
+                            existingLibrary.getYear());
+                    isAlbumAdded = isContainsCurrentAlbum(deltaAlbums, library.getAlbum(), library.getLanguage());
+                    if (!isAlbumAdded) {
+                        if (existingAlbum != null) {
+                            existingAlbum = Album.copy(existingAlbum, library);
+                            albumImg = getAlbumImgBinFromTag(tag);
+                            if (albumImg != null) {
+                                existingAlbum = writeByteArrayToImgFile(existingAlbum, albumImg);
+                            }
+                            deltaAlbums.add(existingAlbum);
+                        } else {
+                            // do nothing as an alum should always exists for an existing library
+                        }
+                    }
+
+                    if (!existingLibrary.getArtist().equals(library.getArtist())) {
+                        artistName = existingLibrary.getArtist();
+                        if (artistName.contains("/")) {
+                            artistNameArr = artistName.split("/");
+                        } else {
+                            artistNameArr = artistName.split(",");
+                        }
+
+                        for (String tempArtistName : artistNameArr) {
+                            tempArtistName = tempArtistName.trim();
+                            artist = getCurrentArtist(artistList, tempArtistName, GP_CONSTANTS.ARTIST);
+                            if (artist != null) {
+                                artist.setCount(artist.getCount() - 1);
+                                for (int i = 0; i < artistList.size(); i++) {
+                                    if (artist.getArtistName().equals(artistList.get(i).getArtistName())) {
+                                        artistList.set(i, artist);
+                                    }
+                                }
+                            } else {
+                                artist = artistRepository.getByArtistNameAndType(tempArtistName, GP_CONSTANTS.ARTIST);
+                                if (artist != null) {
+                                    artist.setCount(artist.getCount() - 1);
+                                    artistList.add(artist);
+                                }
+                            }
+
+                        }
+
+                        artistName = library.getArtist();
+                        if (artistName.contains("/")) {
+                            artistNameArr = artistName.split("/");
+                        } else {
+                            artistNameArr = artistName.split(",");
+                        }
+
+                        for (String tempArtistName : artistNameArr) {
+                            tempArtistName = tempArtistName.trim();
+                            artist = getCurrentArtist(artistList, tempArtistName, GP_CONSTANTS.ARTIST);
+                            if (artist != null) {
+                                artist.setCount(artist.getCount() + 1);
+                                for (int i = 0; i < artistList.size(); i++) {
+                                    if (artist.getArtistName().equals(artistList.get(i).getArtistName())) {
+                                        artistList.set(i, artist);
+                                    }
+                                }
+                            } else {
+                                artist = artistRepository.getByArtistNameAndType(tempArtistName, GP_CONSTANTS.ARTIST);
+                                if (artist != null) {
+                                    artist.setCount(artist.getCount() + 1);
+                                    artistList.add(artist);
+                                } else {
+                                    artist = new Artist(GP_CONSTANTS.ARTIST);
+                                    artist.setArtistName(tempArtistName);
+                                    artist.setCount(1);
+                                    artistList.add(artist);
+                                }
+                            }
+
+                        }
+                    }
+
+                    if (!existingLibrary.getAlbumArtist().equals(library.getAlbumArtist())) { // Album artist
+                        albumArtistName = existingLibrary.getAlbumArtist();
+                        albumArtist = getCurrentArtist(albumArtistList, albumArtistName, GP_CONSTANTS.ALBUM_ARTIST);
+                        if (albumArtist != null) {
+                            albumArtist.setCount(albumArtist.getCount() - 1);
+                            for (int i = 0; i < albumArtistList.size(); i++) {
+                                if (albumArtist.getArtistName().equals(albumArtistList.get(i).getArtistName())) {
+                                    albumArtistList.set(i, artist);
+                                }
+                            }
+                        } else {
+                            albumArtist = artistRepository.getByArtistNameAndType(albumArtistName,
+                                    GP_CONSTANTS.ALBUM_ARTIST);
+                            if (albumArtist != null) {
+                                albumArtist.setCount(albumArtist.getCount() - 1);
+                                albumArtistList.add(albumArtist);
+                            }
+                        }
+
+                        albumArtistName = library.getAlbumArtist();
+                        albumArtist = getCurrentArtist(albumArtistList, albumArtistName, GP_CONSTANTS.ALBUM_ARTIST);
+                        if (albumArtist != null) {
+                            albumArtist.setCount(albumArtist.getCount() + 1);
+                            for (int i = 0; i < albumArtistList.size(); i++) {
+                                if (albumArtist.getArtistName().equals(albumArtistList.get(i).getArtistName())) {
+                                    albumArtistList.set(i, albumArtist);
+                                }
+                            }
+                        } else {
+                            albumArtist = artistRepository.getByArtistNameAndType(albumArtistName,
+                                    GP_CONSTANTS.ALBUM_ARTIST);
+                            if (albumArtist != null) {
+                                albumArtist.setCount(albumArtist.getCount() + 1);
+                                albumArtistList.add(albumArtist);
+                            } else {
+                                albumArtist = new Artist(GP_CONSTANTS.ALBUM_ARTIST);
+                                albumArtist.setArtistName(albumArtistName);
+                                albumArtist.setCount(1);
+                                albumArtistList.add(albumArtist);
+                            }
+                        }
+
+                    }
+
+                    existingLibrary = Library.copy(existingLibrary, library);
+                    libraryList.add(existingLibrary);
+                } else {
+                    libraryList.add(library);
+                    isAlbumAdded = isContainsCurrentAlbum(deltaAlbums, library.getAlbum(), library.getLanguage());
+                    if (!isAlbumAdded) {
+                        newAlbum = Album.copy(newAlbum, library);
+                        albumImg = getAlbumImgBinFromTag(tag);
+                        if (albumImg != null) {
+                            newAlbum = writeByteArrayToImgFile(newAlbum, albumImg);
+                        }
+                        deltaAlbums.add(newAlbum);
+                    }
+
+                    artistName = library.getArtist();
+                    if (artistName.contains("/")) {
+                        artistNameArr = artistName.split("/");
+                    } else {
+                        artistNameArr = artistName.split(",");
+                    }
+
+                    for (String tempArtistName : artistNameArr) {
+                        tempArtistName = tempArtistName.trim();
+                        artist = getCurrentArtist(artistList, tempArtistName, GP_CONSTANTS.ARTIST);
+                        if (artist != null) {
+                            artist.setCount(artist.getCount() + 1);
+                            for (int i = 0; i < artistList.size(); i++) {
+                                if (artist.getArtistName().equals(artistList.get(i).getArtistName())) {
+                                    artistList.set(i, artist);
+                                }
+                            }
+                        } else {
+                            artist = artistRepository.getByArtistNameAndType(tempArtistName, GP_CONSTANTS.ARTIST);
+                            if (artist != null) {
+                                artist.setCount(artist.getCount() + 1);
+                                artistList.add(artist);
+                            } else {
+                                artist = new Artist(GP_CONSTANTS.ARTIST);
+                                artist.setArtistName(tempArtistName);
+                                artist.setCount(1);
+                                artistList.add(artist);
+                            }
+                        }
+
+                    }
+
+                    albumArtistName = library.getAlbumArtist();
+                    albumArtist = getCurrentArtist(albumArtistList, albumArtistName, GP_CONSTANTS.ALBUM_ARTIST);
+                    if (albumArtist != null) {
+                        albumArtist.setCount(albumArtist.getCount() + 1);
+                        for (int i = 0; i < albumArtistList.size(); i++) {
+                            if (albumArtist.getArtistName().equals(albumArtistList.get(i).getArtistName())) {
+                                albumArtistList.set(i, albumArtist);
+                            }
+                        }
+                    } else {
+                        albumArtist = artistRepository.getByArtistNameAndType(albumArtistName,
+                                GP_CONSTANTS.ALBUM_ARTIST);
+                        if (albumArtist != null) {
+                            albumArtist.setCount(albumArtist.getCount() + 1);
+                            albumArtistList.add(albumArtist);
+                        } else {
+                            albumArtist = new Artist(GP_CONSTANTS.ALBUM_ARTIST);
+                            albumArtist.setArtistName(albumArtistName);
+                            albumArtist.setCount(1);
+                            albumArtistList.add(albumArtist);
+                        }
+                    }
+                }
+
+            }
+
+            if (libraryList != null) {
+                libraryRepository.saveAll(libraryList);
+            }
+
+            if (deltaAlbums != null) {
+                albumRepository.saveAll(deltaAlbums);
+            }
+
+            if (artistList != null && artistList.size() > 0) {
+                artistRepository.saveAll(artistList);
+            }
+
+            if (albumArtistList != null && albumArtistList.size() > 0) {
+                artistRepository.saveAll(albumArtistList);
+            }
+
+            artistList = artistRepository.getAllArtistsWithCountZeoOrLess();
+            artistRepository.deleteAll(artistList);
+
+            messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_COMPLETED_TIME,
+                    LocalDateTime.now().toString());
+            messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS,
+                    GP_CONSTANTS.COMPLETED);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        LOG.info("Refresh completed!");
+        resp.setStatus("Refresh completed!");
+        resp.setResponse(messageService.getMessagesByType(GP_CONSTANTS.BUILD_STATUS));
         return resp;
     }
 

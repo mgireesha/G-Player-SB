@@ -20,6 +20,8 @@ public interface AlbumRepository extends CrudRepository<Album, Long> {
 
     Album getByAlbumName(String albumName);
 
+    Album getByAlbumNameAndYear(String albumName, int year);
+
     List<Album> getByAlbumArtist(String albumArtist);
 
     List<Object> getByAlbumNameContainsIgnoreCase(String searchKey);

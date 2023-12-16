@@ -80,34 +80,38 @@ export const AlbumArtist = () => {
 
     return(
         <div className="album-artist">
-            <div className="album-artist-img-div-container">
-                <div className="album-artist-img-div">
-                    {albumArtistObj.imgAvl  && <img id="artist_image" src={GP_ARTIST_IMAGE_PATHS_MAP[albumArtistObj.imageSource] + albumArtistObj.artistName+".jpg"} />}
-                    {!albumArtistObj.imgAvl && artistWikiImg!==null &&  <img id="artist_image" src={artistWikiImg} />}
-                    {!albumArtistObj.imgAvl && artistWikiImg===null &&<img id="artist_image" src={def_album_art} />}
-                    <div className="change-artist-img">
-                        <input type="file" onChange={handleArtistFileChnage} title={UPDATE_ARTIST_IMAGE_TEXT} />
-                        <button className="g-btn sm success" onClick={initArtistImgUpload}>{UPDATE_LABEL}</button>
-                    </div>
-                </div>
-                <div className="album-artist-details">
-                    <h3>{albumArtist}</h3>
-                    <label>Albums: {albumCount}</label>
-                    {playedFrom===ALBUM_ARTIST && songPlaying!==undefined && songPlaying!==null && songPlaying.albumArtist.includes(albumArtist) &&
-                        <label>Playing:&nbsp;<i onClick={scrollToPlaying} style={{cursor:'pointer',color:'#ef6464'}}>{songPlaying.title}</i>&nbsp;<Link to={`/music/albums/${songPlaying.album}`}>{songPlaying.album!==null?'from '+songPlaying.album:''}</Link></label>
-                    }
-                    {artistWiki !==null && artistWiki!==undefined && artistWiki["extract"]!==undefined && 
-                        <div className="album-artist-wiki-summary">
-                            <p>{artistWiki["extract"]}</p>
+            {albumArtistObj &&
+                <>
+                    <div className="album-artist-img-div-container">
+                        <div className="album-artist-img-div">
+                            {albumArtistObj.imgAvl  && <img id="artist_image" src={GP_ARTIST_IMAGE_PATHS_MAP[albumArtistObj.imageSource] + albumArtistObj.artistName+".jpg"} />}
+                            {!albumArtistObj.imgAvl && artistWikiImg!==null &&  <img id="artist_image" src={artistWikiImg} />}
+                            {!albumArtistObj.imgAvl && artistWikiImg===null &&<img id="artist_image" src={def_album_art} />}
+                            <div className="change-artist-img">
+                                <input type="file" onChange={handleArtistFileChnage} title={UPDATE_ARTIST_IMAGE_TEXT} />
+                                <button className="g-btn sm success" onClick={initArtistImgUpload}>{UPDATE_LABEL}</button>
+                            </div>
                         </div>
-                    }
-                </div>
-            </div>
-            <div className="album-artist-album-list">
-            {albumListOfAA.length>0 && albumListOfAA.map((album, index) =>
-                <AlbumThumb album={album} key={index} />
-            )}
-        </div>
+                        <div className="album-artist-details">
+                            <h3>{albumArtist}</h3>
+                            <label>Albums: {albumCount}</label>
+                            {playedFrom===ALBUM_ARTIST && songPlaying!==undefined && songPlaying!==null && songPlaying.albumArtist.includes(albumArtist) &&
+                                <label>Playing:&nbsp;<i onClick={scrollToPlaying} style={{cursor:'pointer',color:'#ef6464'}}>{songPlaying.title}</i>&nbsp;<Link to={`/music/albums/${songPlaying.album}`}>{songPlaying.album!==null?'from '+songPlaying.album:''}</Link></label>
+                            }
+                            {artistWiki !==null && artistWiki!==undefined && artistWiki["extract"]!==undefined && 
+                                <div className="album-artist-wiki-summary">
+                                    <p>{artistWiki["extract"]}</p>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div className="album-artist-album-list">
+                        {albumListOfAA.length>0 && albumListOfAA.map((album, index) =>
+                            <AlbumThumb album={album} key={index} />
+                        )}
+                    </div>
+                </>
+            }
         </div>
     );
 }

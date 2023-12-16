@@ -10,12 +10,12 @@ import { deleteMusicPathAPI, editAlbumInfoAPI, editTrackInfoAPI, fetchAlbumAPI, 
          fetchLanguageDetailsAPI, 
          fetchMostPlayedDataAPI, 
          fetchMusicpathAPI, 
-         fetchSongsByArtistAPI, fetchSongsByGenreAPI, fetchSongsByLanguageAPI, getAllSongsAPI, getMessagesByType, initiateArtistImageDownload, initLibraryBuildAPI, saveMusicpathAPI, searchByKeyAPI, updateHistoryAPI, uploadArtistImgAPI 
+         fetchSongsByArtistAPI, fetchSongsByGenreAPI, fetchSongsByLanguageAPI, getAllSongsAPI, getMessagesByType, initDeltaLibraryBuildAPI, initiateArtistImageDownload, initLibraryBuildAPI, saveMusicpathAPI, searchByKeyAPI, updateHistoryAPI, uploadArtistImgAPI 
     } from "../GPApis";
 import { deleteMusicPathSucc, fetchAlbumImgsScc, fetchAlbumlistOfAASucc, fetchAlbumSucc, 
         fetchAlbumTacksSucc, 
         fetchAllAlbumArtistsDtlsSucc, fetchAllAlbumsDtlsSucc, fetchAllAlbumsSucc, 
-        fetchAllArtistsDtlsSucc, fetchAllHistorySucc, fetchBuildStatusSucc, fetchGenreDetailsSucc, fetchMostPlayedDataSucc, fetchMusicPathSucc, fetchSongsByArtistSucc, fetchAllSongsSucc, initiArtistImageDownloadSucc, initLibraryBuildSucc, saveMusicPathSucc, searchByKeySucc, updateHistorySucc, fetchSongsByGenreSucc, setPlayerTracks, uploadArtistImg, uploadArtistImgSucc, setStatusMessage, fetchLanguageDetailsSucc, fetchSongsByLanguageSucc, editTrackInfoSucc, setMetadataPopupObj, setArtistImageDownloadSummary, fetchMessagesByTypeSucc, editAlbumInfoSucc 
+        fetchAllArtistsDtlsSucc, fetchAllHistorySucc, fetchBuildStatusSucc, fetchGenreDetailsSucc, fetchMostPlayedDataSucc, fetchMusicPathSucc, fetchSongsByArtistSucc, fetchAllSongsSucc, initiArtistImageDownloadSucc, initLibraryBuildSucc, saveMusicPathSucc, searchByKeySucc, updateHistorySucc, fetchSongsByGenreSucc, setPlayerTracks, uploadArtistImg, uploadArtistImgSucc, setStatusMessage, fetchLanguageDetailsSucc, fetchSongsByLanguageSucc, editTrackInfoSucc, setMetadataPopupObj, setArtistImageDownloadSummary, fetchMessagesByTypeSucc, editAlbumInfoSucc, initDeltaLibraryBuildSucc 
     } from "./LibraryActions";
 import { FETCH_SONGS_START, HISTORY_FETCH_ALL_HISTORY_START, HISTORY_UPDATE_HISTORY_START, LIBRARY_DELETE_MUSIC_PATH_START, LIBRARY_EDIT_ALBUM_INFO_START, LIBRARY_EDIT_TRACK_INFO_START, LIBRARY_FETCH_ALBUMS_DETAILS_START, LIBRARY_FETCH_ALBUMS_START, 
     LIBRARY_FETCH_ALBUM_ARTIST_LIST_START, 
@@ -29,6 +29,7 @@ import { FETCH_SONGS_START, HISTORY_FETCH_ALL_HISTORY_START, HISTORY_UPDATE_HIST
     LIBRARY_FETCH_SONGS_BY_GENRE_START, 
     LIBRARY_FETCH_SONGS_BY_LANGUAGE_START, 
     LIBRARY_INIT_ARTIST_IMG_DOWNLOAD_START, 
+    LIBRARY_INIT_BUILD_DELTA_LIBRARY_START, 
     LIBRARY_INIT_BUILD_LIBRARY_START,
     LIBRARY_SAVE_MUSIC_PATH_START,
     LIBRARY_SEARCH_BY_KEY_START,
@@ -320,6 +321,27 @@ export function*onInitLibraryBuildAsync(){
         const response = yield call(initLibraryBuildAPI);
         if(response.status === 200){
             yield put(initLibraryBuildSucc(response.data));
+        }
+    } catch (error) {
+        console.log(error);
+        handleAPIError(error);
+    }
+}
+
+export function* onInitDeltaLibraryBuild(){
+    yield takeLatest(LIBRARY_INIT_BUILD_DELTA_LIBRARY_START, onInitDeltaLibraryBuildAsync);
+}
+
+export function* onInitDeltaLibraryBuildAsync(){
+    try {
+        const response = yield call(initDeltaLibraryBuildAPI);
+        if(response.status === 200){
+            if(response.data.error){
+                yield put(setStatusMessage(response.data.error));
+            }else{
+                if(response.data.status){yield put(setStatusMessage(response.data.status));}
+                yield put(initDeltaLibraryBuildSucc(response.data));
+            }
         }
     } catch (error) {
         console.log(error);

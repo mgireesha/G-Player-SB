@@ -90,6 +90,10 @@ export const initLibraryBuildAPI = () => {
     return iAxios.get(`/library/initLibraryBuild`).then(response => response);
 }
 
+export const initDeltaLibraryBuildAPI = () => {
+    return iAxios.get(`/library/init-delta-library-build`).then(response => response);
+}
+
 export const searchByKeyAPI = (searchKey) => {
     return iAxios.get(`/library/search/key/${searchKey}`).then(response => response);
 }

@@ -12,6 +12,7 @@ public class GP_CONSTANTS {
     public static final String ARTISTS = "ARTISTS";
     public static final String ARTIST_COUNT = "ARTIST_COUNT";
 
+    public static final String BUILD_COMPLETED_TIME = "BUILD_COMPLETED_TIME";
     public static final String BUILD_STATUS = "BUILD_STATUS";
     public static final String BUILD_STATUS_STEP = "BUILD_STATUS_STEP";
 

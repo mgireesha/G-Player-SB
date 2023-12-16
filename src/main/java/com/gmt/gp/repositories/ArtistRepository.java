@@ -28,4 +28,11 @@ public interface ArtistRepository extends CrudRepository<Artist, Long> {
     List<Artist> getByIsImgAvlTrue();
 
     List<Artist> getByIsImgAvlFalse();
+
+    @Query("select artist from Artist artist where artist.count < 1")
+    List<Artist> getAllArtistsWithCountZeoOrLess();
+
+    // @Query("delete from Artist artist where artist.count = 0 or artist.count <
+    // 0")
+    // void deleteArtistWithCountZeroOrLess();
 }

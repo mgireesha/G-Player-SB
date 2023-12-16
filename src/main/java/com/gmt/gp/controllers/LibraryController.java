@@ -52,7 +52,7 @@ public class LibraryController {
         // messageService.removeMessageName(GP_CONSTANTS.LAST_PLAYED_SONG_ID);
         messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.RUNNING);
 
-        List<String> mainFolderList = messageService.getAllMusicPaths();
+        List<String> mainFolderList = messageService.getAllMusicPaths(true);
 
         LOG.info(methodName + " - Started searching for audio files in : " + mainFolderList);
         fileList = libraryService.getMusicFiles(mainFolderList);
@@ -66,6 +66,21 @@ public class LibraryController {
 
         LOG.info(methodName + " - calling build library");
         libraryService.buildLibrary(fileList);
+        return resp;
+    }
+
+    @RequestMapping("/init-delta-library-build")
+    public GPResponse runDeltaBuild() {
+        final String methodName = "runDeltaBuild";
+        GPResponse resp = new GPResponse();
+        List<File> fileList = new ArrayList<File>();
+        List<String> mainFolderList = messageService.getAllMusicPaths(true);
+
+        LOG.info(methodName + " - Started searching for audio files in : " + mainFolderList);
+        fileList = libraryService.getMusicFiles(mainFolderList);
+        LOG.info(methodName + " - Found " + fileList.size() + " audio files");
+        messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, "FILES_TO_READ", String.valueOf(fileList.size()));
+        resp = libraryService.buildDeltaLibrary(fileList);
         return resp;
     }
 

@@ -246,6 +246,58 @@ public class Library {
                 playlistItemId);
     }
 
+    public static Library copy(Library e, Library n) {
+        if (n.getAlbum() != null) {
+            e.setAlbum(n.getAlbum());
+        }
+        if (n.getAlbumArtist() != null) {
+            e.setAlbumArtist(n.getAlbumArtist());
+        }
+        if (n.getArtist() != null) {
+            e.setArtist(n.getArtist());
+        }
+        if (n.getBpm() != null) {
+            e.setBpm(n.getBpm());
+        }
+        if (n.getComposer() != null) {
+            e.setComposer(n.getComposer());
+        }
+        if (n.getGenre() != null) {
+            e.setGenre(n.getGenre());
+        }
+        if (n.getGroupingGP() != null) {
+            e.setGroupingGP(n.getGroupingGP());
+        }
+        if (n.getLabel() != null) {
+            e.setLabel(n.getLabel());
+        }
+        if (n.getLanguage() != null) {
+            e.setLanguage(n.getLanguage());
+        }
+        if (n.getLyricist() != null) {
+            e.setLyricist(n.getLyricist());
+        }
+        if (n.getSongPath() != null) {
+            e.setSongPath(n.getSongPath());
+        }
+        if (n.getTitle() != null) {
+            e.setTitle(n.getTitle());
+        }
+        if (n.getTotaltracks() != 0) {
+            e.setTotaltracks(n.getTotaltracks());
+        }
+        if (n.getTrackLength() != 0) {
+            e.setTrackLength(n.getTrackLength());
+        }
+        if (n.getTrackNumber() != 0) {
+            e.setTrackNumber(n.getTrackNumber());
+        }
+        if (n.getYear() != 0) {
+            e.setYear(n.getYear());
+        }
+        return e;
+    }
+
     @Override
     public String toString() {
         return "Library [songId=" + songId + ", songPath=" + songPath + ", title=" + title + ", album=" + album
