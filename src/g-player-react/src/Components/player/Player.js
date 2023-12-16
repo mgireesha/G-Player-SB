@@ -4,6 +4,7 @@ import { FaPauseCircle, FaPlay } from "react-icons/fa";
 import { MdOutlineLyrics, MdSkipNext, MdSkipPrevious } from "react-icons/md";
 import { TiArrowRepeat } from "react-icons/ti";
 import { TbArrowsShuffle , TbRepeatOnce} from "react-icons/tb";
+import { RiRefreshLine } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
 import { fettchCurrentSongStatus, playASong, playPause, setIsPlaying, setIsShuffle, setPlayBackLength, setRepeat } from "../redux/player/PlayerActions";
 import { getMins, scrolltoId, scrollToPlaying, setCookies } from "../utilities/util";
@@ -15,6 +16,7 @@ import { CURRENT, NEXT, PLAYER, PLAYLIST, PREVIOUS, REPEAT_ALL, REPEAT_OFF, REPE
 
 import def_album_art from '../images/def_album_art.png';
 import { SplitAndLink } from "../utilities/SplitAndLink";
+import { RefreshBuild } from "./RefreshBuild";
 
 export const Player = () => {
 
@@ -320,6 +322,7 @@ export const Player = () => {
                 </div>
                 <div className="other-actions">
                         <VolumeH />
+                        <RefreshBuild />
                 </div>
                 <div className="mobile-only-block mobile-play-btn">
                     <div className="play">

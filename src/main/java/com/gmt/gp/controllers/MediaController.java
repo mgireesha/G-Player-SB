@@ -52,6 +52,15 @@ public class MediaController {
         }
 
         Library song = libraryService.getSongBySongId(Integer.parseInt(songId));
+        if (song != null) {
+            File songExists = new File(song.getSongPath());
+            if (!songExists.exists()) {
+                libraryService.deleteSongBySongId(song.getSongId());
+                resp.setStatus(GP_CONSTANTS.FAILED);
+                resp.setError("Select song is not availbe at the source. Hence, entry removed.");
+                return resp;
+            }
+        }
         Library tempSong = null;
         Message message = messageService.getMessageByName(GP_CONSTANTS.LAST_PLAYED_SONG_ID);
         if (message != null) {

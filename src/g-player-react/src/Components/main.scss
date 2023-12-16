@@ -61,6 +61,18 @@ body{
         display: grid;
         grid-template-columns: 6fr 7fr 6fr;
 
+        .other-actions{
+            display: flex;
+            align-items: center;
+
+            .refresh-build{
+                font-size: 26px;
+                margin-left: auto;
+                margin-right: auto;
+                cursor: pointer;
+            }
+        }
+
     }
 
     .song-info{
@@ -220,12 +232,13 @@ body{
         .volume-h-div{
             display: flex;
             align-items: center;
+            width: 60%;
             span{
                 padding: 0 5px;
                 padding-bottom: 3px;
             }
             .volume_progress_bar{
-                width: 50%;
+                width: 100%;
             }
             .volume-h-speaker-img{
                 svg{

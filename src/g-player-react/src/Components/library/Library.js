@@ -109,7 +109,7 @@ export const Library = () => {
     },[artistIImgDownloadStat]);
 
     const initiateArtistImageDownload = () => {
-        if(window.confirm("Build library ?")===true){
+        if(window.confirm("Initiate Download ?")===true){
             const tempArtistIImgDownloadStat = {
                 "name": "ARTIST_IMG_DOWNLOAD_STATUS",
                 "value": "RUNNING",

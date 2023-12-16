@@ -158,4 +158,32 @@ public class Album {
         this.albumArt = albumArt;
     }
 
+    public static Album copy(Album e, Library n) {
+        if (e == null) {
+            e = new Album();
+        }
+        if (n.getAlbumArtist() != null) {
+            e.setAlbumArtist(n.getAlbumArtist());
+        }
+        if (n.getAlbum() != null) {
+            e.setAlbumName(n.getAlbum());
+        }
+        if (n.getComposer() != null) {
+            e.setComposer(n.getComposer());
+        }
+        if (n.getGenre() != null) {
+            e.setGenre(n.getGenre());
+        }
+        if (n.getLanguage() != null) {
+            e.setLanguage(n.getLanguage());
+        }
+        if (n.getTotaltracks() != 0) {
+            e.setTotaltracks(n.getTotaltracks());
+        }
+        if (n.getYear() != 0) {
+            e.setYear(n.getYear());
+        }
+        return e;
+    }
+
 }

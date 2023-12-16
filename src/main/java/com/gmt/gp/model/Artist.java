@@ -35,6 +35,10 @@ public class Artist {
     public Artist() {
     }
 
+    public Artist(String type) {
+        this.type = type;
+    }
+
     public long getArtistId() {
         return artistId;
     }

@@ -65,6 +65,9 @@ public interface LibraryRepository extends CrudRepository<Library, Long> {
 
     List<Library> getByTitleAndAlbum(String title, String album);
 
+    @Query("select l from Library l where l.album=:album and l.title=:title")
+    Library fetchByTitleAndAlbum(String title, String album);
+
     @Query("Select l from Library l where l.songPath in (:songPathList)")
     List<Library> getSongsBySongPath(List<String> songPathList);
 
