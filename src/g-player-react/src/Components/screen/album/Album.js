@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import def_album_art from '../../images/def_album_art.png';
 import { ALBUM, A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, EDIT_INFO_LABEL, MULTI_GENRE, MULTI_LINGUAL, TRACKS_LABEL, TRACK_NUMBER } from ".././../redux/GPActionTypes";
 import { Lyrics } from "../lyrics/Lyrics";
@@ -12,6 +12,7 @@ import { RiEditLine } from 'react-icons/ri';
 
 export const Album = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const { albumName, language } = useParams();
     const album = useSelector(state => state.library.album);
     let albumTracks = useSelector(state => state.library.albumTracks);
@@ -50,6 +51,12 @@ export const Album = () => {
 
         setTrackListInp(tempTrackListInp);
     },[albumTracks]);
+
+    useEffect(()=>{
+        if(albumName && album && album.albumName && album.albumName !== albumName){
+            navigate(`/albums/${album.albumName}`)
+        }
+    },[album])
 
     const onSetShowMetadataPopup = () => {
         const tempAlbum = {...album};

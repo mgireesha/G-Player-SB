@@ -38,6 +38,10 @@ public class Album {
     public Album() {
     }
 
+    public Album(String albumName) {
+        this.albumName = albumName;
+    }
+
     public String getLanguages() {
         return languages;
     }
