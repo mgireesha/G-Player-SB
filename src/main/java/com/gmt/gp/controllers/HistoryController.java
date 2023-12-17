@@ -4,8 +4,8 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gmt.gp.model.GPResponse;
@@ -28,7 +28,7 @@ public class HistoryController {
         return historyService.getAllGroupedHistory();
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/add-to-history/{songId}")
+    @PutMapping("/add-to-history/{songId}")
     public GPResponse updateHistory(@PathVariable String songId) {
         GPResponse resp = new GPResponse();
         Library library = libraryService.getSongBySongId(Integer.parseInt(songId));

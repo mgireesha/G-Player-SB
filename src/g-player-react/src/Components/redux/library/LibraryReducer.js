@@ -105,7 +105,7 @@ const libraryReducer = (state = initialState, action) => {
             return{
                 ...state,
                 album:action.album,
-                phase:SUCCESS
+                phase:LIBRARY_FETCH_ALBUM_SUCCESS
             }
         case SET_GROUP_BAND:
             return{
