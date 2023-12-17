@@ -25,48 +25,56 @@ public class SQL_QUERIES {
     }
 
     public static String getTopArtistsFromHistoryJDBCQuery() {
-        return "select "
-                + "artist, max(count) as count from (select "
-                + "his.artist, his.count, his.last_played_time, art.artist_name "
-                + "from "
-                + "(select artist, sum(count) as count, max(last_played_time) as last_played_time from history group by artist) his "
-                + "inner join "
-                + "(select artist_name,is_img_avl from artist where type='ARTIST' ) art "
-                + "on "
-                + "his.artist like CONCAT('%', art.artist_name, '%')) "
-                + "group by artist "
-                + "order by count desc "
+        return """
+                select \
+                artist, max(count) as count from (select \
+                his.artist, his.count, his.last_played_time, art.artist_name \
+                from \
+                (select artist, sum(count) as count, max(last_played_time) as last_played_time from history group by artist) his \
+                inner join \
+                (select artist_name,is_img_avl from artist where type='ARTIST' ) art \
+                on \
+                his.artist like CONCAT('%', art.artist_name, '%')) \
+                group by artist \
+                order by count desc \
+                """
         // + "fetch first 5 rows only;"
         ;
     }
 
     public static String getTopAlbumArtistFromHistoryJDBCQuery() {
-        return "select "
-                + "his.album_artist, his.count "
-                + "from "
-                + "(select album_artist, sum(count) as count, max(last_played_time) as last_played_time from history group by album_artist) his "
-                + "inner join "
-                + "(select artist_name,is_img_avl from artist where type='ALBUM_ARTIST' ) art "
-                + "on "
-                + "his.album_artist = art.artist_name "
-                + "order by count desc "
-                + "fetch first 5 rows only;";
+        return """
+                select \
+                his.album_artist, his.count \
+                from \
+                (select album_artist, sum(count) as count, max(last_played_time) as last_played_time from history group by album_artist) his \
+                inner join \
+                (select artist_name,is_img_avl from artist where type='ALBUM_ARTIST' ) art \
+                on \
+                his.album_artist = art.artist_name \
+                order by count desc \
+                fetch first 5 rows only;\
+                """;
     }
 
     public static String getGenreCountJDBCQuery() {
-        return "select "
-                + "count(*) "
-                + "as GENRE_COUNT "
-                + "from "
-                + "(select genre from library group by genre);";
+        return """
+                select \
+                count(*) \
+                as GENRE_COUNT \
+                from \
+                (select genre from library group by genre);\
+                """;
     }
 
     public static String getHisLibCountJDBCQuery() {
-        return "select "
-                + "his.count as HISTORY_COUNT, lib.count as LIBRARY_COUNT "
-                + "from "
-                + "(select count(*) as count from history) his, "
-                + "(select count(*) as count from library) lib;";
+        return """
+                select \
+                his.count as HISTORY_COUNT, lib.count as LIBRARY_COUNT \
+                from \
+                (select count(*) as count from history) his, \
+                (select count(*) as count from library) lib;\
+                """;
     }
 
     public static String getThismonthPlayedCountJDBCQuery(LocalDate timeStamp) {

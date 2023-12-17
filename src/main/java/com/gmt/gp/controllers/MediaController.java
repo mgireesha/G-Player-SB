@@ -3,13 +3,7 @@ package com.gmt.gp.controllers;
 import java.io.File;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import com.gmt.gp.model.GPMedia;
 import com.gmt.gp.model.GPResponse;
 import com.gmt.gp.model.Library;
@@ -37,9 +31,9 @@ public class MediaController {
     @Autowired
     private MessageService messageService;
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/playSong/{songId}")
+    @PutMapping("/playSong/{songId}")
     public GPResponse playSong(@RequestBody String currentVolume, @PathVariable String songId,
-            @RequestParam("currentPlayTime") String currentPlayTime) {
+            @RequestParam String currentPlayTime) {
         GPResponse resp = new GPResponse();
         Double volume = Double.parseDouble(currentVolume);
         if (songId.equals("0") || songId == null) {

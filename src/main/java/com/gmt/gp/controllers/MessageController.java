@@ -3,13 +3,7 @@ package com.gmt.gp.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import com.gmt.gp.model.GPResponse;
 import com.gmt.gp.model.Message;
 import com.gmt.gp.services.MessageService;
@@ -26,22 +20,22 @@ public class MessageController {
     @Autowired
     private MessageService messageService;
 
-    @RequestMapping(method = RequestMethod.GET, value = "/{messageName}")
+    @GetMapping("/{messageName}")
     public Message getMessageByName(@PathVariable String messageName) {
         return messageService.getMessageByName(messageName);
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/type/{messageType}")
+    @GetMapping("/type/{messageType}")
     public List<Message> getMessageByType(@PathVariable String messageType) {
         return messageService.getMessagesByType(messageType);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/save-message")
+    @PostMapping("/save-message")
     public Message saveMessage(@RequestBody Message message) {
         return messageService.saveMaMessage(message);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/save-music-path")
+    @PostMapping("/save-music-path")
     public Message saveMusicPath(@RequestBody Message message) {
         return messageService.saveMusicPath(message);
     }
@@ -51,7 +45,7 @@ public class MessageController {
         return messageService.getAllMusicPaths();
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "/removeMusicPath/{messageId}")
+    @DeleteMapping("/removeMusicPath/{messageId}")
     public GPResponse removeMusicPath(@PathVariable String messageId) {
         GPResponse resp = new GPResponse(FAILED, null, null);
         try {

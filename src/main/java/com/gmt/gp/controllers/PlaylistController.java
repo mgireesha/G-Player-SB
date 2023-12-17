@@ -4,12 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import com.gmt.gp.model.GPResponse;
 import com.gmt.gp.model.Library;
 import com.gmt.gp.model.Message;
@@ -37,12 +32,12 @@ public class PlaylistController {
         return messageService.saveMaMessage(message);
     }
 
-    @RequestMapping(value = "/rename-playlist", method = RequestMethod.PUT)
+    @PutMapping("/rename-playlist")
     public GPResponse renamePlaylist(@RequestBody Message reqMessage) {
         return playlistService.renamePlaylist(reqMessage);
     }
 
-    @RequestMapping(value = "/delete-playlist/{playlistId}", method = RequestMethod.DELETE)
+    @DeleteMapping("/delete-playlist/{playlistId}")
     public GPResponse deletePlaylist(@PathVariable String playlistId) {
         return playlistService.deletePlaylist(Long.parseLong(playlistId));
     }
@@ -57,7 +52,7 @@ public class PlaylistController {
         return playlistService.addToPlaList(reqPlaylist);
     }
 
-    @RequestMapping(value = "/remove-from-playlist/{playlistId}/{songId}", method = RequestMethod.DELETE)
+    @DeleteMapping("/remove-from-playlist/{playlistId}/{songId}")
     public GPResponse removeFromPlaylist(@PathVariable String playlistId, @PathVariable String songId) {
         return playlistService.removeFromPlaylist(Long.parseLong(playlistId), Long.parseLong(songId));
     }
@@ -67,7 +62,7 @@ public class PlaylistController {
         return playlistService.exportPlaylists();
     }
 
-    @RequestMapping(value = "/import/{fileType}", method = RequestMethod.POST)
+    @PostMapping("/import/{fileType}")
     public GPResponse importPlaylists(@RequestBody String payload, @PathVariable String fileType) {
         return playlistService.importPlaylists(payload, fileType);
     }

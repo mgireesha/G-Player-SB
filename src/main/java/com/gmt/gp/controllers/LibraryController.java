@@ -8,13 +8,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import com.gmt.gp.model.Album;
 import com.gmt.gp.model.Artist;
 import com.gmt.gp.model.GPResponse;
@@ -174,7 +168,7 @@ public class LibraryController {
         return libraryService.downloadArtistImgToDIr();
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/updateLyrics/{songId}")
+    @PutMapping("/updateLyrics/{songId}")
     public GPResponse updateLyrics(@RequestBody String lyrics, @PathVariable String songId) {
         return libraryService.updateLyrics(songId, lyrics);
     }
@@ -209,24 +203,24 @@ public class LibraryController {
     // return name;
     // }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/upload-artist-image/{artistId}")
+    @PutMapping("/upload-artist-image/{artistId}")
     public GPResponse uploadArtistImg(@RequestBody String imageB64, @PathVariable String artistId) {
         return libraryService.uploadArtistImg(imageB64, Long.parseLong(artistId));
     }
 
     // temporary apis
-    @RequestMapping(method = RequestMethod.GET, value = "/update-mp3-files/{field}")
+    @GetMapping("/update-mp3-files/{field}")
     public GPResponse updateMp3Files(@RequestParam String path, @RequestParam String value,
             @PathVariable String field) {
         return libraryService.updateMp3Files(path, field, value);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/edit-track-info/{type}")
+    @PostMapping("/edit-track-info/{type}")
     public GPResponse updateTrackInfo(@RequestBody Library reqLibrary, @PathVariable String type) {
         return libraryService.updateTrackInfo(reqLibrary, type);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/edit-album-info")
+    @PostMapping("/edit-album-info")
     public GPResponse updateAlbumInfo(@RequestBody Album reqAlbum) {
         return libraryService.updateAlbumInfo(reqAlbum);
     }

@@ -9,12 +9,14 @@ import { camelize, setCookies } from "../../utilities/util";
 import { TrackList } from "../track/TrackList";
 import { SplitAndLink } from "../../utilities/SplitAndLink";
 import { RiEditLine } from 'react-icons/ri';
+import { LIBRARY_EDIT_ALBUM_INFO_SUCCESS, LIBRARY_FETCH_ALBUM_SUCCESS } from "../../redux/library/LibraryActionTypes";
 
 export const Album = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { albumName, language } = useParams();
     const album = useSelector(state => state.library.album);
+    const libPhase = useSelector(state => state.library.phase);
     let albumTracks = useSelector(state => state.library.albumTracks);
     if(albumTracks.length>0){
         albumTracks = albumTracks.sort((a,b) => a.trackNumber - b.trackNumber);
@@ -53,10 +55,12 @@ export const Album = () => {
     },[albumTracks]);
 
     useEffect(()=>{
-        if(albumName && album && album.albumName && album.albumName !== albumName){
-            navigate(`/albums/${album.albumName}`)
+        if(libPhase === LIBRARY_EDIT_ALBUM_INFO_SUCCESS 
+            && albumName && album && album.albumName 
+            && album.albumName !== albumName){
+            navigate(`/albums/${album.albumName}`);
         }
-    },[album])
+    },[libPhase]);
 
     const onSetShowMetadataPopup = () => {
         const tempAlbum = {...album};
