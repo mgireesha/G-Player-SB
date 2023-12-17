@@ -1545,6 +1545,13 @@ public class LibraryService {
                           // tag.setField(artwork);
                           // }
                     }
+                } else if (StringUtils.equals(field, "isWriteAlbumImg")
+                        && StringUtils.equals(fieldValMap.get(field), "true")) {
+                    byte[] albumImg = getAlbumImgBinFromTag(tag);
+                    if (albumImg != null) {
+                        Album tempAlbum = new Album(fieldValMap.get("album"));
+                        tempAlbum = writeByteArrayToImgFile(tempAlbum, albumImg);
+                    }
                 } else {
                     fieldKey = GPUtil.getFieldKeyForString(field);
                     existingField = tag.getFirst(fieldKey);
@@ -1742,6 +1749,7 @@ public class LibraryService {
         File musicFile = null;
         Map<String, String> updateMp3FileResponse = new HashMap<String, String>();
         Map<String, Object> updateMp3FilesResponse = new HashMap<String, Object>();
+        boolean isWriteAlbumImg = false;
         try {
             List<Library> respAlbumTracks = getSongsByAlbum(respAlbum.getAlbumName());
             List<Object> reqAlbumTracks = reqAlbum.getAlbumTracks();
@@ -1753,6 +1761,10 @@ public class LibraryService {
                 // Album name
                 if (StringUtils.isNotEmpty(reqAlbum.getAlbumName())) {
                     fieldValMap.put("album", reqAlbum.getAlbumName());
+                    if (!isWriteAlbumImg) {
+                        isWriteAlbumImg = true;
+                        fieldValMap.put("isWriteAlbumImg", "true");
+                    }
                     respAlbum.setAlbumName(reqAlbum.getAlbumName());
                     respAlbumTrack.setAlbum(reqAlbum.getAlbumName());
                 }
