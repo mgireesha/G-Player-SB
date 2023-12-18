@@ -1746,6 +1746,7 @@ public class LibraryService {
         return resp;
     }
 
+    @SuppressWarnings({ "rawtypes" })
     public GPResponse updateAlbumInfo(Album reqAlbum) {
         GPResponse resp = new GPResponse();
         Map<String, String> fieldValMap = new HashMap<String, String>();

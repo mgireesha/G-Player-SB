@@ -309,6 +309,7 @@ public class Library {
                 + ", language=" + language + ", playlistItemId=" + playlistItemId + "]";
     }
 
+    @SuppressWarnings({ "rawtypes" })
     public Library(LinkedHashMap track) {
         this.songId = (Integer) track.get("songId");
         // this.songPath = songPath;
