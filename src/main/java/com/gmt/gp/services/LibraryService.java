@@ -15,10 +15,13 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -288,7 +291,7 @@ public class LibraryService {
                     e.printStackTrace();
                     break;
                 }
-                if (fileListCounter == 100) {
+                if (fileListCounter == 300) {
                     LOG.info(methodName + " - Reading audiofiles,  remaining files: " + (fileList.size() - i));
                     messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.FILES_TO_READ,
                             String.valueOf((fileList.size() - i)));
@@ -500,6 +503,7 @@ public class LibraryService {
     public Library getLibraryFromFile(Tag tag, AudioFile audioF, File mpFile) throws Exception {
         Library library = new Library();
         String genre = "";
+        String language = "";
         try {
             library = new Library();
             if (!tag.getFirst(FieldKey.TITLE).equals("") && tag.getFirst(FieldKey.TITLE) != null) {
@@ -549,8 +553,7 @@ public class LibraryService {
             if (!tag.getFirst(FieldKey.GENRE).equals("") && tag.getFirst(FieldKey.GENRE) != null) {
                 genre = tag.getFirst(FieldKey.GENRE);
                 if (genre.contains("/")) {
-                    String[] genreArr = genre.split("\\s*/\\s*");
-                    genre = String.join(",", genreArr);
+                    genre = genre.replaceAll("/", ",");
                 }
                 library.setGenre(genre.toLowerCase());
             } else {
@@ -571,7 +574,11 @@ public class LibraryService {
                 library.setLyricsAvl(false);
 
             if (!tag.getFirst(FieldKey.LANGUAGE).equals("") && tag.getFirst(FieldKey.LANGUAGE) != null) {
-                library.setLanguage(tag.getFirst(FieldKey.LANGUAGE).toLowerCase());
+                language = tag.getFirst(FieldKey.LANGUAGE).toLowerCase();
+                if (language.contains("/")) {
+                    language = language.replaceAll("/", ",");
+                }
+                library.setLanguage(language);
             } else {
                 library.setLanguage(GP_CONSTANTS.UNKNOWN_LABEL);
             }
@@ -1363,44 +1370,14 @@ public class LibraryService {
         Map<String, List<String>> genreAlbums = new HashMap<String, List<String>>();
         List<String> albums = null;
         List<String> albumListByGenre = null;
-        String[] resLineArr = null;
-        String resLineGenre = null;
-        int resLineGenreCount = 0;
-        int tempResLineGenreCount = 0;
         try {
             List<Map<String, Object>> mostPlayedAlbums = historyService.getAlbumsGroupedFromHistoryJDBC(0, "count");
-            List<String> tempGenres = libraryRepository.getGenresGroupByGenre();
-            for (String resLine : tempGenres) {
-                resLineArr = resLine.split(",", 2);
-                resLineGenre = resLineArr[1];
-                resLineGenreCount = Integer.parseInt(resLineArr[0]);
-                if (resLineGenre.contains(",") || resLineGenre.contains("/")) {
-                    if (resLineGenre.contains(",")) {
-                        resLineArr = resLineGenre.split("\\s*,\\s*");
-                    } else {
-                        resLineArr = resLineGenre.split("\\s*/\\s*");
-                    }
-                    for (String resLineGenre1 : resLineArr) {
-                        if (!genres.contains(resLineGenre1)) {
-                            genres.add(resLineGenre1);
-                        }
-                        if (!genreSongCount.containsKey(resLineGenre1)) {
-                            genreSongCount.put(resLineGenre1, resLineGenreCount);
-                        } else {
-                            tempResLineGenreCount = genreSongCount.get(resLineGenre1);
-                            genreSongCount.put(resLineGenre1, tempResLineGenreCount + resLineGenreCount);
-                        }
-                        albumListByGenre = libraryRepository.getAlbumListByGenre(resLineGenre1);
-                        albums = GPUtil.sortAlbumsByMostPlayed(albumListByGenre, mostPlayedAlbums);
-                        genreAlbums.put(resLineGenre1, albums);
-                    }
-                } else {
-                    genres.add(resLineGenre);
-                    genreSongCount.put(resLineGenre, resLineGenreCount);
-                    albumListByGenre = libraryRepository.getAlbumListByGenre(resLineGenre);
-                    albums = GPUtil.sortAlbumsByMostPlayed(albumListByGenre, mostPlayedAlbums);
-                    genreAlbums.put(resLineGenre, albums);
-                }
+            genreSongCount = getColumnValueGroupedByColumns(GP_CONSTANTS.GENRE);
+            for (String genre : genreSongCount.keySet()) {
+                genres.add(genre);
+                albumListByGenre = libraryRepository.getAlbumListByGenre(genre);
+                albums = GPUtil.sortAlbumsByMostPlayed(albumListByGenre, mostPlayedAlbums);
+                genreAlbums.put(genre, albums);
             }
             genreDetails.put(GP_CONSTANTS.GENRES, genres);
             genreDetails.put(GP_CONSTANTS.GENRE_SONG_COUNT, genreSongCount);
@@ -1617,50 +1594,23 @@ public class LibraryService {
     }
 
     public Map<String, Object> getLanguageDetails() {
+        final String METHOD_NANE = "getLanguageDetails";
         Map<String, Object> languageDetails = new HashMap<String, Object>();
         List<String> languages = new ArrayList<String>();
-        Map<String, Integer> languageSongCount = new HashMap<String, Integer>();
+        Map<String, Integer> languageSongCount = null;
         Map<String, List<String>> languageAlbums = new HashMap<String, List<String>>();
         List<String> albums = null;
         List<String> albumListByLanguage = null;
-        String[] resLineArr = null;
-        String resLineLanguage = null;
-        int resLineLanguageCount = 0;
-        int tempResLineLanguageCount = 0;
         try {
             List<Map<String, Object>> mostPlayedAlbums = historyService.getAlbumsGroupedFromHistoryJDBC(0, "count");
-            List<String> tempLanguages = libraryRepository.getLanguagesGroupByLanguage();
-            for (String resLine : tempLanguages) {
-                resLineArr = resLine.split(",", 2);
-                resLineLanguage = resLineArr[1];
-                resLineLanguageCount = Integer.parseInt(resLineArr[0]);
-                if (resLineLanguage.contains(",") || resLineLanguage.contains("/")) {
-                    if (resLineLanguage.contains(",")) {
-                        resLineArr = resLineLanguage.split(",");
-                    } else {
-                        resLineArr = resLineLanguage.split("/");
-                    }
-                    for (String resLineLanguage1 : resLineArr) {
-                        if (!languages.contains(resLineLanguage1)) {
-                            languages.add(resLineLanguage1);
-                        }
-                        if (!languageSongCount.containsKey(resLineLanguage1)) {
-                            languageSongCount.put(resLineLanguage1, resLineLanguageCount);
-                        } else {
-                            tempResLineLanguageCount = languageSongCount.get(resLineLanguage1);
-                            languageSongCount.put(resLineLanguage1, tempResLineLanguageCount + resLineLanguageCount);
-                        }
-                        albumListByLanguage = libraryRepository.getAlbumListByLanguage(resLineLanguage1);
-                        albums = GPUtil.sortAlbumsByMostPlayed(albumListByLanguage, mostPlayedAlbums);
-                        languageAlbums.put(resLineLanguage1, albums);
-                    }
-                } else {
-                    languages.add(resLineLanguage);
-                    languageSongCount.put(resLineLanguage, resLineLanguageCount);
-                    albumListByLanguage = libraryRepository.getAlbumListByLanguage(resLineLanguage);
-                    albums = GPUtil.sortAlbumsByMostPlayed(albumListByLanguage, mostPlayedAlbums);
-                    languageAlbums.put(resLineLanguage, albums);
-                }
+            languageSongCount = getColumnValueGroupedByColumns(GP_CONSTANTS.LANGUAGE);
+            LOG.info(METHOD_NANE + " : getColumnValueGroupedByColumns, " + GP_CONSTANTS.LANGUAGE + " : "
+                    + languageSongCount);
+            for (String language : languageSongCount.keySet()) {
+                languages.add(language);
+                albumListByLanguage = libraryRepository.getAlbumListByLanguage(language);
+                albums = GPUtil.sortAlbumsByMostPlayed(albumListByLanguage, mostPlayedAlbums);
+                languageAlbums.put(language, albums);
             }
             languageDetails.put(GP_CONSTANTS.LANGUAGES, languages);
             languageDetails.put(GP_CONSTANTS.LANGUAGE_SONG_COUNT, languageSongCount);
@@ -1671,6 +1621,62 @@ public class LibraryService {
         }
 
         return languageDetails;
+    }
+
+    public Map<String, Integer> getColumnValueGroupedByColumns(String column) {
+        Map<String, Integer> columnValueWithCount = new HashMap<String, Integer>();
+        List<String> tempRows = null;
+        if (column.equalsIgnoreCase(GP_CONSTANTS.LANGUAGE)) {
+            tempRows = libraryRepository.getLanguagesGroupByLanguage();
+        } else if (column.equalsIgnoreCase(GP_CONSTANTS.GENRE)) {
+            tempRows = libraryRepository.getGenresGroupByGenre();
+        }
+
+        String[] tempColumnValueArr = null;
+        String[] tempRowWithCountCountArr = null;
+        String tempColumnValue = "";
+        Integer itemCount = 0;
+        for (String tempRowWithCount : tempRows) {
+            tempRowWithCountCountArr = tempRowWithCount.split(",", 2);
+            itemCount = Integer.parseInt(tempRowWithCountCountArr[0]);
+            tempColumnValue = tempRowWithCountCountArr[1];
+            if (tempColumnValue.contains(",")) {
+                tempColumnValueArr = tempColumnValue.split(",");
+                for (String tempColumnValue1 : tempColumnValueArr) {
+                    tempColumnValue1 = tempColumnValue1.trim();
+                    if (!columnValueWithCount.containsKey(tempColumnValue1)) {
+                        columnValueWithCount.put(tempColumnValue1, itemCount);
+                    } else {
+                        columnValueWithCount.put(tempColumnValue1,
+                                columnValueWithCount.get(tempColumnValue1) + itemCount);
+                    }
+                }
+            } else {
+                if (!columnValueWithCount.containsKey(tempColumnValue)) {
+                    columnValueWithCount.put(tempColumnValue, itemCount);
+                } else {
+                    columnValueWithCount.put(tempColumnValue, columnValueWithCount.get(tempColumnValue) + itemCount);
+                }
+            }
+        }
+
+        // Create a list from elements of HashMap
+        List<Map.Entry<String, Integer>> list = new LinkedList<Map.Entry<String, Integer>>(
+                columnValueWithCount.entrySet());
+
+        // Sort the list
+        Collections.sort(list, new Comparator<Map.Entry<String, Integer>>() {
+            public int compare(Map.Entry<String, Integer> o1,
+                    Map.Entry<String, Integer> o2) {
+                return (o2.getValue()).compareTo(o1.getValue());
+            }
+        });
+        // put data from sorted list to hashmap
+        HashMap<String, Integer> temp = new LinkedHashMap<String, Integer>();
+        for (Map.Entry<String, Integer> aa : list) {
+            temp.put(aa.getKey(), aa.getValue());
+        }
+        return temp;
     }
 
     public GPResponse updateTrackInfo(Library reqLibrary, String type) {
@@ -1780,7 +1786,7 @@ public class LibraryService {
 
                 // Genre
                 if (StringUtils.isNotEmpty(reqAlbum.getGenre())) {
-                    fieldValMap.put("genre", reqAlbum.getGenre());
+                    fieldValMap.put("genre", reqAlbum.getGenre().toLowerCase());
                     respAlbum.setGenre(reqAlbum.getGenre());
                     respAlbumTrack.setGenre(reqAlbum.getGenre());
                 }
@@ -1794,7 +1800,7 @@ public class LibraryService {
 
                 // Language
                 if (StringUtils.isNotEmpty(reqAlbum.getLanguage())) {
-                    fieldValMap.put("language", reqAlbum.getLanguage());
+                    fieldValMap.put("language", reqAlbum.getLanguage().toLowerCase());
                     respAlbum.setLanguage(reqAlbum.getLanguage());
                     // respAlbumTrack.setLanguage(reqAlbum.getLanguage());
                 }
@@ -2067,12 +2073,22 @@ public class LibraryService {
                     libraryList.add(library);
                     isAlbumAdded = isContainsCurrentAlbum(deltaAlbums, library.getAlbum(), library.getLanguage());
                     if (!isAlbumAdded) {
-                        newAlbum = Album.copy(newAlbum, library);
-                        albumImg = getAlbumImgBinFromTag(tag);
-                        if (albumImg != null) {
-                            newAlbum = writeByteArrayToImgFile(newAlbum, albumImg);
+                        existingAlbum = albumRepository.getByAlbumNameAndYear(library.getAlbum(), library.getYear());
+                        if (existingAlbum != null) {
+                            existingAlbum = Album.copy(existingAlbum, library);
+                            albumImg = getAlbumImgBinFromTag(tag);
+                            if (albumImg != null) {
+                                existingAlbum = writeByteArrayToImgFile(existingAlbum, albumImg);
+                            }
+                            deltaAlbums.add(existingAlbum);
+                        } else {
+                            newAlbum = Album.copy(newAlbum, library);
+                            albumImg = getAlbumImgBinFromTag(tag);
+                            if (albumImg != null) {
+                                newAlbum = writeByteArrayToImgFile(newAlbum, albumImg);
+                            }
+                            deltaAlbums.add(newAlbum);
                         }
-                        deltaAlbums.add(newAlbum);
                     }
 
                     artistName = library.getArtist();

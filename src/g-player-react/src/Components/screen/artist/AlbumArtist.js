@@ -94,7 +94,7 @@ export const AlbumArtist = () => {
                         </div>
                         <div className="album-artist-details">
                             <h3>{albumArtist}</h3>
-                            <label>Albums: {albumCount}</label>
+                            <label>Albums: {albumArtistObj.count}</label>
                             {playedFrom===ALBUM_ARTIST && songPlaying!==undefined && songPlaying!==null && songPlaying.albumArtist.includes(albumArtist) &&
                                 <label>Playing:&nbsp;<i onClick={scrollToPlaying} style={{cursor:'pointer',color:'#ef6464'}}>{songPlaying.title}</i>&nbsp;<Link to={`/music/albums/${songPlaying.album}`}>{songPlaying.album!==null?'from '+songPlaying.album:''}</Link></label>
                             }
