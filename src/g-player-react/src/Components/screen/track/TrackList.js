@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { A_TO_Z, SORT_YEAR, SORT_ARTIST, A_TO_Z_DESC, TRACK_LIST, TRACK_NUMBER, LYRICS_AVAILABLE, NO_SORT, LANGUAGE, GENRE } from "../../redux/GPActionTypes";
+import { A_TO_Z, SORT_YEAR, SORT_ARTIST, A_TO_Z_DESC, TRACK_LIST, TRACK_NUMBER, LYRICS_AVAILABLE, NO_SORT, LANGUAGE, GENRE, ALBUM } from "../../redux/GPActionTypes";
 import { scrollToPlaying, sortGroupByField } from "../../utilities/util";
 import { SortingContainer } from "../SortingContainer";
 import { Spinner } from "../../utilities/Spinner";
@@ -76,6 +76,9 @@ export const TrackList = ({tracks, trackListInp}) => {
                     break;
                 case GENRE:
                     setTrackList(sortGroupByField(tracks, 'genre'));
+                    break;
+                case ALBUM:
+                    setTrackList(sortGroupByField(tracks, 'album'));
                     break;
                 case SORT_ARTIST:
                     sortByArtist(tracks);

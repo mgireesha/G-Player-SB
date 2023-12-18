@@ -320,7 +320,7 @@ body{
     }
 
     .album-artist-album-list{
-        max-height: calc(100vh - 23em);
+        max-height: calc(100vh - 25.5em);
     }
 
     .album-list, .album-artist-album-list{
@@ -1327,7 +1327,7 @@ body{
     }
 }
 .track-list{
-        max-height: calc(100vh - 16em);
+        max-height: calc(100vh - 16.2em);
         overflow-y: auto;
         //padding: 10px 0 0 10px;
         overflow-x: hidden;

@@ -31,6 +31,7 @@ public class GP_CONSTANTS {
     public static final String FILETYPE_CSV = ".csv";
     public static final String FILETYPE_GP = ".gp";
 
+    public static final String GENRE = "GENRE";
     public static final String GENRE_ALBUMS = "GENRE_ALBUMS";
     public static final String GENRE_COUNT = "GENRE_COUNT";
     public static final String GENRE_SONG_COUNT = "GENRE_SONG_COUNT";
@@ -38,6 +39,7 @@ public class GP_CONSTANTS {
     public static final String GENRES = "GENRES";
     public static final String GP_PATH = "GP_PATH";
 
+    public static final String LANGUAGE = "LANGUAGE";
     public static final String LANGUAGE_ALBUMS = "LANGUAGE_ALBUMS";
     public static final String LANGUAGE_COUNT = "LANGUAGE_COUNT";
     public static final String LANGUAGE_SONG_COUNT = "LANGUAGE_SONG_COUNT";

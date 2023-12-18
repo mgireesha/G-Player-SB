@@ -43,7 +43,7 @@ export const Album = () => {
         }
 
         if(albumTracks){
-            if(albumTracks.length > 6){
+            if(albumTracks.length > 5){
                 tempTrackListInp.showSort = true;
                 tempTrackListInp.traskListStyle = {
                     maxHeight : 'calc(100vh - 27.2em)'

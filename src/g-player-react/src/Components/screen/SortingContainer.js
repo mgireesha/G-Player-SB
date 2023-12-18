@@ -1,5 +1,5 @@
 import React from "react";
-import { A_TO_Z, A_TO_Z_DESC, GENRE, GENRE_LABEL, LANGUAGE, LANGUAGE_LABEL, LYRICS_AVAILABLE, LYRICS_AVAILABLE_LABEL, MULTI_LINGUAL, MULTI_LINGUAL_LABEL, SORT_ARTIST, SORT_COUNT_ALBUMS, SORT_COUNT_TRACKS, SORT_YEAR, TRACK_NUMBER, TRACK_NUMBER_LABEL } from "../redux/GPActionTypes";
+import { ALBUM, ALBUM_LABEL, A_TO_Z, A_TO_Z_DESC, GENRE, GENRE_LABEL, LANGUAGE, LANGUAGE_LABEL, LYRICS_AVAILABLE, LYRICS_AVAILABLE_LABEL, MULTI_LINGUAL, MULTI_LINGUAL_LABEL, SORT_ARTIST, SORT_COUNT_ALBUMS, SORT_COUNT_TRACKS, SORT_YEAR, TRACK_NUMBER, TRACK_NUMBER_LABEL } from "../redux/GPActionTypes";
 import { replace_AndCamelize, scrolltoId } from "../utilities/util";
 
 export const SortingContainer = ({sortBy, setSortBy, sortListKeys, sortSelectors, showLKey, showSortByLabel}) => {
@@ -19,10 +19,11 @@ export const SortingContainer = ({sortBy, setSortBy, sortListKeys, sortSelectors
                     {sortSelectors.includes(MULTI_LINGUAL) && <option value={MULTI_LINGUAL} selected={sortBy===MULTI_LINGUAL?true:false}>{MULTI_LINGUAL_LABEL}</option>}
                     {sortSelectors.includes(LANGUAGE) && <option value={LANGUAGE} selected={sortBy===LANGUAGE?true:false}>{LANGUAGE_LABEL}</option>}
                     {sortSelectors.includes(GENRE) && <option value={GENRE} selected={sortBy===GENRE?true:false}>{GENRE_LABEL}</option>}
+                    {sortSelectors.includes(ALBUM) && <option value={ALBUM} selected={sortBy===ALBUM?true:false}>{ALBUM_LABEL}</option>}
                 </select>
             </div>
             {showLKey && <div className="lKey-line">
-                {sortBy!==SORT_ARTIST && sortListKeys !== undefined && sortListKeys.length > 0 && sortListKeys.map((lKey, index) =>
+                {sortBy!==SORT_ARTIST && sortBy!==ALBUM && sortListKeys !== undefined && sortListKeys.length > 0 && sortListKeys.map((lKey, index) =>
                     <span key={index} onClick={() => scrolltoId("lKey" + lKey)} className={lKey.length>8?sortBy+"_25":sortBy+"_10"}>{replace_AndCamelize(lKey)}</span>
                 )}
             </div>}

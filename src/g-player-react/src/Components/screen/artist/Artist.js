@@ -94,7 +94,7 @@ export const Artist = () => {
             if(artistTracksL.length > 6){
                 tempTrackListInp.showSort = true;
                 tempTrackListInp.traskListStyle = {
-                    maxHeight : 'calc(100vh - 24.2em)'
+                    maxHeight : 'calc(100vh - 28.5em)'
                 }
             }
             if(artistTracksL.length > 20){
@@ -104,7 +104,7 @@ export const Artist = () => {
                     visibility:'hidden'
                 }
                 tempTrackListInp.traskListStyle = {
-                    maxHeight : 'calc(100vh - 30.2em)'
+                    maxHeight : 'calc(100vh - 30.5em)'
                 }
             }
         }
