@@ -9,7 +9,7 @@ export const Playlist = () => {
     
     return(
         <div className="playlist">
-            <Header linkTO="/playlist" headerLbl={PLAYLISTS_LABEL} />
+            <Header linkTO="/playlist" headerLbl={PLAYLISTS_LABEL} showGlobalFilter={true} filterPH="Playlists" />
             <Routes>
                 <Route path='/' element={<Playlists />} />
                 <Route path='/:playlistName/:playlistId' element={<PlaylistPage />} />

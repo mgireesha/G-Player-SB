@@ -36,7 +36,7 @@ import { FETCH_SONGS_START, FETCH_SONGS_SUCCESS,
         MESSAGE_FETCH_BY_TYPE_START, 
         MESSAGE_FETCH_BY_TYPE_SUCCESS, 
         SET_ARTIST_IMGAE_DOWNLOAD_SUMMARY, 
-        SET_COMMON_POPUP_OBJ, SET_CONTEXT_OBJECT, SET_CURRENT_PAGE, SET_IS_CLICKED_ON_CONTEXT_MENU, 
+        SET_COMMON_POPUP_OBJ, SET_CONTEXT_OBJECT, SET_CURRENT_PAGE, SET_GLOBAL_FILTER_TEXT, SET_IS_CLICKED_ON_CONTEXT_MENU, 
         SET_METADATA_POPUP_OBJ, 
         SET_PLAYER_TRACKS, SET_PLAYLIST_SONGS, SET_SHOW_CONTEXT_MENU, SET_SHOW_METADATA_POPUP, SET_SHOW_PLAY_LIST_SELECTOR, SET_STATUS_MESSAGE 
     } from "./LibraryActionTypes";
@@ -399,6 +399,11 @@ export const setStatusMessage = (statusMessage) => ({
 export const setMetadataPopupObj = (metadataPopupObj) => ({
     type: SET_METADATA_POPUP_OBJ,
     metadataPopupObj
+})
+
+export const setGlobalFilterText = (globalFilterText) => ({
+    type: SET_GLOBAL_FILTER_TEXT,
+    globalFilterText
 })
 
 export const filterMusicPath = (response, musicPath,musicPaths) => {

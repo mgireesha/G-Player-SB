@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { COMMON_POPUP_ERROR_MSG, DELETE, DELETE_PLAYLIST_CONF_TEXT, DELETE_PLAYLIST_LABEL, INPUT, PLAYLIST, PLAY_ALL_LABEL, REMOVE, REMOVE_LABEL, RENAME, RENAME_LABEL, RENAME_PLAYLIST_INP, RENAME_PLAYLIST_LABEL, TEXT, TRACKS_LABEL } from "../redux/GPActionTypes";
 import { FaPlay } from "react-icons/fa";
@@ -10,12 +10,30 @@ import { deltePlaylist, renamePlaylist } from "../redux/playlist/PlaylistActions
 import { PLAYLIST_DELETE_PLAYLIST_SUCCESS, PLAYLIST_RENAME_PLAYLIST_SUCCESS } from "../redux/playlist/PlaylistActionTypes";
 import { PlaylistImg } from "./PlaylistImg";
 import { Lyrics } from "../screen/lyrics/Lyrics";
+import { getCookieValue } from "../utilities/util";
 
 export const PlaylistPageHeader = ({albumNames, songsCount, playAll}) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { playlistName, playlistId } = useParams();
     const plPhase = useSelector(state => state.playlist.phase);
+    const  playedFrom = useSelector(state => state.player.playedFrom);
+
+    const[isPlayAll, setIsPlayAll] = useState(true);
+
+    useEffect(()=>{
+        let tempPlayedFrom = {...playedFrom};
+        if(!tempPlayedFrom.pfKey){
+            tempPlayedFrom = getCookieValue("playedFrom");
+            if(tempPlayedFrom){
+                tempPlayedFrom = JSON.parse(tempPlayedFrom);
+            }
+        }
+        
+        if(tempPlayedFrom.pfKey === PLAYLIST && tempPlayedFrom.pfField.name === playlistName){
+            setIsPlayAll(false);
+        }
+    },[playlistName,playedFrom,playlistId]);
 
     const showDeletePlaylistPopup = () => {
         const commonPopupObj = {
@@ -96,7 +114,7 @@ export const PlaylistPageHeader = ({albumNames, songsCount, playAll}) => {
                 </div>
                 <div className="playlist-actions">
                     <div className="play-all">
-                        <button onClick={playAll} ><FaPlay className="faplay"  />{PLAY_ALL_LABEL}</button>
+                        <button onClick={playAll} disabled={!isPlayAll}><FaPlay className={!isPlayAll ?"rotate-player-button faplay":"faplay"}  />{PLAY_ALL_LABEL}</button>
                     </div>
                     <div className="delete-playlist">
                         <button onClick={showDeletePlaylistPopup}><RiDeleteBin6Line />{DELETE}</button>

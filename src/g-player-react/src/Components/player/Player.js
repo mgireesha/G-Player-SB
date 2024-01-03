@@ -83,7 +83,7 @@ export const Player = () => {
 
     useEffect(()=>{
         clearInterval(statClearIntrvl);
-        if(isPlaying)setStatClearIntrvl(setInterval( dispatchFetchStat, 50000));
+        if(isPlaying)setStatClearIntrvl(setInterval( dispatchFetchStat, 1000));
     },[songPlaying,isPlaying]);
 
     useEffect(()=>{

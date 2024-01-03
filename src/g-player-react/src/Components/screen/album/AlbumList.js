@@ -11,10 +11,13 @@ export const AlbumList = () => {
     const dispatch = useDispatch();
 
     let albums = useSelector(state => state.library.albums);
+    const globalFilterText = useSelector(state => state.library.globalFilterText);
     
-    const [albumList, setAlbumList] = useState({});
+    const [sortedAlbums, setSortedAlbums] = useState({});
+    const [filteredAlbums, setFilteredAlbums] = useState({});
     const [albumListKeys, setAlbumListKeys] = useState([]);
     const [sortBy, setSortBy] = useState(SORT_YEAR);
+    const [isFilterActive, setFilterActive] = useState(false);
 
      useEffect(()=>{
          if(albums.length === 0){
@@ -29,22 +32,22 @@ export const AlbumList = () => {
     useEffect(()=>{
         if(albums.length>0){
             if(sortBy===A_TO_Z || sortBy===A_TO_Z_DESC){
-                setAlbumList(sortGroupByField(albums,'albumName'));
+                setSortedAlbums(sortGroupByField(albums,'albumName'));
             }else if(sortBy===SORT_YEAR){
-                setAlbumList(sortGroupByField(albums,'year'))
+                setSortedAlbums(sortGroupByField(albums,'year'))
             }else if(sortBy===SORT_ARTIST){
-                setAlbumList(sortGroupByField(albums,'albumArtist'))
+                setSortedAlbums(sortGroupByField(albums,'albumArtist'))
             }else if(sortBy===LANGUAGE){
-                setAlbumList(sortGroupByField(albums,'language'))
+                setSortedAlbums(sortGroupByField(albums,'language'))
             }else if(sortBy===MULTI_LINGUAL){
-                setAlbumList(sortGroupByField(albums,'languageType'))
+                setSortedAlbums(sortGroupByField(albums,'languageType'))
             }
         }
     },[albums, sortBy])
 
     useEffect(()=>{
-        if(Object.keys(albumList).length>0){
-            let tempAlbumListKeys = Object.keys(albumList);
+        if(Object.keys(sortedAlbums).length>0){
+            let tempAlbumListKeys = Object.keys(sortedAlbums);
             if(sortBy===SORT_YEAR || sortBy===A_TO_Z_DESC){
                 tempAlbumListKeys = tempAlbumListKeys.sort((a,b)=>{return a>b?-1:1});
             }
@@ -52,21 +55,45 @@ export const AlbumList = () => {
                 tempAlbumListKeys = tempAlbumListKeys.sort((a,b)=>{return a>b?1:-1});
             }
             setAlbumListKeys(tempAlbumListKeys);
+            setFilteredAlbums(sortedAlbums);
         }
-    },[albumList])
+    },[sortedAlbums])
+
+    useEffect(() => {
+        //console.log("globalFilterText",globalFilterText)
+        if (globalFilterText && globalFilterText.length > 2) {
+            let tempFilteredAlbums = [];
+            let filteredAlbums = {};
+            albumListKeys.forEach(lKey =>{
+                tempFilteredAlbums = sortedAlbums[lKey];
+                tempFilteredAlbums = tempFilteredAlbums.filter(album => {
+                    return album.albumName.toLowerCase().includes(globalFilterText)
+                        || album.year === globalFilterText
+                        || album.genre.toLowerCase().includes(globalFilterText)
+                        || album.albumArtist.toLowerCase().includes(globalFilterText)
+                });
+                filteredAlbums[lKey] = tempFilteredAlbums;
+            })
+            setFilteredAlbums(filteredAlbums);
+            setFilterActive(true);
+        } else {
+            setFilteredAlbums(sortedAlbums)
+            setFilterActive(false);
+        }
+    }, [globalFilterText,albumListKeys]);
 
     return(
         <>
             <div className="album-list-container">
-                <SortingContainer sortListKeys={albumListKeys} showLKey={true} setSortBy={setSortBy} sortBy={sortBy} sortSelectors={[A_TO_Z,A_TO_Z_DESC,SORT_YEAR,SORT_ARTIST,LANGUAGE,MULTI_LINGUAL]} showSortByLabel={true} />
+                {!isFilterActive && <SortingContainer sortListKeys={albumListKeys} showLKey={true} setSortBy={setSortBy} sortBy={sortBy} sortSelectors={[A_TO_Z,A_TO_Z_DESC,SORT_YEAR,SORT_ARTIST,LANGUAGE,MULTI_LINGUAL]} showSortByLabel={true} />}
                 <div className="album-list">
                 {/* {albums!==null && albums.length>0 && albums.map((album, index) =>
                     <AlbumThumb album={album} key={index} />
                 )} */}
                 {albumListKeys !== undefined && albumListKeys.length > 0 && albumListKeys.map((lKey, index) =>
                         <>
-                            <label id={"lKey" + lKey} className="album-lKey">{replace_AndCamelize(lKey)}</label>
-                            {albumList[lKey] !== undefined && albumList[lKey].length > 0 && albumList[lKey].map((album, albumIndex) =>
+                            {!isFilterActive && <label id={"lKey" + lKey} className="album-lKey">{replace_AndCamelize(lKey)}</label>}
+                            {filteredAlbums[lKey] !== undefined && filteredAlbums[lKey].length > 0 && filteredAlbums[lKey].map((album, albumIndex) =>
                                 <AlbumThumb album={album} key={albumIndex} />
                             )}
                         </>

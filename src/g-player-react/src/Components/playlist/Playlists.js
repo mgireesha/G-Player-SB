@@ -14,7 +14,11 @@ export const Playlists = () => {
     const playlistSongsCount = useSelector(state => state.playlist.playlistSongsCount);
 
     const [sortBy, setSortBy] = useState(A_TO_Z);
+
+    const globalFilterText = useSelector(state => state.library.globalFilterText);
+
     const [sortedPlaylistNames, setSortedPlaylistNames] = useState([]);
+    const [filteredPlaylistNames, setFilteredPlaylistNames] = useState([]);
 
     useEffect(()=>{
         setCookies(CURRENT_PAGE, JSON.stringify({type:PLAYLISTS}));
@@ -30,6 +34,15 @@ export const Playlists = () => {
         setSortedPlaylistNames(tempPlaylistNames);
     },[playListNames, sortBy]);
 
+    useEffect(() => {
+        if (globalFilterText && globalFilterText.length > 2) {
+            let tempFilteredPlaylistNames = [...sortedPlaylistNames];
+            setFilteredPlaylistNames(tempFilteredPlaylistNames.filter(tpln=>tpln.value.toLowerCase().includes(globalFilterText)));
+        } else {
+            setFilteredPlaylistNames(sortedPlaylistNames);
+        }
+    }, [globalFilterText,sortedPlaylistNames]);
+
     return(
         <div className="playlists">
             <div className="body">
@@ -39,7 +52,7 @@ export const Playlists = () => {
                     <ImportExportPlaylistBtn />
                 </div>
                 <div className="playlist-list">
-                    {sortedPlaylistNames && sortedPlaylistNames.length > 0 && sortedPlaylistNames.map((plName, i)=>
+                    {filteredPlaylistNames && filteredPlaylistNames.length > 0 && filteredPlaylistNames.map((plName, i)=>
                         <div className="plalist-thumb" key={i}>
                             <Link to={`/playlist/${plName.value}/${plName.messageId}`}>
                                 <div className="playlist-thumb-img-div">
