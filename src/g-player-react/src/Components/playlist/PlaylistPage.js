@@ -14,6 +14,7 @@ export const PlaylistPage = () => {
 
     const playlistSongs = useSelector(state => state.playlist.playlistSongs);
     const playlistAlbums = useSelector(state => state.playlist.playlistAlbums);
+    const isShuffle = useSelector(state => state.player.isShuffle);
     const [trackListInp, setTrackListInp] = useState({});
 
     useEffect(()=>{
@@ -70,7 +71,12 @@ export const PlaylistPage = () => {
     const playAll = () => {
         const tracks = document.getElementById(TRACK_LIST);
         if(tracks && tracks.childElementCount > 0){
-            tracks.getElementsByClassName("track")[0].children[0].click()
+            if(isShuffle && playlistSongs && playlistSongs.length > 0){
+                console.log(Math.floor(Math.random() * playlistSongs.length)-1)
+                tracks.getElementsByClassName("track")[Math.floor(Math.random() * playlistSongs.length)-1].getElementsByClassName("title")[0].click()
+            }else{
+                tracks.getElementsByClassName("track")[0].getElementsByClassName("title")[0].click();
+            }
         }
     }
 

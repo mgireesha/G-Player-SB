@@ -275,3 +275,16 @@ export const fetchArtistDetailsfromWiki = async(artist) => {
         target.value = target.value.trim();
         //console.log(target.value)
       }
+
+      export const hideElementById = (elemId) => {
+        const elem  = document.getElementById(elemId);
+        if(elem){
+            elem.style.display = "none";
+        }
+      }
+
+      export const hideElemetAfterSomeDelay = (elemId, delay) =>{
+        setTimeout(() => {
+            hideElementById(elemId);
+        }, delay);
+      }

@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import { GroupBand } from "../screen/GroupBand";
 import { AiOutlineMenuUnfold } from 'react-icons/ai';
 import { showHideSideBar } from "../utilities/util";
+import { FilterComp } from "../FilterComp";
 
-export const Header = ({showGB, linkTO, headerLbl}) => {
+export const Header = ({showGB, linkTO, headerLbl, showGlobalFilter, filterPH}) => {
     return(
         <div className="header-container">
             <div className="header">
@@ -17,7 +18,8 @@ export const Header = ({showGB, linkTO, headerLbl}) => {
                     <h1>{headerLbl}</h1>
                 }
             </div>
-            {showGB!==undefined && showGB && <GroupBand />}
+            {showGB && <GroupBand />}
+            {showGlobalFilter && <FilterComp isSetToStore={true} placeHolder={filterPH} />}
         </div>
     );
 }

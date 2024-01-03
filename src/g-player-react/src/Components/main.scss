@@ -290,7 +290,7 @@ body{
         //grid-column-gap: 20px;
         column-gap: 20px;
 
-        div{
+        div.band{
             width: auto;
             cursor: pointer;
             padding: 5px 5px 0 5px;
@@ -303,6 +303,10 @@ body{
                 color: inherit;
                 text-decoration: none;
             }
+        }
+
+        div.filter-component{
+            margin-right: -2.1em;
         }
 
         .group-band-highlight{
@@ -1517,7 +1521,7 @@ body{
         height: 4em;
         border-bottom: 1px solid grey;
         display: flex;
-        align-items: center;
+        align-items: flex-end;
         .header{
             margin-left: 10px;
             padding-bottom: 10px;
