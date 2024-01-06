@@ -56,7 +56,7 @@ export const RecentPlays = () => {
                             <div className="album-grouped-list">
                                 {hisAlbumsGrpd_6 !== undefined && <AlbumThumbsGrouped albums={hisAlbumsGrpd_6} />}
                             </div>
-                            <div className="album-list">
+                            <div className="albums">
                                 {hisAlbumsArr.map((album, index) =>
                                     <AlbumThumb album={album} key={index} />
                                 )}

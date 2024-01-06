@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { GroupedThumbImg4 } from "../../GroupedThumbImg4";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, LANGUAGE, LYRICS_AVAILABLE, PLAY_ALL_LABEL, SORT_ARTIST, SORT_YEAR, TRACKS_LABEL, TRACK_LIST } from "../../redux/GPActionTypes";
-import { fetchGenreDetails, fetchLanguageDetails, fetchSongsByGenre, fetchSongsByLanguage } from "../../redux/library/LibraryActions";
+import { CURRENT_PAGE, LANGUAGE, PLAY_ALL_LABEL, SORT_ARTIST, SORT_A_TO_Z, SORT_A_TO_Z_DESC, SORT_LYRICS_AVAILABLE, SORT_YEAR, TRACKS_LABEL, TRACK_LIST } from "../../redux/GPActionTypes";
+import { fetchLanguageDetails, fetchSongsByLanguage } from "../../redux/library/LibraryActions";
 import { TrackList } from "../track/TrackList";
 import { FaPlay } from "react-icons/fa";
 import { Lyrics } from "../lyrics/Lyrics";
-import { camelize, setCookies } from "../../utilities/util";
+import { camelize, getCookieValue, setCookies } from "../../utilities/util";
 
 export const LanguagePage = () => {
     const {language} = useParams();
@@ -19,6 +19,10 @@ export const LanguagePage = () => {
     if(languageSongList.length>0){
         languageSongList = languageSongList.sort((a,b)=>{return a.title>b.title?1:-1});
     }
+    const isShuffle = useSelector(state => state.player.isShuffle);
+    const  playedFrom = useSelector(state => state.player.playedFrom);
+
+    const[isPlayAll, setIsPlayAll] = useState(true);
 
     const [languageAlbums, setGenreAlbums] = useState({});
     const [languageSongCount, setGenreSongCount] = useState({});
@@ -43,6 +47,22 @@ export const LanguagePage = () => {
         }
     },[languageDetails]);
 
+    
+
+    useEffect(()=>{
+        let tempPlayedFrom = {...playedFrom};
+        if(!tempPlayedFrom.pfKey){
+            tempPlayedFrom = getCookieValue("playedFrom");
+            if(tempPlayedFrom){
+                tempPlayedFrom = JSON.parse(tempPlayedFrom);
+            }
+        }
+        
+        if(tempPlayedFrom.pfKey === LANGUAGE && tempPlayedFrom.pfVal=== language){
+            setIsPlayAll(false);
+        }
+    },[language,playedFrom]);
+
     useEffect(()=>{
         const tempTrackListInp = {
             playedFrom:{
@@ -51,8 +71,8 @@ export const LanguagePage = () => {
             },
             showSort: false,
             showLKey: false,
-            sortSelectors:[A_TO_Z,A_TO_Z_DESC, SORT_YEAR, SORT_ARTIST, LYRICS_AVAILABLE],
-            selectedSortBy:A_TO_Z
+            sortSelectors:[SORT_A_TO_Z,SORT_A_TO_Z_DESC, SORT_YEAR, SORT_ARTIST, SORT_LYRICS_AVAILABLE],
+            selectedSortBy:SORT_A_TO_Z
         }
 
         if(languageSongList){
@@ -80,7 +100,11 @@ export const LanguagePage = () => {
     const playAll = () => {
         const tracks = document.getElementById(TRACK_LIST);
         if(tracks && tracks.childElementCount > 0){
-            tracks.getElementsByClassName("track")[0].children[0].click()
+            if(isShuffle && languageSongList && languageSongList.length > 1){
+                tracks.getElementsByClassName("track")[Math.floor(Math.random() * tracks.getElementsByClassName("track").length)-1].getElementsByClassName("title")[0].click()
+            }else{
+                tracks.getElementsByClassName("track")[0].getElementsByClassName("title")[0].click();
+            }
         }
     }
 
@@ -95,7 +119,7 @@ export const LanguagePage = () => {
                     </div>
                     <div className="language-actions">
                         <div className="play-all">
-                            <button onClick={playAll} ><FaPlay className="faplay"  />{PLAY_ALL_LABEL}</button>
+                            <button onClick={playAll} disabled={!isPlayAll} ><FaPlay className={!isPlayAll ?"rotate-player-button faplay":"faplay"}  />{PLAY_ALL_LABEL}</button>
                         </div>
                     </div>
                 </div>

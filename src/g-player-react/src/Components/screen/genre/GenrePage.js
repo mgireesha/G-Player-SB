@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import { GroupedThumbImg4 } from "../../GroupedThumbImg4";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { ALBUM, A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, GENRE, LYRICS_AVAILABLE, PLAY_ALL_LABEL, SORT_ARTIST, SORT_YEAR, TRACKS_LABEL, TRACK_LIST } from "../../redux/GPActionTypes";
-import { fetchGenreDetails, fetchSongsByGenre } from "../../redux/library/LibraryActions";
+import { ALBUMS, A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, GENRE, MULTI_LINGUAL, PLAY_ALL_LABEL, SORT_ALBUM, SORT_ARTIST, SORT_A_TO_Z, SORT_A_TO_Z_DESC, SORT_LYRICS_AVAILABLE, SORT_MULTI_LINGUAL, SORT_YEAR, TRACKS, TRACKS_LABEL, TRACK_LIST } from "../../redux/GPActionTypes";
+import { fetchAlbumsByGenre, fetchGenreDetails, fetchSongsByGenre } from "../../redux/library/LibraryActions";
 import { TrackList } from "../track/TrackList";
 import { FaPlay } from "react-icons/fa";
 import { Lyrics } from "../lyrics/Lyrics";
 import { camelize, setCookies } from "../../utilities/util";
+import { MdOutlineArtTrack } from "react-icons/md";
+import { IoAlbums } from "react-icons/io5";
+import { AlbumList } from "../album/AlbumList";
 
 export const GenrePage = () => {
     const {genre} = useParams();
@@ -20,9 +23,12 @@ export const GenrePage = () => {
         genreSongList = genreSongList.sort((a,b)=>{return a.title>b.title?1:-1});
     }
 
-    const [genreAlbums, setGenreAlbums] = useState({});
+    const [genreAlbumNames, setGenreAlbumNames] = useState({});
+    const [genreAlbums, setGenreAlbums] = useState([]);
     const [genreSongCount, setGenreSongCount] = useState({});
     const [trackListInp, setTrackListInp] = useState({});
+    const [viewType, setViewType] = useState(TRACKS);
+    const [albumListInp, setAlbumListInp] = useState({});
 
     useEffect(()=>{
         dispatch(fetchSongsByGenre(genre));
@@ -32,15 +38,48 @@ export const GenrePage = () => {
         setCookies(CURRENT_PAGE, JSON.stringify({type:GENRE}));
     },[genre]);
 
+    useEffect(() => {
+        if(genre && viewType === ALBUMS){
+            dispatch(fetchAlbumsByGenre(genre));
+        }
+
+
+    },[viewType]);
+
+    useEffect(()=>{
+        if(genreAlbums && genreAlbums.length > 0){
+            const tempAlbumListInp = {...albumListInp};
+
+            tempAlbumListInp.styles = {maxHeight : 'calc(100vh - 27.2em)'}
+            
+            if(genreAlbums.length > 12){
+                tempAlbumListInp.showSort = true;
+                tempAlbumListInp.styles = {maxHeight : 'calc(100vh - 29.3em)'}
+                tempAlbumListInp.sortSelectors = [SORT_A_TO_Z,SORT_A_TO_Z_DESC,SORT_YEAR,SORT_ARTIST,SORT_MULTI_LINGUAL];
+                tempAlbumListInp.selectedSortBy = SORT_YEAR
+            }
+
+            if(genreAlbums.length > 50){
+                tempAlbumListInp.showLKey = true;
+                tempAlbumListInp.styles = {maxHeight : 'calc(100vh - 31.5em)'}
+            }
+            setAlbumListInp(tempAlbumListInp);
+        }
+    },[genreAlbums])
+
     useEffect(()=>{
         if(genreDetails){
             if(genreDetails.GENRE_ALBUMS){
-                setGenreAlbums(genreDetails.GENRE_ALBUMS);
+                setGenreAlbumNames(genreDetails.GENRE_ALBUMS);
             }
             if(genreDetails.GENRE_SONG_COUNT){
                 setGenreSongCount(genreDetails.GENRE_SONG_COUNT);
             }
+            if(genreDetails.ALBUMS_BY_GENRE){
+                setGenreAlbums(genreDetails.ALBUMS_BY_GENRE);
+            }
         }
+        //console.log("genreDetails",genreDetails)
     },[genreDetails]);
 
     useEffect(()=>{
@@ -51,8 +90,8 @@ export const GenrePage = () => {
             },
             showSort: false,
             showLKey: false,
-            sortSelectors:[A_TO_Z,A_TO_Z_DESC, SORT_YEAR, SORT_ARTIST, LYRICS_AVAILABLE, ALBUM],
-            selectedSortBy:A_TO_Z
+            sortSelectors:[SORT_A_TO_Z,SORT_A_TO_Z_DESC, SORT_YEAR, SORT_ARTIST, SORT_LYRICS_AVAILABLE, SORT_ALBUM],
+            selectedSortBy:SORT_YEAR
         }
 
         if(genreSongList){
@@ -87,7 +126,7 @@ export const GenrePage = () => {
     return(
         <div className="genre-page">
             <div className="genre-page-header">
-                <GroupedThumbImg4 albumNames={genreAlbums[genre]} classPrefix="genre" />
+                <GroupedThumbImg4 albumNames={genreAlbumNames[genre]} classPrefix="genre" />
                 <div className="genre-details">
                     <div className="genre-name">
                         <h2>{camelize(genre)}</h2>
@@ -97,14 +136,29 @@ export const GenrePage = () => {
                         <div className="play-all">
                             <button onClick={playAll} ><FaPlay className="faplay"  />{PLAY_ALL_LABEL}</button>
                         </div>
+                        <div className={viewType===TRACKS ? "selected view-type":"view-type"}>
+                            <MdOutlineArtTrack style={{fontSize:28}} onClick={()=>setViewType(TRACKS)} title="Track list" />
+                        </div>
+                        <div className={viewType===ALBUMS ? "selected view-type":"view-type"}>
+                            <IoAlbums style={{fontSize:28}} onClick={()=>setViewType(ALBUMS)} title="Albums" />
+                        </div>
+                        
                     </div>
                 </div>
                 <div className="genre-lyrics">
                     <Lyrics />
                 </div>
             </div>
-            {genreSongList.length > 0 && trackListInp.playedFrom &&
-                <TrackList tracks={genreSongList} trackListInp={trackListInp} />
+            {viewType === TRACKS &&
+                <>
+                {genreSongList.length > 0 && Object.keys(trackListInp).length > 0 &&
+                    <TrackList tracks={genreSongList} trackListInp={trackListInp} />
+                }
+                </>
+            }
+
+            {viewType === ALBUMS && genreAlbums.length > 0 && Object.keys(albumListInp).length > 0 &&
+                <AlbumList albums={genreAlbums} albumListInp={albumListInp} />
             }
             
         </div>

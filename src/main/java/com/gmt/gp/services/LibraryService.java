@@ -607,15 +607,19 @@ public class LibraryService {
 
     // Transactional / Repository methods - Start
     // libraryRepository - start
-    public Map<String, Object> getAllSongs() {
-        Map<String, Object> songs = new HashMap<String, Object>();
-        songs.put("SONGS", libraryRepository.findAllByOrderByTitleAsc());
-        songs.put("SONG_IDS", libraryRepository.getAllLibraryIds());
-        return songs;
+    public List<Library> getAllSongs() {
+        return libraryRepository.findAllByOrderByTitleAsc();
     }
 
     public List<Long> getAllSongIds() {
         return libraryRepository.getAllLibraryIds();
+    }
+
+    public Map<String, Object> getAllSongsAndIds() {
+        Map<String, Object> songs = new HashMap<String, Object>();
+        songs.put("SONGS", libraryRepository.findAllByOrderByTitleAsc());
+        songs.put("SONG_IDS", libraryRepository.getAllLibraryIds());
+        return songs;
     }
 
     public Library getSongBySongId(long songId) {
@@ -768,6 +772,10 @@ public class LibraryService {
 
     public Album getAlbumByAlbumName(String albumName) {
         return albumRepository.getByAlbumName(albumName);
+    }
+
+    public List<Album> getAlbumsByGenre(String genre) {
+        return albumRepository.getByGenreContainsIgnoreCase(genre);
     }
 
     public Album getAlbumByAlbumId(long albumId) {
@@ -1316,6 +1324,7 @@ public class LibraryService {
         return albums;
     }
 
+    @Deprecated
     public Map<String, String> getAlbumImgs() {
         Map<String, String> rAlbumImgs = new HashMap<String, String>();
         byte[] btes = null;
@@ -1335,6 +1344,7 @@ public class LibraryService {
         return rAlbumImgs;
     }
 
+    @Deprecated
     public Map<String, Library> getAllAlbumdetails(String filterColumn, String filterValue) {
         Map<String, Library> albums = new HashMap<String, Library>();
         Iterable<Library> trackList = null;
@@ -1376,7 +1386,8 @@ public class LibraryService {
             for (String genre : genreSongCount.keySet()) {
                 genres.add(genre);
                 albumListByGenre = libraryRepository.getAlbumListByGenre(genre);
-                albums = GPUtil.sortAlbumsByMostPlayed(albumListByGenre, mostPlayedAlbums);
+                albums = GPUtil.sortAlbumsByMostPlayed(albumListByGenre, mostPlayedAlbums,
+                        GP_CONSTANTS.GROUPED_ALBUM_COUNT_4);
                 genreAlbums.put(genre, albums);
             }
             genreDetails.put(GP_CONSTANTS.GENRES, genres);
@@ -1609,7 +1620,8 @@ public class LibraryService {
             for (String language : languageSongCount.keySet()) {
                 languages.add(language);
                 albumListByLanguage = libraryRepository.getAlbumListByLanguage(language);
-                albums = GPUtil.sortAlbumsByMostPlayed(albumListByLanguage, mostPlayedAlbums);
+                albums = GPUtil.sortAlbumsByMostPlayed(albumListByLanguage, mostPlayedAlbums,
+                        GP_CONSTANTS.GROUPED_ALBUM_COUNT_4);
                 languageAlbums.put(language, albums);
             }
             languageDetails.put(GP_CONSTANTS.LANGUAGES, languages);

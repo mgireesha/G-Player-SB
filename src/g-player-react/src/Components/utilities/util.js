@@ -1,4 +1,4 @@
-import { WIKI_SUMMARY_URL } from "../redux/GPActionTypes";
+import { NONE, SORT_NONE, WIKI_SUMMARY_URL } from "../redux/GPActionTypes";
 
 export const getMins = (seconds) =>{
     
@@ -107,11 +107,20 @@ export const getCookieValue = (name) => {
 }
 
 export const sortGroupByField = (entArr, field) => {
+    console.log("field",field)
+    if(!field || field === SORT_NONE){
+        let tempEntObj = {};
+        entArr.forEach((ent,i)=>{
+            tempEntObj[i]=[ent];
+        });
+        console.log("tempEntObj: ",tempEntObj)
+        return tempEntObj;
+    }
     let entListObj = {};
     let tempArr = [];
     let ind;
     let indArr;
-    console.log("entArr: ",entArr)
+    console.log("117 entArr: ",entArr)
     entArr.forEach((ent) => {
         indArr = []
         if (ent[field] !== null && ent[field] !== undefined && ent[field] !== "") {

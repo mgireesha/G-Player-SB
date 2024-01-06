@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { PlaylistImg } from "./PlaylistImg";
 import { ImportExportPlaylistBtn } from "./ImportExportPlaylistBtn";
-import { A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, PLAYLISTS } from "../redux/GPActionTypes";
+import { A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, PLAYLISTS, SORT_A_TO_Z, SORT_A_TO_Z_DESC } from "../redux/GPActionTypes";
 import { setCookies } from "../utilities/util";
 import { SortingContainer } from "../screen/SortingContainer";
 
@@ -47,7 +47,7 @@ export const Playlists = () => {
         <div className="playlists">
             <div className="body">
                 <div className="playlists-action">
-                    <SortingContainer setSortBy={setSortBy} sortBy={sortBy} showLKey={false} sortSelectors={[A_TO_Z,A_TO_Z_DESC]} />
+                    <SortingContainer setSortBy={setSortBy} sortBy={sortBy} showLKey={false} sortSelectors={[SORT_A_TO_Z,SORT_A_TO_Z_DESC]} />
                     <CreatePlayListBtn />
                     <ImportExportPlaylistBtn />
                 </div>

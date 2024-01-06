@@ -7,6 +7,8 @@ import { FETCH_SONGS_START, FETCH_SONGS_SUCCESS,
         LIBRARY_EDIT_ALBUM_INFO_SUCCESS, 
         LIBRARY_EDIT_TRACK_INFO_START, 
         LIBRARY_EDIT_TRACK_INFO_SUCCESS, 
+        LIBRARY_FETCH_ALBUMS_BY_GENRE_START, 
+        LIBRARY_FETCH_ALBUMS_BY_GENRE_SUCCESS, 
         LIBRARY_FETCH_ALBUMS_DETAILS_START, LIBRARY_FETCH_ALBUMS_DETAILS_SUCCESS, 
         LIBRARY_FETCH_ALBUMS_START, LIBRARY_FETCH_ALBUMS_SUCCESS, 
         LIBRARY_FETCH_ALBUM_ARTIST_LIST_START, LIBRARY_FETCH_ALBUM_ARTIST_LIST_SUCCESS, 
@@ -60,11 +62,11 @@ export const fetchAllAlbumsSucc = (albums) => ({
     albums
 })
 
-export const fetchAllAlbumsDtls = () => ({
+export const fetchAllAlbumsDtls = () => ({ //Not used anymore
     type: LIBRARY_FETCH_ALBUMS_DETAILS_START
 })
 
-export const fetchAllAlbumsDtlsSucc = (albumsDetails) => ({
+export const fetchAllAlbumsDtlsSucc = (albumsDetails) => ({//Not used anymore
     type: LIBRARY_FETCH_ALBUMS_DETAILS_SUCCESS,
     albumsDetails
 })
@@ -176,6 +178,16 @@ export const fetchSongsByGenre = (genre, isSetPlayerTracks) => ({
 export const fetchSongsByGenreSucc = (genreSongList) => ({
     type: LIBRARY_FETCH_SONGS_BY_GENRE_SUCCESS,
     genreSongList
+})
+
+export const fetchAlbumsByGenre = (genre) => ({
+    type: LIBRARY_FETCH_ALBUMS_BY_GENRE_START,
+    genre
+})
+
+export const fetchAlbumsByGenreSucc = (response) => ({
+    type: LIBRARY_FETCH_ALBUMS_BY_GENRE_SUCCESS,
+    response
 })
 //Genre - End
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { A_TO_Z, SORT_YEAR, SORT_ARTIST, A_TO_Z_DESC, TRACK_LIST, TRACK_NUMBER, LYRICS_AVAILABLE, NO_SORT, LANGUAGE, GENRE, ALBUM } from "../../redux/GPActionTypes";
+import { SORT_YEAR, SORT_ARTIST, TRACK_LIST, TRACK_NUMBER, NO_SORT, SORT_A_TO_Z_DESC, SORT_LYRICS_AVAILABLE, SORT_A_TO_Z, SORT_NONE, GP_TRACKS_SORT_FIELD_MAPPING, SORT_TRACK_NUMBER } from "../../redux/GPActionTypes";
 import { scrollToPlaying, sortGroupByField } from "../../utilities/util";
 import { SortingContainer } from "../SortingContainer";
 import { Spinner } from "../../utilities/Spinner";
@@ -25,9 +25,9 @@ export const TrackList = ({tracks, trackListInp}) => {
         if(Object.keys(trackList).length>0){
             let tempTrakListKeys = Object.keys(trackList);
             
-            if(sortBy === SORT_YEAR || sortBy === A_TO_Z_DESC || sortBy === LYRICS_AVAILABLE){
+            if(sortBy === SORT_YEAR || sortBy === SORT_A_TO_Z_DESC || sortBy === SORT_LYRICS_AVAILABLE){
                 tempTrakListKeys = tempTrakListKeys.sort((a,b)=>{return a>b?-1:1});
-            }else if(sortBy === A_TO_Z || sortBy === SORT_ARTIST){
+            }else if(sortBy === SORT_A_TO_Z || sortBy === SORT_ARTIST){
                 tempTrakListKeys = tempTrakListKeys.sort((a,b)=>{return a>b?1:-1});
             }
 
@@ -38,7 +38,7 @@ export const TrackList = ({tracks, trackListInp}) => {
             
             const tempTrackIndex = {};
             let list = [];
-            if(sortBy !== NO_SORT && sortBy !== TRACK_NUMBER){
+            if(sortBy !== NO_SORT && sortBy !== SORT_TRACK_NUMBER){
                 tempTrakListKeys.forEach(tlk =>{
                     list = trackList[tlk];
                         if(list.length){
@@ -54,38 +54,11 @@ export const TrackList = ({tracks, trackListInp}) => {
     },[trackList, sortBy])
 
     useEffect(()=>{
-        if(tracks.length>0){
-            switch (sortBy) {
-                case A_TO_Z:
-                    setTrackList(sortGroupByField(tracks, 'title'));
-                    break;
-                case A_TO_Z_DESC:
-                    setTrackList(sortGroupByField(tracks, 'title'));
-                    break;
-                case SORT_YEAR:
-                    setTrackList(sortGroupByField(tracks, 'year'));
-                    break;
-                case TRACK_NUMBER:
-                    setTrackList(sortGroupByField(tracks, 'trackNumber'));
-                    break;
-                case LYRICS_AVAILABLE:
-                    setTrackList(sortGroupByField(tracks, 'lyricsAvl'));
-                    break;
-                case LANGUAGE:
-                    setTrackList(sortGroupByField(tracks, 'language'));
-                    break;
-                case GENRE:
-                    setTrackList(sortGroupByField(tracks, 'genre'));
-                    break;
-                case ALBUM:
-                    setTrackList(sortGroupByField(tracks, 'album'));
-                    break;
-                case SORT_ARTIST:
-                    sortByArtist(tracks);
-                    break;
-                default:
-                    setTrackList(tracks)
-                    break;
+        if(sortBy && tracks.length>0){
+            if(sortBy===SORT_ARTIST){
+                sortByArtist(tracks);
+            }else{
+                setTrackList(sortGroupByField(tracks, GP_TRACKS_SORT_FIELD_MAPPING[sortBy]));
             }
         }
     },[tracks, sortBy]);
@@ -128,7 +101,7 @@ export const TrackList = ({tracks, trackListInp}) => {
 
     return(
         <>
-            {trackListInp.showSort &&<SortingContainer sortListKeys={trackListKeys} setSortBy={setSortBy} sortBy={sortBy} showLKey={trackListInp.showLKey} sortSelectors={trackListInp.sortSelectors} showSortByLabel={true} />}
+            {trackListInp.showSort &&<SortingContainer sortListKeys={trackListKeys} setSortBy={setSortBy} sortBy={sortBy} showLKey={trackListInp.showLKey} sortSelectors={trackListInp.sortSelectors} showSortByLabel={trackListInp.showSortByLabel} />}
             <div className="track-list scroll-container" id={TRACK_LIST} style={trackListInp.traskListStyle?trackListInp.traskListStyle:{}} ref={ref}>
                  {trackListKeys && trackListKeys.length > 0 && trackListKeys.map((lKey, index) =>
                     <div key={index}>
@@ -142,7 +115,7 @@ export const TrackList = ({tracks, trackListInp}) => {
                         }
                     </div>
                 )}
-                {(sortBy===NO_SORT || sortBy === TRACK_NUMBER) && tracks && tracks.length > 0 && tracks.map((track, i)=>
+                {(sortBy===NO_SORT || sortBy === SORT_TRACK_NUMBER) && tracks && tracks.length > 0 && tracks.map((track, i)=>
                     <Track track={track} key={track.songId} playedFrom={trackListInp.playedFrom} index={i} hideTrackNum={trackListInp.hideTrackNum} />
                 )}
             </div>

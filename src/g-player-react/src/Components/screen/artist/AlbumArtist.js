@@ -105,7 +105,7 @@ export const AlbumArtist = () => {
                             }
                         </div>
                     </div>
-                    <div className="album-artist-album-list">
+                    <div className="album-artist-albums">
                         {albumListOfAA.length>0 && albumListOfAA.map((album, index) =>
                             <AlbumThumb album={album} key={index} />
                         )}

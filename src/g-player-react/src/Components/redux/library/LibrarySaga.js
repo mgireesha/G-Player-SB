@@ -2,6 +2,7 @@ import { call, put, takeEvery, takeLatest } from "redux-saga/effects";
 import { getCookieValue, handleAPIError } from "../../utilities/util";
 import { deleteMusicPathAPI, editAlbumInfoAPI, editTrackInfoAPI, fetchAlbumAPI, fetchAlbumImgsAPI,
          fetchalbumListOfAAAPI,
+         fetchAlbumsByGenreAPI,
          fetchAlbumtracksAPI,
          fetchAllAlbumDtlsAPI, fetchAllAlbumsAPI, fetchAllArtistsDtlsAPI, 
          fetchAllHistoryAPI, 
@@ -15,7 +16,7 @@ import { deleteMusicPathAPI, editAlbumInfoAPI, editTrackInfoAPI, fetchAlbumAPI, 
 import { deleteMusicPathSucc, fetchAlbumImgsScc, fetchAlbumlistOfAASucc, fetchAlbumSucc, 
         fetchAlbumTacksSucc, 
         fetchAllAlbumArtistsDtlsSucc, fetchAllAlbumsDtlsSucc, fetchAllAlbumsSucc, 
-        fetchAllArtistsDtlsSucc, fetchAllHistorySucc, fetchBuildStatusSucc, fetchGenreDetailsSucc, fetchMostPlayedDataSucc, fetchMusicPathSucc, fetchSongsByArtistSucc, fetchAllSongsSucc, initiArtistImageDownloadSucc, initLibraryBuildSucc, saveMusicPathSucc, searchByKeySucc, updateHistorySucc, fetchSongsByGenreSucc, setPlayerTracks, uploadArtistImg, uploadArtistImgSucc, setStatusMessage, fetchLanguageDetailsSucc, fetchSongsByLanguageSucc, editTrackInfoSucc, setMetadataPopupObj, setArtistImageDownloadSummary, fetchMessagesByTypeSucc, editAlbumInfoSucc, initDeltaLibraryBuildSucc 
+        fetchAllArtistsDtlsSucc, fetchAllHistorySucc, fetchBuildStatusSucc, fetchGenreDetailsSucc, fetchMostPlayedDataSucc, fetchMusicPathSucc, fetchSongsByArtistSucc, fetchAllSongsSucc, initiArtistImageDownloadSucc, initLibraryBuildSucc, saveMusicPathSucc, searchByKeySucc, updateHistorySucc, fetchSongsByGenreSucc, setPlayerTracks, uploadArtistImg, uploadArtistImgSucc, setStatusMessage, fetchLanguageDetailsSucc, fetchSongsByLanguageSucc, editTrackInfoSucc, setMetadataPopupObj, setArtistImageDownloadSummary, fetchMessagesByTypeSucc, editAlbumInfoSucc, initDeltaLibraryBuildSucc, fetchAlbumsByGenreSucc 
     } from "./LibraryActions";
 import { FETCH_SONGS_START, HISTORY_FETCH_ALL_HISTORY_START, HISTORY_UPDATE_HISTORY_START, LIBRARY_DELETE_MUSIC_PATH_START, LIBRARY_EDIT_ALBUM_INFO_START, LIBRARY_EDIT_TRACK_INFO_START, LIBRARY_FETCH_ALBUMS_DETAILS_START, LIBRARY_FETCH_ALBUMS_START, 
     LIBRARY_FETCH_ALBUM_ARTIST_LIST_START, 
@@ -265,6 +266,22 @@ export function* onFetchSongsByGenreAsync(payload){
             }else{
                 yield put(fetchSongsByGenreSucc(response.data));
             }
+        }
+    } catch (error) {
+        console.log(error);
+        handleAPIError(error);
+    }
+}
+
+export function* onFetchAlbumsByGenre(){
+    yield takeEvery(LIBRARY_FETCH_SONGS_BY_GENRE_START, onFetchAlbumsByGenreAsync);
+}
+
+export function* onFetchAlbumsByGenreAsync(payload){
+    try {
+        const response = yield call(fetchAlbumsByGenreAPI, payload.genre);
+        if(response.status === 200){
+            yield put(fetchAlbumsByGenreSucc(response.data));
         }
     } catch (error) {
         console.log(error);

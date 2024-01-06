@@ -20,7 +20,7 @@ public class MessageController {
     @Autowired
     private MessageService messageService;
 
-    @GetMapping("/{messageName}")
+    @GetMapping("/{message-name}")
     public Message getMessageByName(@PathVariable String messageName) {
         return messageService.getMessageByName(messageName);
     }
@@ -40,12 +40,12 @@ public class MessageController {
         return messageService.saveMusicPath(message);
     }
 
-    @RequestMapping("/getAllMusicPaths")
+    @RequestMapping("/music-paths")
     public List<Message> getAllMusicPaths() {
         return messageService.getAllMusicPaths();
     }
 
-    @DeleteMapping("/removeMusicPath/{messageId}")
+    @DeleteMapping("/remove-music-path/{messageId}")
     public GPResponse removeMusicPath(@PathVariable String messageId) {
         GPResponse resp = new GPResponse(FAILED, null, null);
         try {
@@ -58,7 +58,7 @@ public class MessageController {
         return resp;
     }
 
-    @RequestMapping("/getBuildStatus")
+    @RequestMapping("/build-status")
     public List<Message> getBuildStatus() {
         return messageService.getbuldStatus();
     }

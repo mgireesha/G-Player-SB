@@ -1,5 +1,5 @@
-export const A_TO_Z = "A - Z Asc";
-export const A_TO_Z_DESC = "A - Z Desc";
+export const A_TO_Z = "A_TO_Z";
+export const A_TO_Z_DESC = "A_TO_Z_DESC";
 export const ADD = 'ADD';
 export const ADD_TO_NEW_PLAYLIST_LABEL = 'ADD_TO_NEW_PLAYLIST_LABEL';
 export const ALBUM = 'ALBUM';
@@ -94,6 +94,8 @@ export const MUSIC_PATH = 'MUSIC_PATH';
 export const NEXT = 'NEXT';
 export const NEW_PLAYLIST_BTN_LABEL = 'New Playlist';
 export const NO_SORT = 'NO_SORT';
+export const NONE = 'NONE';
+export const NONE_LABEL = 'None';
 
 export const PLAYLIST_ALBUMS = 'PLAYLIST_ALBUMS';
 export const PLAY_ALL_LABEL = 'Play all';
@@ -127,10 +129,19 @@ export const RUNNING = 'RUNNING';
 export const SAVE_LABEL = 'Save';
 export const SEARCH_RESULTS_LABEL = 'Search Results';
 export const SOME_PAGE = 'SOME_PAGE';
-export const SORT_ARTIST = 'Artist';
-export const SORT_COUNT_ALBUMS = 'No of Albums';
-export const SORT_COUNT_TRACKS = 'No of Songs';
-export const SORT_YEAR = 'Year';
+export const SORT_A_TO_Z = 'SORT_A_TO_Z';
+export const SORT_A_TO_Z_DESC = 'SORT_A_TO_Z_DESC';
+export const SORT_ALBUM = 'SORT_ALBUM';
+export const SORT_ARTIST = 'SORT_ARTIST';
+export const SORT_COUNT_ALBUMS = 'SORT_COUNT_ALBUMS';
+export const SORT_COUNT_TRACKS = 'SORT_COUNT_TRACKS';
+export const SORT_GENRE = 'SORT_GENRE';
+export const SORT_LANGUAGE = 'SORT_LANGUAGE';
+export const SORT_LYRICS_AVAILABLE = 'SORT_LYRICS_AVAILABLE';
+export const SORT_MULTI_LINGUAL = 'SORT_MULTI_LINGUAL';
+export const SORT_NONE = 'SORT_NONE';
+export const SORT_TRACK_NUMBER = 'SORT_TRACK_NUMBER';
+export const SORT_YEAR = 'SORT_YEAR';
 export const SUCCESS = 'SUCCESS';
 
 export const THIS_MONTH_COUNT = 'THIS_MONTH_COUNT';
@@ -184,4 +195,44 @@ export const GP_ARTIST_IMAGE_PATHS_MAP = {
     GP_PATH: '/gp_images/artists/',
     USER_PATH: '/gp_images/artists/user_images/',
     null:null
+}
+
+export const GP_ALBUMS_SORT_FIELD_MAPPING = {
+    SORT_A_TO_Z : "albumName",
+    SORT_A_TO_Z_DESC : "albumName",
+    SORT_YEAR : "year",
+    SORT_ARTIST : "albumArtist",
+    SORT_LANGUAGE : "language",
+    SORT_MULTI_LINGUAL : "languageType",
+    SORT_NONE:'SORT_NONE'
+}
+
+export const GP_TRACKS_SORT_FIELD_MAPPING = {
+    SORT_A_TO_Z : "title",
+    SORT_A_TO_Z_DESC : "title",
+    SORT_YEAR : "year",
+    SORT_TRACK_NUMBER: 'trackNumber',
+    SORT_LYRICS_AVAILABLE: 'lyricsAvl',
+    SORT_LANGUAGE : "language",
+    SORT_GENRE: 'genre',
+    SORT_ALBUM: 'album',
+    SORT_ARTIST : "albumArtist",
+    SORT_MULTI_LINGUAL : "languageType",
+    SORT_NONE:'SORT_NONE'
+}
+
+export const GP_SORT_SELECTOR_LABEL_MAPPING = {
+    SORT_A_TO_Z : 'A - Z Asc',
+    SORT_A_TO_Z_DESC : 'A - Z Desc',
+    SORT_ALBUM: 'Album',
+    SORT_ARTIST : 'Artist',
+    SORT_COUNT_ALBUMS : 'No of Albums',
+    SORT_COUNT_TRACKS : 'No of Songs',
+    SORT_GENRE: 'Genre',
+    SORT_LANGUAGE : "Language",
+    SORT_LYRICS_AVAILABLE : 'Lyrics Available',
+    SORT_MULTI_LINGUAL : "Multi Lingual",
+    SORT_NONE : 'None',
+    SORT_YEAR : "Year",
+    SORT_TRACK_NUMBER: 'Track Number'
 }

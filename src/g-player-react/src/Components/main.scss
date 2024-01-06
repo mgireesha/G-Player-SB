@@ -315,19 +315,19 @@ body{
         }
     }
 
-    .album-list-container{
+    .albums-container{
         padding: 0 10px;
     }
 
-    .album-list, .album-artist-album-list{
+    .albums, .album-artist-albums{
         max-height: calc(100vh - 16em);
     }
 
-    .album-artist-album-list{
+    .album-artist-albums{
         max-height: calc(100vh - 25.5em);
     }
 
-    .album-list, .album-artist-album-list{
+    .albums, .album-artist-albums{
         display: grid;
         grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
         grid-row-gap: 15px;
@@ -403,7 +403,7 @@ body{
 
     }
 
-    // .album-artist-album-list{
+    // .album-artist-albums{
     //     // max-height: 18em;
     //     max-height: 48vh;
     // }
@@ -823,7 +823,7 @@ body{
                 .genre-actions{
                     display: flex;
                     align-items: center;
-                    column-gap: 10px;
+                    column-gap: 20px;
                     margin-top: 30px;
 
                     button{
@@ -843,6 +843,16 @@ body{
                         button{
                             background-color: #560C53;
                         }
+                    }
+
+                    .view-type{
+                        cursor: pointer;
+                    }
+
+                    .selected.view-type {
+                        border: 1px solid;
+                        padding: 0px 5px;
+                        border-radius: 5px;
                     }
                 }
             }
@@ -1308,6 +1318,7 @@ body{
     max-width: 76vw;
     overflow-x: auto;
     overflow-y: hidden;
+    max-height: 3em;
 
     span{
         color: #dfbd16;
@@ -2167,7 +2178,7 @@ a.disabled-click{
             padding: 10px 0 0 10px;
         }
 
-        .search-result-album-list{
+        .search-result-albums{
             display: grid;
             grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
             grid-row-gap: 15px;
@@ -2399,7 +2410,7 @@ a.disabled-click{
                     }
                 }
     
-                .album-list{
+                .albums{
                     display: grid;
                     grid-template-columns: 1fr 1fr 1fr;
                     //grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
@@ -3267,7 +3278,7 @@ a.disabled-click{
 
 /**Tablet view**/
 @media only screen and (min-device-width: 768px ) and (max-width: 1280px){
-    .screen .album-list, .screen .album-artist-album-list{
+    .screen .albums, .screen .album-artist-albums{
         grid-template-columns: 1fr 1fr 1fr 1fr;
     }
 
@@ -3281,7 +3292,7 @@ a.disabled-click{
         height: auto;
     }
 
-    .recent-plays .body .albums .album-group .album-list{
+    .recent-plays .body .albums .album-group .albums{
         grid-template-columns: 1fr;
     }
 
@@ -3289,10 +3300,10 @@ a.disabled-click{
         column-gap: 20px;
     }
 
-    .recent-plays .body .albums .album-group .album-list .album-thumb:nth-child(3),
-    .recent-plays .body .albums .album-group .album-list .album-thumb:nth-child(4),
-    .recent-plays .body .albums .album-group .album-list .album-thumb:nth-child(5),
-    .recent-plays .body .albums .album-group .album-list .album-thumb:nth-child(6){
+    .recent-plays .body .albums .album-group .albums .album-thumb:nth-child(3),
+    .recent-plays .body .albums .album-group .albums .album-thumb:nth-child(4),
+    .recent-plays .body .albums .album-group .albums .album-thumb:nth-child(5),
+    .recent-plays .body .albums .album-group .albums .album-thumb:nth-child(6){
         display: none;
     }
 }
@@ -3501,7 +3512,7 @@ a.disabled-click{
                 }
             }
         }
-        .album-list{
+        .albums{
             grid-template-columns: 1fr 1fr 1fr;
             .album-lKey{
                 grid-column: span 3;
@@ -3591,7 +3602,7 @@ a.disabled-click{
                     }
                 }
             }
-            .album-artist-album-list{
+            .album-artist-albums{
                 grid-template-columns: 1fr 1fr 1fr;
                 padding: 10px 0;
                 .album-thumb{
