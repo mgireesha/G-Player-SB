@@ -29,6 +29,7 @@ export const EditAlbumInfo = () => {
 
     const updateModifiedAlbum = async (event, field, type, songId) => {
         const target = event.target;
+        target.value = target.value.trim();
         const tempModifiedAlbum = {...modifiedAlbum};
         if(type === ALBUM){
             tempModifiedAlbum[field] = target.value;
