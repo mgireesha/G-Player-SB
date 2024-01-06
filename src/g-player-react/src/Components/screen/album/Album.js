@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import def_album_art from '../../images/def_album_art.png';
-import { ALBUM, A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, EDIT_INFO_LABEL, MULTI_GENRE, MULTI_LINGUAL, TRACKS_LABEL, TRACK_NUMBER } from ".././../redux/GPActionTypes";
+import { ALBUM, CURRENT_PAGE, EDIT_INFO_LABEL, MULTI_LINGUAL, SORT_A_TO_Z, SORT_A_TO_Z_DESC, SORT_TRACK_NUMBER, TRACKS_LABEL } from ".././../redux/GPActionTypes";
 import { Lyrics } from "../lyrics/Lyrics";
 import { fetchAlbum, fetchAlbumTacks, setMetadataPopupObj } from "../../redux/library/LibraryActions";
 import { camelize, setCookies } from "../../utilities/util";
 import { TrackList } from "../track/TrackList";
 import { SplitAndLink } from "../../utilities/SplitAndLink";
 import { RiEditLine } from 'react-icons/ri';
-import { LIBRARY_EDIT_ALBUM_INFO_SUCCESS, LIBRARY_FETCH_ALBUM_SUCCESS } from "../../redux/library/LibraryActionTypes";
+import { LIBRARY_EDIT_ALBUM_INFO_SUCCESS } from "../../redux/library/LibraryActionTypes";
 
 export const Album = () => {
     const dispatch = useDispatch();
@@ -38,8 +38,8 @@ export const Album = () => {
             },
             showSort: true,
             showLKey: false,
-            sortSelectors:[TRACK_NUMBER,A_TO_Z,A_TO_Z_DESC],
-            selectedSortBy:TRACK_NUMBER
+            sortSelectors:[SORT_TRACK_NUMBER,SORT_A_TO_Z,SORT_A_TO_Z_DESC],
+            selectedSortBy:SORT_TRACK_NUMBER
         }
 
         if(albumTracks){

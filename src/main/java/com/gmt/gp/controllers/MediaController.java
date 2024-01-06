@@ -31,7 +31,7 @@ public class MediaController {
     @Autowired
     private MessageService messageService;
 
-    @PutMapping("/playSong/{songId}")
+    @PutMapping("/play-song/{songId}")
     public GPResponse playSong(@RequestBody String currentVolume, @PathVariable String songId,
             @RequestParam String currentPlayTime) {
         GPResponse resp = new GPResponse();
@@ -146,7 +146,7 @@ public class MediaController {
         return tempSong;
     }
 
-    @RequestMapping("/playPause")
+    @RequestMapping("/play-pause")
     public GPResponse playPause() {
         GPResponse resp = new GPResponse();
         if (mPlayer != null) {
@@ -195,7 +195,7 @@ public class MediaController {
         return resp;
     }
 
-    @RequestMapping("/getCurrentSongStatus")
+    @RequestMapping("/current-song-status")
     public GPResponse getCurrentSontStatus() {
         GPResponse resp = new GPResponse();
         GPMedia gpMedia = new GPMedia();
@@ -210,7 +210,7 @@ public class MediaController {
         return resp;
     }
 
-    @RequestMapping("/getCurrentSongAndStatus")
+    @RequestMapping("/current-song-and-status")
     public GPResponse getCurrentSongAndStatus() {
         GPResponse resp = new GPResponse();
         GPMedia gpMedia = new GPMedia();

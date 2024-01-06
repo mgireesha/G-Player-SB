@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
-import { ARTIST, A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, GP_ARTIST_IMAGE_PATHS_MAP, SORT_YEAR, UPDATE_ARTIST_IMAGE_TEXT, UPDATE_LABEL, WIKI_SUMMARY_URL } from "../../redux/GPActionTypes";
+import { ARTIST, CURRENT_PAGE, GP_ARTIST_IMAGE_PATHS_MAP, SORT_A_TO_Z, SORT_A_TO_Z_DESC, SORT_YEAR, UPDATE_ARTIST_IMAGE_TEXT, UPDATE_LABEL } from "../../redux/GPActionTypes";
 import { fetchAllArtistsDtls, fetchSongsByArtist, uploadArtistImg } from "../../redux/library/LibraryActions";
 import { convertDataFileToBase64, fetchArtistDetailsfromWiki, scrolltoId, setCookies } from "../../utilities/util";
 import { FilterComp } from "../../FilterComp";
@@ -86,8 +86,8 @@ export const Artist = () => {
             },
             showSort: false,
             showLKey: false,
-            sortSelectors:[A_TO_Z,A_TO_Z_DESC,SORT_YEAR],
-            selectedSortBy: A_TO_Z
+            sortSelectors:[SORT_A_TO_Z,SORT_A_TO_Z_DESC,SORT_YEAR],
+            selectedSortBy: SORT_A_TO_Z
         }
 
         if(artistTracksL){

@@ -1,7 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
 import { AlbumArtistList } from "./artist/AlbumArtistList";
-import { AlbumList } from "./album/AlbumList";
 import { Artist } from "./artist/Artist";
 import { ArtistsList } from "./artist/ArtistsList";
 import { AlbumArtist } from "./artist/AlbumArtist";
@@ -14,6 +13,7 @@ import { Genres } from "./genre/Genres";
 import { GenrePage } from "./genre/GenrePage";
 import { LanguagePage } from "./language/LanguagePage";
 import { Languages } from "./language/Languages";
+import { Albums } from "./album/Albums";
 
 export const Screen = () => {
     return(
@@ -24,7 +24,7 @@ export const Screen = () => {
                 <Route path='tracks' element={<Tracks />} />
                 <Route path='albums/:albumName/:language' element={<Album />} />
                 <Route path='albums/:albumName' element={<Album />} />
-                <Route path='albums' element={<AlbumList />} />
+                <Route path='albums' element={<Albums />} />
                 <Route path='artists/:artist' element={<Artist />} />
                 <Route path='artists' element={<ArtistsList />} />
                 <Route path='album_artists/:albumArtist' element={<AlbumArtist />} />

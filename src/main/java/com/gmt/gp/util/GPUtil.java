@@ -239,27 +239,31 @@ public class GPUtil {
     }
 
     public static List<String> sortAlbumsByMostPlayed(List<String> albumListByGenre,
-            List<Map<String, Object>> mostPlayedAlbums) {
+            List<Map<String, Object>> mostPlayedAlbums, int maxAlbumCount) {
         List<String> albums = new ArrayList<String>();
-        if (albumListByGenre.size() <= GP_CONSTANTS.GROUPED_ALBUM_COUNT_4) {
+        if (maxAlbumCount == 0) {
+            maxAlbumCount = albumListByGenre.size();
+        }
+
+        if (albumListByGenre.size() <= maxAlbumCount) {
             albums.addAll(albumListByGenre);
         } else {
             for (Map<String, Object> mAlbum : mostPlayedAlbums) {
                 if (albumListByGenre.contains(mAlbum.get("albumName"))
                         && !albums.contains(mAlbum.get("albumName"))) {
                     albums.add((String) mAlbum.get("albumName"));
-                    if (albums.size() == GP_CONSTANTS.GROUPED_ALBUM_COUNT_4) {
+                    if (albums.size() == maxAlbumCount) {
                         break;
                     }
                 }
             }
 
-            if (albums.size() < GP_CONSTANTS.GROUPED_ALBUM_COUNT_4
-                    && albumListByGenre.size() >= GP_CONSTANTS.GROUPED_ALBUM_COUNT_4) {
+            if (albums.size() < maxAlbumCount
+                    && albumListByGenre.size() >= maxAlbumCount) {
                 for (String albumName : albumListByGenre) {
                     if (!albums.contains(albumName)) {
                         albums.add(albumName);
-                        if (albums.size() == GP_CONSTANTS.GROUPED_ALBUM_COUNT_4) {
+                        if (albums.size() == maxAlbumCount) {
                             break;
                         }
                     }

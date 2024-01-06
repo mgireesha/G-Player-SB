@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { fetchPlaylistNames, fetchSongsInPlaylist } from "../redux/playlist/PlaylistActions";
 import { TrackList } from "../screen/track/TrackList";
-import { A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, PLAYLIST, SORT_YEAR, TRACK_LIST } from "../redux/GPActionTypes";
+import { CURRENT_PAGE, PLAYLIST, SORT_A_TO_Z, SORT_A_TO_Z_DESC, SORT_YEAR, TRACK_LIST } from "../redux/GPActionTypes";
 import { PlaylistPageHeader } from "./PlaylistPageHeader";
 import { setCookies } from "../utilities/util";
 import { setCurrentPage } from "../redux/library/LibraryActions";
@@ -40,8 +40,8 @@ export const PlaylistPage = () => {
                 pfVal:playlistId,
                 pfField:{name:playlistName}
             },
-            sortSelectors:[A_TO_Z,A_TO_Z_DESC, SORT_YEAR],
-            selectedSortBy: A_TO_Z,
+            sortSelectors:[SORT_A_TO_Z,SORT_A_TO_Z_DESC, SORT_YEAR],
+            selectedSortBy: SORT_A_TO_Z,
             showSort: false,
             showLKey: false,
         }

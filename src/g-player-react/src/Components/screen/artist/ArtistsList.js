@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ARTIST, ARTISTS, A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, SORT_COUNT_TRACKS } from "../../redux/GPActionTypes";
+import { ARTIST, ARTISTS, A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, SORT_A_TO_Z, SORT_A_TO_Z_DESC, SORT_COUNT_TRACKS } from "../../redux/GPActionTypes";
 import { fetchAllArtistsDtls } from "../../redux/library/LibraryActions";
 import { setCookies, sortGroupByField } from "../../utilities/util";
 import { SortingContainer } from "../SortingContainer";
@@ -21,7 +21,7 @@ export const ArtistsList = () => {
 
     useEffect(()=>{
         if(artistsDetailsFS.length>0){
-            if(sortBy===A_TO_Z || sortBy===A_TO_Z_DESC){
+            if(sortBy===SORT_A_TO_Z || sortBy===SORT_A_TO_Z_DESC){
                 setArtistsDetailsList(sortGroupByField(artistsDetailsFS,'artistName'));
             }
             if(sortBy===SORT_COUNT_TRACKS){
@@ -37,7 +37,7 @@ export const ArtistsList = () => {
     useEffect(()=>{
         if(Object.keys(artistsDetailsList).length>0){
             let tempArtistsDetailsListKeys = Object.keys(artistsDetailsList);
-            if(sortBy===A_TO_Z_DESC){
+            if(sortBy===SORT_A_TO_Z_DESC){
                 tempArtistsDetailsListKeys = tempArtistsDetailsListKeys.sort((a,b)=>{return a>b?-1:1})
             }
             setArtistsDetailsListKeys(tempArtistsDetailsListKeys);
@@ -46,7 +46,7 @@ export const ArtistsList = () => {
     
     return(
         <>
-            <SortingContainer sortListKeys={artistsDetailsListKeys} setSortBy={setSortBy} sortBy={sortBy} sortSelectors={[A_TO_Z,A_TO_Z_DESC, SORT_COUNT_TRACKS]} showSortByLabel={true} />
+            <SortingContainer sortListKeys={artistsDetailsListKeys} setSortBy={setSortBy} sortBy={sortBy} sortSelectors={[SORT_A_TO_Z,SORT_A_TO_Z_DESC, SORT_COUNT_TRACKS]} showSortByLabel={true} />
             <div className="artists-list">
                 {sortBy === SORT_COUNT_TRACKS && artistsDetails!==null && artistsDetails!==undefined && artistsDetails.length>0 && artistsDetails.map((artist, index) =>
                     <ArtistThumb artist={artist} key={index} />

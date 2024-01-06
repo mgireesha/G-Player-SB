@@ -26,4 +26,6 @@ public interface AlbumRepository extends CrudRepository<Album, Long> {
 
     List<Object> getByAlbumNameContainsIgnoreCase(String searchKey);
 
+    List<Album> getByGenreContainsIgnoreCase(String genre);
+
 }

@@ -11,67 +11,63 @@ const iAxios = axios.create({
 });
 
 export const getAllSongsAPI = () =>{
-    return iAxios.get('/library/getAllSongs').then(response => response);
-}
-
-export const fetchAllAlbumsAPI = () => {
-    return iAxios.get('/library/getAllAlbums').then(response => response);
+    return iAxios.get('/library/songs-and-ids').then(response => response);
 }
 
 export const fetchAlbumtracksAPI = (albumName, language) => {
     if(language){
-        return iAxios.get(`/library/getByAlbum/${albumName}/${language}`).then(response => response);
+        return iAxios.get(`/library/songs/album-name/${albumName}/${language}`).then(response => response);
     }else{
-        return iAxios.get(`/library/getByAlbum/${albumName}`).then(response => response);
+        return iAxios.get(`/library/songs/album-name/${albumName}`).then(response => response);
     }
 }
 
-export const fetchAlbumAPI = (albumName) => {
-    return iAxios.get(`/library/getAlbumByAlbumName/${albumName}`).then(response => response);
-}
-
-export const fetchAllAlbumDtlsAPI = () => {
-    return iAxios.get('/library/getAllAlbumDetails').then(response => response);
-}
-
-export const fetchAlbumImgsAPI = () => {
-    return iAxios.get('/library/getAlbumImgs').then(response => response);
-}
-
-export const fetchAllArtistsDtlsAPI = (artistType) => {
-    return iAxios.get(`/library/getAllArtistDetails/${artistType}`).then(response => response);
-}
-
-export const fetchAllArtistsImgDtlsAPI = () => {
-    return iAxios.get('/library/getAllArtistImgDetails').then(response => response);
-}
-
 export const fetchSongsByArtistAPI = (artist) => {
-    return iAxios.get(`/library/getByArtist/${artist}`).then(response => response);
+    return iAxios.get(`/library/songs/artist/${artist}`).then(response => response);
+}
+
+export const fetchAlbumAPI = (albumName) => {
+    return iAxios.get(`/library/album/album-name/${albumName}`).then(response => response);
+}
+
+export const fetchAllAlbumsAPI = () => {
+    return iAxios.get('/library/albums').then(response => response);
 }
 
 export const fetchalbumListOfAAAPI = (albumArtist) => {
-    return iAxios.get(`/library/getAllAlbumDetailsByAA/${albumArtist}`).then(response => response);
+    return iAxios.get(`/library/albums/album-artist/${albumArtist}`).then(response => response);
+}
+
+export const fetchAllArtistsDtlsAPI = (artistType) => {
+    return iAxios.get(`/library/artists/type/${artistType}`).then(response => response);
+}
+
+export const fetchSongsByGenreAPI = (genre) => {
+    return iAxios.get(`/library/songs/genre/${genre}`).then(response => response);
+}
+
+export const fetchSongsByLanguageAPI = (language) => {
+    return iAxios.get(`/library/songs/language/${language}`).then(response => response);
 }
 
 export const updateLyricsAPI = (songId, lyrics) => {
-    return iAxios.put(`/library/updateLyrics/${songId}`,lyrics).then(response => response);
+    return iAxios.put(`/library/song/lyrics/id/${songId}`,lyrics).then(response => response);
+}
+
+export const fetchAlbumsByGenreAPI = (genre) => {
+    return iAxios.get(`/library/albums/genre/${genre}`).then(response => response);
 }
 
 export const fetchGenreDetailsAPI = () => {
     return iAxios.get(`/library/genre-details`).then(response => response);
 }
 
-export const fetchSongsByGenreAPI = (genre) => {
-    return iAxios.get(`/library/getByGenre/${genre}`).then(response => response);
-}
-
-export const fetchSongsByLanguageAPI = (language) => {
-    return iAxios.get(`/library/getByLanguage/${language}`).then(response => response);
-}
-
 export const fetchLanguageDetailsAPI = () => {
     return iAxios.get(`/library/language-details`).then(response => response);
+}
+
+export const initiateArtistImageDownload = () => {
+    return iAxios.get(`/library/artists/download-artist-images`).then(response => response);
 }
 
 export const uploadArtistImgAPI = (artistId,data) => {
@@ -85,13 +81,21 @@ export const uploadArtistImgAPI = (artistId,data) => {
     ).then(response => response);
 }
 
+export const fetchAllAlbumDtlsAPI = () => {//Not used anymore
+    return iAxios.get('/library/getAllAlbumDetails').then(response => response);
+}
+
+export const fetchAlbumImgsAPI = () => {//Not used anymore
+    return iAxios.get('/library/getAlbumImgs').then(response => response);
+}
+
 //Sidebar library
 export const initLibraryBuildAPI = () => {
-    return iAxios.get(`/library/initLibraryBuild`).then(response => response);
+    return iAxios.get(`/library/build-library`).then(response => response);
 }
 
 export const initDeltaLibraryBuildAPI = () => {
-    return iAxios.get(`/library/init-delta-library-build`).then(response => response);
+    return iAxios.get(`/library/build-init-delta-library`).then(response => response);
 }
 
 export const searchByKeyAPI = (searchKey) => {
@@ -103,29 +107,25 @@ export const saveMusicpathAPI = (musicpath) => {
 }
 
 export const fetchMusicpathAPI = () => {
-    return iAxios.get(`/message/getAllMusicPaths`).then(response => response);
+    return iAxios.get(`/message/music-paths`).then(response => response);
 }
 
 export const deleteMusicPathAPI = (messageId) => {
-    return iAxios.delete(`/message/removeMusicPath/${messageId}`, ).then(response => response);
+    return iAxios.delete(`/message/remove-music-path/${messageId}`, ).then(response => response);
 }
 
 export const fetchBuildStatusAPI = () => {
-    return iAxios.get(`/message/getBuildStatus`).then(response => response);
-}
-
-export const initiateArtistImageDownload = () => {
-    return iAxios.get(`/library/downloadArtistImgToDIr`).then(response => response);
+    return iAxios.get(`/message/build-status`).then(response => response);
 }
 
 //Media
 export const playPauseAPI = () => {
-    return iAxios.get('/media/playPause').then(response => response);
+    return iAxios.get('/media/play-pause').then(response => response);
 }
 
 export const playASongAPI = (songId, currentVolume, currentPlayTime) => {
     if(currentVolume===undefined)currentVolume=0.5;
-    let uri = `/media/playSong/${songId}`;
+    let uri = `/media/play-song/${songId}`;
     if(currentPlayTime!==undefined){
         uri+=`?currentPlayTime=${currentPlayTime*1000}`;
     }else{
@@ -135,11 +135,11 @@ export const playASongAPI = (songId, currentVolume, currentPlayTime) => {
 }
 
 export const getCurrentSongStatusAPI = () => {
-    return iAxios.get(`/media/getCurrentSongStatus`).then(response => response);
+    return iAxios.get(`/media/current-song-status`).then(response => response);
 }
 
 export const getCurrentSongAndStatusAPI = () => {
-    return iAxios.get(`/media/getCurrentSongAndStatus`).then(response => response);
+    return iAxios.get(`/media/current-song-and-status`).then(response => response);
 }
 
 export const setMediaVolumeAPI = (volume) => {

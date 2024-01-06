@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ALBUM_ARTIST, A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, SOME_PAGE, SORT_COUNT_ALBUMS } from "../../redux/GPActionTypes";
+import { ALBUM_ARTIST, A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, SOME_PAGE, SORT_A_TO_Z, SORT_A_TO_Z_DESC, SORT_COUNT_ALBUMS } from "../../redux/GPActionTypes";
 import { fetchAllAlbumArtistsDtls } from "../../redux/library/LibraryActions";
 import { setCookies, sortGroupByField } from "../../utilities/util";
 import { AlbumArtistThumb } from "../artist/AlbumArtistThumb";
@@ -21,7 +21,7 @@ export const AlbumArtistList = () => {
 
     useEffect(()=>{
         if(albumArtistsDetailsFS.length>0){
-            if(sortBy===A_TO_Z || sortBy===A_TO_Z_DESC){
+            if(sortBy===SORT_A_TO_Z || sortBy===SORT_A_TO_Z_DESC){
                 setAlbumArtistsDetailsList(sortGroupByField(albumArtistsDetailsFS,'artistName'));
             }
             if(sortBy===SORT_COUNT_ALBUMS){
@@ -36,7 +36,7 @@ export const AlbumArtistList = () => {
     useEffect(()=>{
         if(Object.keys(albumArtistsDetailsList).length>0){
             let tempAlbumArtistsDetailsListKeys = Object.keys(albumArtistsDetailsList);
-            if(sortBy===A_TO_Z_DESC){
+            if(sortBy===SORT_A_TO_Z_DESC){
                 tempAlbumArtistsDetailsListKeys.sort((a,b)=>{return a>b?-1:1})
             }
             setAlbumArtistsDetailsListKeys(tempAlbumArtistsDetailsListKeys);
@@ -45,7 +45,7 @@ export const AlbumArtistList = () => {
 
     return(
         <>
-            <SortingContainer sortListKeys={albumArtistsDetailsListKeys} setSortBy={setSortBy} sortBy={sortBy} sortSelectors={[A_TO_Z,A_TO_Z_DESC, SORT_COUNT_ALBUMS]} showSortByLabel={true} />
+            <SortingContainer sortListKeys={albumArtistsDetailsListKeys} setSortBy={setSortBy} sortBy={sortBy} sortSelectors={[SORT_A_TO_Z,SORT_A_TO_Z_DESC, SORT_COUNT_ALBUMS]} showSortByLabel={true} />
             <div className="album-artists-list">
                 {sortBy===SORT_COUNT_ALBUMS && albumArtistsDetails!==null && albumArtistsDetails!==undefined && albumArtistsDetails.length>0 && albumArtistsDetails.map((albumArtist, index) =>
                     <AlbumArtistThumb albumArtist={albumArtist} key={index} />
