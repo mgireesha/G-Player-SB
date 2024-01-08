@@ -20,6 +20,9 @@ public class GP_CONSTANTS {
     public static final String COMPLETED_WITH_ERROR = "COMPLETED_WITH_ERROR";
     public static final String COMPLETED_WITH_ERRORS = "COMPLETED_WITH_ERRORS";
 
+    public static final String DOWNLOAD_FAILED = "DOWNLOAD_FAILED";
+    public static final String DOWNLOAD_SUCCESS = "DOWNLOAD_SUCCESS";
+
     public static final String ERROR = "ERROR";
     public static final String EXCEPTION = "EXCEPTION";
 

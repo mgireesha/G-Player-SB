@@ -821,107 +821,188 @@ public class LibraryService {
         return artistRepository.saveAll(artistList);
     }
 
-    public Map<String, List<Artist>> downloadArtistImgToDIr() {
-        String METHOD_NAME = "downloadArtistImgToDIr";
-        LOG.info(METHOD_NAME + " - Download started");
+    public Map<String, Object> downloadArtitsImages(String downloadOption) {
+        final String METHOD_NAME = "downloadArtitsImages";
         messageService.updateBuildStatus(GP_CONSTANTS.ARTIST_IMG_DOWNLOAD_STATUS,
-                GP_CONSTANTS.ARTIST_IMG_DOWNLOAD_STATUS,
-                GP_CONSTANTS.RUNNING);
-        Map<String, List<Artist>> artists = new HashMap<String, List<Artist>>();
-        List<Artist> artistList = artistRepository.getByIsImgAvlFalse();// .findAll();
-        List<Artist> downloadedArtists = new ArrayList<Artist>();
-        List<Artist> failedArtists = new ArrayList<Artist>();
-        File localArtistImg = null;
-        String artistImgAvailablePath = null;
-        String localArtistPath = GP_CONSTANTS.GP_ARTIST_IMAGES_PATH;
-        String wikiResp = "";
-        JSONObject wikiRespJson = null;
+                GP_CONSTANTS.ARTIST_IMG_DOWNLOAD_STATUS, GP_CONSTANTS.RUNNING);
+
         boolean isDirectoryExists = checkAndCreateUserImageFolders();
         if (!isDirectoryExists) {
             return null;// handle exception instead of returning null
         }
-        boolean isRestExchangeFailed = false;
-        LOG.info(METHOD_NAME + ", Found " + artistList.size() + " artists");
-        for (Artist artist : artistList) {
-            LOG.info(METHOD_NAME + ", Trying to download image for :  " + artist.getArtistName());
-            isRestExchangeFailed = false;
-            artistImgAvailablePath = isArtistImgAvailabeInLocal(artist.getArtistName());
 
-            if (artistImgAvailablePath == null) {
-                localArtistImg = new File(localArtistPath + "\\" + artist.getArtistName() + ".jpg");
-                wikiResp = GPUtil.restExchange(GP_CONSTANTS.WIKI_SUMMARY_URI + artist.getArtistName());
-                try {
+        Map<String, Object> response = new HashMap<String, Object>();
+
+        List<Artist> downloadedArtists = new ArrayList<Artist>();
+        List<Artist> failedArtists = new ArrayList<Artist>();
+        Map<String, Object> downloadStatus = new HashMap<>();
+        String artistImgAvailablePath = null;
+
+        boolean isOverrideExistingImgs = false;
+        LOG.info(METHOD_NAME + " - Download started");
+
+        List<Artist> artistList = new ArrayList<Artist>();
+        List<Artist> tempArtistList = null;
+        List<Message> tempDownloadStatusList = new ArrayList<Message>();
+        List<Message> downloadStatusList = messageService.getMessagesByType(GP_CONSTANTS.ARTIST_IMG_DOWNLOAD_STATUS);
+        Message artistImgDowloadStatus = null;
+        if (downloadOption.equalsIgnoreCase("DOWNLOAD_ALL_AND_OVERRIDE")) {
+            artistList = (List<Artist>) artistRepository.findAll();
+            isOverrideExistingImgs = true;
+        } else if (downloadOption.equals("DOWNLOAD_ALL")) {
+            artistList = artistRepository.getByIsImgAvlFalse();
+        } else if (downloadOption.equalsIgnoreCase("DOWNLOAD_LATEST")) {
+            // Todo
+        } else if (downloadOption.equalsIgnoreCase("IGNORE_EXISTING_AND_TRIED_AND_FAILED")) {
+            tempArtistList = artistRepository.getByIsImgAvlFalse();
+            for (Artist tempArtist : tempArtistList) {
+                if (downloadStatusList.size() > 0) {
+                    artistImgDowloadStatus = downloadStatusList.stream()
+                            .filter(o -> o.getName().equalsIgnoreCase(tempArtist.getArtistName())
+                                    && o.getValue().equals(GP_CONSTANTS.DOWNLOAD_FAILED))
+                            .findFirst().orElse(null);
+                    if (artistImgDowloadStatus == null) {
+                        artistList.add(tempArtist);
+                    }
+                } else {
+                    artistList.add(tempArtist);
+                }
+            }
+        }
+
+        LOG.info(METHOD_NAME + ", Found " + artistList.size() + " artists");
+        int counter = 0;
+        for (Artist artist : artistList) {
+            counter++;
+            final String artistName = artist.getArtistName();
+            LOG.info(METHOD_NAME + ", Trying to download image for :  " + artistName);
+            artistImgAvailablePath = isArtistImgAvailabeInLocal(artistName);
+            if (artistImgAvailablePath == null || isOverrideExistingImgs) {
+                artistImgDowloadStatus = downloadStatusList.stream()
+                        .filter(o -> artistName.equalsIgnoreCase(o.getName())).findFirst().orElse(null);
+                if (artistImgDowloadStatus == null) {
+                    artistImgDowloadStatus = new Message(GP_CONSTANTS.ARTIST_IMG_DOWNLOAD_STATUS,
+                            artistName, null);
+                }
+                downloadStatus = downloadArtistImgToDIr(artist, artistImgDowloadStatus);
+                artist = (Artist) downloadStatus.get(GP_CONSTANTS.ARTIST);
+                artistImgDowloadStatus = (Message) downloadStatus.get(GP_CONSTANTS.STATUS);
+                if (artistImgDowloadStatus.getValue().equalsIgnoreCase(GP_CONSTANTS.DOWNLOAD_SUCCESS)) {
+                    downloadedArtists.add(artist);
+                } else {
+                    failedArtists.add(artist);
+                }
+                tempDownloadStatusList.add(artistImgDowloadStatus);
+            } else {
+                LOG.info(METHOD_NAME + " : Either image for artist '" + artist.getArtistName() + "'"
+                        + " is already exists at :" + artistImgAvailablePath + ", Or isOverrideExistingImgs is:"
+                        + isOverrideExistingImgs);
+            }
+            LOG.info(METHOD_NAME + ", Pending artists count : " + (artistList.size() - counter));
+        }
+
+        if (downloadedArtists.size() > 0) {
+            downloadedArtists = (List<Artist>) artistRepository.saveAll(downloadedArtists);
+        }
+
+        if (tempDownloadStatusList.size() > 0) {
+            messageService.deleteAll(downloadStatusList);
+            tempDownloadStatusList = messageService.saveAll(tempDownloadStatusList);
+        }
+
+        messageService.updateBuildStatus(GP_CONSTANTS.ARTIST_IMG_DOWNLOAD_STATUS,
+                GP_CONSTANTS.ARTIST_IMG_DOWNLOAD_STATUS, GP_CONSTANTS.COMPLETED);
+
+        response.put("failedArtists", failedArtists);
+        response.put("downloadedArtists", downloadedArtists);
+        response.put("downloadStatusList", downloadStatusList);
+        return response;
+    }
+
+    public Map<String, Object> downloadArtistImgToDIr(Artist artist, Message artistDownloadStatus) {
+        String METHOD_NAME = "downloadArtistImgToDIr";
+        LOG.info(METHOD_NAME + " - Download started for artist: " + artist.getArtistName());
+
+        String wikiResp = "";
+        JSONObject wikiRespJson = null;
+        boolean isRestExchangeFailed = false;
+
+        Map<String, Object> response = new HashMap<String, Object>();
+        String localArtistPath = GP_CONSTANTS.GP_ARTIST_IMAGES_PATH;
+        File localArtistImg = new File(localArtistPath + "\\" + artist.getArtistName() + ".jpg");
+        wikiResp = GPUtil.restExchange(GP_CONSTANTS.WIKI_SUMMARY_URI + artist.getArtistName());
+        try {
+            if (wikiResp.equalsIgnoreCase(GP_CONSTANTS.NOT_FOUND)) {
+                isRestExchangeFailed = true;
+            } else {
+                isRestExchangeFailed = false;
+                wikiRespJson = new JSONObject(wikiResp);
+            }
+
+            if (isRestExchangeFailed || wikiRespJson.getString("title").contains("Not found")
+                    || wikiRespJson.getString("extract").contains("may refer to")) {
+                wikiResp = GPUtil
+                        .restExchange(GP_CONSTANTS.WIKI_SUMMARY_URI + artist.getArtistName() + "_(singer)");
+                if (wikiResp.equalsIgnoreCase(GP_CONSTANTS.NOT_FOUND)) {
+                    isRestExchangeFailed = true;
+                } else {
+                    isRestExchangeFailed = false;
+                    wikiRespJson = new JSONObject(wikiResp);
+                }
+                if (isRestExchangeFailed || wikiRespJson.getString("title").contains("Not found")) {
+                    wikiResp = GPUtil
+                            .restExchange(GP_CONSTANTS.WIKI_SUMMARY_URI + artist.getArtistName() + "_(actor)");
                     if (wikiResp.equalsIgnoreCase(GP_CONSTANTS.NOT_FOUND)) {
                         isRestExchangeFailed = true;
                     } else {
                         isRestExchangeFailed = false;
                         wikiRespJson = new JSONObject(wikiResp);
                     }
-
-                    if (isRestExchangeFailed || wikiRespJson.getString("title").contains("Not found")
-                            || wikiRespJson.getString("extract").contains("may refer to")) {
-                        wikiResp = GPUtil
-                                .restExchange(GP_CONSTANTS.WIKI_SUMMARY_URI + artist.getArtistName() + "_(singer)");
-                        if (wikiResp.equalsIgnoreCase(GP_CONSTANTS.NOT_FOUND)) {
-                            isRestExchangeFailed = true;
-                        } else {
-                            isRestExchangeFailed = false;
-                            wikiRespJson = new JSONObject(wikiResp);
-                        }
-                        if (isRestExchangeFailed || wikiRespJson.getString("title").contains("Not found")) {
-                            wikiResp = GPUtil
-                                    .restExchange(GP_CONSTANTS.WIKI_SUMMARY_URI + artist.getArtistName() + "_(actor)");
-                            if (wikiResp.equalsIgnoreCase(GP_CONSTANTS.NOT_FOUND)) {
-                                isRestExchangeFailed = true;
-                            } else {
-                                isRestExchangeFailed = false;
-                                wikiRespJson = new JSONObject(wikiResp);
-                            }
-                        }
-                    }
-                    try {
-                        if (!isRestExchangeFailed && wikiRespJson.getJSONObject("thumbnail") != null &&
-                                (wikiRespJson.getString("extract").contains("singer")
-                                        || wikiRespJson.getString("extract").contains("actor")
-                                        || wikiRespJson.getString("extract").contains("actress")
-                                        || wikiRespJson.getString("extract").contains("composer")
-                                        || wikiRespJson.getString("extract").contains("musician")
-                                        || wikiRespJson.getString("extract").contains("director")
-                                        || wikiRespJson.getString("extract").contains("rapper")
-                                        || wikiRespJson.getString("extract").contains("music producer"))) {
-
-                            FileUtils.copyURLToFile(
-                                    new URL(wikiRespJson.getJSONObject("thumbnail").getString("source")),
-                                    localArtistImg);
-                            artist.setImgAvl(true);
-                            artist.setImageSource(GP_CONSTANTS.GP_PATH);
-                            downloadedArtists.add(artist);
-                        } else {
-                            failedArtists.add(artist);
-                            LOG.info(METHOD_NAME + ", Failed to download image of artist:  " + artist.getArtistName());
-                        }
-                    } catch (JSONException e) {
-                        failedArtists.add(artist);
-                        LOG.error("For artist: " + artist.getArtistName()
-                                + ", Failed while fetching thimbnainf from wiki response "
-                                + e.getMessage());
-                    }
-                } catch (Exception e) {
-                    failedArtists.add(artist);
-                    LOG.info(METHOD_NAME + ", Failed to download image of artist:  " + artist.getArtistName());
-                    e.printStackTrace();
                 }
             }
+            try {
+                if (!isRestExchangeFailed && wikiRespJson.getJSONObject("thumbnail") != null &&
+                        (wikiRespJson.getString("extract").contains("singer")
+                                || wikiRespJson.getString("extract").contains("actor")
+                                || wikiRespJson.getString("extract").contains("actress")
+                                || wikiRespJson.getString("extract").contains("composer")
+                                || wikiRespJson.getString("extract").contains("musician")
+                                || wikiRespJson.getString("extract").contains("director")
+                                || wikiRespJson.getString("extract").contains("rapper")
+                                || wikiRespJson.getString("extract").contains("music producer"))) {
+
+                    FileUtils.copyURLToFile(
+                            new URL(wikiRespJson.getJSONObject("thumbnail").getString("source")),
+                            localArtistImg);
+                    artist.setImgAvl(true);
+                    artist.setImageSource(GP_CONSTANTS.GP_PATH);
+                    artistDownloadStatus.setValue(GP_CONSTANTS.DOWNLOAD_SUCCESS);
+                    response.put(GP_CONSTANTS.ARTIST, artist);
+                    response.put(GP_CONSTANTS.STATUS, artistDownloadStatus);
+                } else {
+                    artistDownloadStatus.setValue(GP_CONSTANTS.DOWNLOAD_FAILED);
+                    response.put(GP_CONSTANTS.ARTIST, artist);
+                    response.put(GP_CONSTANTS.STATUS, artistDownloadStatus);
+                    LOG.info(METHOD_NAME + ", Failed to download image of artist:  " + artist.getArtistName()
+                            + ", Error: Not able to find artist image in wikipedia");
+                }
+            } catch (JSONException e) {
+                artistDownloadStatus.setValue(GP_CONSTANTS.DOWNLOAD_FAILED);
+                response.put(GP_CONSTANTS.ARTIST, artist);
+                response.put(GP_CONSTANTS.STATUS, artistDownloadStatus);
+                LOG.error("For artist: " + artist.getArtistName()
+                        + ", Failed while fetching thimbnainf from wiki response "
+                        + e.getMessage());
+            }
+        } catch (Exception e) {
+            artistDownloadStatus.setValue(GP_CONSTANTS.DOWNLOAD_FAILED);
+            response.put(GP_CONSTANTS.ARTIST, artist);
+            response.put(GP_CONSTANTS.STATUS, artistDownloadStatus);
+            LOG.info(METHOD_NAME + ", Failed to download image of artist:  " + artist.getArtistName() + ", Error: "
+                    + e.getMessage());
+            // e.printStackTrace();
         }
-        artistRepository.saveAll(downloadedArtists);
-        artists.put("downloadedArtists: ", downloadedArtists);
-        artists.put("failedArtists: ", failedArtists);
-        messageService.updateBuildStatus(GP_CONSTANTS.ARTIST_IMG_DOWNLOAD_STATUS,
-                GP_CONSTANTS.ARTIST_IMG_DOWNLOAD_STATUS,
-                GP_CONSTANTS.COMPLETED);
-        LOG.info(METHOD_NAME + ", Download completed, Successful download count:  " + downloadedArtists.size());
-        LOG.info(METHOD_NAME + ", Download completed, Failed download count:  " + failedArtists.size());
-        return artists;
+        return response;
     }
     // artistRepository - end
 

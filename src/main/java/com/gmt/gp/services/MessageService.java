@@ -103,4 +103,12 @@ public class MessageService {
         return messageRepository.getByType(BUILD_STATUS);
     }
     // Build status - end
+
+    public void deleteAll(List<Message> prevDownloadStatus) {
+        messageRepository.deleteAll(prevDownloadStatus);
+    }
+
+    public List<Message> saveAll(List<Message> downloadStatusList) {
+        return (List<Message>) messageRepository.saveAll(downloadStatusList);
+    }
 }

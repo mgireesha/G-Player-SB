@@ -16,7 +16,7 @@ export const getAllSongsAPI = () =>{
 
 export const fetchAlbumtracksAPI = (albumName, language) => {
     if(language){
-        return iAxios.get(`/library/songs/album-name/${albumName}/${language}`).then(response => response);
+        return iAxios.get(`/library/songs/album-name/${albumName}/language/${language}`).then(response => response);
     }else{
         return iAxios.get(`/library/songs/album-name/${albumName}`).then(response => response);
     }
@@ -66,8 +66,8 @@ export const fetchLanguageDetailsAPI = () => {
     return iAxios.get(`/library/language-details`).then(response => response);
 }
 
-export const initiateArtistImageDownload = () => {
-    return iAxios.get(`/library/artists/download-artist-images`).then(response => response);
+export const initiateArtistImageDownload = (downloadOption) => {
+    return iAxios.get(`/library/artists/download-artist-images/${downloadOption}`).then(response => response);
 }
 
 export const uploadArtistImgAPI = (artistId,data) => {

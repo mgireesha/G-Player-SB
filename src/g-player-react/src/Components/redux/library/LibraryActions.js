@@ -304,8 +304,9 @@ export const fetchMostPlayedDataSucc = (response) => ({
     response
 })
 
-export const initiArtistImageDownload = () => ({
-    type: LIBRARY_INIT_ARTIST_IMG_DOWNLOAD_START
+export const initiArtistImageDownload = (downloadOption) => ({
+    type: LIBRARY_INIT_ARTIST_IMG_DOWNLOAD_START,
+    downloadOption
 })
 
 export const initiArtistImageDownloadSucc = (response) => ({
