@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import {RiDeleteBinLine} from 'react-icons/ri';
 import { useDispatch, useSelector } from "react-redux";
-import { deleteMusicPath, fetchBuildStatus, fetchMessagesByType, fetchMusicPath, initiArtistImageDownload, initLibraryBuild, saveMusicPath } from "../redux/library/LibraryActions";
-import { ARTIST_IMG_DOWNLOAD_STATUS, BUILD_STATUS, COMPLETED, CURRENT_PAGE, GP_LIBRARY_DESCRIPTION, GP_LIBRARY_DESC_TEXT_1, LIBRARY, LIBRARY_LABEL, MUSIC_PATH, RUNNING } from "../redux/GPActionTypes";
+import { deleteMusicPath, fetchBuildStatus, fetchMessagesByType, fetchMusicPath, initiArtistImageDownload, initLibraryBuild, saveMusicPath, setCommonPopupObj } from "../redux/library/LibraryActions";
+import { ARTIST_IMG_DOWNLOAD_STATUS, BUILD_STATUS, COMPLETED, COMPONENT, CURRENT_PAGE, GP_LIBRARY_DESCRIPTION, GP_LIBRARY_DESC_TEXT_1, LIBRARY, LIBRARY_LABEL, MUSIC_PATH, RUNNING } from "../redux/GPActionTypes";
 import { LIBRARY_SAVE_MUSIC_PATH_SUCCESS } from "../redux/library/LibraryActionTypes";
 import loading_icon from '../images/Loading.gif';
 import { Header } from "../header/Header";
 import { setCookies } from "../utilities/util";
+import { ArtistDownloadPopupComponent } from "./ArtistDownloadPopupComponent";
 
 export const Library = () => {
     const dispatch = useDispatch();
@@ -20,6 +21,7 @@ export const Library = () => {
     const [isFetchBStat, setIsFetchBStat] = useState(false);
     const [isBuildInit, setIsBuildInit] = useState(false);
     const [artistIImgDownloadStat, setArtistIImgDownloadStat] = useState({});
+    const [artistImgPopupObj, setArtistImgPopupObj] = useState({});
 
     
     
@@ -54,6 +56,19 @@ export const Library = () => {
         dispatch(fetchBuildStatus());
         setCookies(CURRENT_PAGE, JSON.stringify({type:LIBRARY}));
         dispatch(fetchMessagesByType(ARTIST_IMG_DOWNLOAD_STATUS));
+
+        //Initialize artist image popup object
+        const tempArtistImgPopupObj = {
+            showPopup: true,
+            title: "Download Artist Images",
+            contentType: COMPONENT,
+            component: ArtistDownloadPopupComponent,
+            primaryBtnFun: initiateArtistImageDownload,
+            primaryBtnLabel: "Download"
+            
+        }
+        setArtistImgPopupObj(tempArtistImgPopupObj);
+
     },[])
 
     useEffect(()=>{
@@ -109,6 +124,10 @@ export const Library = () => {
     },[artistIImgDownloadStat]);
 
     const initiateArtistImageDownload = () => {
+        const artistImgDownloadOtnSlct = document.getElementById("ARTIST_IMAGE_DOWNLOAD_OPTIONS_SELECT");
+        if(!artistImgDownloadOtnSlct){
+            return false;
+        }
         if(window.confirm("Initiate Download ?")===true){
             const tempArtistIImgDownloadStat = {
                 "name": "ARTIST_IMG_DOWNLOAD_STATUS",
@@ -116,7 +135,8 @@ export const Library = () => {
                 "type": "ARTIST_IMG_DOWNLOAD_STATUS"
                 }
             setArtistIImgDownloadStat(tempArtistIImgDownloadStat);
-            dispatch(initiArtistImageDownload());
+            dispatch(initiArtistImageDownload(artistImgDownloadOtnSlct.value));
+            dispatch(setCommonPopupObj({showPopup: false}));
         }
     }
 
@@ -180,12 +200,12 @@ export const Library = () => {
                         <label>Download Artist Images</label>
                         <p style={{marginTop:10}}>Download Status: &nbsp;
                             <>
-                                {artistIImgDownloadStat.value === RUNNING && <>{RUNNING} <img src={loading_icon} style={{height:12}} /></>}
-                                {artistIImgDownloadStat.value === COMPLETED && COMPLETED}
+                                {artistIImgDownloadStat && artistIImgDownloadStat.value === RUNNING && <>{RUNNING} <img src={loading_icon} style={{height:12}} /></>}
+                                {artistIImgDownloadStat && artistIImgDownloadStat.value === COMPLETED && COMPLETED}
                             </>
                         </p>
                         <div className="btn-container">
-                            <a className="library-btn" onClick={initiateArtistImageDownload}>Initiate Download</a>
+                            <a className="library-btn" onClick={()=>dispatch(setCommonPopupObj(artistImgPopupObj))}>Initiate Download</a>
                         </div>
                 </div>
             </div>

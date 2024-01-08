@@ -20,19 +20,16 @@ export const Lyrics = () => {
     const [showEditLyrics, setShowEditLyrics] = useState(false);
     const [showCreateLyrics, setShowCreateLyrics] = useState(false);
     const [isCreateLyricsStarted, setisCreateLyricsStarted] = useState(false);
-    const [lyrics, setLyrics] = useState(null);
-    
-    useEffect(()=>{
-        setLinePlaying(null);setLyricsObj(null);setNextLine(null);setPreviousLine(null);
-        if(songPlaying!==null)setLyrics(songPlaying.lyrics);
-    },[songPlaying]);
 
     useEffect(()=>{
-        getLyrics(lyrics)
-    },[lyrics])
+        setLinePlaying(null);setLyricsObj(null);setNextLine(null);setPreviousLine(null);
+        if(songPlaying && songPlaying.lyrics){
+            getLyrics(songPlaying.lyrics)
+        }
+    },[songPlaying])
     
     useEffect(()=>{
-        if(lyricsObj!==null && lyricsObj!==undefined){
+        if(lyricsObj){
             try {
                 const currentTime = Math.floor(parseInt(playingSongStat.currentTime)/1000);
                 const tempLine = lyricsObj[getMins0(currentTime).toString()];
@@ -43,13 +40,13 @@ export const Lyrics = () => {
                     setPreviousLine(lyricsObj[lyricsObjKeys[lineIndex-1]]);
                 }
             } catch (error) {
-                console.log("Error in lyrics component: ",error);
+                console.log("Error in lyrics component while parsing lyrics: ",error);
             }
         }
     },[playingSongStat]);
 
     const getLyrics =(lyrics) => {
-        if(lyrics===null || lyrics===undefined)return null;
+        if(!lyrics)return null;
         let time;
         let text;
         const tempLyricObj = {};
@@ -66,6 +63,7 @@ export const Lyrics = () => {
                 }
             });
         }
+        console.log(tempLyricObj);
         setLyricsObjKeys(Object.keys(tempLyricObj));
         setLyricsObj(tempLyricObj);
     }
@@ -90,7 +88,7 @@ export const Lyrics = () => {
             setShowEditLyrics(false);
             setisCreateLyricsStarted(false);
             setShowCreateLyrics(false);
-            if(songPlaying!==null)getLyrics(lyrics);
+            if(songPlaying!==null)getLyrics(songPlaying.lyrics);
         }
     },[phase]);
 
@@ -100,7 +98,7 @@ export const Lyrics = () => {
             alert("Please paste lyrics");
             return false;
         }
-        setLyrics(newLyrics);
+        //setLyrics(newLyrics);
         setisCreateLyricsStarted(true);
     }
 
@@ -108,7 +106,7 @@ export const Lyrics = () => {
         setisCreateLyricsStarted(value);
         if(!value){
             setShowCreateLyrics(false);
-            setLyrics(null);
+            //setLyrics(null);
             setShowEditLyrics(false);
             setLyricsObj(null);
         }
@@ -167,7 +165,7 @@ export const Lyrics = () => {
     </div>}
     {isCreateLyricsStarted && 
         <div className="show-lyrics" style={{width:'100%'}}>
-            <CreateLyrics onSetisCreateLyricsStarted={onSetisCreateLyricsStarted} newLyrics={lyrics} />
+            <CreateLyrics onSetisCreateLyricsStarted={onSetisCreateLyricsStarted} newLyrics={songPlaying && songPlaying.lyrics ? songPlaying.lyrics : null} />
         </div>
     }
     </div>

@@ -170,9 +170,9 @@ public class LibraryController {
         return libraryService.getAllArtistDetails(type);
     }
 
-    @RequestMapping("/artists/download-artist-images")
-    public Map<String, List<Artist>> downloadArtistImgToDIr() {
-        return libraryService.downloadArtistImgToDIr();
+    @GetMapping("/artists/download-artist-images/{downloadOption}")
+    public Map<String, Object> downloadArtitsImages(@PathVariable String downloadOption) {
+        return libraryService.downloadArtitsImages(downloadOption);
     }
 
     @PutMapping("/upload-artist-image/{artistId}")

@@ -466,9 +466,9 @@ export function* onInitArtistImgDownload(){
     yield takeLatest(LIBRARY_INIT_ARTIST_IMG_DOWNLOAD_START, onInitArtistImgDownloadAsync);
 }
 
-export function* onInitArtistImgDownloadAsync(){
+export function* onInitArtistImgDownloadAsync(payload){
     try {
-        const response = yield call(initiateArtistImageDownload);
+        const response = yield call(initiateArtistImageDownload,payload.downloadOption);
         if(response.status === 200){
             yield put(initiArtistImageDownloadSucc(response.data));
         }
