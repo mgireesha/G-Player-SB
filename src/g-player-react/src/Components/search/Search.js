@@ -30,7 +30,7 @@ export const Search = () => {
                         {searchResult.ALBUMS.length>0 &&
                             <>
                                 <h3>Albums</h3>
-                                <div className="search-result-album-list">
+                                <div className="search-result-albums">
                                     {searchResult.ALBUMS.map((album, index) =>
                                         <AlbumThumb album={album} key={index} />
                                     )}

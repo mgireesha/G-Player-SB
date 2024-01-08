@@ -20,9 +20,10 @@ export const Lyrics = () => {
     const [showEditLyrics, setShowEditLyrics] = useState(false);
     const [showCreateLyrics, setShowCreateLyrics] = useState(false);
     const [isCreateLyricsStarted, setisCreateLyricsStarted] = useState(false);
+    const [newLyrics, setNewLyrics] = useState(null);
 
     useEffect(()=>{
-        setLinePlaying(null);setLyricsObj(null);setNextLine(null);setPreviousLine(null);
+        setLinePlaying(null);setLyricsObj(null);setNextLine(null);setPreviousLine(null);setNewLyrics(null);
         if(songPlaying && songPlaying.lyrics){
             getLyrics(songPlaying.lyrics)
         }
@@ -93,12 +94,12 @@ export const Lyrics = () => {
     },[phase]);
 
     const startCreateLyrics = () => {
-        const newLyrics = document.getElementById('new_lyrics_ta').value;
-        if(newLyrics==="" || newLyrics===null){
+        const tempNewLyrics = document.getElementById('new_lyrics_ta').value;
+        if(tempNewLyrics==="" || tempNewLyrics===null){
             alert("Please paste lyrics");
             return false;
         }
-        //setLyrics(newLyrics);
+        setNewLyrics(tempNewLyrics);
         setisCreateLyricsStarted(true);
     }
 
@@ -165,7 +166,7 @@ export const Lyrics = () => {
     </div>}
     {isCreateLyricsStarted && 
         <div className="show-lyrics" style={{width:'100%'}}>
-            <CreateLyrics onSetisCreateLyricsStarted={onSetisCreateLyricsStarted} newLyrics={songPlaying && songPlaying.lyrics ? songPlaying.lyrics : null} />
+            <CreateLyrics onSetisCreateLyricsStarted={onSetisCreateLyricsStarted} newLyrics={newLyrics} />
         </div>
     }
     </div>
