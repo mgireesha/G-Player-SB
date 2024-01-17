@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { COMMON_POPUP_ERROR_MSG, DELETE, DELETE_PLAYLIST_CONF_TEXT, DELETE_PLAYLIST_LABEL, INPUT, PLAYLIST, PLAY_ALL_LABEL, REMOVE, REMOVE_LABEL, RENAME, RENAME_LABEL, RENAME_PLAYLIST_INP, RENAME_PLAYLIST_LABEL, TEXT, TRACKS_LABEL } from "../redux/GPActionTypes";
+import { COMMON_POPUP_ERROR_MSG, DELETE, DELETE_LABEL, DELETE_PLAYLIST_CONF_TEXT, DELETE_PLAYLIST_LABEL, INPUT, PLAYLIST, PLAY_ALL_LABEL, REMOVE, REMOVE_LABEL, RENAME, RENAME_LABEL, RENAME_PLAYLIST_INP, RENAME_PLAYLIST_LABEL, TEXT, TRACKS_LABEL } from "../redux/GPActionTypes";
 import { FaPlay } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { BiRename } from "react-icons/bi";
@@ -42,7 +42,7 @@ export const PlaylistPageHeader = ({albumNames, songsCount, playAll}) => {
             content: DELETE_PLAYLIST_CONF_TEXT,
             contentType: TEXT,
             primaryBtnAction: REMOVE,
-            primaryBtnLabel:REMOVE_LABEL,
+            primaryBtnLabel:DELETE_LABEL,
             className:"remove",
             primaryBtnFun: onDeletePlaylist
 
@@ -114,13 +114,13 @@ export const PlaylistPageHeader = ({albumNames, songsCount, playAll}) => {
                 </div>
                 <div className="playlist-actions">
                     <div className="play-all">
-                        <button onClick={playAll} disabled={!isPlayAll}><FaPlay className={!isPlayAll ?"rotate-player-button faplay":"faplay"}  />{PLAY_ALL_LABEL}</button>
+                        <button onClick={playAll} disabled={!isPlayAll} className="g-btn md violet beige beige-border flexbox-center"><FaPlay className={!isPlayAll ?"rotate-player-button faplay font-size-16":"faplay font-size-16"}  />{PLAY_ALL_LABEL}</button>
                     </div>
                     <div className="delete-playlist">
-                        <button onClick={showDeletePlaylistPopup}><RiDeleteBin6Line />{DELETE}</button>
+                        <button onClick={showDeletePlaylistPopup} className="g-btn md red beige beige-border flexbox-center"><RiDeleteBin6Line className="font-size-16" />{DELETE_LABEL}</button>
                     </div>
                     <div className="rename-playlist">
-                        <button onClick={showRenamePlaylistPopup}><BiRename />{RENAME_LABEL}</button>
+                        <button onClick={showRenamePlaylistPopup} className="g-btn md cyan beige beige-border flexbox-center"><BiRename className="font-size-16" />{RENAME_LABEL}</button>
                     </div>
                 </div>
             </div>

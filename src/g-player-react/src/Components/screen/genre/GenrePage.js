@@ -134,7 +134,7 @@ export const GenrePage = () => {
                     </div>
                     <div className="genre-actions">
                         <div className="play-all">
-                            <button onClick={playAll} ><FaPlay className="faplay"  />{PLAY_ALL_LABEL}</button>
+                            <button onClick={playAll} className="g-btn md beige violet beige-border flexbox-center column-gap-5"><FaPlay className="faplay"  />{PLAY_ALL_LABEL}</button>
                         </div>
                         <div className={viewType===TRACKS ? "selected view-type":"view-type"}>
                             <MdOutlineArtTrack style={{fontSize:28}} onClick={()=>setViewType(TRACKS)} title="Track list" />
