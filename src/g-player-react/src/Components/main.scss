@@ -2990,6 +2990,16 @@ a.disabled-click{
     
 }
 
+.g-btn.xl{
+    width: 11em;
+    padding: 7px;
+}
+
+.g-btn.lg{
+    width: 9em;
+    padding: 7px;
+}
+
 .g-btn.md{
     width: 7em;
     padding: 7px;
@@ -3059,6 +3069,14 @@ a.disabled-click{
 }
 
 .g-btn.beige{
+    color: beige;
+}
+
+.g-btn.red1{
+    color: #921b1b;
+}
+
+.g-btn.red1:hover{
     color: beige;
 }
 

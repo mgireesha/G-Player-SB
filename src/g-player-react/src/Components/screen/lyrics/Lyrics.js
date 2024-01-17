@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateLyrics } from "../../redux/player/PlayerActions";
+import { deleteLyrics, updateLyrics } from "../../redux/player/PlayerActions";
 import { getLyricsFromLRC, getMins0 } from "../../utilities/util";
 import {  FaPlay } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -15,6 +15,7 @@ import { MdOutlineSave } from "react-icons/md";
 import { MdOutlineCancelPresentation } from "react-icons/md";
 import { FaHourglassStart } from "react-icons/fa6";
 import { IoMdDownload } from "react-icons/io";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 export const Lyrics = () => {
     const dispatch = useDispatch();
@@ -181,6 +182,18 @@ export const Lyrics = () => {
         }
     }
 
+    const deleteLoadLyrics = () => {
+        if(window.confirm("Are you sure to delete lyrics ?")!==true){
+            return false;
+        }
+
+        if(window.confirm("This action is irreversible.")!==true){
+            return false;
+        }
+
+        dispatch(deleteLyrics(songPlaying.songId));
+    }
+
     const handleDoubleClickOnLyricsPage = () => {
         setLyricsUIExpanded(!lyricsUIExpanded);
     }
@@ -234,6 +247,7 @@ export const Lyrics = () => {
                 <>
                     <button onClick={initEditLyrics} className="g-btn xs success beige font-size-18" title="Edit Lyrics"><MdModeEdit /></button>
                     <button onClick={downLoadLyrics} className="g-btn xs success beige font-size-18" title="Download Lyrics"><IoMdDownload /></button>
+                    <button onClick={deleteLoadLyrics} className="g-btn xs red red1 font-size-18" title="Delete Lyrics"><RiDeleteBin6Line /></button>
                 </>
             }
         </div>
