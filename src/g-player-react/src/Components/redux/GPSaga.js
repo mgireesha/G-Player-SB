@@ -1,6 +1,6 @@
 import { onDeleteMusicPath, onEditAlbumInfo, onEditTrackInfo, onFetchAlbum, onFetchAlbumimgs, onFetchAlbumListOfAA, onFetchAlbumsByGenre, onFetchAlbumTracks, onFetchAllAlbumArtistsDtls, onFetchAllAlbumDtls, onFetchAllAlbums, onFetchAllArtistsDtls, onFetchAllHistory, onFetchAllSongs, onFetchBuildStatus, onFetchGenreDetails, onFetchLanguageDetails, onFetchMessagesByType, onFetchMostPlayedData, onFetchMusicPath, onFetchSongsByArtist, onFetchSongsByGenre, onFetchSongsByLanguage, onInitArtistImgDownload, onInitDeltaLibraryBuild, onInitLibraryBuild, onsaveMusicPath, onSearchByKey, onUpdateHistory, onUploadArtistImg } from "./library/LibrarySaga";
 import {all} from 'redux-saga/effects'
-import { onFetchCurrentSongAndStatus, onFetchCurrentSongStatus, onPlayASong, onPlayPause, onSetMediaVolume, onSetPlayBackTime, onUpdateLyrics } from "./player/PlayerSaga";
+import { onDeleteLyrics, onFetchCurrentSongAndStatus, onFetchCurrentSongStatus, onPlayASong, onPlayPause, onSetMediaVolume, onSetPlayBackTime, onUpdateLyrics } from "./player/PlayerSaga";
 import { onAddToPlaylist, onCreatePlaylist, onDeletePlaylist, onExportPlaylists, onFetchPlaylistNames, onFetchSongsInPlaylist, onImportPlaylists, onRemoveFromPlaylist, onRenamePlaylist } from "./playlist/PlaylistSaga";
 
 export function* GPSaga(){
@@ -24,6 +24,7 @@ export function* GPSaga(){
         onFetchAlbumsByGenre(),
         onFetchCurrentSongAndStatus(),
         onUpdateLyrics(),
+        onDeleteLyrics(),
         onFetchAlbum(),
         onInitLibraryBuild(),
         onInitDeltaLibraryBuild(),

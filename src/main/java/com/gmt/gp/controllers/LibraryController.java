@@ -133,6 +133,11 @@ public class LibraryController {
         return libraryService.updateLyrics(songId, lyrics);
     }
 
+    @DeleteMapping("/song/lyrics/id/{songId}")
+    public GPResponse deleteLyrics(@PathVariable String songId) {
+        return libraryService.deleteLyrics(songId);
+    }
+
     @RequestMapping("/albums")
     public Iterable<Album> getAllAlbums() {
         return libraryService.getAllAlbumsFromDb();

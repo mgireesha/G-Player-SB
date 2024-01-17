@@ -54,6 +54,10 @@ export const updateLyricsAPI = (songId, lyrics) => {
     return iAxios.put(`/library/song/lyrics/id/${songId}`,lyrics).then(response => response);
 }
 
+export const deleteLyricsAPI = (songId) => {
+    return iAxios.delete(`/library/song/lyrics/id/${songId}`).then(response => response);
+}
+
 export const fetchAlbumsByGenreAPI = (genre) => {
     return iAxios.get(`/library/albums/genre/${genre}`).then(response => response);
 }

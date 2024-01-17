@@ -1,11 +1,11 @@
 import { call, put, takeEvery, takeLatest } from "redux-saga/effects";
 import { getCookieValue, handleAPIError, setCookies } from "../../utilities/util";
 import { GP_PAGE_TRACKS_MAP, MEDIA_PLAYER_NULL, PLAYER } from "../GPActionTypes";
-import { getCurrentSongAndStatusAPI, getCurrentSongStatusAPI, playASongAPI, playPauseAPI, setMediaVolumeAPI, 
+import { deleteLyricsAPI, getCurrentSongAndStatusAPI, getCurrentSongStatusAPI, playASongAPI, playPauseAPI, setMediaVolumeAPI, 
             setPlaybackLengthAPI, updateLyricsAPI } from "../GPApis";
-import { fetchCurrentSontAndStatusSucc, fettchCurrentSongStatusSucc, playASong, playASongSucc, playPauseSucc, 
+import { deleteLyricsSucc, fetchCurrentSontAndStatusSucc, fettchCurrentSongStatusSucc, playASong, playASongSucc, playPauseSucc, 
             setMediaVolumeSucc, setPlayBackLengthSucc, updateLyricsSucc } from "./PlayerActions";
-import { PLAYER_CURRENT_SONG_AND_STATUS_START, PLAYER_CURRENT_SONG_STATUS_START, PLAYER_PLAY_A_SONG_START, 
+import { PLAYER_CURRENT_SONG_AND_STATUS_START, PLAYER_CURRENT_SONG_STATUS_START, PLAYER_DELETE_LYRICS_START, PLAYER_PLAY_A_SONG_START, 
         PLAYER_PLAY_PAUSE_START, PLAYER_SET_MEDIA_VOLUME_START, PLAYER_SET_PB_LENGTH_START, 
         PLAYER_UPDATE_LYRICS_START 
     } from "./PlayerActionTypes";
@@ -142,6 +142,22 @@ export function* onUpdateLyricsAsync(payload){
         const response = yield call(updateLyricsAPI,payload.songId, payload.lyrics);
         if(response.status === 200){
             yield put(updateLyricsSucc(response.data));
+        }
+    } catch (error) {
+        console.log(error);
+        handleAPIError(error);
+    }
+}
+
+export function* onDeleteLyrics(){
+    yield takeLatest(PLAYER_DELETE_LYRICS_START, onDeleteLyricsAsync);
+}
+
+export function* onDeleteLyricsAsync(payload){
+    try {
+        const response = yield call(deleteLyricsAPI,payload.songId);
+        if(response.status === 200){
+            yield put(deleteLyricsSucc(response.data));
         }
     } catch (error) {
         console.log(error);

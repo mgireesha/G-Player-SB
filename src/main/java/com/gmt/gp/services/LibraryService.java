@@ -745,7 +745,7 @@ public class LibraryService {
         try {
             lyrics = lyrics.replaceAll("\"", "");
             lyrics = lyrics.replaceAll("(\\\\r\\\\n|\\\\n)", "\\\n");
-            System.out.println("lyrics: " + lyrics);
+            LOG.info("lyrics: " + lyrics);
             Library song = libraryRepository.getBySongId(Integer.parseInt(songId));
             song.setLyrics(lyrics);
             song = libraryRepository.save(song);
@@ -757,6 +757,26 @@ public class LibraryService {
             audioFile.commit();
             song.setLyricsAvl(true);
             libraryRepository.save(song);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resp;
+    }
+
+    public GPResponse deleteLyrics(String songId) {
+        GPResponse resp = new GPResponse();
+        try {
+            Library song = libraryRepository.getBySongId(Integer.parseInt(songId));
+            song.setLyrics(null);
+            song = libraryRepository.save(song);
+            AudioFile audioFile = AudioFileIO.read(new File(song.getSongPath()));
+            Tag tag = audioFile.getTag();
+            tag.deleteField(FieldKey.LYRICS);
+            audioFile.setTag(tag);
+            audioFile.commit();
+            song.setLyricsAvl(false);
+            libraryRepository.save(song);
+            resp.setLibrary(song);
         } catch (Exception e) {
             e.printStackTrace();
         }
