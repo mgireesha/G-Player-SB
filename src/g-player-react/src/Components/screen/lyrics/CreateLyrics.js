@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateLyrics } from "../../redux/player/PlayerActions";
 import { getMins0 } from "../../utilities/util";
+import { MdOutlineSave } from "react-icons/md";
+import { MdOutlineCancelPresentation } from "react-icons/md";
+import { MdAdsClick } from "react-icons/md";
 
-export const CreateLyrics = ({onSetIsreateLyricsStarted, newLyrics}) => {
+export const CreateLyrics = ({onSetisCreateLyricsStarted, newLyrics}) => {
     const dispatch = useDispatch();
     const songPlaying = useSelector(state => state.player.songPlaying);
     const playingSongStat = useSelector(state => state.player.playingSongStat); 
@@ -74,7 +77,7 @@ export const CreateLyrics = ({onSetIsreateLyricsStarted, newLyrics}) => {
             lyrics = lyrics+"[au:"+songPlaying.lyricist+"]\n"
         }
         if(songPlaying.trackLength!==undefined){
-            lyrics = lyrics+"[au:"+getMins0(songPlaying.trackLength)+"]\n"
+            lyrics = lyrics+"[length:"+getMins0(songPlaying.trackLength)+"]\n"
         }
         lyrics = lyrics+"[by:g_player]\n"
         Object.keys(tempLyricsP).forEach((time) => {
@@ -90,7 +93,7 @@ export const CreateLyrics = ({onSetIsreateLyricsStarted, newLyrics}) => {
 
     return(
         <>
-            <div style={{maxHeight:'12em',overflowY:'auto',marginLeft:'20%'}}>
+            <div className="create-lyrics">
                 {lyrics!==null && Object.values(lyrics).map((line, index) =>
                     <div style={{display:'flex',justifyContent:'flex-start'}}>
                         <div style={{padding:5}}>
@@ -108,9 +111,9 @@ export const CreateLyrics = ({onSetIsreateLyricsStarted, newLyrics}) => {
                     </div>    
                 )}
                 <div className="show-lyrics-btn-container" style={{display: 'flex',flexDirection: 'column',width: '13%', bottom:'48%'}}>
-                <a onClick={initUpdateLyrics} className="lyrics-btn lyrics-btn-add">Save</a>
-                <a class="lyrics-btn lyrics-btn-cancel" onClick={setTime}>click</a>
-                <a onClick={()=>onSetIsreateLyricsStarted(false)} className="lyrics-btn lyrics-btn-cancel">Cancel</a>
+                <button onClick={initUpdateLyrics} className="g-btn xs success beige"><MdOutlineSave /></button>
+                <button class="g-btn xs success beige" onClick={setTime}><MdAdsClick /></button>
+                <button onClick={()=>onSetisCreateLyricsStarted(false)} className="g-btn xs cancel beige"><MdOutlineCancelPresentation /></button>
             </div>
             </div>
             

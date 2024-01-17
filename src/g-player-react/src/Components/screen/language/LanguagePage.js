@@ -119,7 +119,7 @@ export const LanguagePage = () => {
                     </div>
                     <div className="language-actions">
                         <div className="play-all">
-                            <button onClick={playAll} disabled={!isPlayAll} ><FaPlay className={!isPlayAll ?"rotate-player-button faplay":"faplay"}  />{PLAY_ALL_LABEL}</button>
+                            <button onClick={playAll} disabled={!isPlayAll} className="g-btn md violet flexbox-center beige beige-border column-gap-5"><FaPlay className={!isPlayAll ?"rotate-player-button faplay":"faplay"}  />{PLAY_ALL_LABEL}</button>
                         </div>
                     </div>
                 </div>

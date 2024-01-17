@@ -32,7 +32,8 @@ export const CSV_IMPORT_INPUT = 'CSV_IMPORT_INPUT';
 export const CURRENT = 'CURRENT';
 export const CURRENT_PAGE = 'CURRENT_PAGE';
 
-export const DELETE = "Delete";
+export const DELETE = "DELETE";
+export const DELETE_LABEL = "Delete";
 export const DELETE_PLAYLIST_LABEL = "Delete Playlist";
 export const DELETE_PLAYLIST_CONF_TEXT = "Are you sure to delete this playlist?";
 

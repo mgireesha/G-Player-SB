@@ -297,3 +297,19 @@ export const fetchArtistDetailsfromWiki = async(artist) => {
             hideElementById(elemId);
         }, delay);
       }
+
+      export const getLyricsFromLRC = (lrc) => {
+        const lycArr = lrc.split("\n");
+        let lyrics = "";
+        lycArr.forEach(line =>{
+            line = line.trim();
+            if(line.lastIndexOf("]")+1 !== line.length){
+                line = line.substring(line.lastIndexOf("]")+1,line.length).trim();
+                if(lyrics!==""){
+                    lyrics+="\n";
+                }
+                lyrics+=line;
+            }
+        })
+        return lyrics;
+      }
