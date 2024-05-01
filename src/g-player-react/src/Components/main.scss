@@ -3413,7 +3413,7 @@ a.disabled-click{
     }
 }
 
-/**Tablet view**/
+/**Mobile view**/
 @media only screen and (max-device-width: 768px ){
     .app-container{
         display: block;
@@ -3592,11 +3592,11 @@ a.disabled-click{
             padding-left: 0;
             .track{
                 margin: 6px 2px;
-                grid-template-columns:1fr;
+                grid-template-columns:1fr 8fr;
                 label{
                     display: none;
                 }
-                label:first-child{
+                label:first-child,label:nth-child(2){
                     display: block;
                 }
                 .track-title-artist{
@@ -3605,7 +3605,7 @@ a.disabled-click{
                 }
             }
             .track.text-highlighted-y{
-                grid-template-columns: 6fr 1fr;
+                grid-template-columns: 1fr 8fr;
                 .song-playing-icon-label {
                     text-align: center;
                     .faplay{
