@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchGenreDetails } from "../../redux/library/LibraryActions";
 import { Link } from "react-router-dom";
 import { GroupedThumbImg4 } from "../../GroupedThumbImg4";
-import { CURRENT_PAGE, GENRES, GENRE_LABEL, TRACKS_LABEL } from "../../redux/GPActionTypes";
+import { CURRENT_PAGE, GENRE, GENRES, GENRE_LABEL, TRACKS_LABEL } from "../../redux/GPActionTypes";
 import { ThumbnailActionBtn } from "../../ThumbnailActionBtn";
 import { camelize, setCookies } from "../../utilities/util";
 
@@ -46,7 +46,7 @@ export const Genres = () => {
                             <Link to={`/music/genres/${genre}`}>
                                 <GroupedThumbImg4 albumNames={genreAlbums[genre]} classPrefix="genre" />
                             </Link>
-                            <ThumbnailActionBtn rowList={[]} options={[{label:GENRE_LABEL, link: `/music/genres/${genre}`}]} />
+                            <ThumbnailActionBtn rowList={[]} options={[{label:GENRE_LABEL, link: `/music/genres/${genre}`}]} type={GENRE} obj={genre} />
                         </div>
                         <div className="genre-thumb-details">
                             <Link to={`/music/genres/${genre}`}>

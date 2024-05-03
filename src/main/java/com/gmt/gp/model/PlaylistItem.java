@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Transient;
 
 @Entity
 public class PlaylistItem {
@@ -18,6 +19,12 @@ public class PlaylistItem {
     private long albumId;
     private long songId;
     private String songTitle;
+    @Transient
+    private String language;
+    @Transient
+    private String genre;
+    @Transient
+    private String artist;
 
     public long getId() {
         return id;
@@ -83,6 +90,8 @@ public class PlaylistItem {
         this.songTitle = songTitle;
     }
 
+    
+
     public PlaylistItem() {
 
     }
@@ -113,5 +122,31 @@ public class PlaylistItem {
         return "Playlist [id=" + id + ", playlist=" + playlist + ", playlistId=" + playlistId + ", songPath=" + songPath
                 + ", albumName=" + albumName + ", albumId=" + albumId + ", songId=" + songId + "]";
     }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public String getArtist() {
+        return artist;
+    }
+
+    public void setArtist(String artist) {
+        this.artist = artist;
+    }
+
+    
 
 }

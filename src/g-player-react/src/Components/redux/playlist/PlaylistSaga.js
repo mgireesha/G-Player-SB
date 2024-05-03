@@ -60,7 +60,8 @@ export function* onAddToPlaylistAsnc(payload){
             if(data.status === SUCCESS){
                 let addedSongsCount = data.playlistItems.length;
                 const playlistItem = data.playlistItems[0];
-                successMessage = "Added "+addedSongsCount+" tracks to "+playlistItem.playlist+" playlist!";
+                //successMessage = "Added "+addedSongsCount+" tracks to "+playlistItem.playlist+" playlist!";
+                successMessage = data.status1;
                 if(addedSongsCount === 1){
                     const songPath = playlistItem.songPath;
                     addedSongsCount = songPath.substring(songPath.lastIndexOf("\\")+1, songPath.indexOf("."));

@@ -272,4 +272,8 @@ public class GPUtil {
         }
         return albums;
     }
+
+    public static String getFileNameFromFilePath(String filePath){
+        return filePath.substring(filePath.lastIndexOf("\\")+1, filePath.length());
+    }
 }

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -61,6 +62,7 @@ public class PlaylistService {
         PlaylistItem playlistItem = null;
         List<PlaylistItem> playlistItems = new ArrayList<PlaylistItem>();
         PlaylistItem existingPLItem = null;
+        List<Library> songs = null;
         try {
             if (reqPlaylist.getSongId() != 0) {
                 Library library = libraryService.getSongBySongId(reqPlaylist.getSongId());
@@ -81,23 +83,31 @@ public class PlaylistService {
 
             } else if (reqPlaylist.getAlbumId() != 0) {
                 Album album = libraryService.getAlbumByAlbumId(reqPlaylist.getAlbumId());
-                List<Library> songs = libraryService.getSongsByAlbum(album.getAlbumName());
-                // for (Library library : songs) {
-                // playlistItem = createPlaylistItemBySong(library, reqPlaylist);
-                // playlistItem.setAlbumId(reqPlaylist.getAlbumId());
-                // playlistItems.add(playlistItem);
-                // playlistItems = (List<PlaylistItem>)
-                // playlistRepository.saveAll(playlistItems);
-                // }
-                playlistItems = (List<PlaylistItem>) addSongsToPlaylist(songs,
-                        new Message(reqPlaylist.getPlaylistId(), null, null, reqPlaylist.getPlaylist()));
-                resp.setPlaylistItems(playlistItems);
+                songs = libraryService.getSongsByAlbum(album.getAlbumName());
+                resp.setStatus1("Added All songs from Album '"+album.getAlbumName()+"' to playlist - "+reqPlaylist.getPlaylist());
+            } else if (StringUtils.isNotEmpty(reqPlaylist.getLanguage())) {
+                songs = libraryService.getSongsByLanguage(reqPlaylist.getLanguage());
+                resp.setStatus1("Added All songs from language '"+reqPlaylist.getLanguage()+"' to playlist - "+reqPlaylist.getPlaylist());
+            } else if (StringUtils.isNotEmpty(reqPlaylist.getGenre())) {
+                songs = libraryService.getSongsByGenre(reqPlaylist.getGenre());
+                resp.setStatus1("Added All songs from genre '"+reqPlaylist.getGenre()+"' to playlist - "+reqPlaylist.getPlaylist());
+            } else if (StringUtils.isNotEmpty(reqPlaylist.getArtist())) {
+                songs = libraryService.getSongsByArtist(reqPlaylist.getArtist());
+                resp.setStatus1("Added All songs of artist '"+reqPlaylist.getArtist()+"' to playlist - "+reqPlaylist.getPlaylist());
             } else {
                 resp.setStatus(GP_CONSTANTS.FAILED);
                 resp.setError(GP_ERRORS.ERR_PLAYLIST_REQ_ID_NOT_FOUND);
             }
+
+            if(songs != null && songs.size() > 0){
+                playlistItems = (List<PlaylistItem>) addSongsToPlaylist(songs,
+                new Message(reqPlaylist.getPlaylistId(), null, null, reqPlaylist.getPlaylist()));
+                resp.setStatus(GP_CONSTANTS.SUCCESS);
+                resp.setPlaylistItems(playlistItems);
+            }
         } catch (Exception e) {
             resp.setStatus(GP_CONSTANTS.FAILED);
+            resp.setStatus1(null);
             e.printStackTrace();
         }
         return resp;
@@ -243,6 +253,7 @@ public class PlaylistService {
             if (isDirExists && tempPlItems.size() > 0) {
                 writeSongPathToCSV(tempPlItems);
                 writePlItemToGPFIle(tempPlItems);
+                writePlItemToM3UFIle(tempPlItems);
             }
         }
         return resp;
@@ -266,8 +277,32 @@ public class PlaylistService {
                         .append(plItem.getSongPath())
                         .append(System.lineSeparator());
             }
-            gpFileWriter.close();
             gpFileWriter.flush();
+            gpFileWriter.close();
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void writePlItemToM3UFIle(List<PlaylistItem> plItems) {
+        final String methodName = "writePlItemToM3UFIle";
+        try {
+            boolean isDirExists = GPUtil.checkAndCreateFolders(GP_CONSTANTS.GP_PLAYLIST_PATH_M3U);
+            if (!isDirExists) {
+                LOG.error(methodName + ", exiting, directory: " + GP_CONSTANTS.GP_PLAYLIST_PATH_M3U + " doesn't esists");
+                return;
+            }
+            File m3uFile = new File(GP_CONSTANTS.GP_PLAYLIST_PATH_M3U + plItems.get(0).getPlaylist() + ".m3u");
+            FileWriter m3uFileWriter = new FileWriter(m3uFile);
+            for (PlaylistItem plItem : plItems) {
+                m3uFileWriter.append("/storage/emulated/0/")
+                        .append(GPUtil.getFileNameFromFilePath(plItem.getSongPath()))
+                        .append(System.lineSeparator());
+            }
+            m3uFileWriter.flush();
+            m3uFileWriter.close();
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -288,8 +323,9 @@ public class PlaylistService {
                 songPathCSVFileWriter.append(plItem.getSongPath())
                         .append(System.lineSeparator());
             }
-            songPathCSVFileWriter.close();
             songPathCSVFileWriter.flush();
+            songPathCSVFileWriter.close();
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
