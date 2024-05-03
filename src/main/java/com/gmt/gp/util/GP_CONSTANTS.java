@@ -109,6 +109,8 @@ public class GP_CONSTANTS {
 
     public static final String GP_PLAYLIST_PATH_GP = GP_USER_PATH + "\\G_Player\\playlists\\gp\\";
 
+    public static final String GP_PLAYLIST_PATH_M3U = GP_USER_PATH + "\\G_Player\\playlists\\m3u\\";
+
     public static final String GP_TEMP_SONG_PATH = GP_USER_PATH + "\\G_Player\\temp_file\\";
 
     // const arrays

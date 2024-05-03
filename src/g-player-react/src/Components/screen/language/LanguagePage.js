@@ -24,8 +24,8 @@ export const LanguagePage = () => {
 
     const[isPlayAll, setIsPlayAll] = useState(true);
 
-    const [languageAlbums, setGenreAlbums] = useState({});
-    const [languageSongCount, setGenreSongCount] = useState({});
+    const [languageAlbums, setLanguageAlbums] = useState({});
+    const [languageSongCount, setLanguageSongCount] = useState({});
     const [trackListInp, setTrackListInp] = useState({});
 
     useEffect(()=>{
@@ -39,10 +39,10 @@ export const LanguagePage = () => {
     useEffect(()=>{
         if(languageDetails){
             if(languageDetails.LANGUAGE_ALBUMS){
-                setGenreAlbums(languageDetails.LANGUAGE_ALBUMS);
+                setLanguageAlbums(languageDetails.LANGUAGE_ALBUMS);
             }
             if(languageDetails.LANGUAGE_SONG_COUNT){
-                setGenreSongCount(languageDetails.LANGUAGE_SONG_COUNT);
+                setLanguageSongCount(languageDetails.LANGUAGE_SONG_COUNT);
             }
         }
     },[languageDetails]);
