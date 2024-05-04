@@ -10,6 +10,7 @@ import { SortingContainer } from "../screen/SortingContainer";
 import { ThumbnailActionBtn } from "../ThumbnailActionBtn";
 import { deltePlaylist } from "../redux/playlist/PlaylistActions";
 import { setCommonPopupObj } from "../redux/library/LibraryActions";
+import { getShowDeletePlaylistPopup } from "./PlalistUtil";
 
 export const Playlists = () => {
     const dispatch = useDispatch();
@@ -53,24 +54,15 @@ export const Playlists = () => {
     }, [globalFilterText,sortedPlaylistNames]);
 
     const onDeletePlaylist = (args) => {
-        console.log("args: ",args)
-        dispatch(deltePlaylist(args.playlistId))
+        dispatch(deltePlaylist(args.playlistId));
     }
 
-    const showDeletePlaylistPopup = (args) => {
-        const commonPopupObj = {
-            showPopup: true,
-            title: DELETE_PLAYLIST_LABEL,
-            content: DELETE_PLAYLIST_CONF_TEXT,
-            contentType: TEXT,
-            primaryBtnAction: REMOVE,
-            primaryBtnLabel:DELETE_LABEL,
-            className:"remove",
-            primaryBtnFun: onDeletePlaylist,
-            args: args
-
-        }
-        dispatch(setCommonPopupObj(commonPopupObj));
+    const showDeletePlaylistPopup = (args) => {      
+        dispatch(
+            setCommonPopupObj(
+                getShowDeletePlaylistPopup(onDeletePlaylist, args)
+            )
+        );
     }
 
     return(

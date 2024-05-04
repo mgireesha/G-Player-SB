@@ -86,6 +86,7 @@ public class PlaylistController {
         return playlistService.importPlaylists(payload, fileType);
     }
 
+    @Deprecated
     @GetMapping("/move-playlist-names")
     public GPResponse movePlaylistsFromMesaagesToPlaylistTable(){
         return playlistService.movePlaylistNames();
