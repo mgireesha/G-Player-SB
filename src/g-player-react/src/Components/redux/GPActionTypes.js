@@ -101,6 +101,7 @@ export const NONE_LABEL = 'None';
 
 export const PLAYLIST_ALBUMS = 'PLAYLIST_ALBUMS';
 export const PLAY_ALL_LABEL = 'Play all';
+export const PLAY_COUNT = 'PLAY_COUNT';
 export const PLAYER = 'PLAYER';
 export const PLAYLIST = 'PLAYLIST';
 export const PLAYLIST_SELECTOR = 'PLAYLIST_SELECTOR';
@@ -142,6 +143,7 @@ export const SORT_LANGUAGE = 'SORT_LANGUAGE';
 export const SORT_LYRICS_AVAILABLE = 'SORT_LYRICS_AVAILABLE';
 export const SORT_MULTI_LINGUAL = 'SORT_MULTI_LINGUAL';
 export const SORT_NONE = 'SORT_NONE';
+export const SORT_PLAY_COUNT = 'SORT_PLAY_COUNT';
 export const SORT_TRACK_NUMBER = 'SORT_TRACK_NUMBER';
 export const SORT_YEAR = 'SORT_YEAR';
 export const SORT_CREATED_DATE_NEW = 'SORT_CREATED_DATE_NEW';
@@ -222,7 +224,8 @@ export const GP_TRACKS_SORT_FIELD_MAPPING = {
     SORT_ALBUM: 'album',
     SORT_ARTIST : "albumArtist",
     SORT_MULTI_LINGUAL : "languageType",
-    SORT_NONE:'SORT_NONE'
+    SORT_NONE:'SORT_NONE',
+    SORT_PLAY_COUNT: 'SORT_PLAY_COUNT'
 }
 
 export const GP_SORT_SELECTOR_LABEL_MAPPING = {
@@ -240,5 +243,6 @@ export const GP_SORT_SELECTOR_LABEL_MAPPING = {
     SORT_YEAR : "Year",
     SORT_TRACK_NUMBER: 'Track Number',
     SORT_CREATED_DATE_NEW: 'Latest',
-    SORT_CREATED_DATE_OLD: 'Old'
+    SORT_CREATED_DATE_OLD: 'Old',
+    SORT_PLAY_COUNT: 'Play Count'
 }

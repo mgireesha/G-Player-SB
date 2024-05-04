@@ -1,4 +1,4 @@
-import { NONE, SORT_NONE, WIKI_SUMMARY_URL } from "../redux/GPActionTypes";
+import { SORT_NONE, SORT_PLAY_COUNT, WIKI_SUMMARY_URL } from "../redux/GPActionTypes";
 
 export const getMins = (seconds) =>{
     
@@ -106,24 +106,35 @@ export const getCookieValue = (name) => {
     return cookieValue;
 }
 
-export const sortGroupByField = (entArr, field) => {
-    console.log("field",field)
+export const sortGroupByField = (entArr, field, histArr) => {
+    //console.log("field",field)
     if(!field || field === SORT_NONE){
         let tempEntObj = {};
         entArr.forEach((ent,i)=>{
             tempEntObj[i]=[ent];
         });
-        console.log("tempEntObj: ",tempEntObj)
+        //console.log("tempEntObj: ",tempEntObj)
         return tempEntObj;
     }
     let entListObj = {};
     let tempArr = [];
     let ind;
     let indArr;
-    console.log("117 entArr: ",entArr)
+    let count;
+    let maxCount = 0;
+    let countArr = [0,1];
+    //console.log("117 entArr: ",entArr)
+
+    if(field === SORT_PLAY_COUNT){
+        maxCount = histArr.map(ent=>ent[1]).reduce((a,c)=>a>c?a:c,0);
+        countArr = getCountArr(maxCount, countArr);
+        console.log("countArr: ",countArr)
+    }
+
     entArr.forEach((ent) => {
         indArr = []
-        if (ent[field] !== null && ent[field] !== undefined && ent[field] !== "") {
+        //if (ent[field] !== null && ent[field] !== undefined && ent[field] !== "") {
+        if (ent[field] || field === SORT_PLAY_COUNT) {
             if(field==='title' || field==='albumName' || field==='artistName'){
                 ind = ent[field].substring(0, 1).toUpperCase();
                 if (!isNaN(ind)) {
@@ -131,6 +142,9 @@ export const sortGroupByField = (entArr, field) => {
                 }
             }else if(field === 'lyricsAvl'){
                 ind = ent.lyricsAvl ? 'Tracks with lyrics' : 'No Lyrics'
+            }else if(field === SORT_PLAY_COUNT){
+                count = histArr.filter(his=>his[0]===ent.songId)[0];
+                ind = count?getCountIndex(countArr,count[1]):0;
             }else{
                 ind = ent[field];
             }
@@ -166,6 +180,21 @@ export const sortGroupByField = (entArr, field) => {
     });
     //console.log("entListObj: ",entListObj)
 return entListObj;
+}
+
+export const getCountArr = (maxCount, countArr) => {
+    for(let i=5;i<maxCount;i+=5){
+        countArr.push(i);
+    }
+    return countArr.reverse();
+}
+
+export const getCountIndex = (countArr, count) => {
+    for(let i=0;i<countArr.length;i++){
+        if(count >= countArr[i]){
+            return countArr[i];
+        }
+    }
 }
 
 export const showHideSideBar = () => {

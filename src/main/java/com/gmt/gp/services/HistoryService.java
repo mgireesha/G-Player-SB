@@ -203,4 +203,8 @@ public class HistoryService {
         }
         return objMap;
     }
+
+    public List<Object[]> getSongIdAndCoundOrderByCountDesc(){
+        return historyRepository.getSongIdAndCoundOrderByCountDesc();
+    }
 }
