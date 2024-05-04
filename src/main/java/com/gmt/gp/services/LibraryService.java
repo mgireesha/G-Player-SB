@@ -623,6 +623,7 @@ public class LibraryService {
         Map<String, Object> songs = new HashMap<String, Object>();
         songs.put("SONGS", libraryRepository.findAllByOrderByTitleAsc());
         songs.put("SONG_IDS", libraryRepository.getAllLibraryIds());
+        songs.put("HISTORY", historyService.getSongIdAndCoundOrderByCountDesc());
         return songs;
     }
 

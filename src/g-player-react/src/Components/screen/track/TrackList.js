@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { SORT_YEAR, SORT_ARTIST, TRACK_LIST, TRACK_NUMBER, NO_SORT, SORT_A_TO_Z_DESC, SORT_LYRICS_AVAILABLE, SORT_A_TO_Z, SORT_NONE, GP_TRACKS_SORT_FIELD_MAPPING, SORT_TRACK_NUMBER } from "../../redux/GPActionTypes";
+import { SORT_YEAR, SORT_ARTIST, TRACK_LIST, NO_SORT, SORT_A_TO_Z_DESC, SORT_LYRICS_AVAILABLE, SORT_A_TO_Z, SORT_NONE, GP_TRACKS_SORT_FIELD_MAPPING, SORT_TRACK_NUMBER, SORT_PLAY_COUNT } from "../../redux/GPActionTypes";
 import { scrollToPlaying, sortGroupByField } from "../../utilities/util";
 import { SortingContainer } from "../SortingContainer";
 import { Spinner } from "../../utilities/Spinner";
@@ -9,7 +9,7 @@ import {ViewportList} from "react-viewport-list";
 import { useRef } from "react";
 
 
-export const TrackList = ({tracks, trackListInp}) => {
+export const TrackList = ({tracks, trackListInp, tracksHistory}) => {
     const ref = useRef(null);
     const [trackList, setTrackList] = useState({});
     const isPlaying = useSelector(state => state.player.isPlaying);
@@ -27,6 +27,8 @@ export const TrackList = ({tracks, trackListInp}) => {
             
             if(sortBy === SORT_YEAR || sortBy === SORT_A_TO_Z_DESC || sortBy === SORT_LYRICS_AVAILABLE){
                 tempTrakListKeys = tempTrakListKeys.sort((a,b)=>{return a>b?-1:1});
+            }if(sortBy === SORT_PLAY_COUNT){
+                tempTrakListKeys = tempTrakListKeys.reverse();
             }else if(sortBy === SORT_A_TO_Z || sortBy === SORT_ARTIST){
                 tempTrakListKeys = tempTrakListKeys.sort((a,b)=>{return a>b?1:-1});
             }
@@ -58,7 +60,7 @@ export const TrackList = ({tracks, trackListInp}) => {
             if(sortBy===SORT_ARTIST){
                 sortByArtist(tracks);
             }else{
-                setTrackList(sortGroupByField(tracks, GP_TRACKS_SORT_FIELD_MAPPING[sortBy]));
+                setTrackList(sortGroupByField(tracks, GP_TRACKS_SORT_FIELD_MAPPING[sortBy], tracksHistory));
             }
         }
     },[tracks, sortBy]);
@@ -105,7 +107,7 @@ export const TrackList = ({tracks, trackListInp}) => {
             <div className="track-list scroll-container" id={TRACK_LIST} style={trackListInp.traskListStyle?trackListInp.traskListStyle:{}} ref={ref}>
                  {trackListKeys && trackListKeys.length > 0 && trackListKeys.map((lKey, index) =>
                     <div key={index}>
-                        {trackListInp.showLKey && <label id={"lKey" + lKey} className="track-lKey" style={trackListInp.lKeyStyle?trackListInp.lKeyStyle:{}}>{lKey}</label>}
+                        {(trackListInp.showLKey) && <label id={"lKey" + lKey} className="track-lKey" style={trackListInp.lKeyStyle?trackListInp.lKeyStyle:{}}>{lKey}</label>}
                         {trackList[lKey] && trackList[lKey].length > 0 && Object.keys(trackIndex).length > 0 &&
                             <ViewportList viewportRef={ref} items={trackList[lKey]} itemMinSize={tracks ? tracks.length:50} margin={8}>
                                 {(track) => (
