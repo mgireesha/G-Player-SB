@@ -74,14 +74,11 @@ export const PlaylistPageHeader = ({albumNames, songsCount, playAll}) => {
         const renameInp = document.getElementById(RENAME_PLAYLIST_INP);
         if(renameInp){
             if(renameInp.value !== playlistName){
-                const tempPlaylistName = {
-                    messageId : playlistId,
-                    value: document.getElementById(RENAME_PLAYLIST_INP).value,
-                    name: PLAYLIST,
-                    type: PLAYLIST
-        
+                const tempPlaylist = {
+                    id : playlistId,
+                    name: document.getElementById(RENAME_PLAYLIST_INP).value,
                 }
-                dispatch(renamePlaylist(tempPlaylistName));
+                dispatch(renamePlaylist(tempPlaylist));
             }else{
                 const errMsg = document.getElementById(COMMON_POPUP_ERROR_MSG);
                 if(errMsg){

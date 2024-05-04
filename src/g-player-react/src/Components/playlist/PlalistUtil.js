@@ -7,10 +7,11 @@ export const getCreatePlaylistObj = () => {
         return;
     }
     playlistName.style.border = '1px solid lightgrey';
-    const payload = {
-        "name":"PLAYLIST",
-        "value":playlistName.value,
-        "type":"PLAYLIST"
+    const playlist = {
+        // "name":"PLAYLIST",
+        // "value":playlistName.value,
+        // "type":"PLAYLIST"
+        "name":playlistName.value
         }
-    return {payload};
+    return {playlist};
 }

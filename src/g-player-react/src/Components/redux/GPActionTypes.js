@@ -43,6 +43,7 @@ export const EDIT_INFO_LABEL = 'Edit info';
 export const EXPORT_LABEL = 'Export';
 
 export const FILE_LOCATION_LABEL = 'File laocation:';
+export const FAILED = 'FAILED';
 
 export const GENRE = 'GENRE';
 export const GENRE_ALBUMS = 'GENRE_ALBUMS';
@@ -143,6 +144,8 @@ export const SORT_MULTI_LINGUAL = 'SORT_MULTI_LINGUAL';
 export const SORT_NONE = 'SORT_NONE';
 export const SORT_TRACK_NUMBER = 'SORT_TRACK_NUMBER';
 export const SORT_YEAR = 'SORT_YEAR';
+export const SORT_CREATED_DATE_NEW = 'SORT_CREATED_DATE_NEW';
+export const SORT_CREATED_DATE_OLD = 'SORT_CREATED_DATE_OLD';
 export const SUCCESS = 'SUCCESS';
 
 export const THIS_MONTH_COUNT = 'THIS_MONTH_COUNT';
@@ -235,5 +238,7 @@ export const GP_SORT_SELECTOR_LABEL_MAPPING = {
     SORT_MULTI_LINGUAL : "Multi Lingual",
     SORT_NONE : 'None',
     SORT_YEAR : "Year",
-    SORT_TRACK_NUMBER: 'Track Number'
+    SORT_TRACK_NUMBER: 'Track Number',
+    SORT_CREATED_DATE_NEW: 'Latest',
+    SORT_CREATED_DATE_OLD: 'Old'
 }

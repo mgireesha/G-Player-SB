@@ -9,7 +9,7 @@ import { getCreatePlaylistObj } from "./PlalistUtil";
 
 export const PlaylistSelector = () => {
     const dispatch = useDispatch();
-    const playListNames = useSelector(state => state.playlist.playListNames);
+    const playLists = useSelector(state => state.playlist.playlists);
     const contextObj = useSelector(state => state.library.contextObj);
     const plPhase = useSelector(state => state.playlist.phase);
 
@@ -100,9 +100,9 @@ export const PlaylistSelector = () => {
             <div className="row" style={{display:'flex'}} onClick={addToNewPlayist}>
                 <HiPlus style={{marginTop:4,marginRight:5}} /><label>{NEW_PLAYLIST_BTN_LABEL}</label>
             </div>
-            {playListNames && playListNames.map(playlistName =>
-                <div className="row" onClick={()=>onAddToPlaylist(playlistName.messageId,playlistName.value)}>
-                    <label>{playlistName.value}</label>
+            {playLists && playLists.map(playlist =>
+                <div className="row" onClick={()=>onAddToPlaylist(playlist.id,playlist.name)}>
+                    <label>{playlist.name}</label>
                 </div>
             )}
         </div>

@@ -3,11 +3,13 @@ package com.gmt.gp.services;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -22,7 +24,9 @@ import com.gmt.gp.model.Album;
 import com.gmt.gp.model.GPResponse;
 import com.gmt.gp.model.Library;
 import com.gmt.gp.model.Message;
+import com.gmt.gp.model.Playlist;
 import com.gmt.gp.model.PlaylistItem;
+import com.gmt.gp.repositories.PlaylistItemRepository;
 import com.gmt.gp.repositories.PlaylistRepository;
 import com.gmt.gp.util.GPUtil;
 import com.gmt.gp.util.GP_CONSTANTS;
@@ -37,6 +41,9 @@ public class PlaylistService {
     private PlaylistRepository playlistRepository;
 
     @Autowired
+    private PlaylistItemRepository playlistItemRepository;
+
+    @Autowired
     private LibraryService libraryService;
 
     @Autowired
@@ -46,15 +53,15 @@ public class PlaylistService {
     private HistoryService historyService;
 
     public List<PlaylistItem> getAllPlaylistItems() {
-        return (List<PlaylistItem>) playlistRepository.findAll();
+        return (List<PlaylistItem>) playlistItemRepository.findAll();
     }
 
     public void removeAll(List<PlaylistItem> playlistsR) {
-        playlistRepository.deleteAll(playlistsR);
+        playlistItemRepository.deleteAll(playlistsR);
     }
 
     public void saveAll(List<PlaylistItem> playlistsU) {
-        playlistRepository.saveAll(playlistsU);
+        playlistItemRepository.saveAll(playlistsU);
     }
 
     public GPResponse addToPlaList(PlaylistItem reqPlaylist) {
@@ -67,11 +74,11 @@ public class PlaylistService {
             if (reqPlaylist.getSongId() != 0) {
                 Library library = libraryService.getSongBySongId(reqPlaylist.getSongId());
                 playlistItem = createPlaylistItemBySong(library, reqPlaylist);
-                existingPLItem = playlistRepository.getByPlaylistIdAndSongPath(playlistItem.getPlaylistId(),
+                existingPLItem = playlistItemRepository.getByPlaylistIdAndSongPath(playlistItem.getPlaylistId(),
                         playlistItem.getSongPath());
                 // playlistItem.setSongId(reqPlaylist.getSongId());
                 if (existingPLItem == null) {
-                    playlistItem = playlistRepository.save(playlistItem);
+                    playlistItem = playlistItemRepository.save(playlistItem);
                     playlistItems.add(playlistItem);
                     resp.setStatus(GP_CONSTANTS.SUCCESS);
                     resp.setPlaylistItems(playlistItems);
@@ -114,7 +121,7 @@ public class PlaylistService {
     }
 
     public List<Library> getSongsInPlaylist(long playlistId) {
-        List<Long> songIds = playlistRepository.getSongIdsInPlaylist(playlistId);
+        List<Long> songIds = playlistItemRepository.getSongIdsInPlaylist(playlistId);
         List<Library> songs = libraryService.findAllByIds(songIds);
         List<Library> songsInPlaylist = new ArrayList<Library>();
         for (long songId : songIds) {
@@ -126,32 +133,57 @@ public class PlaylistService {
     }
 
     public List<String> getAlbumNamesByPlaylistId(long playlistId) {
-        return playlistRepository.getAlbumNamesByPlaylistId(playlistId);
+        return playlistItemRepository.getAlbumNamesByPlaylistId(playlistId);
     }
 
     public GPResponse deletePlaylist(long playlistId) {
         GPResponse resp = new GPResponse();
-        List<PlaylistItem> playlistItems = playlistRepository.getByPlaylistId(playlistId);
+        List<PlaylistItem> playlistItems = playlistItemRepository.getByPlaylistId(playlistId);
         if (playlistItems != null && !playlistItems.isEmpty()) {
-            playlistRepository.deleteAll(playlistItems);
+            playlistItemRepository.deleteAll(playlistItems);
         }
-        messageService.removeMessageById(playlistId);
+        //messageService.removeMessageById(playlistId);
+        Optional<Playlist> playlist = playlistRepository.findById(playlistId);
+        playlistRepository.delete(playlist.get());
         resp.setStatus(GP_CONSTANTS.SUCCESS);
         return resp;
     }
 
+    @Deprecated
     public GPResponse renamePlaylist(Message reqMessage) {
         GPResponse resp = new GPResponse();
         try {
             Message playlistName = messageService.getMessageBYId(reqMessage.getMessageId());
             playlistName.setValue(reqMessage.getValue());
             playlistName = messageService.saveMaMessage(playlistName);
-            List<PlaylistItem> playlistItems = playlistRepository.getByPlaylistId(reqMessage.getMessageId());
+            List<PlaylistItem> playlistItems = playlistItemRepository.getByPlaylistId(reqMessage.getMessageId());
             for (PlaylistItem playlistItem : playlistItems) {
                 playlistItem.setPlaylist(reqMessage.getValue());
             }
-            playlistRepository.saveAll(playlistItems);
+            playlistItemRepository.saveAll(playlistItems);
             resp.setMessage(playlistName);
+            resp.setStatus(GP_CONSTANTS.SUCCESS);
+        } catch (Exception e) {
+            resp.setStatus(GP_CONSTANTS.FAILED);
+            resp.setError(e.getMessage());
+            e.printStackTrace();
+        }
+        return resp;
+    }
+
+    public GPResponse renamePlaylist(Playlist rePlaylist) {
+        GPResponse resp = new GPResponse();
+        try {
+            Optional<Playlist> playlist = playlistRepository.findById(rePlaylist.getId());
+            playlist.get().setName(rePlaylist.getName());
+            playlist.get().setLastUpdated(LocalDateTime.now());
+            playlistRepository.save(playlist.get());
+            List<PlaylistItem> playlistItems = playlistItemRepository.getByPlaylistId(playlist.get().getId());
+            for (PlaylistItem playlistItem : playlistItems) {
+                playlistItem.setPlaylist(playlist.get().getName());
+            }
+            playlistItemRepository.saveAll(playlistItems);
+            resp.setResponse(playlist.get());
             resp.setStatus(GP_CONSTANTS.SUCCESS);
         } catch (Exception e) {
             resp.setStatus(GP_CONSTANTS.FAILED);
@@ -165,10 +197,10 @@ public class PlaylistService {
         GPResponse resp = new GPResponse();
         try {
             System.out.println("playlistId: " + playlistId + ",  songId: " + songId);
-            List<PlaylistItem> playlistItems = playlistRepository.getByPlaylistIdAndSongId(playlistId, songId);
+            List<PlaylistItem> playlistItems = playlistItemRepository.getByPlaylistIdAndSongId(playlistId, songId);
             if (playlistItems != null && playlistItems.size() > 0) {
                 PlaylistItem playlistItem = playlistItems.get(0);
-                playlistRepository.delete(playlistItem);
+                playlistItemRepository.delete(playlistItem);
                 resp.setPlaylistItem(playlistItem);
                 resp.setStatus(GP_CONSTANTS.SUCCESS);
             }
@@ -179,6 +211,7 @@ public class PlaylistService {
         return resp;
     }
 
+    @Deprecated
     public Map<String, Object> getPlaylistNames(String messageType) {
         List<Message> plNames = messageService.getMessagesByType(messageType);
         Map<Long, List<String>> plAlbums = new HashMap<Long, List<String>>();
@@ -222,6 +255,55 @@ public class PlaylistService {
             plAlbums.put(message.getMessageId(), plAlbumList);
             playlistSongsCount.put(message.getMessageId(), getSongsInPlaylist(message.getMessageId()).size());
         }
+        resp.put(GP_CONSTANTS.PLAYLIST_ALBUMS, plAlbums);
+        resp.put(GP_CONSTANTS.PLAYLIST_SONGS_COUNT, playlistSongsCount);
+        return resp;
+    }
+
+    public Map<String, Object> getPlaylists() {
+        List<Playlist> playlists = (List<Playlist>) playlistRepository.findAll();
+        Map<Long, List<String>> plAlbums = new HashMap<Long, List<String>>();
+        List<String> plAlbumList = null;
+        List<String> tempPlAlbumList = new ArrayList<String>();
+        String albumName = null;
+        List<Map<String, Object>> hisAlbumList = null;
+        Map<String, Object> resp = new HashMap<String, Object>();
+        Map<Long, Integer> playlistSongsCount = new HashMap<Long, Integer>();
+        resp.put(GP_CONSTANTS.PLAYLIST_NAMES, playlists);
+        for (Playlist playlist : playlists) {
+            tempPlAlbumList = getAlbumNamesByPlaylistId(playlist.getId());
+            hisAlbumList = historyService.getAlbumsGroupedFromHistoryJDBC(0, "count");
+            int counter = 0;
+            plAlbumList = new ArrayList<String>();
+            if (tempPlAlbumList.size() <= GP_CONSTANTS.GROUPED_ALBUM_COUNT_4) {
+                plAlbumList.addAll(tempPlAlbumList);
+            } else {
+                for (int i = 0; i < hisAlbumList.size(); i++) {
+                    albumName = (String) hisAlbumList.get(i).get("albumName");
+                    if (tempPlAlbumList.contains(albumName)) {
+                        counter++;
+                        plAlbumList.add(albumName);
+                    }
+                    if (counter == 3) {
+                        counter = 0;
+                        break;
+                    }
+                }
+                if (plAlbumList.size() < 4 && tempPlAlbumList.size() >= 4) {
+                    for (String albumName1 : tempPlAlbumList) {
+                        if (!plAlbumList.contains(albumName1)) {
+                            plAlbumList.add(albumName1);
+                            if (plAlbumList.size() == 4) {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            plAlbums.put(playlist.getId(), plAlbumList);
+            playlistSongsCount.put(playlist.getId(), getSongsInPlaylist(playlist.getId()).size());
+        }
+
         resp.put(GP_CONSTANTS.PLAYLIST_ALBUMS, plAlbums);
         resp.put(GP_CONSTANTS.PLAYLIST_SONGS_COUNT, playlistSongsCount);
         return resp;
@@ -393,7 +475,7 @@ public class PlaylistService {
 
     private Iterable<PlaylistItem> addSongsToPlaylist(List<Library> songs, Message playlistName) {
         List<PlaylistItem> playlistItems = new ArrayList<PlaylistItem>();
-        List<PlaylistItem> existingPlaylistItems = playlistRepository.getByPlaylistId(playlistName.getMessageId());
+        List<PlaylistItem> existingPlaylistItems = playlistItemRepository.getByPlaylistId(playlistName.getMessageId());
         boolean isSongPresentInPL = false;
         for (Library song : songs) {
             isSongPresentInPL = existingPlaylistItems.stream().filter(o -> o.getSongPath().equals(song.getSongPath()))
@@ -402,6 +484,40 @@ public class PlaylistService {
                 playlistItems.add(createPlaylistItemBySong(song, playlistName));
             }
         }
-        return playlistRepository.saveAll(playlistItems);
+        return playlistItemRepository.saveAll(playlistItems);
     }
+
+    public GPResponse createPlalist(String name) {
+        GPResponse resp = new GPResponse();
+        Playlist temPlaylist = playlistRepository.getByName(name);
+        if(temPlaylist != null){
+            resp.setStatus(GP_CONSTANTS.FAILED);
+            resp.setError(GP_ERRORS.ERR_PLAYLIST_ALREADY_EXISTS);
+            return resp;
+        }
+        temPlaylist =  playlistRepository.save(new Playlist(name, LocalDateTime.now(), null));
+        resp.setStatus(GP_CONSTANTS.SUCCESS);
+        resp.setResponse(temPlaylist);
+        return resp;
+    }
+
+    @Deprecated
+    public GPResponse movePlaylistNames() {
+        List<Message> playListNames = messageService.getMessagesByType(GP_CONSTANTS.PLAYLIST);
+        for (Message playlistName : playListNames) {
+            Playlist playlist = playlistRepository.save(new Playlist(
+                playlistName.getValue(), LocalDateTime.now(), null
+            ));
+
+            List<PlaylistItem> playlistItems = playlistItemRepository.getByPlaylist(playlist.getName());
+            List<PlaylistItem> playlistItems1 = new ArrayList<PlaylistItem>();
+            for (PlaylistItem playlistItem : playlistItems) {
+                playlistItem.setPlaylistId(playlist.getId());
+                playlistItems1.add(playlistItem);
+            }
+            playlistItemRepository.saveAll(playlistItems1);
+        }
+        return new GPResponse(GP_CONSTANTS.SUCCESS, null);
+    }
+
 }

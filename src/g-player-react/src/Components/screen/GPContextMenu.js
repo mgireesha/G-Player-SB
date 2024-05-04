@@ -115,7 +115,7 @@ export const GPContexMenu = () => {
                         </Link>
                     }
                     {!option.link &&
-                        <div className="row" onClick={()=>{option.callBackFunc();closeCOntextMenu()}}>
+                        <div className="row" onClick={()=>{option.callBackFunc(option.args?option.args:null);closeCOntextMenu()}}>
                             <label>{option.label}</label>
                             <MdKeyboardArrowRight className="icon" />
                         </div>

@@ -2572,6 +2572,8 @@ a.disabled-click{
 }
 
 .thumb-action-btn-div{
+    position: relative;
+    z-index: 1;
     .thumb-action-btn-circle{
         position: absolute;
         bottom: 0px;
