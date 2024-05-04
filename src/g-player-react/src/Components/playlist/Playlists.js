@@ -1,19 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { CreatePlayListBtn } from "./CreatePlayListBtn";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { PlaylistImg } from "./PlaylistImg";
 import { ImportExportPlaylistBtn } from "./ImportExportPlaylistBtn";
-import { A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, PLAYLISTS, SORT_A_TO_Z, SORT_A_TO_Z_DESC } from "../redux/GPActionTypes";
+import { CURRENT_PAGE, DELETE_LABEL, DELETE_PLAYLIST_CONF_TEXT, DELETE_PLAYLIST_LABEL, PLAYLISTS, REMOVE, SORT_A_TO_Z, SORT_A_TO_Z_DESC, SORT_CREATED_DATE_NEW, SORT_CREATED_DATE_OLD, TEXT } from "../redux/GPActionTypes";
 import { setCookies } from "../utilities/util";
 import { SortingContainer } from "../screen/SortingContainer";
+import { ThumbnailActionBtn } from "../ThumbnailActionBtn";
+import { deltePlaylist } from "../redux/playlist/PlaylistActions";
+import { setCommonPopupObj } from "../redux/library/LibraryActions";
+import { getShowDeletePlaylistPopup } from "./PlalistUtil";
 
 export const Playlists = () => {
-    const playListNames = useSelector(state => state.playlist.playListNames);
+    const dispatch = useDispatch();
+    const playlists = useSelector(state => state.playlist.playlists);
+    console.log(playlists)
     const playlistAlbums = useSelector(state => state.playlist.playlistAlbums);
     const playlistSongsCount = useSelector(state => state.playlist.playlistSongsCount);
 
-    const [sortBy, setSortBy] = useState(A_TO_Z);
+    const [sortBy, setSortBy] = useState(SORT_CREATED_DATE_NEW);
 
     const globalFilterText = useSelector(state => state.library.globalFilterText);
 
@@ -25,44 +31,61 @@ export const Playlists = () => {
     },[]);
 
     useEffect(()=>{
-        let tempPlaylistNames = [...playListNames];
-        if(sortBy === A_TO_Z){
-            tempPlaylistNames = tempPlaylistNames.sort((a,b)=>{return a.value>b.value?1:-1});
-        }else{
-            tempPlaylistNames = tempPlaylistNames.sort((a,b)=>{return a.value>b.value?-1:1});
+        let tempPlaylists = [...playlists];
+        if(sortBy === SORT_A_TO_Z){
+            tempPlaylists = tempPlaylists.sort((a,b)=>{return a.name>b.name?1:-1});
+        }else if(sortBy === SORT_A_TO_Z_DESC){
+            tempPlaylists = tempPlaylists.sort((a,b)=>{return a.name>b.name?-1:1});
+        }else if(sortBy === SORT_CREATED_DATE_NEW){
+            tempPlaylists = tempPlaylists.sort((a,b)=>{return new Date(a.createdDate)>new Date(b.createdDate)?-1:1});
+        }else if(sortBy === SORT_CREATED_DATE_OLD){
+            tempPlaylists = tempPlaylists.sort((a,b)=>{return new Date(a.createdDate)>new Date(b.createdDate)?1:-1});
         }
-        setSortedPlaylistNames(tempPlaylistNames);
-    },[playListNames, sortBy]);
+        setSortedPlaylistNames(tempPlaylists);
+    },[playlists, sortBy]);
 
     useEffect(() => {
         if (globalFilterText && globalFilterText.length > 2) {
             let tempFilteredPlaylistNames = [...sortedPlaylistNames];
-            setFilteredPlaylistNames(tempFilteredPlaylistNames.filter(tpln=>tpln.value.toLowerCase().includes(globalFilterText)));
+            setFilteredPlaylistNames(tempFilteredPlaylistNames.filter(tpln=>tpln.name.toLowerCase().includes(globalFilterText)));
         } else {
             setFilteredPlaylistNames(sortedPlaylistNames);
         }
     }, [globalFilterText,sortedPlaylistNames]);
 
+    const onDeletePlaylist = (args) => {
+        dispatch(deltePlaylist(args.playlistId));
+    }
+
+    const showDeletePlaylistPopup = (args) => {      
+        dispatch(
+            setCommonPopupObj(
+                getShowDeletePlaylistPopup(onDeletePlaylist, args)
+            )
+        );
+    }
+
     return(
         <div className="playlists">
             <div className="body">
                 <div className="playlists-action">
-                    <SortingContainer setSortBy={setSortBy} sortBy={sortBy} showLKey={false} sortSelectors={[SORT_A_TO_Z,SORT_A_TO_Z_DESC]} />
+                    <SortingContainer setSortBy={setSortBy} sortBy={sortBy} showLKey={false} sortSelectors={[SORT_A_TO_Z,SORT_A_TO_Z_DESC, SORT_CREATED_DATE_NEW, SORT_CREATED_DATE_OLD]} />
                     <CreatePlayListBtn />
                     <ImportExportPlaylistBtn />
                 </div>
                 <div className="playlist-list">
                     {filteredPlaylistNames && filteredPlaylistNames.length > 0 && filteredPlaylistNames.map((plName, i)=>
                         <div className="plalist-thumb" key={i}>
-                            <Link to={`/playlist/${plName.value}/${plName.messageId}`}>
+                            <Link to={`/playlist/${plName.name}/${plName.id}`}>
                                 <div className="playlist-thumb-img-div">
-                                    <PlaylistImg albumNames={playlistAlbums[plName.messageId]} />
+                                    <PlaylistImg albumNames={playlistAlbums[plName.id]} />
                                 </div>
                             </Link>
+                            <ThumbnailActionBtn rowList={[]} type={{}} obj={{}} options={[{callBackFunc:showDeletePlaylistPopup,label:'Delete Playlist', args:{playlistId:plName.id}}]} />
                             <div className="playlist-thumb-details">
-                                <Link to={`/playlist/${plName.value}/${plName.messageId}`}>
-                                    <label>{plName.value}</label><br />
-                                    <label>{playlistSongsCount[plName.messageId]} songs</label>
+                                <Link to={`/playlist/${plName.name}/${plName.id}`}>
+                                    <label>{plName.name}</label><br />
+                                    <label>{playlistSongsCount[plName.id]} songs</label>
                                 </Link>
                             </div>
                         </div>

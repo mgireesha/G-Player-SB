@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCommonPopupObj } from "./redux/library/LibraryActions";
 import { ALBUM, ARTIST, COMMON_POPUP_ERROR_MSG, COMPONENT, GENRE, INPUT, LANGUAGE, POPUP_PRIMARY_BTN, TEXT, TRACK } from "./redux/GPActionTypes";
-import { PLAYLIST_ADD_TO_PLAYLIST_SUCCESS, PLAYLIST_CREATE_PLAYLIST_SUCCESS } from "./redux/playlist/PlaylistActionTypes";
+import { PLAYLIST_ADD_TO_PLAYLIST_SUCCESS, PLAYLIST_CREATE_PLAYLIST_SUCCESS, PLAYLIST_DELETE_PLAYLIST_SUCCESS } from "./redux/playlist/PlaylistActionTypes";
 import { addToPlaylist, setAddedNewPlaylistObj } from "./redux/playlist/PlaylistActions";
 
 export const CommonPopup = () => {
@@ -40,8 +40,8 @@ export const CommonPopup = () => {
         }
         if(plPhase === PLAYLIST_CREATE_PLAYLIST_SUCCESS && addedNewPlaylistObj.isAddToNewPlaylist){
             const reqPLObj = {
-                playlist: addedNewPlaylistObj.playlistName.value,
-                playlistId: addedNewPlaylistObj.playlistName.messageId
+                playlist: addedNewPlaylistObj.playlist.name,
+                playlistId: addedNewPlaylistObj.playlist.id
             }
             if(contextObj.type === ALBUM){
                 reqPLObj["albumId"] = contextObj.obj.albumId;
@@ -58,7 +58,7 @@ export const CommonPopup = () => {
             }
             dispatch(addToPlaylist(reqPLObj));
         }
-        if(plPhase === PLAYLIST_ADD_TO_PLAYLIST_SUCCESS){
+        if(plPhase === PLAYLIST_ADD_TO_PLAYLIST_SUCCESS || plPhase === PLAYLIST_DELETE_PLAYLIST_SUCCESS){
             dispatch(setCommonPopupObj({showPopup:false}));
             dispatch(setAddedNewPlaylistObj({}));
         }
@@ -101,7 +101,7 @@ export const CommonPopup = () => {
                         <div className='buttons'>
                             <button type="button" className="popup-btn-secondary" onClick={closePopup}>Cancel</button>
                             <button type="button" className={`popup-btn-primary ${commonPopupObj.className} ${commonPopupObj.primaryClassName}`} 
-                                onClick={commonPopupObj.dispatchPayload ? ()=>dispatch(commonPopupObj.primaryBtnFun(commonPopupObj.payload)) : commonPopupObj.primaryBtnFun}
+                                onClick={commonPopupObj.dispatchPayload ? ()=>dispatch(commonPopupObj.primaryBtnFun(commonPopupObj.payload)) : ()=>commonPopupObj.primaryBtnFun(commonPopupObj.args)}
                                 id={POPUP_PRIMARY_BTN}
                                 >
                                     {commonPopupObj.primaryBtnLabel?commonPopupObj.primaryBtnLabel:"Go"}

@@ -11,6 +11,7 @@ import { PLAYLIST_DELETE_PLAYLIST_SUCCESS, PLAYLIST_RENAME_PLAYLIST_SUCCESS } fr
 import { PlaylistImg } from "./PlaylistImg";
 import { Lyrics } from "../screen/lyrics/Lyrics";
 import { getCookieValue } from "../utilities/util";
+import { getShowDeletePlaylistPopup } from "./PlalistUtil";
 
 export const PlaylistPageHeader = ({albumNames, songsCount, playAll}) => {
     const dispatch = useDispatch();
@@ -36,18 +37,11 @@ export const PlaylistPageHeader = ({albumNames, songsCount, playAll}) => {
     },[playlistName,playedFrom,playlistId]);
 
     const showDeletePlaylistPopup = () => {
-        const commonPopupObj = {
-            showPopup: true,
-            title: DELETE_PLAYLIST_LABEL,
-            content: DELETE_PLAYLIST_CONF_TEXT,
-            contentType: TEXT,
-            primaryBtnAction: REMOVE,
-            primaryBtnLabel:DELETE_LABEL,
-            className:"remove",
-            primaryBtnFun: onDeletePlaylist
-
-        }
-        dispatch(setCommonPopupObj(commonPopupObj));
+        dispatch(
+            setCommonPopupObj(
+                getShowDeletePlaylistPopup(onDeletePlaylist)
+            )
+        );
     }
 
     const showRenamePlaylistPopup = () => {
@@ -74,14 +68,11 @@ export const PlaylistPageHeader = ({albumNames, songsCount, playAll}) => {
         const renameInp = document.getElementById(RENAME_PLAYLIST_INP);
         if(renameInp){
             if(renameInp.value !== playlistName){
-                const tempPlaylistName = {
-                    messageId : playlistId,
-                    value: document.getElementById(RENAME_PLAYLIST_INP).value,
-                    name: PLAYLIST,
-                    type: PLAYLIST
-        
+                const tempPlaylist = {
+                    id : playlistId,
+                    name: document.getElementById(RENAME_PLAYLIST_INP).value,
                 }
-                dispatch(renamePlaylist(tempPlaylistName));
+                dispatch(renamePlaylist(tempPlaylist));
             }else{
                 const errMsg = document.getElementById(COMMON_POPUP_ERROR_MSG);
                 if(errMsg){

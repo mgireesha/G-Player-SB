@@ -4,7 +4,7 @@ import { PLAYLIST_ADD_TO_PLAYLIST_START, PLAYLIST_CREATE_PLAYLIST_START, PLAYLIS
 import { addToPlaylistFail, addToPlaylistSucc, createPlaylistSucc, deltePlaylistSucc, fetchSongsInPlaylistSucc, fethPLaylistNamesSucc, importPlaylistsSucc, removeFromPlaylistSucc, renamePlaylistSucc } from "./PlaylistActions";
 import { handleAPIError } from "../../utilities/util";
 import { setCommonPopupObj, setPlayerTracks, setPlaylistSongs, setShowContextMenu, setShowPlaylistSelector, setStatusMessage } from "../library/LibraryActions";
-import { SUCCESS } from "../GPActionTypes";
+import { FAILED, SUCCESS } from "../GPActionTypes";
 
 export function* onFetchPlaylistNames(){
     yield takeLatest(PLAYLIST_FETCH_PLAYLIST_NAMES_START, onFetchPlaylistNamesAsnc);
@@ -109,21 +109,26 @@ export function* onCreatePlaylist(){
 
 export function* onCreatePlaylistAsnc(payload){
     try {
-        const response = yield call(createPlaylistAPI, payload.createPlaylistObj.payload);
+        const response = yield call(createPlaylistAPI, payload.createPlaylistObj.playlist);
         if(response.status===200){
             const data = response.data;
-            const tempAddedNewPlaylistObj = {
-                isAddToNewPlaylist : false
+            if(data.status === SUCCESS){
+                const tempAddedNewPlaylistObj = {
+                    isAddToNewPlaylist : false
+                }
+                if(payload.createPlaylistObj.addedNewPlaylistObj){
+                    tempAddedNewPlaylistObj.playlist= data.response;
+                    tempAddedNewPlaylistObj.isAddToNewPlaylist = true
+                }
+                const resp = {
+                    playlist: data.response,
+                    addedNewPlaylistObj: tempAddedNewPlaylistObj
+                }
+                yield put(createPlaylistSucc(resp));
+            }else if(data.status === FAILED){
+                yield put(setStatusMessage(data.error))
             }
-            if(payload.createPlaylistObj.addedNewPlaylistObj){
-                tempAddedNewPlaylistObj.playlistName = data;
-                tempAddedNewPlaylistObj.isAddToNewPlaylist = true
-            }
-            const resp = {
-                playlistName: data,
-                addedNewPlaylistObj: tempAddedNewPlaylistObj
-            }
-            yield put(createPlaylistSucc(resp));
+            
         }
     } catch (error) {
         console.log(error);
@@ -155,10 +160,10 @@ export function* onRenamePlaylist(){
 
 export function* onRenamePlaylistAsnc(payload){
     try {
-        const response = yield call(renamePlaylistAPI, payload.playlistName);
+        const response = yield call(renamePlaylistAPI, payload.playlist);
         if(response.status===200){
             const data = response.data;
-            yield put(renamePlaylistSucc(data.message));
+            yield put(renamePlaylistSucc(data.response));
         }
     } catch (error) {
         console.log(error);

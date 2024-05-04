@@ -171,7 +171,7 @@ export const fetchMostPlayedDataAPI = () => {
 //Playlist - Start
 
 export const fetchPlaylistNamesAPI = () => {
-    return iAxios.get(`/playlist/names/PLAYLIST`).then(response => response);
+    return iAxios.get(`/playlist/`).then(response => response);
 }
 
 export const fetchSongsInPlaylistAPI = (playListId) => {
@@ -186,16 +186,16 @@ export const removeFromPlaylistAPI = (playlistId, songId) => {
     return iAxios.delete(`/playlist/remove-from-playlist/${playlistId}/${songId}`).then(response => response);
 }
 
-export const createPlaylistAPI = (createPlaylistObj) => {
-    return iAxios.post(`/playlist/create-playlist`,createPlaylistObj).then(response => response);
+export const createPlaylistAPI = (playlist) => {
+    return iAxios.post(`/playlist/${playlist.name}`).then(response => response);
 }
 
 export const deletePlaylistAPI = (playlistId) => {
-    return iAxios.delete(`/playlist/delete-playlist/${playlistId}`).then(response => response);
+    return iAxios.delete(`/playlist/${playlistId}`).then(response => response);
 }
 
-export const renamePlaylistAPI = (playlistName) => {
-    return iAxios.put(`/playlist/rename-playlist`,playlistName).then(response => response);
+export const renamePlaylistAPI = (playlist) => {
+    return iAxios.put(`/playlist/`,playlist).then(response => response);
 }
 
 export const exportPlaylistsAPI = () => {

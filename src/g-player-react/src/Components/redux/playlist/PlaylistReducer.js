@@ -3,7 +3,7 @@ import { PLAYLIST_ADD_TO_PLAYLIST_FAIL, PLAYLIST_ADD_TO_PLAYLIST_SUCCESS, PLAYLI
 import { getUpdatedPlayListAlbums, getUpdatedPlayListNames, removeRemovedSongFromPlaylist } from "./PlaylistActions";
 
 export const initialState = {
-    playListNames:[],
+    playlists:[],
     playlistAlbums:{},
     playlistSongs:[],
     playlistSongsCount:{},
@@ -31,7 +31,7 @@ const playlistReducer = (state = initialState, action) => {
         case PLAYLIST_FETCH_PLAYLIST_NAMES_SUCCESS:
             return{
                 ...state,
-                playListNames:action.resp[PLAYLIST_NAMES],
+                playlists:action.resp[PLAYLIST_NAMES],
                 playlistAlbums:action.resp[PLAYLIST_ALBUMS],
                 playlistSongsCount: action.resp[PLAYLIST_SONGS_COUNT],
                 phase:SUCCESS
@@ -55,8 +55,8 @@ const playlistReducer = (state = initialState, action) => {
         case PLAYLIST_CREATE_PLAYLIST_SUCCESS:
             return{
                 ...state,
-                playListNames: getUpdatedPlayListNames([...state.playListNames], action.response.playlistName, ADD),
-                playlistAlbums: getUpdatedPlayListAlbums({...state.playlistAlbums}, action.response.playlistName, ADD),
+                playlists: getUpdatedPlayListNames([...state.playlists], action.response.playlist, ADD),
+                playlistAlbums: getUpdatedPlayListAlbums({...state.playlistAlbums}, action.response.playlist, ADD),
                 addedNewPlaylistObj : action.response.addedNewPlaylistObj,
                 phase:PLAYLIST_CREATE_PLAYLIST_SUCCESS
             }
@@ -68,7 +68,7 @@ const playlistReducer = (state = initialState, action) => {
         case PLAYLIST_DELETE_PLAYLIST_SUCCESS:
             return{
                 ...state,
-                playListNames: getUpdatedPlayListNames([...state.playListNames], action.playlistId, REMOVE),
+                playlists: getUpdatedPlayListNames([...state.playlists], action.playlistId, REMOVE),
                 playlistSongs:[],
                 phase:PLAYLIST_DELETE_PLAYLIST_SUCCESS
             }
@@ -80,7 +80,7 @@ const playlistReducer = (state = initialState, action) => {
         case PLAYLIST_RENAME_PLAYLIST_SUCCESS:
             return{
                 ...state,
-                playListNames: getUpdatedPlayListNames([...state.playListNames], action.playlistName, RENAME),
+                playlists: getUpdatedPlayListNames([...state.playlists], action.playlist, RENAME),
                 playlistSongs:[],
                 phase:PLAYLIST_RENAME_PLAYLIST_SUCCESS
             }

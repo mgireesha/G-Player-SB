@@ -72,14 +72,14 @@ export const createPlaylistSucc = (response) => ({
     response
 })
 
-export const renamePlaylist = (playlistName) => ({
+export const renamePlaylist = (playlist) => ({
     type: PLAYLIST_RENAME_PLAYLIST_START,
-    playlistName
+    playlist
 })
 
-export const renamePlaylistSucc = (playlistName) => ({
+export const renamePlaylistSucc = (playlist) => ({
     type:PLAYLIST_RENAME_PLAYLIST_SUCCESS,
-    playlistName
+    playlist
 })
 
 export const deltePlaylist = (playlistId) => ({
@@ -110,24 +110,24 @@ export const importPlaylistsSucc = () => ({
     type: PLAYLIST_IMPORT_PLAYLISTS_SUCCESS
 })
 
-export const getUpdatedPlayListNames = (playListNames, playListName, action) => {
+export const getUpdatedPlayListNames = (playlists, playlist, action) => {
     if(action === ADD){
-        return [...playListNames, playListName];
+        return [...playlists, playlist];
     }else if(action === RENAME){
-        playListNames.forEach(element => {
-            if(element.messageId === playListName.messageId){
-                element.value = playListName.value;
+        playlists.forEach(element => {
+            if(element.id === playlist.id){
+                element.name = playlist.name;
             }
         });
-        return playListNames;
+        return playlists;
     }else{
-        return playListNames.filter((pl)=>{return pl.messageId !== parseInt(playListName)});
+        return playlists.filter((pl)=>{return pl.id !== parseInt(playlist)});
     }
     
 }
 
-export const getUpdatedPlayListAlbums = (playlistAlbums, playlistName, action) => {
-    playlistAlbums[playlistName.messageId] = [];
+export const getUpdatedPlayListAlbums = (playlistAlbums, playlist, action) => {
+    playlistAlbums[playlist.id] = [];
     return playlistAlbums;
 }
 
