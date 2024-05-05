@@ -1660,21 +1660,21 @@ body{
             display: grid;
             grid-template-columns: 1fr 1fr;
             
-            img{
+            img, a{
                 height: 4.5em;
                 width: 4.5em;
             }
 
-            img:first-child{
+            >img:first-child, a:first-child img{
                 border-top-left-radius: 5px;
             }
-            img:nth-child(2){
+            >img:nth-child(2), a:nth-child(2) img{
                 border-top-right-radius: 5px;
             }
-            img:nth-child(3){
+            >img:nth-child(3), a:nth-child(3) img{
                 border-bottom-left-radius: 5px;
             }
-            img:last-child{
+            >img:last-child, a:last-child img{
                 border-bottom-right-radius: 5px;
             }
         }
@@ -2659,6 +2659,42 @@ a.disabled-click{
     }
     
 }
+
+.playlist-selector-v2{
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 20px;
+    row-gap: 10px;
+    justify-content: space-between;
+    padding: 0 5px;
+
+    .row{
+        border: 1px solid;
+        padding: 5px;
+        border-radius: 4px;
+        width: 10em;
+        text-wrap: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-align: center;
+        justify-content: center;
+        cursor: pointer;
+        label{
+            cursor: pointer;
+        }
+    }
+
+    // .row:hover{
+    //     text-wrap: unset;
+    // }
+
+    .row.selected{
+        background-color: #0e684b;
+        color: beige;
+    }
+}
+
+
 
 .playlist-selector::-webkit-scrollbar{
     width: 5px;

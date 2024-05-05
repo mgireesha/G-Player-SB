@@ -205,6 +205,10 @@ export const exportPlaylistsAPI = () => {
 export const importPlaylistsAPI = (payload, fileType) => {
     return iAxios.post(`/playlist/import/${fileType}`, JSON.stringify(payload)).then(response => response);
 }
+
+export const fetchAssignedPlaylistsAPI = (payload) => {
+    return iAxios.get(`/playlist/playlists/${payload.objType}/identifier/${payload.identifier}`).then(response => response);
+}
 //Playlist - End
 
 //Edit metadata - start

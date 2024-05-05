@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import def_album_art from '../images/def_album_art.png';
+import { Link } from "react-router-dom";
 
-export const PlaylistImg = ({albumNames}) => {
+export const PlaylistImg = ({albumNames, link}) => {
     const [albumNameList, setAlbumNameList] = useState([]);
 
     useEffect(()=>{
@@ -16,7 +17,12 @@ export const PlaylistImg = ({albumNames}) => {
         <div className="playlist-img-container">
             {albumNameList.length > 0 &&
                 <div className="playlist-img">
-                    {albumNameList.map((albumName, i) =>
+                    {link && albumNameList.map((albumName, i) =>
+                        <Link key={i} to={`/music/albums/${albumName}`}>
+                            <img src={`/gp_images/albums/${albumName}.jpg`}  />
+                        </Link>
+                    )}
+                    {!link && albumNameList.map((albumName, i) =>
                         <img src={`/gp_images/albums/${albumName}.jpg`} key={i} />
                     )}
                 </div>
