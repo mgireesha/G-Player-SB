@@ -122,17 +122,18 @@ export const PlaylistSelector = () => {
 
     return(
         <div id={PLAYLIST_SELECTOR} className="playlist-selector-v2" style={styles}>
-            <div className="row" style={{display:'flex',width:'100%', border:'none'}}>
+            <div className="row" style={{gridColumn:'span 4', border:'none', width:'100%'}}>
                 {obj && obj.title+" - "+obj.album}
             </div>
-            <div className="row" style={{display:'flex',width:'100%'}} onClick={addToNewPlayist}>
-                <HiPlus style={{marginTop:4,marginRight:5}} /><label>{NEW_PLAYLIST_BTN_LABEL}</label>
-            </div>
+            
             {playLists && playLists.map(playlist =>
                 <div className={assignedPlaylists.includes(playlist.name) ? "selected row" : "row"} onClick={()=>handleOnPlaylistClick(playlist.id,playlist.name)} title={playlist.name}>
                     <label>{playlist.name}</label>
                 </div>
             )}
+            <div className="row" style={{gridColumn:'span 4', width:'100%'}} onClick={addToNewPlayist}>
+                <HiPlus style={{marginTop:4,marginRight:5}} /><label>{NEW_PLAYLIST_BTN_LABEL}</label>
+            </div>
         </div>
     );
 } 

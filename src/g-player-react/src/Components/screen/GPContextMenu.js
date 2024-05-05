@@ -86,6 +86,12 @@ export const GPContexMenu = () => {
                 contentType: COMPONENT,
                 component: PlaylistSelectorV2,
                 primaryClassName: "no-display",
+                popContStyle:{
+                    width:'60%'
+                },
+                popupStyle:{
+                    top:'-5vh'
+                }
         
             }
             dispatch(setCommonPopupObj(commonPopupObj));
