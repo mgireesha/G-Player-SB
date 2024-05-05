@@ -17,6 +17,7 @@ public class Playlist {
     private String name;
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdDate;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime lastUpdated;
     
     public long getId() {
@@ -51,6 +52,11 @@ public class Playlist {
         this.name = name;
         this.createdDate = createdDate;
         this.lastUpdated = lastUpdated;
+    }
+    
+    public Playlist(long id, String name) {
+        this.id = id;
+        this.name = name;
     }
     
     @Override
