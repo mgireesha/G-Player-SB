@@ -1,5 +1,9 @@
 package com.gmt.gp.model;
 
+import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,6 +23,10 @@ public class PlaylistItem {
     private long albumId;
     private long songId;
     private String songTitle;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createdDate;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime lastUpdated;
     @Transient
     private String language;
     @Transient
@@ -119,8 +127,10 @@ public class PlaylistItem {
 
     @Override
     public String toString() {
-        return "Playlist [id=" + id + ", playlist=" + playlist + ", playlistId=" + playlistId + ", songPath=" + songPath
-                + ", albumName=" + albumName + ", albumId=" + albumId + ", songId=" + songId + "]";
+        return "PlaylistItem [id=" + id + ", playlist=" + playlist + ", playlistId=" + playlistId + ", songPath="
+                + songPath + ", albumName=" + albumName + ", albumId=" + albumId + ", songId=" + songId + ", songTitle="
+                + songTitle + ", createdDate=" + createdDate + ", lastUpdated=" + lastUpdated + ", language=" + language
+                + ", genre=" + genre + ", artist=" + artist + "]";
     }
 
     public String getLanguage() {
@@ -145,6 +155,22 @@ public class PlaylistItem {
 
     public void setArtist(String artist) {
         this.artist = artist;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public LocalDateTime getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(LocalDateTime lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 
     

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { PlaylistImg } from "./PlaylistImg";
 import { ImportExportPlaylistBtn } from "./ImportExportPlaylistBtn";
-import { CURRENT_PAGE, DELETE_LABEL, DELETE_PLAYLIST_CONF_TEXT, DELETE_PLAYLIST_LABEL, PLAYLISTS, REMOVE, SORT_A_TO_Z, SORT_A_TO_Z_DESC, SORT_CREATED_DATE_NEW, SORT_CREATED_DATE_OLD, TEXT } from "../redux/GPActionTypes";
+import { CURRENT_PAGE, DELETE_LABEL, DELETE_PLAYLIST_CONF_TEXT, DELETE_PLAYLIST_LABEL, PLAYLISTS, REMOVE, SORT_A_TO_Z, SORT_A_TO_Z_DESC, SORT_COUNT_TRACKS, SORT_CREATED_DATE_NEW, SORT_CREATED_DATE_OLD, TEXT } from "../redux/GPActionTypes";
 import { setCookies } from "../utilities/util";
 import { SortingContainer } from "../screen/SortingContainer";
 import { ThumbnailActionBtn } from "../ThumbnailActionBtn";
@@ -32,6 +32,8 @@ export const Playlists = () => {
 
     useEffect(()=>{
         let tempPlaylists = [...playlists];
+        console.log("tempPlaylists: ",tempPlaylists)
+        console.log("playlistSongsCount: ",playlistSongsCount)
         if(sortBy === SORT_A_TO_Z){
             tempPlaylists = tempPlaylists.sort((a,b)=>{return a.name>b.name?1:-1});
         }else if(sortBy === SORT_A_TO_Z_DESC){
@@ -40,6 +42,8 @@ export const Playlists = () => {
             tempPlaylists = tempPlaylists.sort((a,b)=>{return new Date(a.createdDate)>new Date(b.createdDate)?-1:1});
         }else if(sortBy === SORT_CREATED_DATE_OLD){
             tempPlaylists = tempPlaylists.sort((a,b)=>{return new Date(a.createdDate)>new Date(b.createdDate)?1:-1});
+        }else if(sortBy === SORT_COUNT_TRACKS){
+            tempPlaylists = tempPlaylists.sort((a,b)=>{return playlistSongsCount[a.id]>playlistSongsCount[b.id]?-1:1})
         }
         setSortedPlaylistNames(tempPlaylists);
     },[playlists, sortBy]);
@@ -69,7 +73,20 @@ export const Playlists = () => {
         <div className="playlists">
             <div className="body">
                 <div className="playlists-action">
-                    <SortingContainer setSortBy={setSortBy} sortBy={sortBy} showLKey={false} sortSelectors={[SORT_A_TO_Z,SORT_A_TO_Z_DESC, SORT_CREATED_DATE_NEW, SORT_CREATED_DATE_OLD]} />
+                    <SortingContainer 
+                        setSortBy={setSortBy} 
+                        sortBy={sortBy} 
+                        showLKey={false} 
+                        sortSelectors={
+                            [
+                                SORT_CREATED_DATE_NEW,
+                                SORT_CREATED_DATE_OLD,
+                                SORT_COUNT_TRACKS,
+                                SORT_A_TO_Z,
+                                SORT_A_TO_Z_DESC,
+                            ]
+                        } 
+                    />
                     <CreatePlayListBtn />
                     <ImportExportPlaylistBtn />
                 </div>

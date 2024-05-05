@@ -108,7 +108,7 @@ public class PlaylistService {
 
             if(songs != null && songs.size() > 0){
                 playlistItems = (List<PlaylistItem>) addSongsToPlaylist(songs,
-                new Message(reqPlaylist.getPlaylistId(), null, null, reqPlaylist.getPlaylist()));
+                    new Playlist(reqPlaylist.getPlaylistId(), reqPlaylist.getPlaylist()));
                 resp.setStatus(GP_CONSTANTS.SUCCESS);
                 resp.setPlaylistItems(playlistItems);
             }
@@ -181,6 +181,7 @@ public class PlaylistService {
             List<PlaylistItem> playlistItems = playlistItemRepository.getByPlaylistId(playlist.get().getId());
             for (PlaylistItem playlistItem : playlistItems) {
                 playlistItem.setPlaylist(playlist.get().getName());
+                playlistItem.setLastUpdated(LocalDateTime.now());
             }
             playlistItemRepository.saveAll(playlistItems);
             resp.setResponse(playlist.get());
@@ -420,15 +421,15 @@ public class PlaylistService {
         JSONArray reqPlaylistArr = null;
         List<Library> songs = null;
         List<String> songPathList = null;
-        Message playlistName = null;
+        Playlist playlist = null;
         JSONObject reqPlaylistItemObj = null;
         Library reqPlaylistLibrary = null;
         List<Library> reqPlaylistLibraryList = null;
         for (String reqPlName : reqPlaylistObjKeys) {
-            playlistName = messageService.getMessageByValue(reqPlName);
-            if (playlistName == null) {
-                playlistName = new Message(GP_CONSTANTS.PLAYLIST, GP_CONSTANTS.PLAYLIST, reqPlName);
-                playlistName = messageService.saveMaMessage(playlistName);
+            playlist = playlistRepository.getByName(reqPlName);
+            if (playlist == null) {
+                playlist = new Playlist(reqPlName, LocalDateTime.now(), null);
+                playlist = playlistRepository.save(playlist);
             }
             reqPlaylistArr = (JSONArray) reqPlaylistsObj.get(reqPlName);
             if (GP_CONSTANTS.FILETYPE_CSV.equals(fileType)) {
@@ -450,17 +451,17 @@ public class PlaylistService {
                 songs = libraryService.getSongsByAlbumAndTitle(reqPlaylistLibraryList);
             }
 
-            addSongsToPlaylist(songs, playlistName);
+            addSongsToPlaylist(songs, playlist);
         }
-        resp.setResponse(getPlaylistNames(GP_CONSTANTS.PLAYLIST));
+        resp.setResponse(getPlaylists());
         resp.setStatus1(String.valueOf(reqPlaylistObjKeys.size()));
         return resp;
     }
 
-    private PlaylistItem createPlaylistItemBySong(Library song, Message playlistName) {
+    private PlaylistItem createPlaylistItemBySong(Library song, Playlist playlist) {
         PlaylistItem playlistItem = new PlaylistItem();
-        playlistItem.setPlaylistId(playlistName.getMessageId());
-        playlistItem.setPlaylist(playlistName.getValue());
+        playlistItem.setPlaylistId(playlist.getId());
+        playlistItem.setPlaylist(playlist.getName());
         playlistItem.setSongId(song.getSongId());
         playlistItem.setSongPath(song.getSongPath());
         playlistItem.setAlbumName(song.getAlbum());
@@ -470,18 +471,18 @@ public class PlaylistService {
 
     private PlaylistItem createPlaylistItemBySong(Library library, PlaylistItem reqPlaylist) {
         return createPlaylistItemBySong(library,
-                new Message(reqPlaylist.getPlaylistId(), null, null, reqPlaylist.getPlaylist()));
+                new Playlist(reqPlaylist.getPlaylistId(), reqPlaylist.getPlaylist()));
     }
 
-    private Iterable<PlaylistItem> addSongsToPlaylist(List<Library> songs, Message playlistName) {
+    private Iterable<PlaylistItem> addSongsToPlaylist(List<Library> songs, Playlist playlist) {
         List<PlaylistItem> playlistItems = new ArrayList<PlaylistItem>();
-        List<PlaylistItem> existingPlaylistItems = playlistItemRepository.getByPlaylistId(playlistName.getMessageId());
+        List<PlaylistItem> existingPlaylistItems = playlistItemRepository.getByPlaylistId(playlist.getId());
         boolean isSongPresentInPL = false;
         for (Library song : songs) {
             isSongPresentInPL = existingPlaylistItems.stream().filter(o -> o.getSongPath().equals(song.getSongPath()))
                     .findFirst().isPresent();
             if (!isSongPresentInPL) {
-                playlistItems.add(createPlaylistItemBySong(song, playlistName));
+                playlistItems.add(createPlaylistItemBySong(song, playlist));
             }
         }
         return playlistItemRepository.saveAll(playlistItems);
@@ -513,6 +514,7 @@ public class PlaylistService {
             List<PlaylistItem> playlistItems1 = new ArrayList<PlaylistItem>();
             for (PlaylistItem playlistItem : playlistItems) {
                 playlistItem.setPlaylistId(playlist.getId());
+                playlistItem.setLastUpdated(LocalDateTime.now());
                 playlistItems1.add(playlistItem);
             }
             playlistItemRepository.saveAll(playlistItems1);
