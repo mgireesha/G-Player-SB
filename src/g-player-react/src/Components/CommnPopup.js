@@ -79,8 +79,8 @@ export const CommonPopup = () => {
 
     return (
         <>
-            <div className="common-popup" style={{ display: showPopup ? 'flex' : 'none' }}>
-                <div className="popup-container">
+            <div className="common-popup" style={{ display: showPopup ? 'flex' : 'none',...commonPopupObj.popupStyle?commonPopupObj.popupStyle:'' }}>
+                <div className="popup-container" style={commonPopupObj.popContStyle?commonPopupObj.popContStyle:{}}>
                     <div className="popup-header">
                         <label className='label'>{commonPopupObj.title}</label>
                         <button type="button" className="close" data-dismiss="modal" aria-hidden="true" onClick={closePopup}>×</button>

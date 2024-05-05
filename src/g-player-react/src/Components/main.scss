@@ -2661,8 +2661,8 @@ a.disabled-click{
 }
 
 .playlist-selector-v2{
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     column-gap: 20px;
     row-gap: 10px;
     justify-content: space-between;
@@ -2672,7 +2672,7 @@ a.disabled-click{
         border: 1px solid;
         padding: 5px;
         border-radius: 4px;
-        width: 10em;
+        // width: 10em;
         text-wrap: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
