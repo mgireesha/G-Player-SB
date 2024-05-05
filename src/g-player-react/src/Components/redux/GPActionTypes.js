@@ -2,6 +2,7 @@ export const A_TO_Z = "A_TO_Z";
 export const A_TO_Z_DESC = "A_TO_Z_DESC";
 export const ADD = 'ADD';
 export const ADD_TO_NEW_PLAYLIST_LABEL = 'ADD_TO_NEW_PLAYLIST_LABEL';
+export const ADD_TOPLAYLIST_LABEL = 'Add to Playlist';
 export const ALBUM = 'ALBUM';
 export const ALBUM_LABEL = 'Album';
 export const ALBUMS = 'ALBUMS';

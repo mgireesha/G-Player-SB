@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setShowContextMenu, setShowPlaylistSelector } from "../redux/library/LibraryActions";
-import { ALBUM, ARTIST, GP_CONTEXT_MENU, GP_CONTEXT_MENU_ELEM_IDS, MAIN_CONTAINER } from "../redux/GPActionTypes";
+import { setCommonPopupObj, setShowContextMenu, setShowPlaylistSelector } from "../redux/library/LibraryActions";
+import { ADD_TOPLAYLIST_LABEL, ADD_TO_NEW_PLAYLIST_LABEL, ALBUM, ARTIST, COMPONENT, GP_CONTEXT_MENU, GP_CONTEXT_MENU_ELEM_IDS, MAIN_CONTAINER, TRACK } from "../redux/GPActionTypes";
 import { MdKeyboardArrowRight } from 'react-icons/md';
 import { Link } from "react-router-dom";
 import { checkIfActionAllowed } from "../utilities/util";
+import { PlaylistSelector as PlaylistSelectorV2 } from "../playlist/PlayllistSelectorV2";
 
 export const GPContexMenu = () => {
     const dispatch = useDispatch();
@@ -78,7 +79,19 @@ export const GPContexMenu = () => {
     },[]);
 
     const onSetShowPlaylistSelector = (showPlaylistSelector) => {
-         dispatch(setShowPlaylistSelector(showPlaylistSelector));
+        if(contextObj.type===TRACK){
+            const commonPopupObj = {
+                showPopup: true,
+                title: ADD_TOPLAYLIST_LABEL,
+                contentType: COMPONENT,
+                component: PlaylistSelectorV2,
+                primaryClassName: "no-display",
+        
+            }
+            dispatch(setCommonPopupObj(commonPopupObj));
+        }else{
+            dispatch(setShowPlaylistSelector(showPlaylistSelector));
+        }
      }
 
      const closeCOntextMenu = () => {
@@ -88,7 +101,7 @@ export const GPContexMenu = () => {
 
     return(
         <div id={GP_CONTEXT_MENU} className="gp-context-menu" style={styles}>
-            <div className="row" onClick={()=>onSetShowPlaylistSelector(true)}>
+            <div className="row" onClick={()=>{onSetShowPlaylistSelector(true);if(contextObj.type===TRACK)closeCOntextMenu()}}>
                 <label>Add to playlist</label>
                 <MdKeyboardArrowRight className="icon" />
             </div>

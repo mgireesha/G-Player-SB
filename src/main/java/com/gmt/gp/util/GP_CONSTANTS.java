@@ -2,6 +2,7 @@ package com.gmt.gp.util;
 
 public class GP_CONSTANTS {
 
+    public static final String ALBUM = "ALBUM";
     public static final String ALBUM_ARTIST_COUNT = "ALBUM_ARTIST_COUNT";
     public static final String ALBUM_ARTIST = "ALBUM_ARTIST";
     public static final String ALBUM_ARTISTS = "ALBUM_ARTISTS";
@@ -70,6 +71,7 @@ public class GP_CONSTANTS {
     public static final String RUNNING = "RUNNING";
 
     public static final String SINGLE_GENRE = "SINGLE_GENRE";
+    public static final String SONG = "SONG";
     public static final String STATUS = "STATUS";
     public static final String SUCCESS = "SUCCESS";
 

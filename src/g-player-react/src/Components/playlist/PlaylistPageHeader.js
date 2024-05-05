@@ -97,7 +97,7 @@ export const PlaylistPageHeader = ({albumNames, songsCount, playAll}) => {
 
     return(
         <div className="playlist-page-header">
-            <PlaylistImg albumNames={albumNames} />
+            <PlaylistImg albumNames={albumNames} link={true} />
             <div className="playlist-details">
                 <div className="playlist-name">
                     <h2>{playlistName}</h2>

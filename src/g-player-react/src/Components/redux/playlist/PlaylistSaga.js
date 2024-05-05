@@ -1,7 +1,7 @@
 import { call, put, takeEvery, takeLatest } from "redux-saga/effects";
-import { addToPlaylistAPI, createPlaylistAPI, deletePlaylistAPI, exportPlaylistsAPI, fetchPlaylistNamesAPI, fetchSongsInPlaylistAPI, importPlaylistsAPI, removeFromPlaylistAPI, renamePlaylistAPI } from "../GPApis";
-import { PLAYLIST_ADD_TO_PLAYLIST_START, PLAYLIST_CREATE_PLAYLIST_START, PLAYLIST_DELETE_PLAYLIST_START, PLAYLIST_EXPORT_PLAYLISTS_START, PLAYLIST_FETCH_PLAYLIST_NAMES_START, PLAYLIST_FETCH_SONGS_IN_PLAYLIST_START, PLAYLIST_IMPORT_PLAYLISTS_START, PLAYLIST_REMOVE_FROM_PLAYLIST_START, PLAYLIST_RENAME_PLAYLIST_START } from "./PlaylistActionTypes";
-import { addToPlaylistFail, addToPlaylistSucc, createPlaylistSucc, deltePlaylistSucc, fetchSongsInPlaylistSucc, fethPLaylistNamesSucc, importPlaylistsSucc, removeFromPlaylistSucc, renamePlaylistSucc } from "./PlaylistActions";
+import { addToPlaylistAPI, createPlaylistAPI, deletePlaylistAPI, exportPlaylistsAPI, fetchAssignedPlaylistsAPI, fetchPlaylistNamesAPI, fetchSongsInPlaylistAPI, importPlaylistsAPI, removeFromPlaylistAPI, renamePlaylistAPI } from "../GPApis";
+import { PLAYLIST_ADD_TO_PLAYLIST_START, PLAYLIST_CREATE_PLAYLIST_START, PLAYLIST_DELETE_PLAYLIST_START, PLAYLIST_EXPORT_PLAYLISTS_START, PLAYLIST_FETCH_ASSIGNED_PLAYLISTS_START, PLAYLIST_FETCH_PLAYLIST_NAMES_START, PLAYLIST_FETCH_SONGS_IN_PLAYLIST_START, PLAYLIST_IMPORT_PLAYLISTS_START, PLAYLIST_REMOVE_FROM_PLAYLIST_START, PLAYLIST_RENAME_PLAYLIST_START } from "./PlaylistActionTypes";
+import { addToPlaylistFail, addToPlaylistSucc, createPlaylistSucc, deltePlaylistSucc, fetchAssignedPlaylistsSucc, fetchSongsInPlaylistSucc, fethPLaylistNamesSucc, importPlaylistsSucc, removeFromPlaylistSucc, renamePlaylistSucc } from "./PlaylistActions";
 import { handleAPIError } from "../../utilities/util";
 import { setCommonPopupObj, setPlayerTracks, setPlaylistSongs, setShowContextMenu, setShowPlaylistSelector, setStatusMessage } from "../library/LibraryActions";
 import { FAILED, SUCCESS } from "../GPActionTypes";
@@ -207,6 +207,24 @@ export function* onImportPlaylistsAsnc(payload){
             yield put(setStatusMessage(message));
             yield put(setCommonPopupObj({showPopup:false}));
             yield put(importPlaylistsSucc());
+        }
+    } catch (error) {
+        console.log(error);
+        handleAPIError(error);
+    }
+
+}
+
+export function* onFetchAssignedPlaylits(){
+    yield takeLatest(PLAYLIST_FETCH_ASSIGNED_PLAYLISTS_START, onFetchAssignedPlaylitsAsnc);
+}
+
+export function* onFetchAssignedPlaylitsAsnc(payload){
+    try {
+        const response = yield call(fetchAssignedPlaylistsAPI, payload);
+        if(response.status === 200){
+            const data = response.data;
+            yield put(fetchAssignedPlaylistsSucc(data));
         }
     } catch (error) {
         console.log(error);

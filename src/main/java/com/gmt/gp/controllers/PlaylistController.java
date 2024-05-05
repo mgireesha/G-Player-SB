@@ -92,4 +92,9 @@ public class PlaylistController {
         return playlistService.movePlaylistNames();
     }
 
+    @GetMapping("/playlists/{type}/identifier/{identifier}")
+    public List<String> getAssignedPlaylists(@PathVariable String type, @PathVariable String identifier){
+        return playlistService.getAssignedPlaylists(type, identifier);
+    }
+
 }

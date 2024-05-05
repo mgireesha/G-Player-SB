@@ -3,6 +3,8 @@ import { PLAYLIST_ADD_TO_PLAYLIST_FAIL, PLAYLIST_ADD_TO_PLAYLIST_START, PLAYLIST
     PLAYLIST_CREATE_PLAYLIST_START, PLAYLIST_CREATE_PLAYLIST_SUCCESS, 
     PLAYLIST_DELETE_PLAYLIST_START, PLAYLIST_DELETE_PLAYLIST_SUCCESS, 
     PLAYLIST_EXPORT_PLAYLISTS_START, PLAYLIST_EXPORT_PLAYLISTS_SUCCESS, 
+    PLAYLIST_FETCH_ASSIGNED_PLAYLISTS_START, 
+    PLAYLIST_FETCH_ASSIGNED_PLAYLISTS_SUCCESS, 
     PLAYLIST_FETCH_PLAYLIST_NAMES_START, PLAYLIST_FETCH_PLAYLIST_NAMES_SUCCESS, 
     PLAYLIST_FETCH_SONGS_IN_PLAYLIST_START, PLAYLIST_FETCH_SONGS_IN_PLAYLIST_SUCCESS, 
     PLAYLIST_IMPORT_PLAYLISTS_START, PLAYLIST_IMPORT_PLAYLISTS_SUCCESS, 
@@ -36,9 +38,9 @@ export const addToPlaylist = (reqPLObj) => ({
     reqPLObj
 })
 
-export const addToPlaylistSucc = (playlists) => ({
+export const addToPlaylistSucc = (response) => ({
     type:PLAYLIST_ADD_TO_PLAYLIST_SUCCESS,
-    playlists
+    response
 })
 
 export const addToPlaylistFail = (error) => ({
@@ -110,6 +112,17 @@ export const importPlaylistsSucc = () => ({
     type: PLAYLIST_IMPORT_PLAYLISTS_SUCCESS
 })
 
+export const fetchAssignedPlaylists = (objType, identifier) => ({
+    type: PLAYLIST_FETCH_ASSIGNED_PLAYLISTS_START,
+    objType,
+    identifier
+})
+
+export const fetchAssignedPlaylistsSucc = (response) => ({
+    type: PLAYLIST_FETCH_ASSIGNED_PLAYLISTS_SUCCESS,
+    response
+})
+
 export const getUpdatedPlayListNames = (playlists, playlist, action) => {
     if(action === ADD){
         return [...playlists, playlist];
@@ -140,4 +153,13 @@ export const removeRemovedSongFromPlaylist = (playlistSongs, playlistItem) => {
         }
     }
     return playlistSongs;
+}
+
+export const getUpdatedAssignedPlaylits = (assignedPlaylists, plItem, action) => {
+    if(action === ADD){
+        assignedPlaylists.push(plItem.playlist);
+    }else{
+        assignedPlaylists = assignedPlaylists.filter(pl=>pl!=plItem.playlist);
+    }
+    return assignedPlaylists;
 }

@@ -22,4 +22,10 @@ public interface PlaylistItemRepository extends CrudRepository<PlaylistItem, Lon
     List<PlaylistItem> getByPlaylistIdAndSongId(long playlistId, long songId);
 
     PlaylistItem getByPlaylistIdAndSongPath(long playlistId, String songPath);
+
+    @Query("SELECT p.playlist FROM PlaylistItem p where p.songId =:songId")
+    List<String> getPlaylistsBySongId(long songId);
+
+    @Query("SELECT p.playlist FROM PlaylistItem p where p.albumName =:albumName")
+    List<String> getPlaylistsByAlbumName(String albumName);
 }
