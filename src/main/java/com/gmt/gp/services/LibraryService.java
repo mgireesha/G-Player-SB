@@ -537,7 +537,7 @@ public class LibraryService {
             if (!tag.getFirst(FieldKey.COMPOSER).equals("") && tag.getFirst(FieldKey.COMPOSER) != null) {
                 library.setComposer(tag.getFirst(FieldKey.COMPOSER));
             } else {
-                if (!library.getAlbumArtist().equals(GP_CONSTANTS.UNKNOWN_LABEL)) {
+                if (library.getAlbumArtist()!=null && !library.getAlbumArtist().equals(GP_CONSTANTS.UNKNOWN_LABEL)) {
                     library.setComposer(library.getAlbumArtist());
                 } else {
                     library.setComposer(GP_CONSTANTS.UNKNOWN_LABEL);
