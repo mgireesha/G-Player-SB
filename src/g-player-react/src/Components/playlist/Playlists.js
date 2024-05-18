@@ -32,8 +32,6 @@ export const Playlists = () => {
 
     useEffect(()=>{
         let tempPlaylists = [...playlists];
-        console.log("tempPlaylists: ",tempPlaylists)
-        console.log("playlistSongsCount: ",playlistSongsCount)
         if(sortBy === SORT_A_TO_Z){
             tempPlaylists = tempPlaylists.sort((a,b)=>{return a.name>b.name?1:-1});
         }else if(sortBy === SORT_A_TO_Z_DESC){
