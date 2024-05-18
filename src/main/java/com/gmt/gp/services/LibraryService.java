@@ -64,6 +64,7 @@ import com.gmt.gp.repositories.ArtistRepository;
 import com.gmt.gp.repositories.LibraryRepository;
 import com.gmt.gp.util.GPUtil;
 import com.gmt.gp.util.GP_CONSTANTS;
+import com.gmt.gp.util.ZipCompress;
 
 import java.awt.image.BufferedImage;
 import java.awt.Image;
@@ -156,7 +157,7 @@ public class LibraryService {
     }
 
     @Transactional
-    public void buildLibrary(List<File> fileList) {
+    public GPResponse buildLibrary(List<File> fileList, boolean isTakePlBkp) {
 
         final String methodName = "buildLibrary";
 
@@ -360,6 +361,25 @@ public class LibraryService {
                         "Exception while trucating tables");
             }
 
+            if(isTakePlBkp && stepSuccess){
+                stepSuccess= false;
+                GPResponse exportResp = playlistService.exportPlaylists(isTakePlBkp);
+                String playlistPath = exportResp.getStatus1();
+                boolean isZipCreated = ZipCompress.compress(playlistPath);
+                if(isZipCreated){
+                    if(deleteDirectoryContents(playlistPath)){
+                        if(!deleteDirectory(playlistPath)){
+                            LOG.error(methodName + " - Exception while deleteing temp playlists folder at "+playlistPath+", please check and delete manually if possible");
+                        }
+                    }else{
+                        LOG.error(methodName + " - Exception while deleteing temp playlists folder contents at "+playlistPath+", please check and delete manually if possible");
+                    }
+                }else{
+                    LOG.error(methodName + " - Exception while exporting playlists, please check and take manual backup if possible");
+                }
+                stepSuccess = true;
+            }
+
             if (stepSuccess) {
                 startingTime = System.currentTimeMillis();
                 messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS_STEP,
@@ -458,9 +478,7 @@ public class LibraryService {
                     playlistItem = playlistItems.get(i);
                     library = getLibraryFromLibList(libList, playlistItem);
                     if (library != null) {
-                        playlistItem.setSongId(library.getSongId());
-                        playlistItem.setSongPath(library.getSongPath());
-                        playlistItemsU.add(playlistItem);
+                        playlistItemsU.add(playlistItem.merge(library));
                     } else {
                         playlistItemsR.add(playlistItem);
                     }
@@ -494,10 +512,12 @@ public class LibraryService {
         try {
             songPlaying = getSongBySongPath(songPlaying.getSongPath());
             lastPlayedSongId.setValue(String.valueOf(songPlaying.getSongId()));
+            messageService.saveMaMessage(lastPlayedSongId);
         } catch (Exception e) {
             LOG.error(methodName + " - Exception while updating last played song id");
             e.printStackTrace();
         }
+    return new GPResponse(messageService.getMessagesByType(GP_CONSTANTS.BUILD_STATUS));
     }
 
     public Library getLibraryFromFile(Tag tag, AudioFile audioF, File mpFile) throws Exception {
@@ -1244,11 +1264,23 @@ public class LibraryService {
         return isDirExits;
     }
 
-    public void cleanAlbumImageDir() {
+    public boolean deleteDirectoryContents(String path) {
         try {
-            FileUtils.cleanDirectory(new File(GP_CONSTANTS.GP_ALBUM_IMAGES_PATH));
+            FileUtils.cleanDirectory(new File(path));
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean deleteDirectory(String path) {
+        try {
+            FileUtils.delete(new File(path));
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 

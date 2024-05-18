@@ -100,8 +100,19 @@ export const CommonPopup = () => {
                     <div className="popup-footer">
                         <div className='buttons'>
                             <button type="button" className="popup-btn-secondary" onClick={closePopup}>Cancel</button>
-                            <button type="button" className={`popup-btn-primary ${commonPopupObj.className} ${commonPopupObj.primaryClassName}`} 
-                                onClick={commonPopupObj.dispatchPayload ? ()=>dispatch(commonPopupObj.primaryBtnFun(commonPopupObj.payload)) : ()=>commonPopupObj.primaryBtnFun(commonPopupObj.args)}
+                            <button type="button" 
+                                    className={`popup-btn-primary ${commonPopupObj.className} ${commonPopupObj.primaryClassName}`} 
+                                    onClick={
+                                        commonPopupObj.dispatchPayload ? 
+                                            ()=>dispatch(commonPopupObj.primaryBtnFun(commonPopupObj.payload)) 
+                                            : 
+                                            ()=>commonPopupObj.primaryBtnFun(
+                                                typeof commonPopupObj.args === "function" ? 
+                                                    commonPopupObj.args() 
+                                                    : 
+                                                    commonPopupObj.args
+                                            )
+                                    }
                                 id={POPUP_PRIMARY_BTN}
                                 >
                                     {commonPopupObj.primaryBtnLabel?commonPopupObj.primaryBtnLabel:"Go"}

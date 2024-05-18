@@ -1970,7 +1970,7 @@ a.disabled-click{
     height: 74%;
 }
 
-.library {
+.library, .library-v2 {
     width: 78vw;
     .header{
         margin-left: 10px;
@@ -3184,6 +3184,11 @@ a.disabled-click{
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.flexbox-align-center{
+    display: flex;
+    align-items: center;
 }
 //common classes - end
 //GLobal components styling - end

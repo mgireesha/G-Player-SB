@@ -67,6 +67,7 @@ export const IMPORT_EXPORT_PLAYLIST_LABEL = 'Import/Export Playlists';
 export const IMPORT_LABEL = 'Import';
 export const IMPORT_PLAYLISTS_LABEL = "Import Playlists";
 export const INIT = 'INIT';
+export const INITIATED = 'INITIATED';
 export const INPUT = 'INPUT';
 
 export const LABEL = 'LABEL';
@@ -76,6 +77,7 @@ export const LANGUAGES = 'LANGUAGES';
 export const LANGUAGE_LABEL = 'Language';
 export const LANGUAGES_LABEL = 'Languages';
 export const LIBRARY = 'LIBRARY';
+export const LIBRARY_BUILD = 'LIBRARY_BUILD';
 export const LIBRARY_LABEL = 'Library';
 export const LIBRARY_COUNT = 'LIBRARY_COUNT';
 export const LIBRARY_COUNT_LABEL = 'Never Played';
