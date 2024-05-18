@@ -8,7 +8,7 @@ import { fetchCurrentSontAndStatus, playASongSucc, setIsShuffle, setMediaVolumeS
 import { getCookieDetails, getCookieValue, setCookies } from "./utilities/util";
 import { ALBUM, ARTIST, GENRE, LANGUAGE, MAIN_CONTAINER, PLAYLIST, RECENT_PLAYS, TRACK_LIST } from "./redux/GPActionTypes";
 import { Route, Routes } from "react-router-dom";
-import { Library } from "./library/Library";
+import { Library } from "./library/LibraryV2";
 import { Search } from "./search/Search";
 import { RecentPlays } from "./history/RecentPlays";
 import { Playlist } from "./playlist/Playlist";

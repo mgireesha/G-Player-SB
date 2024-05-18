@@ -50,6 +50,12 @@ public class GPResponse {
     public GPResponse() {
     }
 
+    
+
+    public GPResponse(Object response) {
+        this.response = response;
+    }
+
     @Override
     public String toString() {
         return "GPResponse [status=" + status + ", error=" + error + ", library=" + library + "]";

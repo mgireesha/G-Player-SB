@@ -311,11 +311,19 @@ public class PlaylistService {
     }
 
     public GPResponse exportPlaylists() {
+        return exportPlaylists(false);
+    }
+
+    public GPResponse exportPlaylists(boolean isTakePlBkp) {
         GPResponse resp = new GPResponse();
         Map<String, List<PlaylistItem>> plItemsMap = new HashMap<String, List<PlaylistItem>>();
         List<PlaylistItem> plItems = getAllPlaylistItems();
         List<PlaylistItem> tempPlItems = null;
         String plItemIdentifier = null;
+        String playlistPath = GP_CONSTANTS.GP_PLAYLIST_PATH;
+        if(isTakePlBkp){
+            playlistPath = GP_CONSTANTS.GP_PLAYLIST_PATH+"\\backup\\Playlists_Backup_"+LocalDateTime.now().toString().replaceAll(":", "_");
+        }
         for (PlaylistItem plItem : plItems) {
             plItemIdentifier = plItem.getPlaylistId() + plItem.getPlaylist();
             if (plItemsMap.containsKey(plItemIdentifier)) {
@@ -328,29 +336,30 @@ public class PlaylistService {
             plItemsMap.put(plItemIdentifier, tempPlItems);
         }
         resp.setResponse(plItemsMap);
-        resp.setStatus1(GP_CONSTANTS.GP_PLAYLIST_PATH);
+        resp.setStatus1(playlistPath);
         boolean isDirExists = GPUtil
-                .checkAndCreateFolders(GP_CONSTANTS.GP_PLAYLIST_PATH);
+                .checkAndCreateFolders(playlistPath);
         for (String plItemsMapKey : plItemsMap.keySet()) {
             tempPlItems = plItemsMap.get(plItemsMapKey);
             if (isDirExists && tempPlItems.size() > 0) {
-                writeSongPathToCSV(tempPlItems);
-                writePlItemToGPFIle(tempPlItems);
-                writePlItemToM3UFIle(tempPlItems);
+                writeSongPathToCSV(tempPlItems, playlistPath);
+                writePlItemToGPFIle(tempPlItems, playlistPath);
+                writePlItemToM3UFIle(tempPlItems, playlistPath);
             }
         }
         return resp;
     }
 
-    private void writePlItemToGPFIle(List<PlaylistItem> plItems) {
+    private void writePlItemToGPFIle(List<PlaylistItem> plItems, String playlistPath) {
         final String methodName = "writePlItemToGPFIle";
+        final String playlistFilePath = playlistPath+"\\gp\\";
         try {
-            boolean isGpDirExists = GPUtil.checkAndCreateFolders(GP_CONSTANTS.GP_PLAYLIST_PATH_GP);
+            boolean isGpDirExists = GPUtil.checkAndCreateFolders(playlistFilePath);
             if (!isGpDirExists) {
-                LOG.error(methodName + ", exiting, directory: " + GP_CONSTANTS.GP_PLAYLIST_PATH_GP + " doesn't esists");
+                LOG.error(methodName + ", exiting, directory: " + playlistFilePath + " doesn't esists");
                 return;
             }
-            File gpFile = new File(GP_CONSTANTS.GP_PLAYLIST_PATH_GP + plItems.get(0).getPlaylist() + ".gp");
+            File gpFile = new File(playlistFilePath + plItems.get(0).getPlaylist() + ".gp");
             FileWriter gpFileWriter = new FileWriter(gpFile);
             for (PlaylistItem plItem : plItems) {
                 gpFileWriter.append(plItem.getSongTitle())
@@ -368,15 +377,16 @@ public class PlaylistService {
         }
     }
 
-    private void writePlItemToM3UFIle(List<PlaylistItem> plItems) {
+    private void writePlItemToM3UFIle(List<PlaylistItem> plItems, String playlistPath) {
         final String methodName = "writePlItemToM3UFIle";
+        final String playlistFilePath = playlistPath+"\\m3u\\";
         try {
-            boolean isDirExists = GPUtil.checkAndCreateFolders(GP_CONSTANTS.GP_PLAYLIST_PATH_M3U);
+            boolean isDirExists = GPUtil.checkAndCreateFolders(playlistFilePath);
             if (!isDirExists) {
-                LOG.error(methodName + ", exiting, directory: " + GP_CONSTANTS.GP_PLAYLIST_PATH_M3U + " doesn't esists");
+                LOG.error(methodName + ", exiting, directory: " + playlistFilePath + " doesn't esists");
                 return;
             }
-            File m3uFile = new File(GP_CONSTANTS.GP_PLAYLIST_PATH_M3U + plItems.get(0).getPlaylist() + ".m3u");
+            File m3uFile = new File(playlistFilePath + plItems.get(0).getPlaylist() + ".m3u");
             FileWriter m3uFileWriter = new FileWriter(m3uFile);
             for (PlaylistItem plItem : plItems) {
                 m3uFileWriter.append("/storage/emulated/0/")
@@ -391,16 +401,17 @@ public class PlaylistService {
         }
     }
 
-    private void writeSongPathToCSV(List<PlaylistItem> plItems) {
+    private void writeSongPathToCSV(List<PlaylistItem> plItems, String playlistPath) {
         final String methodName = "writeSongPathToCSV";
+        final String playlistFilePath = playlistPath+"\\csv\\";
         try {
-            boolean isCSVDirExists = GPUtil.checkAndCreateFolders(GP_CONSTANTS.GP_PLAYLIST_PATH_CSV);
+            boolean isCSVDirExists = GPUtil.checkAndCreateFolders(playlistFilePath);
             if (!isCSVDirExists) {
                 LOG.error(
-                        methodName + ", exiting, directory: " + GP_CONSTANTS.GP_PLAYLIST_PATH_CSV + " doesn't esists");
+                        methodName + ", exiting, directory: " + playlistFilePath + " doesn't esists");
                 return;
             }
-            File songPathCSVFile = new File(GP_CONSTANTS.GP_PLAYLIST_PATH_CSV + plItems.get(0).getPlaylist() + ".csv");
+            File songPathCSVFile = new File(playlistFilePath + plItems.get(0).getPlaylist() + ".csv");
             FileWriter songPathCSVFileWriter = new FileWriter(songPathCSVFile);
             for (PlaylistItem plItem : plItems) {
                 songPathCSVFileWriter.append(plItem.getSongPath())

@@ -125,6 +125,14 @@ public class PlaylistItem {
         return new PlaylistItem(id, playlist, playlistId, songPath, albumName, albumId, songId, songTitle);
     }
 
+    public PlaylistItem merge(Library library){
+        this.songId = library.getSongId();
+        this.songPath = library.getSongPath();
+        this.albumName = library.getAlbum();
+        this.songTitle = library.getTitle();
+        return this;
+    }
+
     @Override
     public String toString() {
         return "PlaylistItem [id=" + id + ", playlist=" + playlist + ", playlistId=" + playlistId + ", songPath="

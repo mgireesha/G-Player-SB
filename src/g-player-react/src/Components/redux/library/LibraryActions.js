@@ -227,8 +227,9 @@ export const setPlaylistSongs = (playlistSongs) => ({
 //Genre - End
 
 //Side bar Library
-export const initLibraryBuild = () => ({
-    type: LIBRARY_INIT_BUILD_LIBRARY_START
+export const initLibraryBuild = (isTakePlBkp) => ({
+    type: LIBRARY_INIT_BUILD_LIBRARY_START,
+    isTakePlBkp
 })
 
 export const initLibraryBuildSucc = (response) => ({

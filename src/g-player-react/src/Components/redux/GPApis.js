@@ -94,8 +94,8 @@ export const fetchAlbumImgsAPI = () => {//Not used anymore
 }
 
 //Sidebar library
-export const initLibraryBuildAPI = () => {
-    return iAxios.get(`/library/build-library`).then(response => response);
+export const initLibraryBuildAPI = (isTakePlBkp) => {
+    return iAxios.post(`/library/build-library`, JSON.stringify({isTakePlBkp})).then(response => response);
 }
 
 export const initDeltaLibraryBuildAPI = () => {

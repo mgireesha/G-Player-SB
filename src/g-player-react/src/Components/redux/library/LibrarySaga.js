@@ -333,11 +333,11 @@ export function* onInitLibraryBuild(){
     yield takeLatest(LIBRARY_INIT_BUILD_LIBRARY_START, onInitLibraryBuildAsync);
 }
 
-export function*onInitLibraryBuildAsync(){
+export function*onInitLibraryBuildAsync(payload){
     try {
-        const response = yield call(initLibraryBuildAPI);
+        const response = yield call(initLibraryBuildAPI, payload.isTakePlBkp);
         if(response.status === 200){
-            yield put(initLibraryBuildSucc(response.data));
+            yield put(initLibraryBuildSucc(response.data.response));
         }
     } catch (error) {
         console.log(error);

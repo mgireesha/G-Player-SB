@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import com.gmt.gp.model.Album;
 import com.gmt.gp.model.Artist;
 import com.gmt.gp.model.GPResponse;
@@ -29,9 +31,16 @@ public class LibraryController {
     @Autowired
     private MessageService messageService;
 
-    @RequestMapping("/build-library")
-    public GPResponse runBuild() {
+    @PostMapping("/build-library")
+    public GPResponse runBuild(@RequestBody String buildRequestParam) {
         final String methodName = "runBuild";
+        Boolean isTakePlBkp = false;
+        try {
+            isTakePlBkp = new JSONObject(buildRequestParam).getBoolean("isTakePlBkp");
+        } catch (Exception e) {
+            LOG.info(methodName + " - ", e.getMessage());
+        }
+        
         GPResponse resp = new GPResponse();
         List<File> fileList = new ArrayList<File>();
 
@@ -53,13 +62,13 @@ public class LibraryController {
         LOG.info(methodName + " - Found " + fileList.size() + " audio files");
         messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, "FILES_TO_READ", String.valueOf(fileList.size()));
 
-        libraryService.cleanAlbumImageDir();
+        libraryService.deleteDirectoryContents(GP_CONSTANTS.GP_ALBUM_IMAGES_PATH);
         LOG.info(methodName + " - Deleted all images from albums folder");
         messageService.updateBuildStatus(GP_CONSTANTS.BUILD_STATUS, GP_CONSTANTS.BUILD_STATUS_STEP,
                 "Deleted all images from albums folder.");
 
         LOG.info(methodName + " - calling build library");
-        libraryService.buildLibrary(fileList);
+        resp = libraryService.buildLibrary(fileList, isTakePlBkp);
         return resp;
     }
 
