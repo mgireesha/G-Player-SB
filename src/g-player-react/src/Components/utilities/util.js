@@ -1,4 +1,4 @@
-import { SORT_NONE, SORT_PLAY_COUNT, WIKI_SUMMARY_URL } from "../redux/GPActionTypes";
+import { GP_SORTING_KEY_MAPPING, SORT_NONE, SORT_PLAY_COUNT, WIKI_SUMMARY_URL } from "../redux/GPActionTypes";
 
 export const getMins = (seconds) =>{
     
@@ -180,6 +180,16 @@ export const sortGroupByField = (entArr, field, histArr) => {
     });
     //console.log("entListObj: ",entListObj)
 return entListObj;
+}
+
+export const sortByKey = (key,arr,obj) => {
+    let sarr = [...arr];
+    if(obj && Object.keys(obj).length>0){
+        sarr =  arr.sort((a,b)=>obj[a]>obj[b]?GP_SORTING_KEY_MAPPING[key]:GP_SORTING_KEY_MAPPING[key]*-1);
+    }else{
+        sarr =  arr.sort((a,b)=>a>b?GP_SORTING_KEY_MAPPING[key]:GP_SORTING_KEY_MAPPING[key]*-1);
+    }
+    return sarr;
 }
 
 export const getCountArr = (maxCount, countArr) => {

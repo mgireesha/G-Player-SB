@@ -71,6 +71,7 @@ public class PlaylistService {
         PlaylistItem existingPLItem = null;
         List<Library> songs = null;
         try {
+            Playlist playlist = playlistRepository.getByName(reqPlaylist.getPlaylist());
             if (reqPlaylist.getSongId() != 0) {
                 Library library = libraryService.getSongBySongId(reqPlaylist.getSongId());
                 playlistItem = createPlaylistItemBySong(library, reqPlaylist);
@@ -82,6 +83,11 @@ public class PlaylistService {
                     playlistItems.add(playlistItem);
                     resp.setStatus(GP_CONSTANTS.SUCCESS);
                     resp.setPlaylistItems(playlistItems);
+                    if(null != playlist){
+                        playlist.setLastUpdated(LocalDateTime.now());
+                        playlistRepository.save(playlist);
+                    }
+                    
                 } else {
                     resp.setStatus(GP_CONSTANTS.FAILED);
                     resp.setPlaylistItems(playlistItems);
@@ -112,6 +118,7 @@ public class PlaylistService {
                 resp.setStatus(GP_CONSTANTS.SUCCESS);
                 resp.setPlaylistItems(playlistItems);
             }
+
         } catch (Exception e) {
             resp.setStatus(GP_CONSTANTS.FAILED);
             resp.setStatus1(null);
@@ -439,7 +446,7 @@ public class PlaylistService {
         for (String reqPlName : reqPlaylistObjKeys) {
             playlist = playlistRepository.getByName(reqPlName);
             if (playlist == null) {
-                playlist = new Playlist(reqPlName, LocalDateTime.now(), null);
+                playlist = new Playlist(reqPlName, LocalDateTime.now(), LocalDateTime.now());
                 playlist = playlistRepository.save(playlist);
             }
             reqPlaylistArr = (JSONArray) reqPlaylistsObj.get(reqPlName);
@@ -463,6 +470,8 @@ public class PlaylistService {
             }
 
             addSongsToPlaylist(songs, playlist);
+            playlist.setLastUpdated(LocalDateTime.now());
+            playlistRepository.save(playlist);
         }
         resp.setResponse(getPlaylists());
         resp.setStatus1(String.valueOf(reqPlaylistObjKeys.size()));
@@ -507,7 +516,7 @@ public class PlaylistService {
             resp.setError(GP_ERRORS.ERR_PLAYLIST_ALREADY_EXISTS);
             return resp;
         }
-        temPlaylist =  playlistRepository.save(new Playlist(name, LocalDateTime.now(), null));
+        temPlaylist =  playlistRepository.save(new Playlist(name, LocalDateTime.now(), LocalDateTime.now()));
         resp.setStatus(GP_CONSTANTS.SUCCESS);
         resp.setResponse(temPlaylist);
         return resp;

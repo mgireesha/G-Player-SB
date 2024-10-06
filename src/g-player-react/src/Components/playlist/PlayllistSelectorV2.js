@@ -16,6 +16,11 @@ export const PlaylistSelector = () => {
 
     const [styles, setStyles] = useState({display:'none'});
     const [obj, setobj] = useState(null);
+    const [displayPlaylists, setDisplayPlaylists] = useState([]);
+
+    useEffect(()=>{
+        setDisplayPlaylists(playLists?.sort((a,b)=>a.name>b.name?1:-1))
+    },[playLists])
 
     useEffect(()=>{
         if(contextObj.type === TRACK){
@@ -126,7 +131,7 @@ export const PlaylistSelector = () => {
                 {obj && obj.title+" - "+obj.album}
             </div>
             
-            {playLists && playLists.map(playlist =>
+            {displayPlaylists && displayPlaylists.map(playlist =>
                 <div className={assignedPlaylists.includes(playlist.name) ? "selected row" : "row"} onClick={()=>handleOnPlaylistClick(playlist.id,playlist.name)} title={playlist.name}>
                     <label>{playlist.name}</label>
                 </div>

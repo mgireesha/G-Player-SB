@@ -29,24 +29,25 @@ export const EditAlbumInfo = () => {
 
     const updateModifiedAlbum = async (event, field, type, songId) => {
         const target = event.target;
+        let targetValue = "";
         if(target.type !== "file"){
-            target.value = target.value.trim();
+            targetValue = target.value.trim();
         }
         const tempModifiedAlbum = {...modifiedAlbum};
         if(type === ALBUM){
-            tempModifiedAlbum[field] = target.value;
+            tempModifiedAlbum[field] = targetValue;
         }else if(type === TRACK){
             let tempAlbumTracks = tempModifiedAlbum.albumTracks;
             let track = {};
             if(!tempAlbumTracks){
                 tempAlbumTracks = [];
-                track[field] = target.value;
+                track[field] = targetValue;
                 track['songId'] = songId;
                 tempAlbumTracks.push(track);
             }else{
                 track = tempAlbumTracks.find(elem => {return elem.songId === songId});
                 if(track){
-                    track[field] = target.value;
+                    track[field] = targetValue;
                     tempAlbumTracks.forEach((element,i) => {
                         if(element.songId === songId){
                             tempAlbumTracks[i] = track;
@@ -54,7 +55,7 @@ export const EditAlbumInfo = () => {
                     });
                 }else{
                     track = {};
-                    track[field] = target.value;
+                    track[field] = targetValue;
                     track['songId'] = songId;
                     tempAlbumTracks.push(track);
                 }
@@ -74,13 +75,13 @@ export const EditAlbumInfo = () => {
                 }
                 if(track){
                     trackIndex = tempAlbumTracks.findIndex(elem1=> elem1.songId === track.songId);
-                    track[field] = target.value;
+                    track[field] = targetValue;
                     tempAlbumTracks[trackIndex] = track;
                 }else{
                     track = {
                         songId : elem.songId,
                     }
-                    track[field] = target.value;
+                    track[field] = targetValue;
                     tempAlbumTracks.push(track);
                 }
             });

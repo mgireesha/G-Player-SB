@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { PlaylistImg } from "./PlaylistImg";
 import { ImportExportPlaylistBtn } from "./ImportExportPlaylistBtn";
-import { CURRENT_PAGE, DELETE_LABEL, DELETE_PLAYLIST_CONF_TEXT, DELETE_PLAYLIST_LABEL, PLAYLISTS, REMOVE, SORT_A_TO_Z, SORT_A_TO_Z_DESC, SORT_COUNT_TRACKS, SORT_CREATED_DATE_NEW, SORT_CREATED_DATE_OLD, TEXT } from "../redux/GPActionTypes";
+import { CURRENT_PAGE, PLAYLISTS, SORT_A_TO_Z, SORT_A_TO_Z_DESC, SORT_COUNT_TRACKS, SORT_CREATED_DATE_NEW, SORT_CREATED_DATE_OLD, SORT_UPDATED_DATE_NEW, SORT_UPDATED_DATE_OLD } from "../redux/GPActionTypes";
 import { setCookies } from "../utilities/util";
 import { SortingContainer } from "../screen/SortingContainer";
 import { ThumbnailActionBtn } from "../ThumbnailActionBtn";
@@ -19,7 +19,7 @@ export const Playlists = () => {
     const playlistAlbums = useSelector(state => state.playlist.playlistAlbums);
     const playlistSongsCount = useSelector(state => state.playlist.playlistSongsCount);
 
-    const [sortBy, setSortBy] = useState(SORT_CREATED_DATE_NEW);
+    const [sortBy, setSortBy] = useState(SORT_UPDATED_DATE_NEW);
 
     const globalFilterText = useSelector(state => state.library.globalFilterText);
 
@@ -40,6 +40,10 @@ export const Playlists = () => {
             tempPlaylists = tempPlaylists.sort((a,b)=>{return new Date(a.createdDate)>new Date(b.createdDate)?-1:1});
         }else if(sortBy === SORT_CREATED_DATE_OLD){
             tempPlaylists = tempPlaylists.sort((a,b)=>{return new Date(a.createdDate)>new Date(b.createdDate)?1:-1});
+        }else if(sortBy === SORT_UPDATED_DATE_NEW){
+            tempPlaylists = tempPlaylists.sort((a,b)=>{return new Date(a.lastUpdated)>new Date(b.lastUpdated)?-1:1});
+        }else if(sortBy === SORT_UPDATED_DATE_OLD){
+            tempPlaylists = tempPlaylists.sort((a,b)=>{return new Date(a.lastUpdated)>new Date(b.lastUpdated)?1:-1});
         }else if(sortBy === SORT_COUNT_TRACKS){
             tempPlaylists = tempPlaylists.sort((a,b)=>{return playlistSongsCount[a.id]>playlistSongsCount[b.id]?-1:1})
         }
@@ -77,8 +81,9 @@ export const Playlists = () => {
                         showLKey={false} 
                         sortSelectors={
                             [
+                                SORT_UPDATED_DATE_NEW,
                                 SORT_CREATED_DATE_NEW,
-                                SORT_CREATED_DATE_OLD,
+                                SORT_UPDATED_DATE_OLD,
                                 SORT_COUNT_TRACKS,
                                 SORT_A_TO_Z,
                                 SORT_A_TO_Z_DESC,

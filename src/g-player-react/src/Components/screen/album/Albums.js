@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, GP_ALBUMS_SORT_FIELD_MAPPING, LANGUAGE, MULTI_LINGUAL, SOME_PAGE, SORT_ARTIST, SORT_A_TO_Z, SORT_A_TO_Z_DESC, SORT_LANGUAGE, SORT_MULTI_LINGUAL, SORT_YEAR } from "../../redux/GPActionTypes";
+import { CURRENT_PAGE, SOME_PAGE, SORT_ARTIST, SORT_A_TO_Z, SORT_A_TO_Z_DESC, SORT_LANGUAGE, SORT_MULTI_LINGUAL, SORT_YEAR } from "../../redux/GPActionTypes";
 import { fetchAllAlbums } from "../../redux/library/LibraryActions";
-import { camelize, replace_AndCamelize, setCookies, sortGroupByField } from "../../utilities/util";
-import { AlbumThumb } from "./AlbumThumb";
-import { SortingContainer } from "../SortingContainer";
+import { setCookies } from "../../utilities/util";
 import { Spinner } from "../../utilities/Spinner";
 import { AlbumList } from "./AlbumList";
 

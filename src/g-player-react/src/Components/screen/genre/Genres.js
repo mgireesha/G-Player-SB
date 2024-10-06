@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchGenreDetails } from "../../redux/library/LibraryActions";
 import { Link } from "react-router-dom";
 import { GroupedThumbImg4 } from "../../GroupedThumbImg4";
-import { CURRENT_PAGE, GENRE, GENRES, GENRE_LABEL, SORT_ARTIST, SORT_A_TO_Z, SORT_A_TO_Z_DESC, SORT_COUNT_TRACKS, TRACKS_LABEL } from "../../redux/GPActionTypes";
+import { CURRENT_PAGE, GENRE, GENRES, GENRE_LABEL, SORT_A_TO_Z, SORT_A_TO_Z_DESC, SORT_COUNT_TRACKS, TRACKS_LABEL } from "../../redux/GPActionTypes";
 import { ThumbnailActionBtn } from "../../ThumbnailActionBtn";
 import { camelize, setCookies } from "../../utilities/util";
 import { SortingContainer } from "../SortingContainer";
