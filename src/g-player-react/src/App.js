@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import store from './Components/redux/store';
 import { AppHeader } from './Components/AppHeading';
 import { HashRouter as Router } from 'react-router-dom';
+import { CookiesProvider } from 'react-cookie';
 
 function App() {
   // useEffect(()=>{
@@ -20,12 +21,14 @@ function App() {
   // },[])
   return (
     <div className="App app-container">
-        <Provider store={store}>
+      <Provider store={store}>
+        <CookiesProvider>
           <AppHeader />
           <Router>
             <Home />
           </Router>
-        </Provider>
+        </CookiesProvider>
+      </Provider>
     </div>
   );
 }

@@ -546,7 +546,7 @@ public class PlaylistService {
         if(GP_CONSTANTS.TRACK.equalsIgnoreCase(type)){
             return playlistItemRepository.getPlaylistsBySongId(Long.parseLong(identifier));
         }else if(StringUtils.equals(type, GP_CONSTANTS.ALBUM)){
-            System.out.println(playlistItemRepository.getPlaylistsByAlbumName(identifier));
+           // System.out.println(playlistItemRepository.getPlaylistsByAlbumName(identifier));
             return playlistItemRepository.getPlaylistsByAlbumName(identifier);
         }
         return new ArrayList<String>();//returning an empty list

@@ -18,9 +18,11 @@ import { CommonPopup } from "./CommnPopup";
 import { GPContexMenu } from "./screen/GPContextMenu";
 import { StatusMessage } from "./screen/StatusMessage";
 import { MetadataPopup } from "./screen/metadata/MetadataPopup";
+import { useCookies } from "react-cookie";
 
 export const Home = () => {
     const dispatch = useDispatch();
+    const [cookies] = useCookies();
     const showContextMenu = useSelector(state => state.library.showContextMenu);
     const showPlaylistSelector = useSelector(state => state.library.showPlaylistSelector);
     const showMetadataPopup = useSelector(state => state.library.metadataPopupObj.showMetadataPopup);
@@ -54,36 +56,29 @@ export const Home = () => {
     }
 
     const fetchTracks = () => {
-        let playedFromCookieValue = getCookieValue("playedFrom");
-        if(playedFromCookieValue){
-            playedFromCookieValue = JSON.parse(playedFromCookieValue);
-            if(playedFromCookieValue.pfKey!==undefined){
-                switch (playedFromCookieValue.pfKey) {
-                    case ALBUM:
-                        dispatch(fetchAlbumTacks(playedFromCookieValue.pfVal, undefined, true)); // sending true will set tracks to playertracks
-                        break;
-                    case ARTIST:
-                        dispatch(fetchSongsByArtist(playedFromCookieValue.pfVal,true));
-                        break;
-                    case RECENT_PLAYS:
-                        dispatch(fetchAllHistory(true));
-                        break;
-                    case PLAYLIST:
-                        dispatch(fetchSongsInPlaylist(playedFromCookieValue.pfVal,true));
-                        break;
-                    case GENRE:
-                        dispatch(fetchSongsByGenre(playedFromCookieValue.pfVal,true));
-                        break;
-                    case LANGUAGE:
-                        dispatch(fetchSongsByLanguage(playedFromCookieValue.pfVal,true));
-                        break;
-                    default:
-                        dispatch(fetchAllSongs(true));
-                        break;
-                }
-            }else{
+        let playedFrom = cookies.playedFrom;
+        switch (playedFrom?.pfKey) {
+            case ALBUM:
+                dispatch(fetchAlbumTacks(playedFrom.pfVal, undefined, true)); // sending true will set tracks to playertracks
+                break;
+            case ARTIST:
+                dispatch(fetchSongsByArtist(playedFrom.pfVal,true));
+                break;
+            case RECENT_PLAYS:
+                dispatch(fetchAllHistory(true));
+                break;
+            case PLAYLIST:
+                dispatch(fetchSongsInPlaylist(playedFrom.pfVal,true));
+                break;
+            case GENRE:
+                dispatch(fetchSongsByGenre(playedFrom.pfVal,true));
+                break;
+            case LANGUAGE:
+                dispatch(fetchSongsByLanguage(playedFrom.pfVal,true));
+                break;
+            default:
                 dispatch(fetchAllSongs(true));
-            }
+                break;
         }
     }
 
