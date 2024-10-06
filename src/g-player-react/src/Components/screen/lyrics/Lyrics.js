@@ -16,6 +16,7 @@ import { MdOutlineCancelPresentation } from "react-icons/md";
 import { FaHourglassStart } from "react-icons/fa6";
 import { IoMdDownload } from "react-icons/io";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { TbWriting } from "react-icons/tb";
 
 export const Lyrics = () => {
     const dispatch = useDispatch();
@@ -253,7 +254,7 @@ export const Lyrics = () => {
         </div>
         {songPlaying!==null &&  songPlaying.lyricist!==null && 
             <div className="lyrics-written-by-div">
-                <span title={songPlaying.lyricist}>Lyricist: {songPlaying.lyricist}</span>
+                <span title={`Lyrics :${songPlaying.lyricist}`} style={{display:'flex',alignItems:'center', justifyContent:'flex-end'}}><TbWriting style={{fontSize:20}}  /><span>&nbsp;: {songPlaying.lyricist}</span></span>
             </div>
         }
     </div>}

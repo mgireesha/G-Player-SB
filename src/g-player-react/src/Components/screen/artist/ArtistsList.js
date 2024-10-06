@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ARTIST, ARTISTS, A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, SORT_A_TO_Z, SORT_A_TO_Z_DESC, SORT_COUNT_TRACKS } from "../../redux/GPActionTypes";
+import { ARTIST, ARTISTS, CURRENT_PAGE, SORT_A_TO_Z, SORT_A_TO_Z_DESC, SORT_COUNT_TRACKS } from "../../redux/GPActionTypes";
 import { fetchAllArtistsDtls } from "../../redux/library/LibraryActions";
 import { setCookies, sortGroupByField } from "../../utilities/util";
 import { SortingContainer } from "../SortingContainer";
@@ -27,8 +27,6 @@ export const ArtistsList = () => {
             if(sortBy===SORT_COUNT_TRACKS){
                 let tempArtistsDetails = [...artistsDetailsFS];
                 tempArtistsDetails = tempArtistsDetails.sort((a, b)=>a.count > b.count?-1:1);
-                //tempArtistsDetails = tempArtistsDetails.sort((a, b)=>b.imgAvl?1:-1);
-                //tempArtistsDetails = tempArtistsDetails.filter(artist => {return artist.imgAvl || artist.count>1})
                 setAlbumArtistsDetails(tempArtistsDetails);
             }
         }
@@ -48,13 +46,13 @@ export const ArtistsList = () => {
         <>
             <SortingContainer sortListKeys={artistsDetailsListKeys} setSortBy={setSortBy} sortBy={sortBy} sortSelectors={[SORT_A_TO_Z,SORT_A_TO_Z_DESC, SORT_COUNT_TRACKS]} showSortByLabel={true} />
             <div className="artists-list">
-                {sortBy === SORT_COUNT_TRACKS && artistsDetails!==null && artistsDetails!==undefined && artistsDetails.length>0 && artistsDetails.map((artist, index) =>
+                {sortBy === SORT_COUNT_TRACKS && artistsDetails?.map((artist, index) =>
                     <ArtistThumb artist={artist} key={index} />
                 )}
-                {sortBy!==SORT_COUNT_TRACKS && artistsDetailsListKeys !== undefined && artistsDetailsListKeys.length > 0 && artistsDetailsListKeys.map((lKey, index) =>
+                {sortBy!==SORT_COUNT_TRACKS && artistsDetailsListKeys?.map((lKey, index) =>
                     <>
-                        <label id={"lKey" + lKey} className="artists-lKey">{lKey}</label>
-                        {artistsDetailsList[lKey] !== undefined && artistsDetailsList[lKey].length > 0 && artistsDetailsList[lKey].map((artist, artistIndex) =>
+                        <label id={"lKey" + lKey} className="artists-lKey" key={index}>{lKey}</label>
+                        {artistsDetailsList[lKey]?.map((artist, artistIndex) =>
                             <ArtistThumb artist={artist} key={artistIndex} />
                         )}
                     </>

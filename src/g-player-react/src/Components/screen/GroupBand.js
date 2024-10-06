@@ -51,7 +51,7 @@ export const GroupBand = () => {
             <div className={selectedBand===LANGUAGES?"band languages-band group-band-highlight":"band languages-band"}>
                 <Link to="/music/languages"><h3>{LANGUAGES_LABEL}</h3></Link>
             </div>
-            {[TRACKS, ALBUMS].includes(selectedBand) && <FilterComp isSetToStore={true} placeHolder={selectedBand} />}
+            {[TRACKS, ALBUMS, ARTISTS].includes(selectedBand) && <FilterComp isSetToStore={true} placeHolder={selectedBand} />}
         </div>
     );
 }
