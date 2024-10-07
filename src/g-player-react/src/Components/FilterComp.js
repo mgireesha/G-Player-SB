@@ -3,8 +3,10 @@ import {IoMdClose} from 'react-icons/io';
 import { useDispatch } from "react-redux";
 import { setGlobalFilterText } from "./redux/library/LibraryActions";
 import { camelize } from "./utilities/util";
+import { useLocation } from "react-router-dom";
 export const FilterComp = ({onSetFilterTxt, isSetToStore, placeHolder}) =>{
     const dispatch = useDispatch();
+    const locationL = useLocation();
 
     const [filterInputEvent, setFilterInputEvent] = useState(undefined);
 
@@ -14,6 +16,10 @@ export const FilterComp = ({onSetFilterTxt, isSetToStore, placeHolder}) =>{
         filterInpFld.focus();
         filterInpFld.blur();
     }
+
+    useEffect(()=>{
+        if(locationL.pathname)dispatch(setGlobalFilterText(""));
+    },[locationL.pathname]);
 
     useEffect(() => {
         if(filterInputEvent){
