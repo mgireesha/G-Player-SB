@@ -5,7 +5,6 @@ export const ShowAssignedPlaylists = () => {
     const [checked, setChecked] = useState(false);
     const [cookies, setCookie, removeCookie] = useCookies();
     useEffect(()=>{
-        console.log(cookies.SHOW_ASSIGNED_PLAYLISTS)
         setChecked(cookies.SHOW_ASSIGNED_PLAYLISTS??false)
     },[])
     const handleChange = (event) => {

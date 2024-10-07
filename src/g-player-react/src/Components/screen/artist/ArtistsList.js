@@ -50,8 +50,6 @@ export const ArtistsList = () => {
     useEffect(() => {
         if (globalFilterText && globalFilterText.length > 2) {
             if(sortBy === SORT_COUNT_TRACKS){
-                console.log("artistsDetails: 0",artistsDetails)
-                console.log("globalFilterText: 0",globalFilterText)
                 setFilteredArtistsDetails(filterArtistDetails(globalFilterText, artistsDetails))
             }else{
                 setFilteredArtistsDetailsList(filterArtistDetailsList(globalFilterText,artistsDetailsList,artistsDetailsListKeys))
