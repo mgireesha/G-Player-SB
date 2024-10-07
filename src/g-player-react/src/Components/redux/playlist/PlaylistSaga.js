@@ -63,9 +63,9 @@ export function* onAddToPlaylistAsnc(payload){
                 //successMessage = "Added "+addedSongsCount+" tracks to "+playlistItem.playlist+" playlist!";
                 successMessage = data.status1;
                 if(addedSongsCount === 1){
-                    const songPath = playlistItem.songPath;
-                    addedSongsCount = songPath.substring(songPath.lastIndexOf("\\")+1, songPath.indexOf("."));
-                    successMessage = "Added "+addedSongsCount+" to "+playlistItem.playlist+" playlist!";
+                   // const songPath = playlistItem.songPath;
+                    //addedSongsCount = songPath.substring(songPath.lastIndexOf("\\")+1, songPath.indexOf("."));
+                    successMessage = "Added "+data?.playlistItems?.at(0)?.songTitle+" to "+playlistItem.playlist+" playlist!";
                 }
                 yield put(addToPlaylistSucc(data));
             }else{

@@ -16,7 +16,7 @@ export const Languages = () => {
     const [languageAlbums, setLanguageAlbums] = useState({});
     const [languages, setLanguages] = useState([]);
     const [languageSongCount, setLanguageSongCount] = useState({});
-    const [sortBy, setSortBy] = useState(SORT_A_TO_Z);
+    const [sortBy, setSortBy] = useState(SORT_COUNT_TRACKS);
 
     useEffect(()=>{
         if(!languageDetails || (languageDetails && !languageDetails.LANGUAGE_SONG_COUNT)){
@@ -53,7 +53,7 @@ export const Languages = () => {
             }
             setLanguages(sortedLanguages);
         }
-    },[sortBy, languages])
+    },[sortBy])
 
     return(
         <div className="languages">

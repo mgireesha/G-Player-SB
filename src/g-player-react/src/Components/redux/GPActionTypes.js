@@ -134,6 +134,7 @@ export const RUNNING = 'RUNNING';
 
 export const SAVE_LABEL = 'Save';
 export const SEARCH_RESULTS_LABEL = 'Search Results';
+export const SHOW_ASSIGNED_PLAYLISTS = 'SHOW_ASSIGNED_PLAYLISTS';
 export const SOME_PAGE = 'SOME_PAGE';
 export const SORT_A_TO_Z = 'SORT_A_TO_Z';
 export const SORT_A_TO_Z_DESC = 'SORT_A_TO_Z_DESC';

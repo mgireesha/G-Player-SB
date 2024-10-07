@@ -5,14 +5,19 @@ import { fetchAllArtistsDtls } from "../../redux/library/LibraryActions";
 import { setCookies, sortGroupByField } from "../../utilities/util";
 import { SortingContainer } from "../SortingContainer";
 import { ArtistThumb } from "./ArtistThumb";
+import { filterArtistDetails, filterArtistDetailsList } from "./artistUtil";
 
 export const ArtistsList = () => {
     const dispatch = useDispatch();
     let artistsDetailsFS = useSelector(state => state.library.artistsDetails);
-    const [artistsDetails, setAlbumArtistsDetails] = useState([]);
+    const globalFilterText = useSelector(state => state.library.globalFilterText);
+    const [artistsDetails, setArtistsDetails] = useState([]);
+    const [filteredArtistsDetails, setFilteredArtistsDetails] = useState([]);
     const [artistsDetailsList, setArtistsDetailsList] = useState({});
+    const [filteredrtistsDetailsList, setFilteredArtistsDetailsList] = useState({});
     const [artistsDetailsListKeys, setArtistsDetailsListKeys] = useState([]);
     const [sortBy, setSortBy] = useState(SORT_COUNT_TRACKS);
+    const [isFilterActive, setFilterActive] = useState(false);
     
     useEffect(()=>{
         dispatch(fetchAllArtistsDtls(ARTIST));
@@ -27,7 +32,7 @@ export const ArtistsList = () => {
             if(sortBy===SORT_COUNT_TRACKS){
                 let tempArtistsDetails = [...artistsDetailsFS];
                 tempArtistsDetails = tempArtistsDetails.sort((a, b)=>a.count > b.count?-1:1);
-                setAlbumArtistsDetails(tempArtistsDetails);
+                setArtistsDetails(tempArtistsDetails);
             }
         }
     },[artistsDetailsFS, sortBy]);
@@ -41,18 +46,34 @@ export const ArtistsList = () => {
             setArtistsDetailsListKeys(tempArtistsDetailsListKeys);
         }
     },[artistsDetailsList]);
+
+    useEffect(() => {
+        if (globalFilterText && globalFilterText.length > 2) {
+            if(sortBy === SORT_COUNT_TRACKS){
+                setFilteredArtistsDetails(filterArtistDetails(globalFilterText, artistsDetails))
+            }else{
+                setFilteredArtistsDetailsList(filterArtistDetailsList(globalFilterText,artistsDetailsList,artistsDetailsListKeys))
+            }
+            setFilterActive(true);
+        } else {
+            setFilteredArtistsDetails(artistsDetails)
+            setFilteredArtistsDetailsList(artistsDetailsList)
+            setFilterActive(false);
+        }
+    }, [globalFilterText,artistsDetailsListKeys, artistsDetails,artistsDetailsList, sortBy]);
+    
     
     return(
         <>
-            <SortingContainer sortListKeys={artistsDetailsListKeys} setSortBy={setSortBy} sortBy={sortBy} sortSelectors={[SORT_A_TO_Z,SORT_A_TO_Z_DESC, SORT_COUNT_TRACKS]} showSortByLabel={true} />
+            {!isFilterActive && <SortingContainer sortListKeys={artistsDetailsListKeys} setSortBy={setSortBy} sortBy={sortBy} sortSelectors={[SORT_A_TO_Z,SORT_A_TO_Z_DESC, SORT_COUNT_TRACKS]} showSortByLabel={true} />}
             <div className="artists-list">
-                {sortBy === SORT_COUNT_TRACKS && artistsDetails?.map((artist, index) =>
+                {sortBy === SORT_COUNT_TRACKS && filteredArtistsDetails?.map((artist, index) =>
                     <ArtistThumb artist={artist} key={index} />
                 )}
                 {sortBy!==SORT_COUNT_TRACKS && artistsDetailsListKeys?.map((lKey, index) =>
                     <>
-                        <label id={"lKey" + lKey} className="artists-lKey" key={index}>{lKey}</label>
-                        {artistsDetailsList[lKey]?.map((artist, artistIndex) =>
+                        {!isFilterActive && <label id={"lKey" + lKey} className="artists-lKey" key={index}>{lKey}</label>}
+                        {filteredrtistsDetailsList[lKey]?.map((artist, artistIndex) =>
                             <ArtistThumb artist={artist} key={artistIndex} />
                         )}
                     </>

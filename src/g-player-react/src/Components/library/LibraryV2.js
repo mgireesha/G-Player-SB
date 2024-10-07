@@ -9,6 +9,7 @@ import { setCookies } from "../utilities/util";
 import { ArtistImageDownload } from "./ArtistImageDownload";
 import { MusicLibraryPath } from "./MusicLibraryPath";
 import { BuildLibrary } from "./BuildLibrary";
+import { ShowAssignedPlaylists } from "./ShowAssignedPlaylists";
 
 export const Library = () => {
 
@@ -29,6 +30,7 @@ export const Library = () => {
                 <BuildLibrary />
                 <MusicLibraryPath />
                 <ArtistImageDownload />
+                <ShowAssignedPlaylists />
             </div>
         </div>
     );

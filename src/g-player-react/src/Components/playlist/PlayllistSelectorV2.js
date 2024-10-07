@@ -13,7 +13,6 @@ export const PlaylistSelector = () => {
     const contextObj = useSelector(state => state.library.contextObj);
     const plPhase = useSelector(state => state.playlist.phase);
     const assignedPlaylists = useSelector(state => state.playlist.assignedPlaylists);
-
     const [styles, setStyles] = useState({display:'none'});
     const [obj, setobj] = useState(null);
     const [displayPlaylists, setDisplayPlaylists] = useState([]);
@@ -31,9 +30,6 @@ export const PlaylistSelector = () => {
         }
         setobj(contextObj.obj);
     },[contextObj])
-
-    console.log("contextObj: ",contextObj)
-
 
     useEffect(()=>{
         if(contextObj && contextObj.position){

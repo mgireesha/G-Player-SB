@@ -53,7 +53,7 @@ export const Genres = () => {
             }
             setGenres(sortedGenres);
         }
-    },[sortBy,genres])
+    },[sortBy])
 
     return(
         <div className="genres">
