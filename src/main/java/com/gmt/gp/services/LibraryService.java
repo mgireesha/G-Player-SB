@@ -655,6 +655,19 @@ public class LibraryService {
         return libraryRepository.getSongsBySongIds(songIds);
     }
 
+    public List<Library> getSongsBySongIds(String[] songIds) {
+        List<Long> songIdsLong = new ArrayList<Long>();
+        Long songIdLong = null;
+        for (String songId : songIds) {
+            songIdLong = Long.parseLong(songId);
+            if(songIdLong!=null){
+                songIdsLong.add(songIdLong);
+            }
+
+        }
+        return libraryRepository.getSongsBySongIds(songIdsLong);
+    }
+
     public List<Library> getSongsByAlbum(String album) {
         return libraryRepository.getByAlbum(album);
     }

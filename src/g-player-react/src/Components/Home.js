@@ -3,11 +3,11 @@ import { Player } from "./player/Player";
 import { Sidebar } from "./Sidebar";
 import { Screen } from "./screen/Screen";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAlbumTacks, fetchAllAlbums, fetchAllHistory, fetchAllSongs, fetchSongsByArtist, fetchSongsByGenre, fetchSongsByLanguage } from "./redux/library/LibraryActions";
+import { fetchAlbumTacks, fetchAllHistory, fetchAllSongs, fetchSongsByArtist, fetchSongsByGenre, fetchSongsByLanguage, setCheckedTrack, setCheckedTracks, setShowTrackCheckBox } from "./redux/library/LibraryActions";
 import { fetchCurrentSontAndStatus, playASongSucc, setIsShuffle, setMediaVolumeSucc, setRepeat } from "./redux/player/PlayerActions";
-import { getCookieDetails, getCookieValue, setCookies } from "./utilities/util";
-import { ALBUM, ARTIST, GENRE, LANGUAGE, MAIN_CONTAINER, PLAYLIST, RECENT_PLAYS, TRACK_LIST } from "./redux/GPActionTypes";
-import { Route, Routes } from "react-router-dom";
+import { getCookieDetails, setCookies } from "./utilities/util";
+import { ALBUM, ARTIST, GENRE, LANGUAGE, MAIN_CONTAINER, PLAYLIST, RECENT_PLAYS, REMOVE_ALL, TRACK_LIST } from "./redux/GPActionTypes";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { Library } from "./library/LibraryV2";
 import { Search } from "./search/Search";
 import { RecentPlays } from "./history/RecentPlays";
@@ -23,6 +23,7 @@ import { useCookies } from "react-cookie";
 export const Home = () => {
     const dispatch = useDispatch();
     const [cookies] = useCookies();
+    
     const showContextMenu = useSelector(state => state.library.showContextMenu);
     const showPlaylistSelector = useSelector(state => state.library.showPlaylistSelector);
     const showMetadataPopup = useSelector(state => state.library.metadataPopupObj.showMetadataPopup);
@@ -82,7 +83,12 @@ export const Home = () => {
         }
     }
 
+    const locationL = useLocation();
 
+    useEffect(()=>{
+        dispatch(setCheckedTracks(undefined, REMOVE_ALL));
+        dispatch(setShowTrackCheckBox(true));
+    },[locationL])
 
     return(
         <div className="main-container" id={MAIN_CONTAINER}>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCommonPopupObj } from "./redux/library/LibraryActions";
-import { ALBUM, ARTIST, COMMON_POPUP_ERROR_MSG, COMPONENT, GENRE, INPUT, LANGUAGE, POPUP_PRIMARY_BTN, TEXT, TRACK } from "./redux/GPActionTypes";
+import { ALBUM, ARTIST, COMMON_POPUP_ERROR_MSG, COMPONENT, GENRE, INPUT, LANGUAGE, MULTIPLE_TRACKS, POPUP_PRIMARY_BTN, TEXT, TRACK } from "./redux/GPActionTypes";
 import { PLAYLIST_ADD_TO_PLAYLIST_SUCCESS, PLAYLIST_CREATE_PLAYLIST_SUCCESS, PLAYLIST_DELETE_PLAYLIST_SUCCESS } from "./redux/playlist/PlaylistActionTypes";
 import { addToPlaylist, setAddedNewPlaylistObj } from "./redux/playlist/PlaylistActions";
 
@@ -55,6 +55,8 @@ export const CommonPopup = () => {
                 reqPLObj["genre"] = contextObj.obj;
             }else if(contextObj.type === ARTIST){
                 reqPLObj["artist"] = contextObj.obj;
+            }else if(contextObj.type === MULTIPLE_TRACKS){
+                reqPLObj["songsIds"] = contextObj.obj?.join(",");
             }
             dispatch(addToPlaylist(reqPLObj));
         }

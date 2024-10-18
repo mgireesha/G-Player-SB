@@ -1,4 +1,4 @@
-import { SUCCESS } from "../GPActionTypes";
+import { ADD, REMOVE, REMOVE_ALL, SUCCESS } from "../GPActionTypes";
 import { FETCH_SONGS_START, FETCH_SONGS_SUCCESS, 
         HISTORY_FETCH_ALL_HISTORY_START, HISTORY_FETCH_ALL_HISTORY_SUCCESS, 
         HISTORY_UPDATE_HISTORY_START, HISTORY_UPDATE_HISTORY_SUCCESS, 
@@ -38,9 +38,10 @@ import { FETCH_SONGS_START, FETCH_SONGS_SUCCESS,
         MESSAGE_FETCH_BY_TYPE_START, 
         MESSAGE_FETCH_BY_TYPE_SUCCESS, 
         SET_ARTIST_IMGAE_DOWNLOAD_SUMMARY, 
+        SET_CHECKED_TRACK, 
         SET_COMMON_POPUP_OBJ, SET_CONTEXT_OBJECT, SET_CURRENT_PAGE, SET_GLOBAL_FILTER_TEXT, SET_IS_CLICKED_ON_CONTEXT_MENU, 
         SET_METADATA_POPUP_OBJ, 
-        SET_PLAYER_TRACKS, SET_PLAYLIST_SONGS, SET_SHOW_CONTEXT_MENU, SET_SHOW_METADATA_POPUP, SET_SHOW_PLAY_LIST_SELECTOR, SET_STATUS_MESSAGE 
+        SET_PLAYER_TRACKS, SET_PLAYLIST_SONGS, SET_SHOW_CONTEXT_MENU, SET_SHOW_METADATA_POPUP, SET_SHOW_PLAY_LIST_SELECTOR, SET_SHOW_TRACK_CHECKBOX, SET_STATUS_MESSAGE 
     } from "./LibraryActionTypes";
 
 export const fetchAllSongs = (isSetPlayerTracks) => ({
@@ -420,6 +421,17 @@ export const setGlobalFilterText = (globalFilterText) => ({
     globalFilterText
 })
 
+export const setShowTrackCheckBox = (showTrackCheckBox) => ({
+    type: SET_SHOW_TRACK_CHECKBOX,
+    showTrackCheckBox:!showTrackCheckBox
+})
+
+export const setCheckedTracks = (songId, action) => ({
+    type: SET_CHECKED_TRACK,
+    songId,
+    action
+})
+
 export const filterMusicPath = (response, musicPath,musicPaths) => {
     if(response.status===SUCCESS){
         musicPaths = musicPaths.filter(mPath => {return mPath.messageId!==musicPath.messageId});
@@ -464,4 +476,13 @@ export const updateTracksPostEditTrack = (state, track, field) => {
         }
     });
     return tracks;
+}
+
+export const getCheckedTracks = (checkedTracks, songId, action) => {
+    if(action===ADD)
+        return [...checkedTracks, songId]
+    else if(action===REMOVE)
+        return checkedTracks.filter(ct=>ct!==songId);
+    else if(action===REMOVE_ALL)return []
+    else return checkedTracks;
 }

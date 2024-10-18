@@ -33,6 +33,8 @@ public class PlaylistItem {
     private String genre;
     @Transient
     private String artist;
+    @Transient
+    private String songsIds;
 
     public long getId() {
         return id;
@@ -163,6 +165,14 @@ public class PlaylistItem {
 
     public void setArtist(String artist) {
         this.artist = artist;
+    }
+
+    public String getSongsIds() {
+        return songsIds;
+    }
+
+    public void setSongsIds(String songsIds) {
+        this.songsIds = songsIds;
     }
 
     public LocalDateTime getCreatedDate() {

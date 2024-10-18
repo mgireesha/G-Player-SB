@@ -107,6 +107,10 @@ public class PlaylistService {
             } else if (StringUtils.isNotEmpty(reqPlaylist.getArtist())) {
                 songs = libraryService.getSongsByArtist(reqPlaylist.getArtist());
                 resp.setStatus1("Added All songs of artist '"+reqPlaylist.getArtist()+"' to playlist - "+reqPlaylist.getPlaylist());
+            }else if (StringUtils.isNotEmpty(reqPlaylist.getSongsIds())) {
+                String[] songIds = reqPlaylist.getSongsIds().split(",");
+                songs = libraryService.getSongsBySongIds(songIds);
+                resp.setStatus1("Added All selected songs to playlist - "+reqPlaylist.getPlaylist());
             } else {
                 resp.setStatus(GP_CONSTANTS.FAILED);
                 resp.setError(GP_ERRORS.ERR_PLAYLIST_REQ_ID_NOT_FOUND);

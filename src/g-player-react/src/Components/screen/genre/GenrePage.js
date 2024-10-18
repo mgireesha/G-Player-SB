@@ -79,7 +79,6 @@ export const GenrePage = () => {
                 setGenreAlbums(genreDetails.ALBUMS_BY_GENRE);
             }
         }
-        //console.log("genreDetails",genreDetails)
     },[genreDetails]);
 
     useEffect(()=>{

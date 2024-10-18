@@ -149,6 +149,10 @@ body{
             .FaPauseCircle{
                 font-size: 1.5em;
             }
+
+            .song-is-playing{
+                animation: rotate 2s normal linear infinite;
+            }
     
     
     }
@@ -3820,6 +3824,7 @@ a.disabled-click{
                         svg{
                             font-size: 1em;
                         }
+
                     }
                 }
             }

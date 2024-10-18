@@ -72,7 +72,6 @@ export const PlaylistPage = () => {
         const tracks = document.getElementById(TRACK_LIST);
         if(tracks && tracks.childElementCount > 0){
             if(isShuffle && playlistSongs && playlistSongs.length > 0){
-                console.log(Math.floor(Math.random() * playlistSongs.length)-1)
                 tracks.getElementsByClassName("track")[Math.floor(Math.random() * playlistSongs.length)-1].getElementsByClassName("title")[0].click()
             }else{
                 tracks.getElementsByClassName("track")[0].getElementsByClassName("title")[0].click();

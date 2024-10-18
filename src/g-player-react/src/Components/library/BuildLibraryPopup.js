@@ -15,8 +15,6 @@ export const BuildLibraryPopup = () => {
     const [isBuildCompleted, setIsBuildCompleted] = useState(false);
     const [isBuildInit, setIsBuildInit] = useState(false);
 
-    console.log("isBuildRunning:", isBuildRunning)
-
     useEffect(()=>{
         if(buildStatusList.length > 0){
             const buildStatus = [...buildStatusList].find(bs=>bs.name===BUILD_STATUS);
@@ -26,7 +24,6 @@ export const BuildLibraryPopup = () => {
             setIsBuildInit(buildStatus.value === INIT ? true : false);
             }
         }
-        console.log("buildStatusList: ",buildStatusList)
     },[buildStatusList])
 
     useEffect(()=>{

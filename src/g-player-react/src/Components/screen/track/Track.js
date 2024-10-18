@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { ALBUM, ARTIST, CURRENT_PAGE, EDIT_TRACK_INFO_LABEL, PLAYLIST, REMOVE_LABEL, TRACK, TRACK_MENU_BTN_CIRCLE } from "../../redux/GPActionTypes";
+import { ALBUM, ARTIST, UNSELECT_TRACKS_LABEL, CURRENT_PAGE, SELECT_TRACKS_LABEL, EDIT_TRACK_INFO_LABEL, PLAYLIST, REMOVE_LABEL, TRACK, TRACK_MENU_BTN_CIRCLE, MULTIPLE_TRACKS } from "../../redux/GPActionTypes";
 import { playASong, playPause, setIsPlaying } from "../../redux/player/PlayerActions";
 import { getCookieValue, getMins } from "../../utilities/util";
 import { FaPlay } from "react-icons/fa";
-import { setContextObj, setMetadataPopupObj, setShowContextMenu } from "../../redux/library/LibraryActions";
+import { setCheckedTracks, setContextObj, setMetadataPopupObj, setShowContextMenu, setShowTrackCheckBox } from "../../redux/library/LibraryActions";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { MdOutlineLyrics } from "react-icons/md";
 import { fetchAssignedPlaylists, fetchAssignedPlaylistsSucc, removeFromPlaylist } from "../../redux/playlist/PlaylistActions";
@@ -21,6 +21,8 @@ export const Track = ({track, playedFrom, index, hideTrackNum}) => {
     const currentVolume = useSelector(state => state.player.currentVolume);
     const currentPage = useSelector(state => state.library.currentPage);
     const assignedPlaylists = useSelector(state => state.playlist.assignedPlaylists);
+    const showTrackCheckBox = useSelector(state => state.library.showTrackCheckBox);
+    const checkedTracks = useSelector(state => state.library.checkedTracks)
 
     const playSong = async(songId) => {
         if(songPlaying!==null && songId===songPlaying.songId){
@@ -35,14 +37,15 @@ export const Track = ({track, playedFrom, index, hideTrackNum}) => {
         const position = event.target.getBoundingClientRect();
         event.preventDefault();
         const options = [];
-        if(playedFrom.pfKey === PLAYLIST){
+        if(playedFrom.pfKey === PLAYLIST){//this is to identify if current page is plalist page
             options.push({label:REMOVE_LABEL, callBackFunc: removeTrackFromPlaylist});
         }
         options.push({label:EDIT_TRACK_INFO_LABEL, callBackFunc: onSetShowMetadataPopup});
+        options.push({label:showTrackCheckBox?UNSELECT_TRACKS_LABEL:SELECT_TRACKS_LABEL, callBackFunc: ()=>dispatch(setShowTrackCheckBox(showTrackCheckBox))});
         const contextObj = {
             position,
-            type: TRACK,
-            obj: track,
+            type: checkedTracks?.length>0?MULTIPLE_TRACKS:TRACK,
+            obj: checkedTracks?.length>0?checkedTracks:track,
             options,
             rowList:[ALBUM, ARTIST]
         }
@@ -79,6 +82,11 @@ export const Track = ({track, playedFrom, index, hideTrackNum}) => {
         }, 300)
         setClearTime(tempClearTime)
     }
+
+    const handleTrackCheckBoxChange = (event) => {
+        const checked = event.target.checked;
+        dispatch(setCheckedTracks(track.songId, checked?'ADD':'REMOVE'))
+    }
     return(
         <>
             <div className={songPlaying!==null && track.songId===songPlaying.songId?"track text-highlighted-y":"track"} 
@@ -86,7 +94,12 @@ export const Track = ({track, playedFrom, index, hideTrackNum}) => {
                 onMouseEnter={handleMouseEnter}
                 onMouseLeave={()=>clearTimeout(clearTime)}
             >
-                {!hideTrackNum && <label style={{paddingLeft:'5'}}>{playedFrom.pfKey===ALBUM && track.trackNumber!==undefined && track.trackNumber!==0?track.trackNumber:index+1}</label>}
+                {!hideTrackNum && !showTrackCheckBox &&
+                    <label style={{paddingLeft:'5'}}>{playedFrom.pfKey===ALBUM && track.trackNumber!==undefined && track.trackNumber!==0?track.trackNumber:index+1}</label>
+                }
+                {showTrackCheckBox &&
+                    <input type="checkbox" className="custom-checkbox" style={{marginLeft:10}} onChange={(event)=>handleTrackCheckBoxChange(event)} />
+                }
                 <label 
                     onClick={()=>playSong(track.songId)} style={{cursor:'pointer'}} className="title" 
                     data-tooltip-id="assigned_playlists_tooltip"
@@ -126,7 +139,7 @@ export const Track = ({track, playedFrom, index, hideTrackNum}) => {
                         //isOpen
                     >
                         <div style={{ min: 'fit-content', width: 'fit-content', color:'beige'}}>
-                            {assignedPlaylists?.length>0 
+                            {assignedPlaylists?.length>0
                             ?
                                 <>
                                     <h3>Assigned Playlists</h3>
