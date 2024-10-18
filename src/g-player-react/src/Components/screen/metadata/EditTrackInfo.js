@@ -29,7 +29,6 @@ export const EditTrackInfo = () => {
     const initTrackInfoUpdate = () => {
         const tempModifiedTrack = {...modifiedTrack};
         if(Object.keys(tempModifiedTrack).length > 1){
-            console.log(editTrackInfo(tempModifiedTrack, TRACK))
             dispatch(editTrackInfo(tempModifiedTrack, TRACK));
         }
     }

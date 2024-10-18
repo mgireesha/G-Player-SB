@@ -62,10 +62,8 @@ export const ImportExportPlaylistPopupBtns = () => {
             setSelectedFiles(tempSelectedFiles); 
         }else if(fileType === '.gp'){
             tempSelectedFiles = getGPPLPayload(tempSelectedFiles);
-            console.log("65 tempSelectedFiles: ",tempSelectedFiles)
         }
         
-        console.log("tempSelectedFiles",tempSelectedFiles)
         /*console.log("tempSelectedFiles",tempSelectedFiles);
         const tempCommonPopupObj = {...commonPopupObj};
         tempCommonPopupObj.payload = tempSelectedFiles;
@@ -101,7 +99,6 @@ export const ImportExportPlaylistPopupBtns = () => {
     }
 
     const submitImportPlaylists = async () => {
-        //console.log("selectedFiles",{...selectedFiles});
         let fileInput = document.getElementById(CSV_IMPORT_INPUT);
         const importInpIds = [CSV_IMPORT_INPUT, GP_IMPORT_INPUT];
         for(let i=0; i<importInpIds.length;i++){

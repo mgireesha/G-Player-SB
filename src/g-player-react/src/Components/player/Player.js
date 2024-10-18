@@ -293,8 +293,8 @@ export const Player = () => {
                     </div>
                     <div className="play">
                         <div className="play-button" onClick={playPauseFunc}>
-                            {!isPlayingL && <FaPlay className="faplay"  />}
-                            {isPlayingL && <FaPauseCircle className="FaPauseCircle" />}
+                            {!isPlayingL && <FaPlay className="faplay"/>}
+                            {isPlayingL && <FaPauseCircle className="FaPauseCircle song-is-playing" />}
                         </div>
                     </div>
                     <div className="next">

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setCommonPopupObj, setShowContextMenu, setShowPlaylistSelector } from "../redux/library/LibraryActions";
-import { ADD_TOPLAYLIST_LABEL, ADD_TO_NEW_PLAYLIST_LABEL, ALBUM, ARTIST, COMPONENT, GP_CONTEXT_MENU, GP_CONTEXT_MENU_ELEM_IDS, MAIN_CONTAINER, TRACK } from "../redux/GPActionTypes";
+import { ADD_TOPLAYLIST_LABEL, ALBUM, ARTIST, COMPONENT, GP_CONTEXT_MENU, GP_CONTEXT_MENU_ELEM_IDS, MAIN_CONTAINER, MULTIPLE_TRACKS, TRACK } from "../redux/GPActionTypes";
 import { MdKeyboardArrowRight } from 'react-icons/md';
 import { Link } from "react-router-dom";
 import { checkIfActionAllowed } from "../utilities/util";
@@ -79,7 +79,7 @@ export const GPContexMenu = () => {
     },[]);
 
     const onSetShowPlaylistSelector = (showPlaylistSelector) => {
-        if(contextObj.type===TRACK){
+        if(contextObj.type===TRACK || contextObj.type===MULTIPLE_TRACKS){
             const commonPopupObj = {
                 showPopup: true,
                 title: ADD_TOPLAYLIST_LABEL,

@@ -15,7 +15,6 @@ import { getShowDeletePlaylistPopup } from "./PlalistUtil";
 export const Playlists = () => {
     const dispatch = useDispatch();
     const playlists = useSelector(state => state.playlist.playlists);
-    console.log(playlists)
     const playlistAlbums = useSelector(state => state.playlist.playlistAlbums);
     const playlistSongsCount = useSelector(state => state.playlist.playlistSongsCount);
 

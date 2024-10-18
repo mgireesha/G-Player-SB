@@ -88,7 +88,6 @@ export const Lyrics = () => {
                 }
             });
         }
-        console.log(tempLyricObj);
         setLyricsObjKeys(Object.keys(tempLyricObj));
         setLyricsObj(tempLyricObj);
     }

@@ -41,7 +41,6 @@ export const BuildLibrary = () => {
                 "value": RUNNING,
                 "type": BUILD_STATUS
             });
-            console.log("tempBuildStatus: ",tempBuildStatus)
             dispatch(fetchBuildStatusSucc(tempBuildStatus));
             setCookies(LIBRARY_BUILD, INITIATED);
         }

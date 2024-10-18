@@ -107,13 +107,11 @@ export const getCookieValue = (name) => {
 }
 
 export const sortGroupByField = (entArr, field, histArr) => {
-    //console.log("field",field)
     if(!field || field === SORT_NONE){
         let tempEntObj = {};
         entArr.forEach((ent,i)=>{
             tempEntObj[i]=[ent];
         });
-        //console.log("tempEntObj: ",tempEntObj)
         return tempEntObj;
     }
     let entListObj = {};
@@ -123,12 +121,10 @@ export const sortGroupByField = (entArr, field, histArr) => {
     let count;
     let maxCount = 0;
     let countArr = [0,1];
-    //console.log("117 entArr: ",entArr)
 
     if(field === SORT_PLAY_COUNT){
         maxCount = histArr.map(ent=>ent[1]).reduce((a,c)=>a>c?a:c,0);
         countArr = getCountArr(maxCount, countArr);
-        console.log("countArr: ",countArr)
     }
 
     entArr.forEach((ent) => {

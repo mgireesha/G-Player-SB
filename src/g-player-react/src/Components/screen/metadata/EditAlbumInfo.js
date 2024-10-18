@@ -93,7 +93,6 @@ export const EditAlbumInfo = () => {
             tempModifiedAlbum["albumImgAvl"] = true;
             document.getElementById(ALBM_ART_IMG_EDIT).src = fileB64;
         }
-        console.log("tempModifiedAlbum",tempModifiedAlbum);
         setModifiedAlbum(tempModifiedAlbum);
     }
 
