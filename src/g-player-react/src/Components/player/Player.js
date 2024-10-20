@@ -4,7 +4,6 @@ import { FaPauseCircle, FaPlay } from "react-icons/fa";
 import { MdOutlineLyrics, MdSkipNext, MdSkipPrevious } from "react-icons/md";
 import { TiArrowRepeat } from "react-icons/ti";
 import { TbArrowsShuffle , TbRepeatOnce} from "react-icons/tb";
-import { RiRefreshLine } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
 import { fettchCurrentSongStatus, playASong, playPause, setIsPlaying, setIsShuffle, setPlayBackLength, setRepeat } from "../redux/player/PlayerActions";
 import { getMins, scrolltoId, scrollToPlaying, setCookies } from "../utilities/util";
@@ -12,21 +11,24 @@ import { VolumeH } from "./VolumeH";
 import { Link } from "react-router-dom";
 import { fetchAllHistory, updateHistory } from "../redux/library/LibraryActions";
 import { SliderRC } from "../SliderRC";
-import { CURRENT, NEXT, PLAYER, PLAYLIST, PREVIOUS, REPEAT_ALL, REPEAT_OFF, REPEAT_ONE } from "../redux/GPActionTypes";
-
+import { ALBUM, ARTIST, CURRENT, GENRE, LANGUAGE, NEXT, PLAYER, PLAYLIST, PREVIOUS, 
+    RECENT_PLAYS, REPEAT_ALL, REPEAT_OFF, REPEAT_ONE, TRACKS } from "../redux/GPActionTypes";
 import def_album_art from '../images/def_album_art.png';
 import { SplitAndLink } from "../utilities/SplitAndLink";
 import { RefreshBuild } from "./RefreshBuild";
+import { useCookies } from "react-cookie";
 
 export const Player = () => {
 
     const dispatch = useDispatch();
 
+    const [cookies] = useCookies();
+
     const playerTracks = useSelector(state => state.library.playerTracks);
     const isPlaying = useSelector(state => state.player.isPlaying);
     const repeat = useSelector(state => state.player.repeat);
     const isShuffle = useSelector(state => state.player.isShuffle);
-    const songPlaying = useSelector(state => state.player.songPlaying);
+    let songPlaying = useSelector(state => state.player.songPlaying);
     const playedFrom = useSelector(state => state.player.playedFrom);
     const playingSongStat = useSelector(state => state.player.playingSongStat);
     const playlistSongs = useSelector(state => state.playlist.playlistSongs);
@@ -44,7 +46,6 @@ export const Player = () => {
             var key = event.which || event.keyCode; // keyCode detection
             var ctrl = event.ctrlKey ? event.ctrlKey : ((key === 17) ? true : false); // ctrl detection
             var shift = event.shiftKey ? event.shiftKey : ((key === 16) ? true : false);
-            //console.log("key",key,"ctrl",ctrl,"shift",shift)
             if(ctrl){
                 switch (key) {
                     case 32:
@@ -63,9 +64,9 @@ export const Player = () => {
 
             if (shift) {
                 if(playingSongStat && playingSongStat.currentTime){
-                    if(key == 39){
+                    if(key === 39){
                         setSlctdPlayBackTime(currentPlayVal+5);
-                    }else if(key == 37){
+                    }else if(key === 37){
                         setSlctdPlayBackTime(currentPlayVal-5);
                     }
                 }
@@ -75,6 +76,7 @@ export const Player = () => {
         return () => {
             window.removeEventListener('keyup', handleEscape);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [songPlaying,playingSongStat]);
 
     useEffect(()=>{
@@ -84,6 +86,7 @@ export const Player = () => {
     useEffect(()=>{
         clearInterval(statClearIntrvl);
         if(isPlaying)setStatClearIntrvl(setInterval( dispatchFetchStat, 500));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[songPlaying,isPlaying]);
 
     useEffect(()=>{
@@ -96,7 +99,8 @@ export const Player = () => {
              rBtn.classList.remove('rotate-player-button');
          }));
 
-        [...document.getElementsByClassName('player-controls')].forEach(pc => {pc.classList.remove('opacity-player-console')})
+        [...document.getElementsByClassName('player-controls')].forEach(pc => {pc.classList.remove('opacity-player-console')});
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[songPlaying]);
 
     useEffect(()=>{
@@ -104,15 +108,14 @@ export const Player = () => {
         if(playTime===10000 && songPlaying!==null){
             dispatch(updateHistory(songPlaying.songId));
         }
-
         if(playTime===12000){
             dispatch(fetchAllHistory());
         }
-
         if(playTime > 4000 && Number.isInteger(playTime/5000)){
             setCookies("playingSongStat",JSON.stringify(playingSongStat));
         }
         setPlayTime(tempPlayTime+500);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[playingSongStat])
 
     useEffect(()=>{
@@ -133,6 +136,7 @@ export const Player = () => {
             const pBarval = Math.floor((currentTime/trackLength)*100);
             setCurrentplayVal(pBarval);
        }
+       // eslint-disable-next-line react-hooks/exhaustive-deps
     },[playingSongStat]);
 
     const dispatchFetchStat = () => {
@@ -141,6 +145,7 @@ export const Player = () => {
 
     useEffect(()=> {
         getSetLibrary();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[isShuffle, playerTracks]);
 
     const getSetLibrary = () => {
@@ -261,6 +266,31 @@ export const Player = () => {
             setCookies("isShuffle", true);
         }
     }
+
+    const getToPageURL = (songPlaying) => {
+        let url = '#';
+        const playedFrom = cookies['playedFrom'];
+        if(playedFrom){
+            if(playedFrom.pfKey===PLAYLIST){
+                url = `/playlist/${playedFrom.pfField?.name}/${playedFrom.pfVal}`;
+            }else if(playedFrom.pfKey===ARTIST){
+                url = `music/artists/${playedFrom.pfVal}`;
+            }else if(playedFrom.pfKey===ALBUM){
+                url = `/music/albums/${songPlaying?.album}`;
+            }else if(playedFrom.pfKey===GENRE){
+                url = `/music/genres/${playedFrom.pfVal}`;
+            }else if(playedFrom.pfKey===LANGUAGE){
+                url = `/music/languages/${playedFrom.pfVal}`;
+            }else if(playedFrom.pfKey===RECENT_PLAYS){
+                url = `/recent`;
+            }else if(playedFrom.pfKey===TRACKS){
+                url = `/music/tracks`;
+            }
+        }else if(songPlaying){
+            url = `/music/albums/${songPlaying.album}`;
+        }
+        return url;
+    }
     
     return (
         <div className="player">
@@ -268,13 +298,15 @@ export const Player = () => {
                 <div className="song-info">
                     <Link to={songPlaying!==null?`/music/albums/${songPlaying.album}`:'#'}>
                         <div className="song-info-img">
-                            <img src={songPlaying ?`/gp_images/albums/${songPlaying.album}.jpg`: def_album_art} />
-                            {/* {songPlayingImg !== null && songPlayingImg!=='' && <img src={songPlayingImg} />}
-                            {(songPlayingImg===null || songPlayingImg==='') && <img src={def_album_art} />} */}
+                            <img src={songPlaying ?`/gp_images/albums/${songPlaying.album}.jpg`: def_album_art} alt={songPlaying?.album} />
                         </div>
                     </Link>
                     <div className="song-info-title">
-                        <p onClick={()=>scrollToPlaying(isPlaying)} style={{cursor:'pointer'}}>{songPlaying && songPlaying.title}{songPlaying && songPlaying.lyricsAvl && <span><MdOutlineLyrics title="This track has lyrics" style={{margin:'5px 0 0 5px'}} /></span>}</p>
+                        <Link to={getToPageURL(songPlaying)}>
+                            <p onClick={()=>scrollToPlaying(isPlaying)} style={{cursor:'pointer'}}>
+                                {songPlaying && songPlaying.title}{songPlaying && songPlaying.lyricsAvl && <span><MdOutlineLyrics title="This track has lyrics" style={{margin:'5px 0 0 5px'}} /></span>}
+                            </p>
+                        </Link>
                         <p style={{maxHeight: '3em',overflow: 'auto'}}>{songPlaying!==null && <SplitAndLink str={songPlaying.artist} url={`/music/artists/`} />}</p>
                     </div>
                     

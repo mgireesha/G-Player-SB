@@ -18,6 +18,7 @@ import { IoMdDownload } from "react-icons/io";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { TbWriting } from "react-icons/tb";
 
+// @deprecated
 export const Lyrics = () => {
     const dispatch = useDispatch();
     const songPlaying = useSelector(state => state.player.songPlaying);
@@ -68,6 +69,7 @@ export const Lyrics = () => {
                 console.log("Error in lyrics component while parsing lyrics: ",error);
             }
         }
+         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[playingSongStat]);
 
     const getLyrics =(lyrics) => {
@@ -114,6 +116,7 @@ export const Lyrics = () => {
             setShowCreateLyrics(false);
             if(songPlaying!==null)getLyrics(songPlaying.lyrics);
         }
+         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[phase]);
 
     const startCreateLyrics = () => {

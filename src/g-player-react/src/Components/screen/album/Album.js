@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import def_album_art from '../../images/def_album_art.png';
 import { ALBUM, CURRENT_PAGE, EDIT_INFO_LABEL, MULTI_LINGUAL, SORT_A_TO_Z, SORT_A_TO_Z_DESC, SORT_TRACK_NUMBER, TRACKS_LABEL } from ".././../redux/GPActionTypes";
-import { Lyrics } from "../lyrics/Lyrics";
+import { Lyrics } from "../lyrics/LyricsV2";
 import { fetchAlbum, fetchAlbumTacks, setMetadataPopupObj } from "../../redux/library/LibraryActions";
 import { camelize, setCookies } from "../../utilities/util";
 import { TrackList } from "../track/TrackList";

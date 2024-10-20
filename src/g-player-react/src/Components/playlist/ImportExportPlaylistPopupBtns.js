@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { COMING_SOON_LABEL, CSV_IMPORT_INPUT, EXPORT_LABEL, GP_IMPORT_INPUT, IMPORT_LABEL, IMPORT_PLAYLISTS_LABEL } from "../redux/GPActionTypes";
+import { COMING_SOON_LABEL, CSV_IMPORT_INPUT, EXPORT_LABEL, GP_IMPORT_INPUT, IMPORT_LABEL } from "../redux/GPActionTypes";
 import { useDispatch, useSelector } from "react-redux";
 import { exportPlaylists, importPlaylists } from "../redux/playlist/PlaylistActions";
 import { setCommonPopupObj } from "../redux/library/LibraryActions";
@@ -12,7 +12,6 @@ export const ImportExportPlaylistPopupBtns = () => {
 
     const [showImportOptions, setShowImportOptions] = useState(false);
     const [showSpinner, setShowSpinner] = useState(false);
-    const [selectedFiles, setSelectedFiles] = useState({});
 
     const onExportPlaylists = () => {
         if(window.confirm("Export Playlists ?")===true){
@@ -58,17 +57,9 @@ export const ImportExportPlaylistPopupBtns = () => {
             })
             tempSelectedFiles[playlistName] = result.split("\r\n");
         }
-        if(fileType === '.csv'){
-            setSelectedFiles(tempSelectedFiles); 
-        }else if(fileType === '.gp'){
+        if(fileType === '.gp'){
             tempSelectedFiles = getGPPLPayload(tempSelectedFiles);
         }
-        
-        /*console.log("tempSelectedFiles",tempSelectedFiles);
-        const tempCommonPopupObj = {...commonPopupObj};
-        tempCommonPopupObj.payload = tempSelectedFiles;
-        tempCommonPopupObj.dispatchPayload = true;
-        dispatch(setCommonPopupObj(tempCommonPopupObj));*/
         return tempSelectedFiles;
     }
 

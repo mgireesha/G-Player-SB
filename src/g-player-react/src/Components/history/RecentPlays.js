@@ -4,7 +4,6 @@ import { Header } from "../header/Header";
 import { CURRENT_PAGE, RECENT_PLAYS, RECENT_PLAYS_LABEL } from "../redux/GPActionTypes";
 import { fetchAllHistory } from "../redux/library/LibraryActions";
 import { AlbumThumbsGrouped } from "../screen/album/AlbumThumbsGrouped";
-import { Track } from "../screen/track/Track";
 import { AlbumThumb } from "../screen/album/AlbumThumb";
 import { setCookies } from "../utilities/util";
 import { TrackList } from "../screen/track/TrackList";
@@ -20,7 +19,7 @@ export const RecentPlays = () => {
     useEffect(()=>{
         dispatch(fetchAllHistory());
         setCookies(CURRENT_PAGE, JSON.stringify({type:RECENT_PLAYS}));
-    },[])
+    },[dispatch])
 
     useEffect(()=>{
         if(historyAlbums!==undefined){
