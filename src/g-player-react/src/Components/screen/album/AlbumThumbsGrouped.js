@@ -14,8 +14,8 @@ export const AlbumThumbsGrouped = ({albums}) => {
                 <>
                     <div className="album-thumb-img-div">
                         <Link to={`/music/albums/${album.albumName}`}>
-                            {album.albumImgAvl && <img src={"/gp_images/albums/" + album.albumName + ".jpg"} />}
-                            {!album.albumImgAvl && <img src={def_album_art} />}
+                            {album.albumImgAvl && <img src={"/gp_images/albums/" + album.albumName + ".jpg"} alt={album.albumName} />}
+                            {!album.albumImgAvl && <img src={def_album_art} alt="no image" />}
                         </Link>
                     </div>
                 </>

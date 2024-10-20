@@ -9,8 +9,8 @@ export const ArtistThumb = ({artist}) => {
         <div className="artist-thumb">
             <div className="artist-thumb-img-div">
                 <Link to={`/music/artists/${artist.artistName}`}>
-                    {!artist.imgAvl && <img src={def_album_art} />}
-                    {artist.imgAvl && <img src={GP_ARTIST_IMAGE_PATHS_MAP[artist.imageSource] +artist.artistName+".jpg"} />}
+                    {!artist.imgAvl && <img src={def_album_art} alt="no image" />}
+                    {artist.imgAvl && <img src={GP_ARTIST_IMAGE_PATHS_MAP[artist.imageSource] +artist.artistName+".jpg"} alt={artist.artistName} />}
                 </Link>
                 <ThumbnailActionBtn rowList={[]} options={[{label:ARTIST_LABEL, link: `/music/artists/${artist.artistName}`}]} type={ARTIST} obj={artist.artistName} />
             </div>

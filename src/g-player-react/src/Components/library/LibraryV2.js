@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
-
+import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { fetchBuildStatus, fetchMessagesByType, fetchMusicPath} from "../redux/library/LibraryActions";
-import { ARTIST_IMG_DOWNLOAD_STATUS,bCURRENT_PAGE, CURRENT_PAGE, LIBRARY, LIBRARY_LABEL} from "../redux/GPActionTypes";
+import { ARTIST_IMG_DOWNLOAD_STATUS, CURRENT_PAGE, LIBRARY, LIBRARY_LABEL} from "../redux/GPActionTypes";
 
 import { Header } from "../header/Header";
 import { setCookies } from "../utilities/util";

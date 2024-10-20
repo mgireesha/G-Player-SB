@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ALBUM_ARTIST, A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, SOME_PAGE, SORT_A_TO_Z, SORT_A_TO_Z_DESC, SORT_COUNT_ALBUMS } from "../../redux/GPActionTypes";
+import { ALBUM_ARTIST, CURRENT_PAGE, SOME_PAGE, SORT_A_TO_Z, SORT_A_TO_Z_DESC, SORT_COUNT_ALBUMS } from "../../redux/GPActionTypes";
 import { fetchAllAlbumArtistsDtls } from "../../redux/library/LibraryActions";
 import { setCookies, sortGroupByField } from "../../utilities/util";
 import { AlbumArtistThumb } from "../artist/AlbumArtistThumb";

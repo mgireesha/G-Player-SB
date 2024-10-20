@@ -64,6 +64,7 @@ export const CommonPopup = () => {
             dispatch(setCommonPopupObj({showPopup:false}));
             dispatch(setAddedNewPlaylistObj({}));
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[plPhase]);
 
     useEffect(()=>{

@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import def_album_art from '../../images/def_album_art.png';
 import { ALBM_ART_IMG_EDIT, ALBUM, ALBUM_ART, ALBUM_ARTIST_LABEL, ALBUM_LABEL, CANCEL_LABEL, GENRE_LABEL, LABEL_LABEL, 
     LANGUAGE_LABEL, LYRICIST_LABEL, MULTI_LINGUAL, MULTI_LINGUAL_LABEL, SAVE_LABEL, TOTAL_TRACKS_LABEL, TRACK, TRACKS, 
-    
     YEAR_LABEL } from "../../redux/GPActionTypes";
 import { convertDataFileToBase64, selectFocusedText, trimInputText } from "../../utilities/util";
 
@@ -129,8 +128,8 @@ export const EditAlbumInfo = () => {
                         <input type="text" defaultValue={album.albumName} onChange={(event)=>updateModifiedAlbum(event,'albumName',ALBUM)} />
                     </div>
                     <div className="row" style={{gridRow:'span 5',marginRight:'-5',position:"relative", paddingTop:10, maxWidth:250,maxHeight:250}}>
-                        {album.albumImgAvl && <img src={"/gp_images/albums/"+album.albumName+".jpg"} id={ALBM_ART_IMG_EDIT} />}
-                        {!album.albumImgAvl && <img src={def_album_art} id={ALBM_ART_IMG_EDIT} />}
+                        {album.albumImgAvl && <img src={"/gp_images/albums/"+album.albumName+".jpg"} id={ALBM_ART_IMG_EDIT} alt={album.albumName} />}
+                        {!album.albumImgAvl && <img src={def_album_art} id={ALBM_ART_IMG_EDIT} alt="no image" />}
                         <div style={{display:'grid',rowGap:10, margin:'5px 0'}}>
                             <label>Change Album Art</label>
                             <input type="file" onChange={(event)=>updateModifiedAlbum(event,'albumArt',ALBUM_ART)} style={{cursor:'pointer'}} />

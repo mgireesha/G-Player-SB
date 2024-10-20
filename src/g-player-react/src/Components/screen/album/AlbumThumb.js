@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import def_album_art from '../../images/def_album_art.png';
 import {MdOpenInFull} from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
-import { ALBUM, ARTIST, GENRE_TYPE_BTN, MULTI_GENRE, MULTI_LINGUAL } from "../../redux/GPActionTypes";
+import { ALBUM, ARTIST, GENRE_TYPE_BTN, MULTI_LINGUAL } from "../../redux/GPActionTypes";
 import { ThumbnailActionBtn } from "../../ThumbnailActionBtn";
 import { RxDragHandleDots2 } from "react-icons/rx";
 import { GPSelector } from "../../utilities/GPSelector";
@@ -38,8 +38,8 @@ export const AlbumThumb = ({album}) => {
         <div className="album-thumb">
             <div className="album-thumb-img-div">
                 <Link to={`/music/albums/${album.albumName}`}>
-                    {album.albumImgAvl && <img src={"/gp_images/albums/"+album.albumName+".jpg"} />}
-                    {!album.albumImgAvl && <img src={def_album_art} />}
+                    {album.albumImgAvl && <img src={"/gp_images/albums/"+album.albumName+".jpg"} alt={album.albumName} />}
+                    {!album.albumImgAvl && <img src={def_album_art} alt="no image" />}
                 </Link>
                 {album.languageType === MULTI_LINGUAL &&
                     <>

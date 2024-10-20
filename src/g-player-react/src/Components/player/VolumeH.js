@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setMediaVolume } from "../redux/player/PlayerActions";
-
 import {HiOutlineSpeakerWave, HiOutlineSpeakerXMark} from "react-icons/hi2";
 import { SliderRC } from "../SliderRC";
 import { getCookieValue, setCookies } from "../utilities/util";
@@ -12,7 +11,6 @@ export const VolumeH = () => {
     const currentVolume = useSelector(state => state.player.currentVolume);
     const songPlaying = useSelector(state => state.player.songPlaying);
     const [isMute,setIsMute] = useState(false);
-    const [timeOutVar,setTimeoutVar] = useState(0);
 
     useEffect(() => {
         const handleMute = (e) => {
@@ -28,11 +26,9 @@ export const VolumeH = () => {
                         }
                         break;
                     case 38:
-                        //timeOutVar = setTimeout(updateMediaVolume((currentVolume*100)+5), 500);
                         updateMediaVolume((currentVolume*100)+5);
                         break;
                     case 40:
-                        //timeOutVar = setTimeout(updateMediaVolume((currentVolume*100)-5), 500);
                         updateMediaVolume((currentVolume*100)-5);
                         break;
                     default:
@@ -44,7 +40,7 @@ export const VolumeH = () => {
         return () => {
             window.removeEventListener('keydown', handleMute);
         };
-    }, [isMute,currentVolume,timeOutVar]);
+    }, [isMute,currentVolume]);
 
     useEffect(()=>{
         if(songPlaying!==null){

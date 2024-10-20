@@ -17,13 +17,13 @@ export const GroupedThumbImg4 = ({albumNames, classPrefix}) => {
             {albumNameList.length > 0 &&
                 <div className={classPrefix+"-img"}>
                     {albumNameList.map(albumName =>
-                        <img src={`/gp_images/albums/${albumName}.jpg`} />
+                        <img src={`/gp_images/albums/${albumName}.jpg`} alt={albumName} />
                     )}
                 </div>
             }
             {albumNameList.length === 0 &&
                 <div className={classPrefix+"-no-img"}>
-                    <img src={def_album_art} />
+                    <img src={def_album_art} alt="no album" />
                 </div>
             }
         </div>

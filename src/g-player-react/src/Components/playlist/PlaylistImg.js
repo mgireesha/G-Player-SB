@@ -19,17 +19,17 @@ export const PlaylistImg = ({albumNames, link}) => {
                 <div className="playlist-img">
                     {link && albumNameList.map((albumName, i) =>
                         <Link key={i} to={`/music/albums/${albumName}`}>
-                            <img src={`/gp_images/albums/${albumName}.jpg`}  />
+                            <img src={`/gp_images/albums/${albumName}.jpg`} alt={albumName} />
                         </Link>
                     )}
                     {!link && albumNameList.map((albumName, i) =>
-                        <img src={`/gp_images/albums/${albumName}.jpg`} key={i} />
+                        <img src={`/gp_images/albums/${albumName}.jpg`} key={i} alt={albumName} />
                     )}
                 </div>
             }
             {albumNameList.length === 0 &&
                 <div className="playlist-no-img">
-                    <img src={def_album_art} />
+                    <img src={def_album_art} alt="no image" />
                 </div>
             }
         </div>

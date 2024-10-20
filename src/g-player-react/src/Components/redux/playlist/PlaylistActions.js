@@ -159,7 +159,7 @@ export const getUpdatedAssignedPlaylits = (assignedPlaylists, plItem, action) =>
     if(action === ADD){
         assignedPlaylists.push(plItem.playlist);
     }else{
-        assignedPlaylists = assignedPlaylists.filter(pl=>pl!=plItem.playlist);
+        assignedPlaylists = assignedPlaylists.filter(pl=>pl!==plItem.playlist);
     }
     return assignedPlaylists;
 }
