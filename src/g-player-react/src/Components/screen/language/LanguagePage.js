@@ -6,7 +6,7 @@ import { CURRENT_PAGE, LANGUAGE, PLAY_ALL_LABEL, SORT_ARTIST, SORT_A_TO_Z, SORT_
 import { fetchLanguageDetails, fetchSongsByLanguage } from "../../redux/library/LibraryActions";
 import { TrackList } from "../track/TrackList";
 import { FaPlay } from "react-icons/fa";
-import { Lyrics } from "../lyrics/Lyrics";
+import { Lyrics } from "../lyrics/LyricsV2";
 import { camelize, getCookieValue, setCookies } from "../../utilities/util";
 
 export const LanguagePage = () => {
@@ -34,6 +34,7 @@ export const LanguagePage = () => {
             dispatch(fetchLanguageDetails());
         }
         setCookies(CURRENT_PAGE, JSON.stringify({type:LANGUAGE}));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[language]);
 
     useEffect(()=>{
@@ -93,8 +94,8 @@ export const LanguagePage = () => {
                 }
             }
         }
-
         setTrackListInp(tempTrackListInp);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[languageSongList]);
 
     const playAll = () => {

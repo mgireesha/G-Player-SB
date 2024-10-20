@@ -29,7 +29,7 @@ export const ShowLyrics = ({
         }
         if(songPlaying && songPlaying.lyrics){
             readLyrics(songPlaying.lyrics)
-        }
+        }else setLyricsObj(null)
     },[songPlaying])
     
     useEffect(()=>{

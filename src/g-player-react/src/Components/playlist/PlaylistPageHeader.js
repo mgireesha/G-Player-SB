@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { COMMON_POPUP_ERROR_MSG, DELETE, DELETE_LABEL, DELETE_PLAYLIST_CONF_TEXT, DELETE_PLAYLIST_LABEL, INPUT, PLAYLIST, PLAY_ALL_LABEL, REMOVE, REMOVE_LABEL, RENAME, RENAME_LABEL, RENAME_PLAYLIST_INP, RENAME_PLAYLIST_LABEL, TEXT, TRACKS_LABEL } from "../redux/GPActionTypes";
+import { COMMON_POPUP_ERROR_MSG, DELETE_LABEL, INPUT, PLAYLIST, PLAY_ALL_LABEL, RENAME, RENAME_LABEL, 
+    RENAME_PLAYLIST_INP, RENAME_PLAYLIST_LABEL, TRACKS_LABEL } from "../redux/GPActionTypes";
 import { FaPlay } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { BiRename } from "react-icons/bi";
@@ -9,7 +10,7 @@ import { setCommonPopupObj } from "../redux/library/LibraryActions";
 import { deltePlaylist, renamePlaylist } from "../redux/playlist/PlaylistActions";
 import { PLAYLIST_DELETE_PLAYLIST_SUCCESS, PLAYLIST_RENAME_PLAYLIST_SUCCESS } from "../redux/playlist/PlaylistActionTypes";
 import { PlaylistImg } from "./PlaylistImg";
-import { Lyrics } from "../screen/lyrics/Lyrics";
+import { Lyrics } from "../screen/lyrics/LyricsV2";
 import { getCookieValue } from "../utilities/util";
 import { getShowDeletePlaylistPopup } from "./PlalistUtil";
 
@@ -93,6 +94,7 @@ export const PlaylistPageHeader = ({albumNames, songsCount, playAll}) => {
             navigate(`/playlist/${playlistName}/${playlistId}`);
             dispatch(setCommonPopupObj({showPopup:false}));
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[plPhase]);
 
     return(
