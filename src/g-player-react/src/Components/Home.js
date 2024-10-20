@@ -3,7 +3,8 @@ import { Player } from "./player/Player";
 import { Sidebar } from "./Sidebar";
 import { Screen } from "./screen/Screen";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAlbumTacks, fetchAllHistory, fetchAllSongs, fetchSongsByArtist, fetchSongsByGenre, fetchSongsByLanguage, setCheckedTrack, setCheckedTracks, setShowTrackCheckBox } from "./redux/library/LibraryActions";
+import { fetchAlbumTacks, fetchAllHistory, fetchAllSongs, fetchSongsByArtist, fetchSongsByGenre, fetchSongsByLanguage, 
+    setCheckedTracks, setShowTrackCheckBox } from "./redux/library/LibraryActions";
 import { fetchCurrentSontAndStatus, playASongSucc, setIsShuffle, setMediaVolumeSucc, setRepeat } from "./redux/player/PlayerActions";
 import { getCookieDetails, setCookies } from "./utilities/util";
 import { ALBUM, ARTIST, GENRE, LANGUAGE, MAIN_CONTAINER, PLAYLIST, RECENT_PLAYS, REMOVE_ALL, TRACK_LIST } from "./redux/GPActionTypes";

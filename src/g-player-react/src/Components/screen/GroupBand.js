@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
-import { ALBUMS, ALBUMS_LABEL, ALBUM_ARTISTS, ALBUM_ARTISTS_LABEL, ARTISTS, ARTISTS_LABEL, GENRES, GENRES_LABEL, TRACKS_LABEL, TRACKS, LANGUAGES, LANGUAGES_LABEL, ALBUM } from "../redux/GPActionTypes";
+import { ALBUMS, ALBUMS_LABEL, ALBUM_ARTISTS, ALBUM_ARTISTS_LABEL, ARTISTS, ARTISTS_LABEL, GENRES, GENRES_LABEL, 
+    TRACKS_LABEL, TRACKS, LANGUAGES, LANGUAGES_LABEL, ALBUM } from "../redux/GPActionTypes";
 import { FilterComp } from "../FilterComp";
 
 export const GroupBand = () => {
-    const groupBand = useSelector(state => state.library.groupBand);
     const [selectedBand, setSelectedBand] = useState('');
     const locationL = useLocation();
     useEffect(()=>{

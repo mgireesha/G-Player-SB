@@ -1,7 +1,7 @@
 import React from "react";
 import { CREATE, CREATE_LABEL, CREATE_PLAYLIST_LABEL, INPUT, NEW_PLAYLIST_BTN_LABEL, PLAYLIST_NAME } from "../redux/GPActionTypes";
 import { useDispatch } from "react-redux";
-import { createPlaylist, setShowCreatePlaylistPopup } from "../redux/playlist/PlaylistActions";
+import { createPlaylist } from "../redux/playlist/PlaylistActions";
 import { setCommonPopupObj } from "../redux/library/LibraryActions";
 import { getCreatePlaylistObj } from "./PlalistUtil";
 

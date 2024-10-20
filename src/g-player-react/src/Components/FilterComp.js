@@ -19,7 +19,7 @@ export const FilterComp = ({onSetFilterTxt, isSetToStore, placeHolder}) =>{
 
     useEffect(()=>{
         if(locationL.pathname)dispatch(setGlobalFilterText(""));
-    },[locationL.pathname]);
+    },[locationL.pathname,dispatch]);
 
     useEffect(() => {
         if(filterInputEvent){
@@ -32,10 +32,12 @@ export const FilterComp = ({onSetFilterTxt, isSetToStore, placeHolder}) =>{
             }
         }, 500);
         return () => clearTimeout(timeOutId);}
+        // eslint-disable-next-line react-hooks/exhaustive-deps
       }, [filterInputEvent]);
 
       useEffect(()=>{
         dispatch(setGlobalFilterText(""));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
       },[])
     return(
         <div className='filter-component'>

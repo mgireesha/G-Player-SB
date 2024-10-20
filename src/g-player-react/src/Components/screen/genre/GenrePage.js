@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import { GroupedThumbImg4 } from "../../GroupedThumbImg4";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { ALBUMS, A_TO_Z, A_TO_Z_DESC, CURRENT_PAGE, GENRE, MULTI_LINGUAL, PLAY_ALL_LABEL, SORT_ALBUM, SORT_ARTIST, SORT_A_TO_Z, SORT_A_TO_Z_DESC, SORT_LYRICS_AVAILABLE, SORT_MULTI_LINGUAL, SORT_YEAR, TRACKS, TRACKS_LABEL, TRACK_LIST } from "../../redux/GPActionTypes";
+import { ALBUMS, CURRENT_PAGE, GENRE, PLAY_ALL_LABEL, SORT_ALBUM, SORT_ARTIST, SORT_A_TO_Z, SORT_A_TO_Z_DESC, 
+    SORT_LYRICS_AVAILABLE, SORT_MULTI_LINGUAL, SORT_YEAR, TRACKS, TRACKS_LABEL, TRACK_LIST } from "../../redux/GPActionTypes";
 import { fetchAlbumsByGenre, fetchGenreDetails, fetchSongsByGenre } from "../../redux/library/LibraryActions";
 import { TrackList } from "../track/TrackList";
 import { FaPlay } from "react-icons/fa";
-import { Lyrics } from "../lyrics/Lyrics";
+import { Lyrics } from "../lyrics/LyricsV2";
 import { camelize, setCookies } from "../../utilities/util";
 import { MdOutlineArtTrack } from "react-icons/md";
 import { IoAlbums } from "react-icons/io5";
@@ -36,15 +37,14 @@ export const GenrePage = () => {
             dispatch(fetchGenreDetails());
         }
         setCookies(CURRENT_PAGE, JSON.stringify({type:GENRE}));
-    },[genre]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[genre,dispatch]);
 
     useEffect(() => {
         if(genre && viewType === ALBUMS){
             dispatch(fetchAlbumsByGenre(genre));
         }
-
-
-    },[viewType]);
+    },[viewType, genre, dispatch]);
 
     useEffect(()=>{
         if(genreAlbums && genreAlbums.length > 0){
@@ -65,7 +65,7 @@ export const GenrePage = () => {
             }
             setAlbumListInp(tempAlbumListInp);
         }
-    },[genreAlbums])
+    },[genreAlbums, albumListInp])
 
     useEffect(()=>{
         if(genreDetails){
@@ -111,9 +111,8 @@ export const GenrePage = () => {
                 }
             }
         }
-
         setTrackListInp(tempTrackListInp);
-    },[genreSongList]);
+    },[genreSongList, genre]);
 
     const playAll = () => {
         const tracks = document.getElementById(TRACK_LIST);
@@ -159,7 +158,6 @@ export const GenrePage = () => {
             {viewType === ALBUMS && genreAlbums.length > 0 && Object.keys(albumListInp).length > 0 &&
                 <AlbumList albums={genreAlbums} albumListInp={albumListInp} />
             }
-            
         </div>
     );
 }

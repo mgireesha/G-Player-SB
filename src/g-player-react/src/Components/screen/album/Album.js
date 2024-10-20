@@ -77,8 +77,8 @@ export const Album = () => {
         <div className="album">
             {album["albumName"]!==undefined && <div className="album-img-div-container">
                 <div className="album-img-div">
-                    {album.albumImgAvl && <img src={"/gp_images/albums/"+album.albumName+".jpg"} />}
-                    {!album.albumImgAvl && <img src={def_album_art} />}
+                    {album.albumImgAvl && <img src={"/gp_images/albums/"+album.albumName+".jpg"} alt={album.albumName} />}
+                    {!album.albumImgAvl && <img src={def_album_art} alt="no image" />}
                 </div>
                     <div className="album-details">
                         <h3>{album.albumName}</h3>

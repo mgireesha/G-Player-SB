@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { fetchAlbumlistOfAA, fetchAllAlbumArtistsDtls, uploadArtistImg } from "../../redux/library/LibraryActions";
-import { callWikiAPI, convertDataFileToBase64, fetchArtistDetailsfromWiki, scrollToPlaying } from "../../utilities/util";
+import { convertDataFileToBase64, fetchArtistDetailsfromWiki, scrollToPlaying } from "../../utilities/util";
 import { AlbumThumb } from "../album/AlbumThumb";
-import { ALBUM_ARTIST, GP_ARTIST_IMAGE_PATHS_MAP, MULTI_GENRE, UPDATE_ARTIST_IMAGE_TEXT, UPDATE_LABEL, WIKI_SUMMARY_URL } from "../../redux/GPActionTypes";
+import { ALBUM_ARTIST, GP_ARTIST_IMAGE_PATHS_MAP, UPDATE_ARTIST_IMAGE_TEXT, UPDATE_LABEL } from "../../redux/GPActionTypes";
 import def_album_art from '../../images/def_album_art.png';
 
 export const AlbumArtist = () => {
@@ -20,7 +20,7 @@ export const AlbumArtist = () => {
     const [artistWiki, setArtistWiki] = useState({});
     const [artistWikiImg, setArtistWikiImg] = useState(null);
     const [albumArtistObj, setAlbumArtistObj] = useState({});
-    const [albumCount, setAlbumCount] = useState(0);
+    //const [albumCount, setAlbumCount] = useState(0);
     const [newArtistImgStr, setNewArtistImgStr] = useState(null);
     
     useEffect(()=>{
@@ -30,19 +30,19 @@ export const AlbumArtist = () => {
         fetchWikiData(albumArtist);
     },[albumArtist]);
 
-    useEffect(()=>{
-        if(albumListOfAA){
-            let tempAlbumCount = 0;
-            albumListOfAA.forEach(element => {
-                if(element.genreType === MULTI_GENRE){
-                    tempAlbumCount+= element.genres.split(",").length;
-                }else{
-                    tempAlbumCount++;
-                }
-            });
-            setAlbumCount(tempAlbumCount);
-        }
-    },[albumListOfAA])
+    // useEffect(()=>{
+    //     if(albumListOfAA){
+    //         let tempAlbumCount = 0;
+    //         albumListOfAA.forEach(element => {
+    //             if(element.genreType === MULTI_GENRE){
+    //                 tempAlbumCount+= element.genres.split(",").length;
+    //             }else{
+    //                 tempAlbumCount++;
+    //             }
+    //         });
+    //         setAlbumCount(tempAlbumCount);
+    //     }
+    // },[albumListOfAA])
 
     useEffect(()=>{
         if(albumArtistsDetails.length>0){
@@ -84,9 +84,9 @@ export const AlbumArtist = () => {
                 <>
                     <div className="album-artist-img-div-container">
                         <div className="album-artist-img-div">
-                            {albumArtistObj.imgAvl  && <img id="artist_image" src={GP_ARTIST_IMAGE_PATHS_MAP[albumArtistObj.imageSource] + albumArtistObj.artistName+".jpg"} />}
-                            {!albumArtistObj.imgAvl && artistWikiImg!==null &&  <img id="artist_image" src={artistWikiImg} />}
-                            {!albumArtistObj.imgAvl && artistWikiImg===null &&<img id="artist_image" src={def_album_art} />}
+                            {albumArtistObj.imgAvl  && <img id="artist_image" src={GP_ARTIST_IMAGE_PATHS_MAP[albumArtistObj.imageSource] + albumArtistObj.artistName+".jpg"} alt={albumArtistObj.artistName} />}
+                            {!albumArtistObj.imgAvl && artistWikiImg!==null &&  <img id="artist_image" src={artistWikiImg} alt={albumArtistObj.artistName} />}
+                            {!albumArtistObj.imgAvl && artistWikiImg===null &&<img id="artist_image" src={def_album_art} alt={albumArtistObj.artistName} />}
                             <div className="change-artist-img">
                                 <input type="file" onChange={handleArtistFileChnage} title={UPDATE_ARTIST_IMAGE_TEXT} />
                                 <button className="g-btn sm success" onClick={initArtistImgUpload}>{UPDATE_LABEL}</button>

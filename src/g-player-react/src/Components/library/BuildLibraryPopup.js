@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { ARTIST_IMG_DOWNLOAD_STATUS, BUILD_STATUS, COMPLETED, COMPONENT, CURRENT_PAGE, GP_LIBRARY_DESCRIPTION, GP_LIBRARY_DESC_TEXT_1, INIT, INITIATED, LIBRARY, LIBRARY_BUILD, LIBRARY_LABEL, MUSIC_PATH, RUNNING } from "../redux/GPActionTypes";
-import { initLibraryBuild, setCommonPopupObj } from "../redux/library/LibraryActions";
+import { BUILD_STATUS, COMPLETED, INIT,RUNNING } from "../redux/GPActionTypes";
+import { setCommonPopupObj } from "../redux/library/LibraryActions";
 import { useDispatch, useSelector } from "react-redux";
-import { setCookies } from "../utilities/util";
-import loading_icon from '../images/Loading.gif';
 import { Spinner } from "../utilities/Spinner";
-
 
 export const BuildLibraryPopup = () => {
     const dispatch = useDispatch();
@@ -13,7 +10,7 @@ export const BuildLibraryPopup = () => {
     const buildStatusList = useSelector(state => state.library.buildStatus);
     const [isBuildRunning, setIsBuildRunning] = useState(false);
     const [isBuildCompleted, setIsBuildCompleted] = useState(false);
-    const [isBuildInit, setIsBuildInit] = useState(false);
+    //const [isBuildInit, setIsBuildInit] = useState(false);
 
     useEffect(()=>{
         if(buildStatusList.length > 0){
@@ -21,7 +18,7 @@ export const BuildLibraryPopup = () => {
             if(buildStatus){
                 setIsBuildRunning(buildStatus.value === RUNNING ? true : false);
             setIsBuildCompleted(buildStatus.value === COMPLETED ? true : false);
-            setIsBuildInit(buildStatus.value === INIT ? true : false);
+            //setIsBuildInit(buildStatus.value === INIT ? true : false);
             }
         }
     },[buildStatusList])

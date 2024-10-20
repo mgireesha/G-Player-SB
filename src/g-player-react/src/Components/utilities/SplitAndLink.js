@@ -22,6 +22,7 @@ export const SplitAndLink = ({str, url}) => {
             str = strArr[i].trim();
             if(str.includes(splitter)){
                 strArr = str.split(splitter);
+                // eslint-disable-next-line react-hooks/exhaustive-deps
                 strArr.forEach(str1=>{
                     if(!strArr1.includes(str1)){
                         strArr1.push(str1);

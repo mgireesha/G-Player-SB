@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { RiRefreshLine } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
-import { BUILD_STATUS, COMPLETED, INIT, RUNNING } from "../redux/GPActionTypes";
+import { BUILD_STATUS, INIT, RUNNING } from "../redux/GPActionTypes";
 import { fetchBuildStatus, initDeltaLibraryBuild } from "../redux/library/LibraryActions";
 
 export const RefreshBuild = () => {
