@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { SORT_YEAR, SORT_ARTIST, TRACK_LIST, NO_SORT, SORT_A_TO_Z_DESC, SORT_LYRICS_AVAILABLE, SORT_A_TO_Z, SORT_NONE, GP_TRACKS_SORT_FIELD_MAPPING, SORT_TRACK_NUMBER, SORT_PLAY_COUNT } from "../../redux/GPActionTypes";
+import { SORT_YEAR, SORT_ARTIST, TRACK_LIST, NO_SORT, SORT_A_TO_Z_DESC, SORT_LYRICS_AVAILABLE, SORT_A_TO_Z, GP_TRACKS_SORT_FIELD_MAPPING, SORT_TRACK_NUMBER, SORT_PLAY_COUNT } from "../../redux/GPActionTypes";
 import { scrollToPlaying, sortGroupByField } from "../../utilities/util";
 import { SortingContainer } from "../SortingContainer";
 import { Spinner } from "../../utilities/Spinner";
 import { Track } from "./Track";
 import {ViewportList} from "react-viewport-list";
 import { useRef } from "react";
-import { useNavigation } from "react-router-dom";
 
 
 export const TrackList = ({tracks, trackListInp, tracksHistory}) => {
@@ -20,6 +19,7 @@ export const TrackList = ({tracks, trackListInp, tracksHistory}) => {
 
     useEffect(()=>{
         if(trackListInp)setSortBy(trackListInp.selectedSortBy?trackListInp.selectedSortBy:NO_SORT);
+         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[tracks])
 
     useEffect(()=>{
@@ -54,6 +54,7 @@ export const TrackList = ({tracks, trackListInp, tracksHistory}) => {
             }
             setTrackIndex(tempTrackIndex);
         }
+         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[trackList, sortBy])
 
     useEffect(()=>{
@@ -64,6 +65,7 @@ export const TrackList = ({tracks, trackListInp, tracksHistory}) => {
                 setTrackList(sortGroupByField(tracks, GP_TRACKS_SORT_FIELD_MAPPING[sortBy], tracksHistory));
             }
         }
+         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[tracks, sortBy]);
 
     const sortByArtist = (tracks) => {

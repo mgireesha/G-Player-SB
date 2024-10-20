@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ARTIST_IMG_DOWNLOAD_STATUS, BUILD_STATUS, COMPLETED, COMPONENT, CURRENT_PAGE, GP_LIBRARY_DESCRIPTION, GP_LIBRARY_DESC_TEXT_1, INIT, INITIATED, LIBRARY, LIBRARY_BUILD, LIBRARY_LABEL, MUSIC_PATH, RUNNING } from "../redux/GPActionTypes";
+import { BUILD_STATUS, COMPONENT, GP_LIBRARY_DESCRIPTION, GP_LIBRARY_DESC_TEXT_1, INIT, INITIATED, LIBRARY_BUILD, RUNNING } from "../redux/GPActionTypes";
 import { fetchBuildStatusSucc, initLibraryBuild, setCommonPopupObj } from "../redux/library/LibraryActions";
 import { useDispatch, useSelector } from "react-redux";
 import { setCookies } from "../utilities/util";
