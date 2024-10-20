@@ -50,6 +50,7 @@ export const ImportExportPlaylistPopupBtns = () => {
             playlistName = playlistName.substring(0, playlistName.length-fileType.length);
             fileReader = new FileReader();
             fileReader.readAsText(file);
+            // eslint-disable-next-line
             const result = await new Promise((resolve, reject) => {
                 fileReader.onload = function(event) {
                 resolve(fileReader.result)
@@ -66,7 +67,6 @@ export const ImportExportPlaylistPopupBtns = () => {
     const getGPPLPayload = (selectedFiles) => {
         const tempSelectedFiles = {};
         const plNames = Object.keys(selectedFiles);
-        //let plItem;
         let plItems;
         let track = {};
         let tracks = [];
@@ -108,7 +108,6 @@ export const ImportExportPlaylistPopupBtns = () => {
                 dispatch(importPlaylists(selectedFiles, fileType));
             }
         }
-        
     }
 
     return(
@@ -129,10 +128,10 @@ export const ImportExportPlaylistPopupBtns = () => {
             }
             {showImportOptions &&
                 <>
-                    {!showSpinner && 
+                    {!showSpinner ? 
                         <div className="import-options">
                             <div className="import-csv">
-                                <input type="file" className="csv" accept=".csv" multiple id={CSV_IMPORT_INPUT} /*onChange={(event)=>handleFileOnChange(event)}*/ />
+                                <input type="file" className="csv" accept=".csv" multiple id={CSV_IMPORT_INPUT} />
                             </div>
                             <div className="import-gp">
                                 <input type="file" className="gp" accept=".gp" multiple id={GP_IMPORT_INPUT} />
@@ -141,8 +140,8 @@ export const ImportExportPlaylistPopupBtns = () => {
                                 <input type="file" className="m3u" accept=".m3u" multiple disabled title={COMING_SOON_LABEL} />
                             </div>
                         </div>
+                    : <div className="flex-align-center-100"><Spinner spinnerInp={{classSize:'sm', text:"Importing"}} /></div>
                     }
-                    {showSpinner && <div className="flex-align-center-100"><Spinner spinnerInp={{classSize:'sm', text:"Importing"}} /></div>}
                 </>
             }
         </div>
