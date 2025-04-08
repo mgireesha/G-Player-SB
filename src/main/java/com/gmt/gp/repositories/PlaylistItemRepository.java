@@ -28,4 +28,5 @@ public interface PlaylistItemRepository extends CrudRepository<PlaylistItem, Lon
 
     @Query("SELECT p.playlist FROM PlaylistItem p where p.albumName =:albumName")
     List<String> getPlaylistsByAlbumName(String albumName);
+
 }

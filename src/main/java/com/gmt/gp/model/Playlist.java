@@ -32,8 +32,8 @@ public class Playlist {
     public void setName(String name) {
         this.name = name;
     }
-    public String getCreatedDate() {
-        return String.valueOf(createdDate);
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
     }
     public void setCreatedDate(LocalDateTime createdDate) {
         this.createdDate = createdDate;

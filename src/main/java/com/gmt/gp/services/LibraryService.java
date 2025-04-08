@@ -1562,6 +1562,10 @@ public class LibraryService {
         return songs;
     }
 
+    public Library fetchSongByAlbumAndTitle( String title, String album) {
+        return libraryRepository.fetchByTitleAndAlbum(title, album);
+    }
+
     public GPResponse updateMp3Files(String path, String field, String value) {
         GPResponse resp = new GPResponse();
         List<File> fileList = new ArrayList<File>();

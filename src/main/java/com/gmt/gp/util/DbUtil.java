@@ -17,6 +17,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Map;
 
 public class DbUtil {
 
@@ -29,7 +30,7 @@ public class DbUtil {
 		} else if ("postgress".equalsIgnoreCase(whichDb)) {
 			con = getPostgreSQLConnection();
 		} else if ("cloudPostgress".equalsIgnoreCase(whichDb)) {
-			con = getCloudPostgreSQLConnection();
+			con = getCloudPostgreSQLConnection(null);
 		}
 
 		return con;
@@ -42,7 +43,7 @@ public class DbUtil {
 		} else if ("postgress".equalsIgnoreCase(whichDb)) {
 			con = getPostgreSQLConnection();
 		} else if ("cloudPostgress".equalsIgnoreCase(whichDb)) {
-			con = getCloudPostgreSQLConnection();
+			con = getCloudPostgreSQLConnection(null);
 		}
 
 		return con;
@@ -85,13 +86,14 @@ public class DbUtil {
 		}
 	}
 
-	public static Connection getCloudPostgreSQLConnection() throws DaoException {
+	public static Connection getCloudPostgreSQLConnection(Map<String, String> remoteDBDetails) throws DaoException {
 		try {
-			String url = "jdbc:postgresql://ec2-18-204-101-137.compute-1.amazonaws.com:5432/d389cucndbi4r0";
-			String username = "xdgxsyodaubhta";
-			String password = "2ff67bf67850b915d640785bdda98c6c92805bc0b548326b228fd44c219420f9";
-			Connection con = DriverManager.getConnection(url, username,
-					password);
+			Class.forName("org.postgresql.Driver");
+			Connection con = DriverManager.getConnection(
+					remoteDBDetails.get("remoteDbURL"),
+					remoteDBDetails.get("remoteDbUserName"),
+					remoteDBDetails.get("remoteDbPassword")
+				);
 			return con;
 		} catch (Exception e) {
 			throw new DaoException(e);

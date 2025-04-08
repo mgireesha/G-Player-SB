@@ -46,3 +46,4 @@ src/main/resources/public/images/
 src/main/resources/static/images/
 src/main/resources/gp_react/gp_images/
 
+.env

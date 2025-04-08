@@ -97,4 +97,9 @@ public class PlaylistController {
         return playlistService.getAssignedPlaylists(type, identifier);
     }
 
+    @GetMapping("/playlists/sync-with-remote")
+    public void syncPlaylistsWithRemote(){
+        playlistService.syncPlaylistsWithRemote();
+    }
+
 }

@@ -52,6 +52,9 @@ public class PlaylistService {
     @Autowired
     private HistoryService historyService;
 
+    @Autowired
+    private RemoteDBService remoteDBService;
+
     public List<PlaylistItem> getAllPlaylistItems() {
         return (List<PlaylistItem>) playlistItemRepository.findAll();
     }
@@ -155,6 +158,7 @@ public class PlaylistService {
         }
         //messageService.removeMessageById(playlistId);
         Optional<Playlist> playlist = playlistRepository.findById(playlistId);
+        messageService.saveMaMessage(new Message(GP_CONSTANTS.REMOVED_PLAYLIST, GP_CONSTANTS.REMOVED_PLAYLIST, playlist.get().getName()));
         playlistRepository.delete(playlist.get());
         resp.setStatus(GP_CONSTANTS.SUCCESS);
         return resp;
@@ -208,13 +212,17 @@ public class PlaylistService {
     public GPResponse removeFromPlaylist(long playlistId, long songId) {
         GPResponse resp = new GPResponse();
         try {
-            System.out.println("playlistId: " + playlistId + ",  songId: " + songId);
             List<PlaylistItem> playlistItems = playlistItemRepository.getByPlaylistIdAndSongId(playlistId, songId);
             if (playlistItems != null && playlistItems.size() > 0) {
                 PlaylistItem playlistItem = playlistItems.get(0);
                 playlistItemRepository.delete(playlistItem);
                 resp.setPlaylistItem(playlistItem);
                 resp.setStatus(GP_CONSTANTS.SUCCESS);
+                messageService.saveMaMessage(new Message(
+                        GP_CONSTANTS.REMOVED_FROM_PLAYLIST, 
+                        playlistItem.getPlaylist(), 
+                        playlistItem.getAlbumName()+">>>"+playlistItem.getSongTitle()
+                    ));
             }
         } catch (Exception e) {
             resp.setError(e.getMessage());
@@ -554,6 +562,106 @@ public class PlaylistService {
             return playlistItemRepository.getPlaylistsByAlbumName(identifier);
         }
         return new ArrayList<String>();//returning an empty list
+    }
+
+    public void syncPlaylistsWithRemote(){
+        syncPlaylistDeletion();
+        syncPlaylists();
+        syncPlaylistItems();
+        
+        // try {
+        //     Connection connection = DbUtil.getConnection("cloudPostgress");
+        //     String query = "INSERT INTO PLAYLIST VALUES(602,'2024-05-04 13:49:24.507280','2024-10-21 00:59:22.939015','English')";
+        // } catch (Exception e) {
+        //     e.printStackTrace();
+        // }
+    }
+
+    public void syncPlaylists(){
+        List<Playlist> playlistsL = (List<Playlist>) playlistRepository.findAll();
+        List<Playlist> playlistsR = remoteDBService.getAllPlaylists();
+        System.out.println("playlistsR: "+playlistsR.size());
+        List<Playlist> playlistsMissingL = new ArrayList<Playlist>();
+        List<Playlist> playlistsMissingR = new ArrayList<Playlist>();
+
+        for(Playlist playlistL : playlistsL){
+            if(!isContainsPlaylist(playlistsR, playlistL.getName())){
+                playlistsMissingR.add(new Playlist(playlistL.getName(), playlistL.getCreatedDate(), playlistL.getLastUpdated()));
+            }
+        }
+        for(Playlist playlistR : playlistsR){
+            if(!isContainsPlaylist(playlistsL, playlistR.getName())){
+                playlistsMissingL.add(new Playlist(playlistR.getName(), playlistR.getCreatedDate(), playlistR .getLastUpdated()));
+            }
+        }
+
+        if(playlistsMissingL.size()>0){
+            playlistRepository.saveAll(playlistsMissingL);
+        }
+
+        if(playlistsMissingR.size()>0){
+            remoteDBService.savePlaylists(playlistsMissingR);
+        }
+
+    }
+
+    public void syncPlaylistItems(){
+        List<PlaylistItem> playlistItemsL = (List<PlaylistItem>) playlistItemRepository.findAll();
+        List<PlaylistItem> playlistItemsR = remoteDBService.getAllPlaylistItems();
+        System.out.println("playlistItemsR: "+playlistItemsR.size());
+        List<PlaylistItem> playlistItemsMissingL = new ArrayList<PlaylistItem>();
+        List<PlaylistItem> playlistItemsMissingR = new ArrayList<PlaylistItem>();
+
+        for(PlaylistItem playlistItemL : playlistItemsL){
+            if(!isContainsPlaylistItem(playlistItemsR, playlistItemL)){
+                playlistItemsMissingR.add(playlistItemL);
+            }
+        }
+        for(PlaylistItem playlistItemR : playlistItemsR){
+            if(!isContainsPlaylistItem(playlistItemsL, playlistItemR)){
+                playlistItemR.setId(null);
+                Library library = libraryService.fetchSongByAlbumAndTitle(playlistItemR.getSongTitle(), playlistItemR.getAlbumName());
+                playlistItemR = playlistItemR.merge(library);
+                playlistItemR.setPlaylistId(playlistRepository.getByName(playlistItemR.getPlaylist()).getId());
+                playlistItemsMissingL.add(playlistItemR);
+            }
+        }
+
+        if(playlistItemsMissingL.size()>0){
+            playlistItemRepository.saveAll(playlistItemsMissingL);
+        }
+
+        if(playlistItemsMissingR.size()>0){
+            remoteDBService.savePlaylistItems(playlistItemsMissingR);
+        }
+
+    }
+
+    public boolean isContainsPlaylist(final List<Playlist> list, final String name) {
+        final String METHOD_NAME = "isContainsPlaylist";
+        try {
+            return list.stream().filter(p -> p.getName().equals(name)).findFirst().isPresent();
+        } catch (Exception e) {
+            LOG.error("Failed in:" + METHOD_NAME + " method, name: " + name);
+            e.getMessage();
+        }
+        return false;
+    }
+
+    public boolean isContainsPlaylistItem(final List<PlaylistItem> list, final PlaylistItem pi) {
+        final String METHOD_NAME = "isContainsPlaylistItem";
+        try {
+            return list.stream().filter(p -> (p.getSongTitle().equals(pi.getSongTitle()) && p.getPlaylist().equals(pi.getPlaylist()))).findFirst().isPresent();
+        } catch (Exception e) {
+            LOG.error("Failed in:" + METHOD_NAME + " method, pi: " + pi);
+            e.getMessage();
+        }
+        return false;
+    }
+
+    private void syncPlaylistDeletion() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'syncPlaylistDeletion'");
     }
 
 }

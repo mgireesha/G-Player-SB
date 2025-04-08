@@ -40,7 +40,7 @@ public class PlaylistItem {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -121,6 +121,20 @@ public class PlaylistItem {
         this.albumId = albumId;
         this.songId = songId;
         this.songTitle = songTitle;
+    }
+
+    public PlaylistItem(long id, String playlist, long playlistId, String songPath, String albumName, long albumId,
+            long songId, String songTitle, LocalDateTime createdDate, LocalDateTime lastUpdated) {
+        this.id = id;
+        this.playlist = playlist;
+        this.playlistId = playlistId;
+        this.songPath = songPath;
+        this.albumName = albumName;
+        this.albumId = albumId;
+        this.songId = songId;
+        this.songTitle = songTitle;
+        this.createdDate = createdDate;
+        this.lastUpdated = lastUpdated;
     }
 
     public PlaylistItem copy() {

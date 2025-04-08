@@ -69,6 +69,8 @@ public class GP_CONSTANTS {
 
     public static final String RESPONSE_ALBUM = "RESPONSE_ALBUM";
     public static final String RUNNING = "RUNNING";
+    public static final String REMOVED_PLAYLIST = "REMOVED_PLAYLIST";
+    public static final String REMOVED_FROM_PLAYLIST = "REMOVED_FROM_PLAYLIST";
 
     public static final String SINGLE_GENRE = "SINGLE_GENRE";
     public static final String SONG = "SONG";
