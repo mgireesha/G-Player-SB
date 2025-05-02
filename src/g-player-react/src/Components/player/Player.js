@@ -123,7 +123,7 @@ export const Player = () => {
        const currentTime = Math.floor(parseInt(playingSongStat.currentTime)/1000);
        setCurrentTime(currentTime);
        const trackLength = songPlaying.trackLength;
-       if((trackLength - currentTime)<3){
+       if((trackLength - currentTime)<1){
             clearInterval(statClearIntrvl);
             if(repeat===REPEAT_ALL){
                 setTimeout(playNextSong(NEXT),4000);
