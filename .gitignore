@@ -46,3 +46,8 @@ src/main/resources/public/images/
 src/main/resources/static/images/
 src/main/resources/gp_react/gp_images/
 
+src/g-player-ui/node_modules/
+src/g-player-ui/public/images/
+src/g-player-ui/static/images/
+src/g-player-ui/public/gp_images/
+src/g-player-ui/dist/
