@@ -97,4 +97,9 @@ public class PlaylistController {
         return playlistService.getAssignedPlaylists(type, identifier);
     }
 
+    @GetMapping("/playlists/create_playlist_by_property/{srcPlaylist}/{targetPlaylist}/{property}")
+    public GPResponse createPlaylistByProperty(@PathVariable String srcPlaylist, @PathVariable String targetPlaylist, @PathVariable String property){
+        return playlistService.createPlaylistByProperty(srcPlaylist, targetPlaylist, property);
+    }
+
 }

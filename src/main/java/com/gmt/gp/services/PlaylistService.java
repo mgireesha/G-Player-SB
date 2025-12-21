@@ -518,6 +518,7 @@ public class PlaylistService {
         if(temPlaylist != null){
             resp.setStatus(GP_CONSTANTS.FAILED);
             resp.setError(GP_ERRORS.ERR_PLAYLIST_ALREADY_EXISTS);
+            resp.setResponse(temPlaylist);
             return resp;
         }
         temPlaylist =  playlistRepository.save(new Playlist(name, LocalDateTime.now(), LocalDateTime.now()));
@@ -554,6 +555,31 @@ public class PlaylistService {
             return playlistItemRepository.getPlaylistsByAlbumName(identifier);
         }
         return new ArrayList<String>();//returning an empty list
+    }
+
+    public GPResponse createPlaylistByProperty(String srcPlaylistName, String targetPlaylistName, String property) {
+        Playlist srcPlaylist = playlistRepository.getByName(srcPlaylistName);
+        GPResponse resp = createPlalist(targetPlaylistName);
+        Playlist targetPlaylist = null;
+        String propertyName = property.split(":")[0];
+        String propertyValue = property.split(":")[1];
+        if(resp.getStatus().equals(GP_CONSTANTS.FAILED)){
+            if(resp.getError().equals(GP_ERRORS.ERR_PLAYLIST_ALREADY_EXISTS)){
+                targetPlaylist = (Playlist) resp.getResponse();
+                deletePlaylist(targetPlaylist.getId());
+                resp = createPlalist(targetPlaylistName);
+                targetPlaylist = (Playlist) resp.getResponse();
+            }else{
+                return resp;
+            }
+        }else{
+            targetPlaylist = (Playlist) resp.getResponse();
+        }
+        List<Long> songIdsInSrcPlaylist = playlistItemRepository.getSongIdsInPlaylist(srcPlaylist.getId());
+        List<Library> songs = libraryService.findAllByIds(songIdsInSrcPlaylist);
+        List<Library> songsByProperty = songs.stream().filter(s-> s.getLanguage().equalsIgnoreCase(propertyValue)).toList();
+        addSongsToPlaylist(songsByProperty, targetPlaylist);
+        return resp;
     }
 
 }
